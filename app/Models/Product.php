@@ -43,7 +43,7 @@ class Product extends Model
 	*/
 	public function categories()
 	{
-		return $this->belongsToMany(Category::class);
+		return $this->belongsToMany(Category::class, 'product_category');
 	}
 
 	/**
@@ -53,6 +53,6 @@ class Product extends Model
 	*/
 	public function specifications()
 	{
-		return $this->belongsToMany(Specification::class);
+		return $this->belongsToMany(Specification::class, 'product_specification');
 	}
 }
