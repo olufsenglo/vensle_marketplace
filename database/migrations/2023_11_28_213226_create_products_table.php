@@ -21,6 +21,10 @@ return new class extends Migration
 	    $table->string('phone_number');
 	    $table->text('description');
 	    $table->string('type');
+	    $table->decimal('ratings', 3, 2)->nullable();
+	    $table->integer('quantity')->default(0);
+	    $table->integer('sold')->default(0);
+	    $table->integer('views')->default(0);
 	    $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->timestamps();
 

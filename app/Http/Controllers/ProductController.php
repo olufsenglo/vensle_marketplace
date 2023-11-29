@@ -52,6 +52,10 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'type' => 'required|string',
                 'status' => 'required|in:Active,Inactive',
+		'ratings' => 'nullable|numeric|min:0|max:5',
+                'quantity' => 'nullable|integer|min:0',
+                'sold' => 'nullable|integer|min:0',
+                'views' => 'nullable|integer|min:0',
                 'category_id' => 'required|exists:categories,id',
                 'specification_ids' => 'required|array',
             ]);
@@ -124,6 +128,10 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'type' => 'required|string',
                 'status' => 'required|in:Active,Inactive',
+		'ratings' => 'nullable|numeric|min:0|max:5',
+                'quantity' => 'nullable|integer|min:0',
+                'sold' => 'nullable|integer|min:0',
+                'views' => 'nullable|integer|min:0',
                 'category_id' => 'required|exists:categories,id',
                 'specification_ids' => 'required|array',
             ]);

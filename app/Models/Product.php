@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $description
  * @property string $type
  * @property string $status
+ * @property string $ratings
+ * @property string $quantity
+ * @property string $sold
+ * @property string $views
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -33,7 +37,7 @@ class Product extends Model
 	* @var array
 	*/
 	protected $fillable = [
-		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'status',
+		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'status', 'ratings', 'quantity', 'sold', 'views',
 	];
 
 	/**

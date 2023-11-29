@@ -29,6 +29,10 @@ class ProductSeeder extends Seeder
             'phone_number' => '+1234567890',
             'description' => 'A high-end laptop with amazing features.',
             'type' => 'Laptop',
+            'ratings' => 4.5,
+            'quantity' => 10,
+            'sold' => 2,
+            'views' => 50,
             'status' => 'Active',
         ]);
 
@@ -40,7 +44,11 @@ class ProductSeeder extends Seeder
             'address' => '456 Oak St',
             'phone_number' => '+9876543210',
             'description' => 'A smart fridge that makes your life easier.',
-            'type' => 'Appliance',
+	    'type' => 'Appliance',
+            'ratings' => 3.8,
+            'quantity' => 5,
+            'sold' => 1,
+            'views' => 30,	    
             'status' => 'Active',
 	]);
 
