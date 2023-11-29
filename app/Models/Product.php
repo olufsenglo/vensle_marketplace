@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name
+ * @property int $category_id
  * @property string $condition
  * @property float $price
  * @property string $address
@@ -20,7 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
- * @property \Illuminate\Database\Eloquent\Collection|Category[] $categories
  * @property \Illuminate\Database\Eloquent\Collection|Specification[] $specifications
  */
 class Product extends Model
@@ -33,7 +33,7 @@ class Product extends Model
 	* @var array
 	*/
 	protected $fillable = [
-		'name', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'status',
+		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'status',
 	];
 
 	/**
@@ -41,9 +41,9 @@ class Product extends Model
 	*
 	* @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
 	*/
-	public function categories()
+	public function category()
 	{
-		return $this->belongsToMany(Category::class, 'product_category');
+		return $this->belongsTo(Category::class);
 	}
 
 	/**

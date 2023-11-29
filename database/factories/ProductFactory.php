@@ -22,7 +22,9 @@ class ProductFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            //'category' => $this->faker->randomElement(['Electronics', 'Sporting Goods', 'Computing', 'Home & Appliances']),
+	    'category_id' => function () {
+                return \App\Models\Category::factory()->create()->id;
+            },
             'condition' => $this->faker->randomElement(['New', 'Fairly Used', 'N/A']),
             'price' => $this->faker->randomFloat(2, 10, 1000),
             'address' => $this->faker->address,
@@ -30,7 +32,23 @@ class ProductFactory extends Factory
             'description' => $this->faker->sentence,
             'type' => $this->faker->word,
             'status' => $this->faker->randomElement(['Active', 'Inactive']),
-            //'specifications' => $this->faker->words(3),	
+            //'specifications' => function () {
+            //    return \App\Models\Specification::factory()->create()->id;
+            //},
 	];
+    }
+
+    /**
+     * Indicate that the product has specifications.
+     *
+     * @return ProductFactory
+     */
+    public function withSpecifications(): self
+    {
+        return $this->afterCreating(function (Product $product) {
+            $product->specifications()->attach(
+                \App\Models\Specification::factory()->create()->id
+            );
+        });
     }
 }

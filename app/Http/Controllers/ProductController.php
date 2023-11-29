@@ -21,7 +21,6 @@ class ProductController extends Controller
     {
         try {
             $products = Product::paginate(config('constants.PAGINATION_LIMIT'));
-            //$products = Product::get();
             return response()->json($products);
         } catch (\Exception $e) {
             Log::error('Error fetching products: ' . $e->getMessage());
@@ -53,12 +52,12 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'type' => 'required|string',
                 'status' => 'required|in:Active,Inactive',
-                'category_ids' => 'required|array',
+                'category_id' => 'required|exists:categories,id',
                 'specification_ids' => 'required|array',
             ]);
 
-            $product = Product::create($validatedData);
-	    $product->categories()->attach($request->category_ids);
+	    $product = Product::create($validatedData);
+	    $product->category()->associate($request->category_id)->save();
 
 	    //Attach specifications: adds new entries to the pivot table
             $product->specifications()->attach($request->specification_ids);
@@ -125,12 +124,14 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'type' => 'required|string',
                 'status' => 'required|in:Active,Inactive',
-                'category_ids' => 'required|array',
+                'category_id' => 'required|exists:categories,id',
                 'specification_ids' => 'required|array',
             ]);
 
             $product->update($validatedData);
-            $product->categories()->sync($request->category_ids);
+	    
+	    // Update category for product
+            $product->category()->associate($request->category_id)->save();
 
     	    //Sync specifications: update the pivot table for specifications
             $product->specifications()->sync($request->specification_ids);

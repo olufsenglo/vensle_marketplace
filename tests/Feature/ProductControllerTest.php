@@ -3,14 +3,17 @@
 namespace Tests\Feature;
 
 use App\Models\Product;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Category;
+//use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    //use RefreshDatabase;
+    use DatabaseTransactions;
     use WithFaker;
 
     public function setUp(): void
@@ -29,7 +32,8 @@ dump($response->getContent());
         $response->assertStatus(201)
             ->assertJsonStructure([
                 'id',
-                'name',
+		'name',
+		'category_id',
                 'condition',
                 'price',
                 'address',
@@ -51,7 +55,8 @@ dump($response->getContent());
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'id',
-                'name',
+		'name',
+		'category_id',
                 'condition',
                 'price',
                 'address',
@@ -92,6 +97,7 @@ dump($response->getContent());
     }
 
     // Add more test methods as needed
+    //it_can_show_a_product
 
     /**
      * Generate fake product data for testing.
@@ -100,6 +106,8 @@ dump($response->getContent());
      */
     private function productData()
     {
+	$category = Category::factory()->create(); 
+
         return [
             'name' => $this->faker->word,
             'condition' => 'New',
@@ -109,7 +117,7 @@ dump($response->getContent());
             'description' => $this->faker->paragraph,
             'type' => 'Some Type',
             'status' => 'Active',
-            'category_ids' => [1, 2],
+	    'category_id' => $category->id,
             'specification_ids' => [2, 3],
         ];
     }
