@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+	    // Include the constants file
+	    config(['constants' => require app_path('Constants/constants.php')]);
     }
 }

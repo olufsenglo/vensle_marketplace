@@ -20,7 +20,7 @@ class ProductSeeder extends Seeder
 	$specificationTouchscreen = Specification::where('name', 'Touchscreen')->first();
 	$specificationWireless = Specification::where('name', 'Wireless')->first();
 
-        Product::create([
+        $product1 = Product::create([
             'name' => 'Sample Laptop',
             'condition' => 'New',
             'price' => 999.99,
@@ -29,9 +29,10 @@ class ProductSeeder extends Seeder
             'description' => 'A high-end laptop with amazing features.',
             'type' => 'Laptop',
             'status' => 'Active',
-        ])->categories()->attach($categoryElectronics->id);
+        ]);
+	$product1->categories()->attach($categoryElectronics->id);
 
-        Product::create([
+        $product2 = Product::create([
             'name' => 'Sample Smart Fridge',
             'condition' => 'New',
             'price' => 1499.99,
@@ -40,10 +41,14 @@ class ProductSeeder extends Seeder
             'description' => 'A smart fridge that makes your life easier.',
             'type' => 'Appliance',
             'status' => 'Active',
-        ])->categories()->attach($categoryHome->id);
+	]);
+	$product2->categories()->attach($categoryHome->id);
 
-        //Attach specifications to products
-        Product::find(1)->specifications()->attach($specificationTouchscreen->id);
-        Product::find(2)->specifications()->attach($specificationWireless->id);
+	//Attach specifications to products
+	$product1->specifications()->attach($specificationTouchscreen->id);
+	$product2->specifications()->attach($specificationWireless->id);
+	
+	//Product::find(1)->specifications()->attach($specificationTouchscreen->id);
+        //Product::find(2)->specifications()->attach($specificationWireless->id);
     }
 }
