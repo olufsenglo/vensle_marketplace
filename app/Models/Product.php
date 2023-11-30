@@ -37,7 +37,7 @@ class Product extends Model
 	* @var array
 	*/
 	protected $fillable = [
-		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'status', 'ratings', 'quantity', 'sold', 'views',
+		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'status', 'ratings', 'quantity', 'sold', 'views', 'display_image_id'
 	];
 
 	/**
@@ -59,4 +59,15 @@ class Product extends Model
 	{
 		return $this->belongsToMany(Specification::class, 'product_specification');
 	}
+
+
+    	public function images()
+    	{
+        	return $this->hasMany(Image::class);
+    	}
+
+    	public function displayImage()
+	{
+        	return $this->belongsTo(Image::class, 'display_image_id');
+    	}	
 }

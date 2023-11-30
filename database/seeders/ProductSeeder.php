@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Specification;
+use App\Models\Image;
 
 class ProductSeeder extends Seeder
 {
@@ -20,6 +21,19 @@ class ProductSeeder extends Seeder
 	$specificationTouchscreen = Specification::where('name', 'Touchscreen')->first();
 	$specificationWireless = Specification::where('name', 'Wireless')->first();
 
+	$products = Product::factory(10)->create();
+	foreach ($products as $product) {
+            // Create images for each product
+            $images = Image::factory(3)->create(['product_id' => $product->id]);
+
+            // Designate the second image as the display image
+            $product->update(['display_image_id' => $images[1]->id]);
+
+            // Attach specifications to products
+            $product->specifications()->attach([$specificationTouchscreen->id, $specificationWireless->id]);
+        }
+	
+	/**
         $product1 = Product::create([
             'name' => 'Sample Laptop',
 	    'category_id' => $categoryElectronics->id,
@@ -55,5 +69,6 @@ class ProductSeeder extends Seeder
 	//Attach specifications to products
 	$product1->specifications()->attach($specificationTouchscreen->id);
 	$product2->specifications()->attach($specificationWireless->id);
+	 */
     }
 }

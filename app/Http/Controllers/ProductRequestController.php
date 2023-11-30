@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductRequest;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class ProductRequestController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api')->only(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -52,8 +59,37 @@ class ProductRequestController extends Controller
                 'sold' => 'nullable|integer|min:0',
                 'views' => 'nullable|integer|min:0',
                 'specification_ids' => 'required|array',
+		//'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+		//'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+		//'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
+
+
+	    if($image = $request->file('image'))
+	    {
+		    $extension = $image->getClientOriginalExtension();
+		    $imageName = date('YmdHis') . "." . $extension;
+		    $destination = "uploads/images/";
+		    $image->move($destination, $imageName);
+		    $validatedData['profile_image'] = $imageName
+	    }
+	    
+
+
+	    if ($request->hasFile('image'));
+	    {
+	    	$image = $request->file('image');
+		$destinationPath = storage_path('images');
+		$fileName = str_random(6).time() . "." . $image->getClientOriginalExtension();
+		$image->move($destinationPath, $fileName);
+
+		$banner = new Banner();
+		$banner->web_banner_profile = $fileName;
+		$banner->save();
+		//return response()->json...
+	    }
+ 	    
             $product_request = ProductRequest::create($validatedData);
             $product_request->category()->associate($request->category_id)->save();
 
@@ -122,6 +158,96 @@ class ProductRequestController extends Controller
                 'specification_ids' => 'required|array',
             ]);
 
+
+
+
+
+		    ------------
+		    if($request->hasfile('profile_image'))
+		    {
+			    $imageName = time() . '.' . $request->profile_image->extension();
+
+			    $destination = 'public/images/'.$request->profile_image;
+
+			    $request->profile_image->storeAs('public/images', $imageName);
+			    if($product->profile_image)
+			    {
+				    $delete_destination = 'public/images/'.
+				    Storage::delete('public/images/'.);
+			    }
+			    else
+			    {
+
+			    }
+		    }
+		    ------------
+
+-----------
+		            $student->course = $request->input('course');
+
+        if($request->hasfile('profile_image'))
+        {
+            $destination = 'uploads/students/'.$student->profile_image;
+            if(File::exists($destination))
+            {
+                File::delete($destination);
+            }
+            $file = $request->file('profile_image');
+            $extention = $file->getClientOriginalExtension();
+            $filename = time().'.'.$extention;
+            $file->move('uploads/students/', $filename);
+            $student->profile_image = $filename;
+        }
+
+        $student->update();
+------------	    
+        $fileName = '';
+
+        if ($request->hasFile('image')) {
+          $fileName = time() . '.' . $request->image->extension();
+          $request->image->storeAs('public/images', $fileName);
+          if ($user->image) {
+            Storage::delete('public/images/' . $user->image);
+          }
+        } else {
+          $fileName = $user->image;
+	}
+        $user->password = bcrypt($request->input('password'));
+        $user->image = $fileName;
+        $user->save();	
+-----------	   
+    $imageName = '';
+    if ($request->hasFile('file')) {
+      $imageName = time() . '.' . $request->file->extension();
+      $request->file->storeAs('public/images', $imageName);
+      if ($post->image) {
+        Storage::delete('public/images/' . $post->image);
+      }
+    } else {
+      $imageName = $post->image;
+    }
+
+    $postData = ['title' => $request->title, 'category' => $request->category, 'content' => $request->content, 'image' => $imageName];
+
+    ----------
+	    
+
+-----------
+	if ($image = $request->file('image')) {
+            $destinationPath = 'images/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $input['image'] = "$profileImage";
+        }else{
+            unset($input['image']);
+        }    
+-------------
+
+
+
+
+
+
             $product_request->update($validatedData);
 
             // Update category for product
@@ -146,6 +272,30 @@ class ProductRequestController extends Controller
      */
     public function destroy(string $id)
     {
+
+
+	    
+---------
+        $student = Student::find($id);
+        $destination = 'uploads/students/'.$student->profile_image;
+        if(File::exists($destination))
+        {
+            File::delete($destination);
+        }
+        $student->delete();
+--------
+        if($product->image){
+            Storage::delete('public/images/' . $user->image);
+        }
+        $product->delete();
+--------	    
+    Storage::delete('public/images/' . $post->image);
+    $post->delete();
+    return redirect('/post')->with(['message' => 'Post deleted successfully!', 'status' => 'info']);
+---------	
+
+
+
         try {
 	    $product_request = ProductRequest::findOrFail($id);
 	    $product_request->delete();

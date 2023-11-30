@@ -60,14 +60,46 @@ class ProductController extends Controller
                 'sold' => 'nullable|integer|min:0',
                 'views' => 'nullable|integer|min:0',
                 'category_id' => 'required|exists:categories,id',
-                'specification_ids' => 'required|array',
-            ]);
+		'specification_ids' => 'required|array',
+	    ]);
+
 
 	    $product = Product::create($validatedData);
-	    $product->category()->associate($request->category_id)->save();
+
+/**	    
+// Handle image uploads
+foreach ($request->images as $imageFile) {
+    $imageName = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $imageFile->getClientOriginalExtension();
+    
+    $image = new Image([
+	'name' => $imageName,
+	'extension' => $extension,
+    ]);
+
+    // Upload the image to the "uploads" folder
+    $imagePath = $imageFile->storeAs('uploads', $imageName . '.' . $extension, 'public');
+
+    // Set the product_id for the image
+    $image->product_id = $product->id;
+    $image->path = $imagePath;
+
+    $product->images()->save($image);
+
+    // Check if this image is the designated display image
+    if ($request->images[$key]['is_display_image']) {
+	$product->update(['display_image_id' => $image->id]);
+    }
+}
+*/
+//TODO
+//$product->category()->associate($request->category_id)->save();
 
 	    //Attach specifications: adds new entries to the pivot table
-            $product->specifications()->attach($request->specification_ids);
+            if (isset($validatedData['specifications'])) {
+            	//$product->specifications()->attach($request->specification_ids);
+                $product->specifications()->attach($validatedData['specifications']);
+            }	    
 
 	    return response()->json($product, 201);
 	} catch (ValidationException $e) {
@@ -137,7 +169,7 @@ class ProductController extends Controller
                 'views' => 'nullable|integer|min:0',
                 'category_id' => 'required|exists:categories,id',
                 'specification_ids' => 'required|array',
-            ]);
+	    ]);
 
             $product->update($validatedData);
 	    
@@ -235,7 +267,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        try {
+	try {
             $product->delete();
             return response()->json(null, 204);
         } catch (\Exception $e) {
