@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class, // Run CategorySeeder first
             SpecificationSeeder::class, // Run CategorySeeder first
             ProductSeeder::class,
+	    ProductRequestSeeder::class,
         ]);
     }
 }
