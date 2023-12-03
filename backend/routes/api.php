@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ProductRequestController;
 
 /*
@@ -24,6 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/v1/register', [UserAuthController::class, 'register']);
 Route::post('/v1/login', [UserAuthController::class, 'login']);
 
+Route::get('v1/products/filter', [FilterController::class, 'test']);
+
 /**
  * Query Parameters:
  * - per_page: Number of items per page.
@@ -34,8 +37,8 @@ Route::get('/v1/products/top-by-sold', [ProductController::class, 'getTopProduct
 Route::get('/v1/products/top-by-ratings', [ProductController::class, 'getTopProductsByRatings']);
 Route::get('/v1/products/top-by-views', [ProductController::class, 'getTopProductsByViews']);
 /** */
+
 Route::apiResource('v1/products', ProductController::class);
-// ]
 
 //[ Product request
 Route::apiResource('/v1/product-requests', ProductRequestController::class);

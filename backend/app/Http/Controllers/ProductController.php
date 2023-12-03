@@ -27,7 +27,7 @@ class ProductController extends Controller
             return response()->json($products);
         } catch (\Exception $e) {
             Log::error('Error fetching products: ' . $e->getMessage());
-            return response()->json(['error' => 'Internal Server Error'], 500);
+	    return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

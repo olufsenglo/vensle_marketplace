@@ -65,7 +65,7 @@ class ProductRequestController extends Controller
             ]);
 
 
-
+	    /**
 	    if($image = $request->file('image'))
 	    {
 		    $extension = $image->getClientOriginalExtension();
@@ -88,7 +88,7 @@ class ProductRequestController extends Controller
 		$banner->web_banner_profile = $fileName;
 		$banner->save();
 		//return response()->json...
-	    }
+	    }*/
  	    
             $product_request = ProductRequest::create($validatedData);
             $product_request->category()->associate($request->category_id)->save();
@@ -161,7 +161,7 @@ class ProductRequestController extends Controller
 
 
 
-
+/**
 		    ------------
 		    if($request->hasfile('profile_image'))
 		    {
@@ -246,7 +246,7 @@ class ProductRequestController extends Controller
 
 
 
-
+*/
 
             $product_request->update($validatedData);
 
@@ -273,7 +273,7 @@ class ProductRequestController extends Controller
     public function destroy(string $id)
     {
 
-
+/**
 	    
 ---------
         $student = Student::find($id);
@@ -293,7 +293,7 @@ class ProductRequestController extends Controller
     $post->delete();
     return redirect('/post')->with(['message' => 'Post deleted successfully!', 'status' => 'info']);
 ---------	
-
+*/
 
 
         try {

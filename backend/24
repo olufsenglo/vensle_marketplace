@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Http\Request;
+
+/**
+ * Class FilterController
+ * @package App\Http\Controllers
+ */
+
+class FilterController extends Controller
+{
+    public function test(Request $request)
+    {
+        try {
+	    dd($request->all());
+	    $categories = Category::all();
+
+	    $query = Product::query();
+
+	    if(isset($request->title) && ($request->title != null))
+	    {
+		    $query->where('name', $request->title);
+	    }
+
+	    $products = $query->get();
+
+	    return response()->json(['products' => $products, 'categories' => $categories]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching products: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    
+}

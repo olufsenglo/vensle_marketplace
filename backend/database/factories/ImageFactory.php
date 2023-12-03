@@ -24,7 +24,7 @@ class ImageFactory extends Factory
 
         return [
             'name' => $this->faker->word,
-            'extension' => $this->faker->fileExtension,
+            'extension' => $this->faker->randomElement(['jpg', 'png', 'jpeg']),
             'product_id' => $this->faker->randomElement($products),
         ];
     }

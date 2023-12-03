@@ -26,14 +26,14 @@ return new class extends Migration
 	    $table->integer('sold')->default(0);
 	    $table->integer('views')->default(0);
 	    $table->enum('status', ['Active', 'Inactive'])->default('Active');
-            $table->unsignedBigInteger('image_id')->nullable();
+            //$table->unsignedBigInteger('image_id')->nullable();
 	    $table->unsignedBigInteger('display_image_id')->nullable();
 	    $table->timestamps();
 
 	    // Create foreign key relationships
 	    $table->foreign('category_id')->references('id')->on('categories');
-            $table->foreign('image_id')->references('id')->on('images')->onDelete('set null');
-            $table->foreign('display_image_id')->references('id')->on('images')->onDelete('set null');	    
+            //$table->foreign('image_id')->references('id')->on('images')->onDelete('set null');
+            //$table->foreign('display_image_id')->references('id')->on('images')->onDelete('set null');	    
         });
     }
 
