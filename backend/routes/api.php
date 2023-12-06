@@ -25,7 +25,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/v1/register', [UserAuthController::class, 'register']);
 Route::post('/v1/login', [UserAuthController::class, 'login']);
 
-Route::get('v1/products/filter', [FilterController::class, 'test']);
+//Route::get('/v1/products/filter', [FilterController::class, 'test']);
+
+//Test
+Route::get('/v1/products/filter', [ProductController::class, 'filter']);
 
 /**
  * Query Parameters:

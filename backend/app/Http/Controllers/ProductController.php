@@ -187,6 +187,17 @@ foreach ($request->images as $imageFile) {
         }
     }
 
+    /** For Test only */
+    public function filter(Request $request)
+    {
+        $searchInput = $request->input('forminput');
+
+        $products = Product::where('name', 'like', "%$searchInput%")->get();
+
+        return response()->json(['data' => $products]);
+    }    
+
+
     /**
      * Get the top products based on a specific column.
      *
