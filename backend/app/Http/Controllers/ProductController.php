@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Class ProductController
@@ -45,6 +47,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+	$response = [];
+
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string',
@@ -60,16 +64,40 @@ class ProductController extends Controller
                 'sold' => 'nullable|integer|min:0',
                 'views' => 'nullable|integer|min:0',
                 'category_id' => 'required|exists:categories,id',
-		'specification_ids' => 'required|array',
+		//'specification_ids' => 'required|array',
+		'images' => 'required',
+		'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 	    ]);
 
-
 	    $product = Product::create($validatedData);
+/**
+	    if($request->hasFile('images'))
+	    {
 
-/**	    
+
+    		    $images = $request->file('images');
+		    foreach($images as $image)
+		    {
+			    $extension = $image->getClientOriginalExtension();
+			    //TODO
+			    $filename = Str::random(32).".".$extension;
+			    $image->move('uploads/', $filename);
+
+			    Image::create([
+			    	'name' => $filename,
+				'extension' => $extension,
+				'product_id' => $product->id,
+			    ]);
+		    }
+	    }
+
+ */
+
+	    
 // Handle image uploads
 foreach ($request->images as $imageFile) {
-    $imageName = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $imageFile->getClientOriginalExtension();	
+    $imageName =  Str::random(32).".".$extension;
     $extension = $imageFile->getClientOriginalExtension();
     
     $image = new Image([
@@ -78,28 +106,39 @@ foreach ($request->images as $imageFile) {
     ]);
 
     // Upload the image to the "uploads" folder
-    $imagePath = $imageFile->storeAs('uploads', $imageName . '.' . $extension, 'public');
+    //$imagePath = $imageFile->storeAs('uploads', $imageName . '.' . $extension, 'public');
+    $imageFile->move('uploads/', $imageName);
 
     // Set the product_id for the image
     $image->product_id = $product->id;
-    $image->path = $imagePath;
 
     $product->images()->save($image);
 
     // Check if this image is the designated display image
-    if ($request->images[$key]['is_display_image']) {
-	$product->update(['display_image_id' => $image->id]);
-    }
+    //if ($request->images[$key]['is_display_image']) {
+	//$product->update(['display_image_id' => $image->id]);
+    //}
 }
-*/
+
 //TODO
 //$product->category()->associate($request->category_id)->save();
+//
+//
+//
+//if ($validator->fails())
+//{
+    //return response()->json(["status"=>"failed", "message"=>"validate error", "errors" => $validator->errors()]);
+//}
 
 	    //Attach specifications: adds new entries to the pivot table
-            if (isset($validatedData['specifications'])) {
-            	//$product->specifications()->attach($request->specification_ids);
-                $product->specifications()->attach($validatedData['specifications']);
-            }	    
+            //if (isset($validatedData['specifications'])) {
+            	// //$product->specifications()->attach($request->specification_ids);
+		    
+		//$product->specifications()->attach($validatedData['specifications']);
+            //}	    
+//status: success
+//count - ckeckimgcont
+//message: Success: Image(s) uploaded
 
 	    return response()->json($product, 201);
 	} catch (ValidationException $e) {
@@ -117,6 +156,11 @@ foreach ($request->images as $imageFile) {
 
 	    return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function upload(Request $request)
+    {
+
     }
 
     /**
