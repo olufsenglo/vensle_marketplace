@@ -49,6 +49,10 @@ Route::get('/v1/products/top-by-views', [ProductController::class, 'getTopProduc
 
 Route::apiResource('v1/products', ProductController::class);
 
+
+//Route::middleware('auth:api')->apiResource('v1/products', ProductController::class);
+
+
 //[ Product request
 Route::apiResource('/v1/product-requests', ProductRequestController::class);
 // ]
@@ -63,3 +67,6 @@ Route::middleware('auth')->post('/merge-carts', [CartController::class, 'mergeCa
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
+
+
+Route::post('/v1/payment', [PaymentController::class, 'makePayment']);

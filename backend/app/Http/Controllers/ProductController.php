@@ -220,43 +220,67 @@ class ProductController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
+     * @param  int  $productId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, int $productId)
     {
-        try {
-            $validatedData = $request->validate([
-                'name' => 'required|string',
-                'condition' => 'required|in:New,Fairly Used,N/A',
-                'price' => 'required|numeric',
-                'address' => 'required|string',
-                'phone_number' => 'required|string',
-                'description' => 'required|string',
-                'type' => 'required|string',
-                'status' => 'required|in:Active,Inactive',
-		'ratings' => 'nullable|numeric|min:0|max:5',
-                'quantity' => 'nullable|integer|min:0',
-                'sold' => 'nullable|integer|min:0',
-                'views' => 'nullable|integer|min:0',
-                'category_id' => 'required|exists:categories,id',
-                'specification_ids' => 'required|array',
-	    ]);
+	    try {
+		$validatedData = $request->validate([
+		    'name' => 'sometimes|required|string',
+		    'condition' => 'sometimes|required|in:New,Fairly Used,N/A',
+		    'price' => 'sometimes|required|numeric',
+		    'address' => 'sometimes|required|string',
+		    'phone_number' => 'sometimes|required|string',
+		    'description' => 'sometimes|required|string',
+		    'type' => 'sometimes|required|string',
+		    'status' => 'sometimes|required|in:Active,Inactive',
+		    'ratings' => 'sometimes|nullable|numeric|min:0|max:5',
+		    'quantity' => 'sometimes|nullable|integer|min:0',
+		    'sold' => 'sometimes|nullable|integer|min:0',
+		    'views' => 'sometimes|nullable|integer|min:0',
+		    'category_id' => 'sometimes|required|exists:categories,id',
+		    'specification_ids' => 'sometimes|required|array',
+		    'images' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',	
+		]);
 
-            $product->update($validatedData);
-	    
-	    // Update category for product
-            $product->category()->associate($request->category_id)->save();
+		$product = Product::findOrFail($productId);
 
-    	    //Sync specifications: update the pivot table for specifications
-            //$product->specifications()->sync($request->specification_ids);
+		// Check if a new image is provided
+		if ($request->hasFile('images')) {
+		    // Handle file upload for the new image
+		    $extension = $request->file('images')->getClientOriginalExtension();
+		    $imageName = Str::random(32) . "." . $extension;
+		    $request->file('image')->move('uploads/', $imageName);
 
-            return response()->json($product);
-        } catch (\Exception $e) {
-            Log::error('Error updating product: ' . $e->getMessage());
+		    // Delete the existing image if it exists
+		    if ($product->images()->exists()) {
+			$existingImage = $product->images->first();
+			Storage::delete('uploads/' . $existingImage->name);
+			$existingImage->delete();
+		    }
 
-	    return response()->json(['error' => $e->getMessage()], 500);
-        }
+		    // Create a new image record in the database
+		    $image = new Image([
+			'name' => $imageName,
+			'extension' => $extension,
+		    ]);
+
+		    $product->images()->save($image);
+		}
+
+		// Update other product details
+		$product->update($validatedData);
+
+		// Update category for product
+		$product->category()->associate($request->category_id)->save();
+
+		return response()->json($product);
+	    } catch (\Exception $e) {
+		Log::error('Error updating product: ' . $e->getMessage());
+
+		return response()->json(['error' => $e->getMessage()], 500);
+	    }	    
     }
 
     /** For Test only */
