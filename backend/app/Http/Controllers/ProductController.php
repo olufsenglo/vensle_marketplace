@@ -23,7 +23,8 @@ class ProductController extends Controller
     {
         try {
             //$products = Product::paginate(config('constants.PAGINATION_LIMIT'));
-	    $products = Product::orderBy('created_at', 'desc')
+	    $products = Product::with('images')
+		    ->orderBy('created_at', 'desc')
 		    ->paginate(config('constants.PAGINATION_LIMIT'));
 
             return response()->json($products);
@@ -94,31 +95,38 @@ class ProductController extends Controller
  */
 
 	    
-// Handle image uploads
-foreach ($request->images as $imageFile) {
-    $extension = $imageFile->getClientOriginalExtension();	
-    $imageName =  Str::random(32).".".$extension;
-    $extension = $imageFile->getClientOriginalExtension();
-    
-    $image = new Image([
-	'name' => $imageName,
-	'extension' => $extension,
-    ]);
+	// Handle image uploads
+	
+	$foundProfileImage = false;
+	foreach ($request->images as $imageFile) {
+	    $extension = $imageFile->getClientOriginalExtension();	
+	    $imageName =  Str::random(32).".".$extension;
+	    $extension = $imageFile->getClientOriginalExtension();
+	    
+	    $image = new Image([
+		'name' => $imageName,
+		'extension' => $extension,
+	    ]);
 
-    // Upload the image to the "uploads" folder
-    //$imagePath = $imageFile->storeAs('uploads', $imageName . '.' . $extension, 'public');
-    $imageFile->move('uploads/', $imageName);
+	    // Upload the image to the "uploads" folder
+	    //$imagePath = $imageFile->storeAs('uploads', $imageName . '.' . $extension, 'public');
+	    $imageFile->move('uploads/', $imageName);
 
-    // Set the product_id for the image
-    $image->product_id = $product->id;
+	    // Set the product_id for the image
+	    $image->product_id = $product->id;
 
-    $product->images()->save($image);
+	    $product->images()->save($image);
 
-    // Check if this image is the designated display image
-    //if ($request->images[$key]['is_display_image']) {
-	//$product->update(['display_image_id' => $image->id]);
-    //}
-}
+	    if (!$foundProfileImage)
+	    {
+	    	$product->update(['display_image_id' => $image->id]);
+		$foundProfileImage = true;
+	    }
+	    // Check if this image is the designated display image
+	    //if ($request->images[$key]['is_display_image']) {
+		//$product->update(['display_image_id' => $image->id]);
+	    //}
+	}
 
 //TODO
 //$product->category()->associate($request->category_id)->save();
@@ -166,17 +174,37 @@ foreach ($request->images as $imageFile) {
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Product $product)
+    public function show(string $id)
     {
         try {
-            return response()->json($product);
+	    $product = Product::with('images')->findOrFail($id);
         } catch (\Exception $e) {
             Log::error('Error fetching product: ' . $e->getMessage());
             return response()->json(['error' => 'Internal Server Error'], 500);
-        }
+	}
+        //} catch (ModelNotFoundException $e) {
+            //return response()->json(['error' => 'Product not found.'], 404);
+	//}
+	
+	$similarProducts = $this->getSimilarProducts($product);	
+	return response()->json([
+		'product' => $product,
+		'similarProducts' => $similarProducts
+	]);
+    }
+
+    private function getSimilarProducts($product)
+    {
+        $similarProducts = Product::where('category_id', $product->category_id)
+            ->where('name', 'like', '%' . $product->name . '%')
+            ->where('id', '<>', $product->id)
+            ->take(4)
+            ->get();
+
+        return $similarProducts;
     }
 
     /**
@@ -221,7 +249,7 @@ foreach ($request->images as $imageFile) {
             $product->category()->associate($request->category_id)->save();
 
     	    //Sync specifications: update the pivot table for specifications
-            $product->specifications()->sync($request->specification_ids);
+            //$product->specifications()->sync($request->specification_ids);
 
             return response()->json($product);
         } catch (\Exception $e) {

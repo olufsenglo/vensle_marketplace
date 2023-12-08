@@ -25,6 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/v1/register', [UserAuthController::class, 'register']);
 Route::post('/v1/login', [UserAuthController::class, 'login']);
 
+Route::middleware('auth:api')->group(function () {
+    Route::post('/v1/update-profile', 'App\Http\Controllers\UserAuthController@updateProfile');
+    Route::post('/v1/update-password', 'App\Http\Controllers\UserAuthController@updatePassword');
+    Route::post('/v1/update-profile-picture', 'App\Http\Controllers\UserAuthController@updateProfilePicture');
+});
+
 //Route::get('/v1/products/filter', [FilterController::class, 'test']);
 
 //Test
@@ -47,7 +53,12 @@ Route::apiResource('v1/products', ProductController::class);
 Route::apiResource('/v1/product-requests', ProductRequestController::class);
 // ]
 
+Route::post('v1/add-to-cart', [CartController::class, 'addToCart']);
+Route::post('v1/remove-from-cart', [CartController::class, 'removeFromCart']);
+Route::post('v1/update-cart', [CartController::class, 'updateCart']);
+Route::post('v1/clear-cart', [CartController::class, 'clearCart']);
 
+Route::middleware('auth')->post('/merge-carts', [CartController::class, 'mergeCarts']);
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
