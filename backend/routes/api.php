@@ -6,6 +6,7 @@ use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ProductRequestController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +26,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/v1/register', [UserAuthController::class, 'register']);
 Route::post('/v1/login', [UserAuthController::class, 'login']);
 
+Route::post('/v1/payment', 'App\Http\Controllers\StripeController@payment');
+
 Route::middleware('auth:api')->group(function () {
     Route::post('/v1/update-profile', 'App\Http\Controllers\UserAuthController@updateProfile');
     Route::post('/v1/update-password', 'App\Http\Controllers\UserAuthController@updatePassword');
     Route::post('/v1/update-profile-picture', 'App\Http\Controllers\UserAuthController@updateProfilePicture');
+    Route::post('/v1/merge-cart', 'App\Http\Controllers\CartController@mergeCart');
 });
 
 //Route::get('/v1/products/filter', [FilterController::class, 'test']);
@@ -62,11 +66,10 @@ Route::post('v1/remove-from-cart', [CartController::class, 'removeFromCart']);
 Route::post('v1/update-cart', [CartController::class, 'updateCart']);
 Route::post('v1/clear-cart', [CartController::class, 'clearCart']);
 
-Route::middleware('auth')->post('/merge-carts', [CartController::class, 'mergeCarts']);
+//Route::middleware('auth')->post('/v1/merge-cart', [CartController::class, 'mergeCart']);
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
 
 
-Route::post('/v1/payment', [PaymentController::class, 'makePayment']);

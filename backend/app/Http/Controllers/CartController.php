@@ -3,10 +3,63 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User; // Import the User model or your relevant model
+use App\Models\User;
+use App\Models\Cart;
 
 class CartController extends Controller
 {
+
+
+
+    public function mergeCart(Request $request)
+    {
+        $user_id = auth()->id();
+        $cartItems = $request->input('cart');
+
+        // Check if the cart is not null and is an array
+        if (!is_array($cartItems) || empty($cartItems)) {
+            return response()->json(['error' => 'Invalid cart data'], 400);
+        }
+
+        foreach ($cartItems as $item) {
+            // Check if the item is an array
+            if (!is_array($item)) {
+                return response()->json(['error' => 'Invalid item data'], 400);
+            }
+
+            // Extract product_id and quantity from the item
+            $product_id = $item['product_id'];
+            $quantity = $item['quantity'];
+
+            // Check if the item exists in the user's cart
+            $existingCartItem = Cart::where('user_id', $user_id)
+                ->where('product_id', $product_id)
+                ->first();
+
+            if ($existingCartItem) {
+                // If the item exists, update the quantity
+                $existingCartItem->update(['quantity' => $quantity]);
+            } else {
+                // If the item doesn't exist, add it to the cart
+                Cart::create([
+                    'user_id' => $user_id,
+                    'product_id' => $product_id,
+                    'quantity' => $quantity,
+                ]);
+            }
+        }
+
+        // Retrieve the updated cart for the user
+        $updatedCart = Cart::where('user_id', $user_id)->get();
+
+        return response()->json(['message' => 'Cart merged successfully', 'cart' => $updatedCart], 200);
+    }
+
+
+
+
+
+
     public function addToCart(Request $request)
     {
         $productId = $request->input('productId');

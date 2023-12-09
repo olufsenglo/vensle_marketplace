@@ -284,15 +284,19 @@ class ProductController extends Controller
     }
 
     /** For Test only */
-    public function filter(Request $request)
-    {
-        $searchInput = $request->input('forminput');
+public function filter(Request $request)
+{
+    $searchInput = $request->input('searchTerm');
+    $categoryId = $request->input('category_id');
 
-        $products = Product::where('name', 'like', "%$searchInput%")->get();
+    $products = Product::when($searchInput, function ($query) use ($searchInput) {
+        $query->where('name', 'like', "%$searchInput%");
+    })->when($categoryId, function ($query) use ($categoryId) {
+        $query->where('category_id', $categoryId);
+    })->get();
 
-        return response()->json(['data' => $products]);
-    }    
-
+    return response()->json(['data' => $products]);
+}
 
     /**
      * Get the top products based on a specific column.
