@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
 	    $table->string('name');
+	    $table->foreignId('user_id');
 	    $table->unsignedBigInteger('category_id');
 	    $table->enum('condition', ['New', 'Fairly Used', 'N/A']);
 	    $table->decimal('price', 8, 2);
@@ -27,7 +28,7 @@ return new class extends Migration
 	    $table->integer('views')->default(0);
 	    $table->enum('status', ['Active', 'Inactive'])->default('Active');
             //$table->unsignedBigInteger('image_id')->nullable();
-	    $table->unsignedBigInteger('display_image_id')->nullable();
+	    //$table->unsignedBigInteger('display_image_id')->nullable();
 	    $table->timestamps();
 
 	    // Create foreign key relationships

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Category;
 
 /**
  * Class Product
@@ -37,8 +39,18 @@ class Product extends Model
 	* @var array
 	*/
 	protected $fillable = [
-		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'status', 'ratings', 'quantity', 'sold', 'views', 'display_image_id'
+		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'status', 'ratings', 'quantity', 'sold', 'views', 'display_image_id', 'user_id',
 	];
+
+	/**
+	* Get the user who owns the product.
+	*
+	* @return BelongsTo
+	*/
+	public function user()
+	{
+		return $this->belongsTo(User::class);
+	}
 
 	/**
 	* Get the categories associated with the product.

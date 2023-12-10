@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ProductRequestController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\StripeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/v1/register', [UserAuthController::class, 'register']);
 Route::post('/v1/login', [UserAuthController::class, 'login']);
 
-Route::post('/v1/payment', 'App\Http\Controllers\StripeController@payment');
+//Route::post('/v1/payment', 'App\Http\Controllers\StripeController@payment');
+Route::post('/v1/payment', [StripeController::class, 'payment']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/v1/update-profile', 'App\Http\Controllers\UserAuthController@updateProfile');
@@ -51,11 +53,14 @@ Route::get('/v1/products/top-by-ratings', [ProductController::class, 'getTopProd
 Route::get('/v1/products/top-by-views', [ProductController::class, 'getTopProductsByViews']);
 /** */
 
-Route::apiResource('v1/products', ProductController::class);
+//Route::apiResource('v1/products', ProductController::class);
+Route::middleware('auth:api')->apiResource('v1/products', ProductController::class);
 
+Route::get('v1/products', [ProductController::class, 'index']);
 
-//Route::middleware('auth:api')->apiResource('v1/products', ProductController::class);
-
+Route::middleware('auth:api')->group(function () {
+    Route::apiResource('v1/products', ProductController::class)->except(['index']);
+});
 
 //[ Product request
 Route::apiResource('/v1/product-requests', ProductRequestController::class);

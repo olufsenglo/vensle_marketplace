@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Image;
 use Illuminate\Http\Request;
@@ -23,9 +24,9 @@ class ProductController extends Controller
     {
         try {
             //$products = Product::paginate(config('constants.PAGINATION_LIMIT'));
-	    $products = Product::with('images')
-		    ->orderBy('created_at', 'desc')
-		    ->paginate(config('constants.PAGINATION_LIMIT'));
+	    $products = Product::with(['images', 'displayImage', 'category'])
+    		->orderBy('created_at', 'desc')
+    		->paginate(config('constants.PAGINATION_LIMIT'));
 
             return response()->json($products);
         } catch (\Exception $e) {
@@ -70,83 +71,64 @@ class ProductController extends Controller
 		'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 	    ]);
 
-	    $product = Product::create($validatedData);
-/**
-	    if($request->hasFile('images'))
-	    {
 
+	$user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }	 
+//dd($user);
+        $product = $user->products()->create($validatedData);
 
-    		    $images = $request->file('images');
-		    foreach($images as $image)
-		    {
-			    $extension = $image->getClientOriginalExtension();
-			    //TODO
-			    $filename = Str::random(32).".".$extension;
-			    $image->move('uploads/', $filename);
+$foundProfileImage = false;
+foreach ($request->images as $imageFile) {
+	$extension = $imageFile->getClientOriginalExtension();
+	$imageName =  Str::random(32).".".$extension;
 
-			    Image::create([
-			    	'name' => $filename,
-				'extension' => $extension,
-				'product_id' => $product->id,
-			    ]);
-		    }
-	    }
+	$image = new Image([
+	    'name' => $imageName,
+	    'extension' => $extension,
+	]);
 
- */
+	// Upload the image to the "uploads" folder
+	$imageFile->move('uploads/', $imageName);
 
-	    
-	// Handle image uploads
-	
-	$foundProfileImage = false;
-	foreach ($request->images as $imageFile) {
-	    $extension = $imageFile->getClientOriginalExtension();	
-	    $imageName =  Str::random(32).".".$extension;
-	    $extension = $imageFile->getClientOriginalExtension();
-	    
-	    $image = new Image([
-		'name' => $imageName,
-		'extension' => $extension,
-	    ]);
+	// Set the product_id for the image
+	$image->product_id = $product->id;
 
-	    // Upload the image to the "uploads" folder
-	    //$imagePath = $imageFile->storeAs('uploads', $imageName . '.' . $extension, 'public');
-	    $imageFile->move('uploads/', $imageName);
+	$product->images()->save($image);
 
-	    // Set the product_id for the image
-	    $image->product_id = $product->id;
-
-	    $product->images()->save($image);
-
-	    if (!$foundProfileImage)
-	    {
-	    	$product->update(['display_image_id' => $image->id]);
-		$foundProfileImage = true;
-	    }
-	    // Check if this image is the designated display image
-	    //if ($request->images[$key]['is_display_image']) {
-		//$product->update(['display_image_id' => $image->id]);
-	    //}
+	if (!$foundProfileImage)
+	{
+	    $product->update(['display_image_id' => $image->id]);
+	    $foundProfileImage = true;
 	}
+}
 
-//TODO
-//$product->category()->associate($request->category_id)->save();
-//
-//
-//
-//if ($validator->fails())
-//{
-    //return response()->json(["status"=>"failed", "message"=>"validate error", "errors" => $validator->errors()]);
-//}
+/**
+foreach ($request->images as $imageFile) {
+    $extension = $imageFile->getClientOriginalExtension();
+    $imageName = Str::random(32) . "." . $extension;
 
-	    //Attach specifications: adds new entries to the pivot table
-            //if (isset($validatedData['specifications'])) {
-            	// //$product->specifications()->attach($request->specification_ids);
-		    
-		//$product->specifications()->attach($validatedData['specifications']);
-            //}	    
-//status: success
-//count - ckeckimgcont
-//message: Success: Image(s) uploaded
+    $image = new Image([
+        'name' => $imageName,
+        'extension' => $extension,
+    ]);
+
+    // Upload the image to the "public/uploads" directory
+    $imagePath = $imageFile->storeAs('uploads', $imageName, 'public');
+
+    // Set the product_id for the image
+    $image->product_id = $product->id;
+
+    $product->images()->save($image);
+
+    if (!$foundProfileImage) {
+        $product->update(['display_image_id' => $imagePath]);
+        $foundProfileImage = true;
+    }
+}*/
+
+return response()->json($product, 201);
 
 	    return response()->json($product, 201);
 	} catch (ValidationException $e) {
@@ -283,8 +265,8 @@ class ProductController extends Controller
 	    }	    
     }
 
-    /** For Test only */
-public function filter(Request $request)
+    /** For Test only, move to its controller */
+/*public function filter(Request $request)
 {
     $searchInput = $request->input('searchTerm');
     $categoryId = $request->input('category_id');
@@ -297,6 +279,75 @@ public function filter(Request $request)
 
     return response()->json(['data' => $products]);
 }
+
+
+    public function filter(Request $request)
+    {
+        $query = Product::query();
+
+        // Apply filters based on request parameters
+        if ($request->has('searchTerm')) {
+            $query->where('name', 'like', '%' . $request->input('searchTerm') . '%');
+        }
+
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        if ($request->filled('minPrice')) {
+            $query->where('price', '>=', $request->input('minPrice'));
+        }
+
+        if ($request->filled('maxPrice')) {
+            $query->where('price', '<=', $request->input('maxPrice'));
+        }
+
+        //if ($request->has('sizes')) {
+            //$sizes = explode(',', $request->input('sizes'));
+            //$query->whereIn('size', $sizes);
+        //}
+
+        // Add more filters as needed
+
+        $filteredProducts = $query->get();
+
+        return response()->json(['data' => $filteredProducts]);
+    }
+ */
+
+    public function filter(Request $request)
+    {
+        $query = Product::query();
+
+        // Apply filters based on request parameters
+        if ($request->has('searchTerm')) {
+            $query->where('name', 'like', '%' . $request->input('searchTerm') . '%');
+        }
+
+        // Only add category_id filter if it is not empty
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        if ($request->filled('minPrice')) {
+            $query->where('price', '>=', $request->input('minPrice'));
+        }
+
+        if ($request->filled('maxPrice')) {
+            $query->where('price', '<=', $request->input('maxPrice'));
+        }
+
+        //if ($request->has('sizes')) {
+            //$sizes = explode(',', $request->input('sizes'));
+            //$query->whereIn('size', $sizes);
+        //}
+
+        // Add more filters as needed
+
+        $filteredProducts = $query->get();
+
+        return response()->json(['data' => $filteredProducts]);
+    }
 
     /**
      * Get the top products based on a specific column.
@@ -325,6 +376,19 @@ public function filter(Request $request)
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
+
+public function getProductsByUser()
+{
+    try {
+        $user = Auth::user();
+        $products = $user->products()->get();
+
+        return response()->json($products, 200);
+    } catch (\Exception $e) {
+        // Handle exceptions
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}    
 
     /**
      * Get the top products sorted by quantity.
