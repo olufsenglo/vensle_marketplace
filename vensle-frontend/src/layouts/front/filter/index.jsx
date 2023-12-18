@@ -1,11 +1,11 @@
 import Header from "components/front/header/Header";
-import ProductsFilter from "views/filter/ProductsFilter";
+import Products from "views/filter/components/Products";
 
 const Filter = () => {
     return (
         <div className="min-h-full">
             <Header />
-            <ProductsFilter />
+            <Products />
         </div>
     )
 }

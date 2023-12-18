@@ -74,8 +74,47 @@ class UserAuthController extends Controller
         *
         * @param  \Illuminate\Http\Request  $request
         * @return \Illuminate\Http\JsonResponse
-        */
-	public function updateProfile(Request $request)
+	*/
+
+public function updateProfile(Request $request)
+{
+    $request->validate([
+        'name' => 'sometimes|string',
+        'email' => 'sometimes|email|unique:users,email,' . auth()->id(),
+        'phone_number' => 'sometimes|string',
+        'address' => 'sometimes|string',
+        'profile_picture' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    $user = auth()->user();
+
+    // Update user details
+    $user->update($request->only(['name', 'email', 'phone_number', 'address']));
+
+    // Handle profile picture update
+    if ($request->hasFile('profile_picture')) {
+        // Check if the user already has a profile picture
+        if ($user->profile_picture) {
+            // If a profile picture exists, delete the old image
+            if (file_exists(public_path('uploads/' . $user->profile_picture))) {
+                unlink(public_path('uploads/' . $user->profile_picture));
+            }
+        }
+
+        // Handle file upload
+        $extension = $request->file('profile_picture')->getClientOriginalExtension();
+        $imageName = Str::random(32) . "." . $extension;
+        $request->file('profile_picture')->move('uploads/', $imageName);
+
+        // Update user's profile picture
+        $user->update(['profile_picture' => $imageName]);
+    }
+
+    return response(['user' => $user, 'message' => 'Profile updated successfully'], 200);
+}
+
+
+	/*public function updateProfile(Request $request)
 	{
 		$request->validate([
 		    'name' => 'sometimes|string',
@@ -88,7 +127,7 @@ class UserAuthController extends Controller
 
 		// Return a success response
 		return response(['user' => $user, 'message' => 'Profile updated successfully'], 200);
-	}
+	}*/
 
         //TODO try catch
         /**

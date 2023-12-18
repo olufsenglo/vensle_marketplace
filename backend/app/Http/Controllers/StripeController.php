@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Modes\Order;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
@@ -13,10 +15,17 @@ class StripeController extends Controller
     public function payment(Request $request)
     {
         try {
+//Validation
+            /*$validator = Validator::make($request->all(), [
+                'product_ids' => 'required|array',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 400);
+            }*/
+
+
             $productIds = $request->product_ids;
-            if (!is_array($productIds) || empty($productIds)) {
-                return response()->json(['error' => 'Invalid or empty product_ids'], 400);
-            }
 
             $products = Product::whereIn('id', $productIds)->get();
 
@@ -53,6 +62,19 @@ class StripeController extends Controller
                 'success_url' => 'http://localhost:3000/payment/success',
                 'cancel_url' => 'http://localhost:3000/payment/cancel',
             ]);
+
+            $userId = Auth::id();
+
+            // Create an order record in the database
+            $order = Order::create([
+                'user_id' => $userId,
+                'stripe_session_id' => $session->id, // Store the Stripe session ID for reference
+            ]);
+
+            // Assuming there's a relationship between orders and products
+            // Attach the selected products to the order
+            $order->products()->attach($productIds);	    
+
 
             return response()->json(['url' => $session->url]);
         } catch (\Exception $e) {

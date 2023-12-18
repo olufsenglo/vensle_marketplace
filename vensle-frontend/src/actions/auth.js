@@ -83,6 +83,7 @@ import {
   //     const message =
   //       (error.response && error.response.data && error.response.data.message) ||
   //       error.message ||
+//       B
   //       error.toString();
   
   //     dispatch({
@@ -135,6 +136,10 @@ import {
     );
   };
 
+export const updateUserProfile = (userData) => ({
+  type: 'UPDATE_USER_PROFILE',
+  payload: userData,
+});
   
 export const logout = () => (dispatch) => {
     AuthService.logout();

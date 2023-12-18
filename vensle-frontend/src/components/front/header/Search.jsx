@@ -95,13 +95,23 @@ const Search = () => {
   }, []);
 
   return (
-     <form style={{ "display": "flex", "position": "relative", "align-items": "center", "height": "100%", "flex": "1" }} onSubmit={handleSearchButtonClick}>
+     <form style={{ "display": "flex", "position": "relative", "align-items": "center", "height": "100%", "flex": "1", "margin-left":"82px" }} onSubmit={handleSearchButtonClick}>
+      <input
+        style={{ "height": "100%", "flex": "1", "border": "1px solid #ccc", "padding-left":"54px" }}
+        type="text"
+        value={searchTerm}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Search products, brands and categories"
+        ref={inputRef}
+      />
       <select
+	style={{"paddingRight":"26px"}}
         value={selectedCategory}
         onChange={handleCategoryChange}
-        className="border p-2 rounded-md h-full ml-2"
+        className="border p-2 rounded-md h-full"
       >
-        <option value="">All Categories</option>
+        <option value="">Everything</option>
         <option value="1">Category 1</option>
         <option value="2">Category 2</option>
       </select>
@@ -118,17 +128,8 @@ const Search = () => {
           ))}
         </ul>
       )}
-      <input
-        style={{ "height": "100%", "flex": "1" }}
-        type="text"
-        value={searchTerm}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Search products, brands and categories"
-        ref={inputRef}
-      />
       <button
-        style={{ "background": "red", "color": "white", "height": "100%", "padding-right": "0.8rem", "padding-left": "0.8rem" }}
+        style={{ "background": "#ff5959", "color": "white", "height": "100%", "padding-right": "22px", "padding-left": "22px" }}
         type="button"
       >
         SEARCH

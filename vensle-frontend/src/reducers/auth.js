@@ -38,6 +38,11 @@ import {
           isLoggedIn: false,
           user: null,
         };
+      case 'UPDATE_USER_PROFILE':
+        return {
+          ...state,
+          user: { ...user, ...payload },
+        };      
       case LOGOUT:
         return {
           ...state,

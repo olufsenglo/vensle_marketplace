@@ -29,6 +29,7 @@ Route::post('/v1/login', [UserAuthController::class, 'login']);
 
 //Route::post('/v1/payment', 'App\Http\Controllers\StripeController@payment');
 Route::post('/v1/payment', [StripeController::class, 'payment']);
+//Route::post('/v1/orders', [Controller::class, 'payment']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/v1/update-profile', 'App\Http\Controllers\UserAuthController@updateProfile');
