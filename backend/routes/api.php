@@ -8,6 +8,7 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ProductRequestController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,13 @@ Route::post('/v1/login', [UserAuthController::class, 'login']);
 //Route::post('/v1/payment', 'App\Http\Controllers\StripeController@payment');
 Route::post('/v1/payment', [StripeController::class, 'payment']);
 //Route::post('/v1/orders', [Controller::class, 'payment']);
+// routes/api.php
+
+Route::middleware('auth:api')->group(function () {
+	Route::get('/v1/user/orders', [OrderController::class, 'getUserOrders']);
+	Route::get('/v1/user/orders/{orderId}', [OrderController::class, 'getOrderDetails']);
+});
+
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/v1/update-profile', 'App\Http\Controllers\UserAuthController@updateProfile');
@@ -54,11 +62,13 @@ Route::get('/v1/products/top-by-ratings', [ProductController::class, 'getTopProd
 Route::get('/v1/products/top-by-views', [ProductController::class, 'getTopProductsByViews']);
 /** */
 
-//Route::apiResource('v1/products', ProductController::class);
-Route::middleware('auth:api')->apiResource('v1/products', ProductController::class);
+//Route::middleware('auth:api')->apiResource('v1/products', ProductController::class);
 
 Route::get('v1/products', [ProductController::class, 'index']);
+Route::get('/v1/products/{id}', [ProductController::class, 'show']);
 
+
+//Route::apiResource('v1/products', ProductController::class);
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('v1/products', ProductController::class)->except(['index']);
 });

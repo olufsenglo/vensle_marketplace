@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Modes\Order;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
@@ -35,7 +35,7 @@ class StripeController extends Controller
             }
 
             $lineItems = [];
-
+/*
             foreach ($products as $product) {
                 // Ensure price is a valid numeric value
                 $priceInCents = is_numeric($product->price) ? $product->price * 100 : 0;
@@ -62,21 +62,24 @@ class StripeController extends Controller
                 'success_url' => 'http://localhost:3000/payment/success',
                 'cancel_url' => 'http://localhost:3000/payment/cancel',
             ]);
+ */
 
-            $userId = Auth::id();
-
+            //$userId = Auth::id();
+	    
             // Create an order record in the database
             $order = Order::create([
-                'user_id' => $userId,
-                'stripe_session_id' => $session->id, // Store the Stripe session ID for reference
+                'user_id' => 1,
+                //'user_id' => $userId,
+                'stripe_session_id' => 2139,	
+                //'stripe_session_id' => $session->id,
             ]);
 
             // Assuming there's a relationship between orders and products
             // Attach the selected products to the order
             $order->products()->attach($productIds);	    
 
-
-            return response()->json(['url' => $session->url]);
+            return response()->json(['url' => 'www']);
+            //return response()->json(['url' => $session->url]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

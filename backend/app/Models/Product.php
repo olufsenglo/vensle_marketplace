@@ -72,6 +72,15 @@ class Product extends Model
 		return $this->belongsToMany(Specification::class, 'product_specification');
 	}
 
+    /**
+     * Get the orders associated with the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class)->withTimestamps();
+    }
 
     	public function images()
     	{
