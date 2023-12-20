@@ -1,6 +1,16 @@
 import Header from "components/front/header/Header";
 import Hero from "components/front/hero/Hero";
 import Categories from "components/front/categories/Categories";
+import DeliverBanner from "components/front/deliverBanner/DeliverBanner";
+import NewUploads from "components/front/newUploads/NewUploads";
+import PopularGroceries from "components/front/popularGroceries/PopularGroceries";
+import StoreBanner from "components/front/storeBanner/StoreBanner";
+import TopRequests from "components/front/topRequests/TopRequests";
+import MoreToLove from "components/front/moreToLove/MoreToLove";
+import TopPurchaseSellers from "components/front/topPurchaseSellers/TopPurchaseSellers";
+
+
+
 import Best from "components/front/best/Best";
 import Footer from "components/front/footer/Footer";
 import GrocerySuggest from "components/front/grocerySuggest/GrocerySuggest";
@@ -11,8 +21,16 @@ const Home = () => {
             <Header />
             <Hero />
             <Categories />
-            <Best />
-            <GrocerySuggest />
+	    <TopPurchaseSellers />
+	    {/*<Best />*/}
+	    <DeliverBanner />
+	    <NewUploads />
+	    <PopularGroceries />
+	    <StoreBanner />
+	    <TopRequests />
+	    <MoreToLove />
+
+	    {/*<GrocerySuggest />*/}
             <Footer />
         </div>
     )

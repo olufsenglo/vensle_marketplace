@@ -1,3 +1,6 @@
+
+import React, { useState, useEffect } from 'react';
+
 import Banner from "./components/Banner";
 import NFt2 from "assets/img/nfts/Nft2.png";
 import NFt4 from "assets/img/nfts/Nft4.png";
@@ -15,10 +18,47 @@ import TopCreatorTable from "./components/TableTopCreators";
 import NftCard from "components/card/NftCard";
 
 const Marketplace = () => {
+  const [products, setProducts] = useState([]);
+  const [extractedData, setExtractedData] = useState([]);
+
+
+    const getDisplayImage = (image) => {
+      const name = image ? image.name : "";
+      return `http://127.0.0.1:8000/uploads/${name}`;
+    };
+
+  useEffect(() => {
+    // Function to fetch products
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/v1/products');
+        const data = await response.json();
+	const extractedData = data.data.map(({ name, category, condition, price, status, created_at }) => ({
+	  name,
+	  category: category.name,
+	  condition,
+	  price,
+	  status,
+	  created_at,
+	}));
+	console.log(data.data);
+	setProducts(data.data);
+	setExtractedData(extractedData);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    // Call the fetch function
+    fetchProducts();
+  }, []);	
+
+
+
   return (
     <div>
       <div className="mt-5 grid h-full">
-        <HistoryCard />
+	  {products && <HistoryCard products={products} />}
       </div>
       <div className="mt-5 grid h-full">
           <TopCreatorTable
@@ -27,21 +67,17 @@ const Marketplace = () => {
             columnsData={tableColumnsTopCreators}
           />
       </div>
-      <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
+      <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-4">
+          {products && products.map((product) => (
             <NftCard
               bidders={[avatar1, avatar2, avatar3]}
-              title="ETH AI Brain"
+              title={product.name}
               author="Nick Wilson"
-              price="0.7"
-              image={NFt2}
+              price={product.price}
+              image={getDisplayImage(product.display_image)}
             />
-            <NftCard
-              bidders={[avatar1, avatar2, avatar3]}
-              title="ETH AI Brain"
-              author="Nick Wilson"
-              price="0.7"
-              image={NFt2}
-            />
+          ))}
+          
       </div>
 
 

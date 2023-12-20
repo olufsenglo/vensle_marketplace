@@ -5,11 +5,9 @@ import { StarIcon } from '@heroicons/react/20/solid'
 
 
 
-
-
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "actions/auth";
+import { login, register } from "actions/auth";
 import {
   removeFromCart,
   decreaseQuantity,
@@ -63,19 +61,27 @@ const Header = () => {
 
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState(false);
+    const [registerError, setRegisterError] = useState("");
   
     const { isLoggedIn } = useSelector(state => state.auth);
     const { message } = useSelector(state => state.message);
     const [formData, setFormData] = useState({
       email: '',
       password: '',
-    });        
+    });
 
-	const [activeTab, setActiveTab] = useState(1);
+    const [registerFormData, setRegisterFormData] = useState({
+      name: '',
+      email: '',
+      password: '',
+      password_confirmation: '',
+    });
+    
+    const [activeTab, setActiveTab] = useState(1);
 
-	const handleTabClick = (tabNumber) => {
-		setActiveTab(tabNumber);
-	};
+    const handleTabClick = (tabNumber) => {
+	setActiveTab(tabNumber);
+    };
 
     const handleRemoveFromCart = (itemId) => {
       dispatch(removeFromCart(itemId));
@@ -97,7 +103,13 @@ const Header = () => {
       });
     };    
 
-
+    const handleRegisterInputChange = (e) => {
+      const { name, value } = e.target;
+      setRegisterFormData({
+        ...registerFormData,
+        [name]: value,
+      });
+    };    
 
 
     const getCartDisplayImage = (product) => {
@@ -107,6 +119,40 @@ const Header = () => {
 
 
 
+	const handleRegister = (e) => {
+		e.preventDefault();
+console.log(registerFormData);
+		setLoading(true);
+
+		if (registerFormData.password != registerFormData.password_confirmation)
+			setRegisterError("Passwords do not match");
+
+		dispatch(register(registerFormData.name, registerFormData.email, registerFormData.password, registerFormData.password_confirmation))
+		.then(() => {
+			console.log("Register success");
+			setLoading(false);
+			setRegisterError(false);
+   setRegisterFormData({
+      name: '',
+      email: '',
+      password: '',
+      password_confirmation: '',
+    });
+
+
+			handleTabClick(1);
+        dispatch({
+          type: 'SET_MESSAGE',
+          payload: "Registration successfull, you can now login",
+        });
+
+		})
+		.catch((error) => {
+			console.log('error', error);
+			setRegisterError("email already taken");
+			setLoading(false);
+		});
+	};
 
 
     const handleLogin = (e) => {
@@ -141,8 +187,11 @@ setLoginError(true);
             <div className="bg-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4" style={{"paddingBottom": "31px"}}>
                     <div style={{ "height": "51px", "display": "flex", "justify-content": "space-between", "align-items": "center" }} >
-                        <img style={{ "width": "218px" }} src={logo} alt="vensle" />
-                          <Search />
+                        
+                      <a href="/">
+	    		<img style={{ "width": "218px" }} src={logo} alt="vensle" />
+                       </a>
+	    		<Search />
 
                         <div style={{ "display": "flex", "align-items": "center", "font-size": "0.9rem", "margin-left":"38px"}}>
                             <div className="flex" style={{ "align-items": "center" }}>
@@ -241,8 +290,7 @@ setLoginError(true);
                                         <section className="bg-white dark:bg-gray-900">
                                             <div className="container flex items-center justify-center px-6 mx-auto">
                                                 <form onSubmit={handleLogin} className="w-full max-w-md">          
-{loginError && <p>Login combination is wrong</p>}
-{loading && <span>Loading</span>}
+{loginError && <p style={{"color":"red"}}>Login combination is wrong</p>}
 {message && <p>{message}</p>}
 
 
@@ -315,7 +363,7 @@ setLoginError(true);
 
 		    <div class="flex items-center mt-6 -mx-2">
 		      <button type="submit" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
-			  Login
+	   {loading ? <span>Loading...</span> : <span>Login</span>}
 			</button>
 		    </div>
 
@@ -378,28 +426,29 @@ setLoginError(true);
 
                                         <section class="bg-white dark:bg-gray-900">
                                             <div class="container flex items-center justify-center px-6 mx-auto">
-                                                <form class="w-full max-w-md">          
+                                                <form onSubmit={handleRegister} class="w-full max-w-md">          
 
+{registerError && <p style={{"color":"red"}}>{registerError}</p>}
             <div>
               <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
-		Username
+		Name
               </label>
               <div className="mt-2">
                 <input
-                  id="username"
-                  name="username"
+                  id="name"
+                  name="name"
                   type="text"
-                  autoComplete="username"
+                  autoComplete="name"
                   required
-		  value={""} 
-		  onChange={handleInputChange}
+		  value={registerFormData.name}
+		  onChange={handleRegisterInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
 
-            <div>
+            <div className="mt-4">
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
               </label>
@@ -410,14 +459,14 @@ setLoginError(true);
                   type="email"
                   autoComplete="email"
                   required
-		  value={""}
-		  onChange={handleInputChange}
+		  value={registerFormData.email}
+		  onChange={handleRegisterInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
-            <div>
+            <div className="mt-4">
               <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
 		Password
               </label>
@@ -428,26 +477,26 @@ setLoginError(true);
                   type="password"
                   autoComplete="password"
                   required
-		  value={""} 
-		  onChange={handleInputChange}
+		  value={registerFormData.password} 
+		  onChange={handleRegisterInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
 
-            <div>
-              <label htmlFor="password_confirm" className="block text-sm font-medium leading-6 text-gray-900">
-		Password
+            <div className="mt-4">
+              <label htmlFor="password_confirmation" className="block text-sm font-medium leading-6 text-gray-900">
+		Password Again
               </label>
               <div className="mt-2">
                 <input
-                  id="password_confirm"
-                  name="password_confirm"
-                  type="password_confirm"
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type="password"
                   required
-		  value={""} 
-		  onChange={handleInputChange}
+		  value={registerFormData.password_confirmation} 
+		  onChange={handleRegisterInputChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -455,7 +504,7 @@ setLoginError(true);
 
                                                     <div class="flex items-center mt-6 -mx-2">
                                                       <button type="submit" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
-                                                          Login
+	   {loading ? <span>Loading...</span> : <span>Register</span>}
                                                         </button>
                                                     </div>                                                    
 

@@ -25,13 +25,17 @@ import {
         return Promise.resolve();
       },
       (error) => {
-        // const message =
-        // (error.response.data &&
-        //   error.response &&
-        //   error.response.data.message) ||
-        //   error.message ||
-        //   error.toString();
-        const message = error.response.data.errors;
+         const message =
+         (error.response.data &&
+           error.response &&
+           error.response.data.message) ||
+           error.message ||
+           error.toString();
+
+        //const message = error.response.data.errors;
+//const errorMessages = Object.values(error.response.data).flat();
+//payload: errorMessages.join(", "), // Concatenate error messages into a string
+	      console.log('msgszzzz',message)
 
         dispatch({
           type: REGISTER_FAIL,
@@ -136,10 +140,20 @@ import {
     );
   };
 
-export const updateUserProfile = (userData) => ({
-  type: 'UPDATE_USER_PROFILE',
-  payload: userData,
-});
+
+export const updateUserProfile = (userData) => (dispatch, getState) => {
+    dispatch({
+  	type: 'UPDATE_USER_PROFILE',
+  	payload: userData,
+    })
+	
+  localStorage.setItem('user', JSON.stringify(getState().auth.user));
+}
+
+//export const updateUserProfile = (userData) => ({
+  //type: 'UPDATE_USER_PROFILE',
+  //payload: userData,
+//});
   
 export const logout = () => (dispatch) => {
     AuthService.logout();

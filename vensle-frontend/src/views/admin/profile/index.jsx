@@ -25,7 +25,7 @@ const ProfileOverview = () => {
     email: '',
     number: '',
     address: '',
-    // images: null,
+    profile_picture: null,
   });
   const [passwordData, setPasswordData] = useState({
     old_password: '',
@@ -33,6 +33,7 @@ const ProfileOverview = () => {
     new_password_confirmation: '',
   });
   const [imagePreview, setImagePreview] = useState('');
+  const [imgPath, setImgPath] = useState('');
 
   const [profileMessage, setProfileMessage] = useState('');
   const [profileError, setProfileError] = useState('');
@@ -119,10 +120,12 @@ const ProfileOverview = () => {
     console.log(e);
 
     try {
+console.log("profile",userProfile)
+
       const formDataWithFile = new FormData();
       formDataWithFile.append('name', userProfile.name);
       formDataWithFile.append('email', userProfile.email);
-      formDataWithFile.append('profilePicture', userProfile.profilePicture);
+      formDataWithFile.append('profile_picture', userProfile.profile_picture);
 
       const response = await axios.post('http://localhost:8000/api/v1/update-profile', formDataWithFile, {
               headers: {
@@ -134,7 +137,7 @@ const ProfileOverview = () => {
       if (response.data) {
         // Dispatch the action to update the user profile in Redux store
         dispatch(updateUserProfile(response.data));
-
+        setProfileMessage('Details updated successfully!');
 
       //const updatedUser = { ...user, ...response.data };
       //localStorage.setItem('user', JSON.stringify(updatedUser));	      
@@ -145,10 +148,11 @@ const ProfileOverview = () => {
         // Handle errors appropriately
         alert('Failed to update profile. Please try again.');
       }
+	    
     } catch (error) {
       console.error('Error updating profile:', error);
       // Handle errors appropriately
-      setProfileError('An unexpected error occurred. Please try again later.');
+      setProfileError('The email has been taken');
     }	  
 	  
   }
@@ -160,10 +164,11 @@ const ProfileOverview = () => {
 	    number: user.number || '',
 	    address: user.address || '',
     });
-
+console.log(user);
     // Display the current profile picture
     if (user.profile_picture) {
       const path =  `http://127.0.0.1:8000/uploads/${user.profile_picture}`;
+      setImgPath(path);
       setImagePreview(path);
     }
   }, [user]);
@@ -172,7 +177,7 @@ const ProfileOverview = () => {
     <div className="flex w-full flex-col gap-5">
       <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
         <div className="col-span-6 lg:!mb-0">
-          <Banner />
+          <Banner user={user} setImagePreview={setImagePreview} path={imgPath} imagePreview={imagePreview} handleFileChange={handleFileChange} />
         </div>
         <div className="col-span-6 lg:!mb-0">
           <Storage />
@@ -180,8 +185,7 @@ const ProfileOverview = () => {
         <form onSubmit={handleProfileSubmit} className="col-span-5 lg:col-span-6 lg:mb-0 3xl:col-span-4">
           <Card extra={"w-full p-4 h-full"}>
             <div className="mb-8 w-full">
-	  {profileMessage && <p>{profileMessage}</p>}
-	  {profileError && <p>{profileError}</p>}
+	  {/*
       <label>
         Current Profile Picture:
         {imagePreview && (
@@ -193,14 +197,18 @@ const ProfileOverview = () => {
         <input
           type="file"
           accept="image/*"
-          name="profilePicture"
+          name="profile_picture"
           onChange={handleFileChange}
         />
       </label>	  
-
+ /*/}
               <h4 className="text-xl font-bold text-navy-700 dark:text-white">
                 Update Details
               </h4>
+
+{profileMessage && <p style={{"color":"green"}}>{profileMessage}</p>}
+{profileError && <p style={{"color":"red"}}>{profileError}</p>}
+
               <div class="mt-10 flex flex-col space-y-4">
                 <div>
                   <label for="name" class="text-xs font-semibold text-gray-500">Name</label>
@@ -210,6 +218,7 @@ const ProfileOverview = () => {
                     value={userProfile.name}
                     onChange={userProfileChange}
                     name="name"
+		    required
                     class="mt-1 block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                   />
                 </div>                
@@ -221,6 +230,7 @@ const ProfileOverview = () => {
                     name="email"
                     value={userProfile.email}
                     onChange={userProfileChange}
+		    required
                     class="mt-1 block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
@@ -247,7 +257,7 @@ const ProfileOverview = () => {
                   />
                 </div>
                 <div className="mt-4">
-                  <button className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+                  <button type="submit" className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
                     Update details
                   </button>
                 </div>
@@ -300,7 +310,7 @@ const ProfileOverview = () => {
                   />
                 </div>
                 <div className="mt-4">
-                  <button className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+                  <button type="submit" className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
                     Update password
                   </button>
                 </div>

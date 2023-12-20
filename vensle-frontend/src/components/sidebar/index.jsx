@@ -33,6 +33,9 @@ const Sidebar = ({ open, onClose }) => {
       </ul>
 
       {/* Nav item end */}
+      <div className={`mx-[56px] mt-[50px] flex items-center`}>
+	  <p>Logout</p>
+      </div>
     </div>
   );
 };

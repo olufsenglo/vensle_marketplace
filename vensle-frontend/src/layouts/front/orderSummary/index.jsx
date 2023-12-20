@@ -9,7 +9,7 @@ const OrderSummary = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/v1/orders/${orderId}`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/v1/user/orders/${orderId}`);
         setOrder(response.data);
       } catch (error) {
         console.error('Error fetching order:', error);
