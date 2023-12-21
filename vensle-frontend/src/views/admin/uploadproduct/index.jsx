@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Card from "components/card";
 import axios from 'axios';
 
+import UploadPreview from "./components/UploadPreview";
+
 import { updateUserProfile } from 'actions/auth';
 
 import InputField from "components/fields/InputField";
@@ -23,7 +25,6 @@ const Tables = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(false);
-
 
   const [formData, setFormData] = useState({
     name: '',
@@ -90,7 +91,15 @@ const Tables = () => {
 
   const renderImagePreviews = () => {
     return imagePreviews.map((preview, index) => (
-      <img key={index} src={preview} alt={`Preview ${index}`} style={{ maxWidth: '100px', maxHeight: '100px', marginRight: '10px' }} />
+
+	    
+
+      <img
+	    key={index}
+	    src={preview}
+	    alt={`Preview ${index}`}
+	    className="object-cover w-full lg:h-20"
+	/>
     ));
   };
 
@@ -182,13 +191,12 @@ const Tables = () => {
     <div className="flex w-full flex-col gap-5">
     {error && <div className="text-red-500">{error}</div>}
 
-     <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
-<p onClick={()=>setUploadPreview(true)}>Upload preview</p>
-	  {uploadPreview && <div style={{"top":"0", "left":"0", "zIndex":"5"}} className="absolute w-full h-full bg-gray-300">
-		<p onClick={()=>setUploadPreview(false)}>Back</p>
-<p>{formData.name}</p>
+	  <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
 
-	</div>}
+
+<p onClick={()=>setUploadPreview(true)}>Upload preview</p>
+{uploadPreview && <UploadPreview formData={formData} imagePreviews={imagePreviews} setUploadPreview={setUploadPreview} />}
+
 
       <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
 
@@ -279,6 +287,7 @@ const Tables = () => {
                 id="condition-new"
                 name="condition"
                 type="radio"
+	        value="new"
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
               <label htmlFor="condition-new" className="block text-sm font-medium leading-6 text-gray-900">
@@ -290,6 +299,7 @@ const Tables = () => {
                 id="condition-used"
                 name="condition"
                 type="radio"
+	        value="used"
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
               <label htmlFor="condition-used" className="block text-sm font-medium leading-6 text-gray-900">
@@ -301,6 +311,7 @@ const Tables = () => {
                 id="conditon-na"
                 name="condition"
                 type="radio"
+	        value="na"
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
               <label htmlFor="conditon-na" className="block text-sm font-medium leading-6 text-gray-900">

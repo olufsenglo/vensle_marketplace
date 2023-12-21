@@ -6,6 +6,9 @@ import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 
+import Product from "./Product";
+import Grocery from "./Grocery";
+
 const product = {
   breadcrumbs: [
     { id: 1, name: 'Men', href: '#' },
@@ -60,7 +63,6 @@ const Products = () => {
         case 'maxPrice':
           setMaxPrice(value);
           break;
-        // Add more cases for additional input fields
         default:
           break;
       }
@@ -93,10 +95,8 @@ const Products = () => {
   };
 
   useEffect(() => {
-    // Fetch filtered products when the component mounts
     fetchFilteredProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, category_id, minPrice, maxPrice, selectedSizes]); // Add any dependencies as needed
+  }, [searchTerm, category_id, minPrice, maxPrice, selectedSizes]);
 
   return (
  <div className="bg-white">
@@ -277,7 +277,7 @@ const Products = () => {
 	  		</span>
 			<label>
 			  <input
-              		      className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+              		      className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
 	  		      type="text"
 	  		      name="minPrice"
 	  		      value={minPrice}
@@ -290,7 +290,7 @@ const Products = () => {
 	  	<div>
 			<label>
 				<input
-              		        className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+              		        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
 	  			type="text"
 	  			name="maxPrice"
 	  			value={maxPrice}
@@ -364,6 +364,8 @@ const Products = () => {
             {filteredProducts && filteredProducts.map((product) => (
               <a key={product.id} href={product.href} className="group">
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+		    {console.log("filllttttxxx",product)}
+		    {product.type == 'product' ? <Product /> : <Grocery />}
                   <img
                     src="https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg"
                     alt={product.imageAlt}

@@ -180,9 +180,13 @@ return response()->json($product, 201);
 
     private function getSimilarProducts($product)
     {
+	    //$products = Product::with(['images', 'displayImage', 'category'])
+
+
         $similarProducts = Product::where('category_id', $product->category_id)
             ->where('name', 'like', '%' . $product->name . '%')
-            ->where('id', '<>', $product->id)
+	    ->where('id', '<>', $product->id)
+    	    ->with(['images', 'displayImage', 'category'])
             ->take(4)
             ->get();
 
