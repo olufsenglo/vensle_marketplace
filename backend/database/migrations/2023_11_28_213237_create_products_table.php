@@ -22,10 +22,14 @@ return new class extends Migration
 	    $table->string('phone_number');
 	    $table->text('description');
 	    $table->string('type');
+	    $table->string('key_specifications');
 	    $table->decimal('ratings', 3, 2)->nullable();
 	    $table->integer('quantity')->default(0);
 	    $table->integer('sold')->default(0);
 	    $table->integer('views')->default(0);
+	    $table->decimal('latitude', 10, 8);
+	    $table->decimal('longitude', 11, 8);
+	    $table->string('country');
 	    $table->enum('status', ['Active', 'Inactive'])->default('Active');
             //$table->unsignedBigInteger('image_id')->nullable();
 	    //$table->unsignedBigInteger('display_image_id')->nullable();

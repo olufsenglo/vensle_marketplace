@@ -19,7 +19,9 @@ class OrderController extends Controller
     {
         try {
             $user = Auth::user();
-            $orders = Order::with('products')->where('user_id', $user->id)->get();
+	    $orders = Order::with('products')
+		    ->where('user_id', $user->id)
+		    ->get();
 
             return response()->json($orders);
         } catch (\Exception $e) {
@@ -40,7 +42,9 @@ class OrderController extends Controller
             $user = Auth::user();
 
             //$order = Order::with('products')->where('user_id', $user->id)->findOrFail($orderId);
-            $order = Order::with('products')->where('user_id', $user->id)->find($orderId);
+	    $order = Order::with('products')
+		    ->where('user_id', $user->id)
+		    ->find($orderId);
 
             if (!$order) {
                 return response()->json(['error' => 'Order not found'], 404);

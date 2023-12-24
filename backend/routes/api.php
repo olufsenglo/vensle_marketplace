@@ -9,6 +9,8 @@ use App\Http\Controllers\ProductRequestController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\UserAlertController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +62,10 @@ Route::get('/v1/products/top-by-quantity', [ProductController::class, 'getTopPro
 Route::get('/v1/products/top-by-sold', [ProductController::class, 'getTopProductsBySold']);
 Route::get('/v1/products/top-by-ratings', [ProductController::class, 'getTopProductsByRatings']);
 Route::get('/v1/products/top-by-views', [ProductController::class, 'getTopProductsByViews']);
+Route::get('/v1/products/top-by-date', [ProductController::class, 'getTopProductsByDate']);
 /** */
+Route::get('/v1/products/top-by-type', [ProductController::class, 'getTopProductsByType']);
+Route::get('/v1/products/top-by-column', [ProductController::class, 'getTopProductsByColumn']);
 
 //Route::middleware('auth:api')->apiResource('v1/products', ProductController::class);
 
@@ -72,6 +77,8 @@ Route::get('/v1/products/{id}', [ProductController::class, 'show']);
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('v1/products', ProductController::class)->except(['index']);
 });
+
+Route::get('/v1/categories', [ProductController::class, 'getAllCategories']);
 
 //[ Product request
 Route::apiResource('/v1/product-requests', ProductRequestController::class);
@@ -89,3 +96,9 @@ Route::post('v1/clear-cart', [CartController::class, 'clearCart']);
 //});
 
 
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/v1/user-alerts/unread', [UserAlertController::class, 'getUnreadAlerts']);
+    Route::put('/v1/user-alerts/mark-as-read', [UserAlertController::class, 'markAlertsAsRead']);
+    Route::get('/v1/user-alerts/unread-count', [UserAlertController::class, 'getUnreadAlertsCount']);
+});

@@ -1,9 +1,8 @@
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, RadioGroup, Transition } from '@headlessui/react'
+import { Dialog, RadioGroup, Transition, Disclosure, Menu } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
-
-
+import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +21,18 @@ import logo from "assets/img/front/logo.PNG";
 import person from "assets/img/front/person.PNG";
 import cart from "assets/img/front/cart.PNG";
 import Search from './Search';
+
+const sortOptions = [
+  { name: 'Most Popular', href: '#', current: true },
+  { name: 'Best Rating', href: '#', current: false },
+  { name: 'Newest', href: '#', current: false },
+  { name: 'Price: Low to High', href: '#', current: false },
+  { name: 'Price: High to Low', href: '#', current: false },
+]
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
 
 const products = [
     {
@@ -53,14 +64,18 @@ const Header = () => {
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
+    const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
     const cartItems = useSelector(state => state.cart.items);
 
     const [open, setOpen] = useState(false)
     const [loginRegisterOpen, setLoginRegisterOpen] = useState(false)
     const [loginOpen, setLoginOpen] = useState(false)
+    const [redirect, setRedirect] = useState('')
+    const [driverRegister, setDriverRegister] = useState(false)
 
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState(false);
+    const [resetPasswordError, setResetPasswordError] = useState("");
     const [registerError, setRegisterError] = useState("");
   
     const { isLoggedIn } = useSelector(state => state.auth);
@@ -77,6 +92,12 @@ const Header = () => {
       password_confirmation: '',
     });
     
+    const [resetFormData, setResetFormData] = useState({
+      email: '',
+      new_password: '',
+      new_password_confirmation: '',
+    });
+
     const [activeTab, setActiveTab] = useState(1);
 
     const handleTabClick = (tabNumber) => {
@@ -111,12 +132,113 @@ const Header = () => {
       });
     };    
 
+    const handleResetInputChange = (e) => {
+      const { name, value } = e.target;
+      setResetFormData({
+        ...resetFormData,
+        [name]: value,
+      });
+    };    
+
+	const handleUploadClick = (e) => {
+		e.preventDefault();
+		setRedirect('?redirect=modal');
+		setLoginOpen(true);
+	}
+
+	const handleRegisterDriverClick = (e) => {
+		e.preventDefault();
+		setDriverRegister(true);
+		setActiveTab(2);
+		setLoginOpen(true);
+	}
+
+
+	const handleShowLoginForm = (e) => {
+		e.preventDefault();
+		//TODO: put reset loading, formdata and error in helper function
+	        setLoading(false);
+	        setResetPasswordError("");
+	        setRegisterError("");
+
+	    setFormData({
+	      email: '',
+	      password: '',
+	    });
+
+	    setRegisterFormData({
+	      name: '',
+	      email: '',
+	      password: '',
+	      password_confirmation: '',
+	    });
+	    
+	    setResetFormData({
+	      email: '',
+	      new_password: '',
+	      new_password_confirmation: '',
+	    });
+		setActiveTab(1)
+	}
+
+	const handleShowRegisterForm = (e) => {
+		e.preventDefault();
+		//TODO: put reset loading, formdata and error in helper function
+	        setLoading(false);
+	        setLoginError(false);
+	        setResetPasswordError("");
+	        setRegisterError("");
+
+	    setFormData({
+	      email: '',
+	      password: '',
+	    });
+
+	    setRegisterFormData({
+	      name: '',
+	      email: '',
+	      password: '',
+	      password_confirmation: '',
+	    });
+	    
+	    setResetFormData({
+	      email: '',
+	      new_password: '',
+	      new_password_confirmation: '',
+	    });
+		setActiveTab(2)
+	}
+
+	const handleShowResetForm = (e) => {
+		e.preventDefault();
+		//TODO: put reset loading, formdata and error in helper function
+	        setLoading(false);
+	        setLoginError(false);
+	        setRegisterError("");
+
+	    setRegisterFormData({
+	      name: '',
+	      email: '',
+	      password: '',
+	      password_confirmation: '',
+	    });
+	    
+	    setResetFormData({
+	      email: '',
+	      new_password: '',
+	      new_password_confirmation: '',
+	    });
+		setActiveTab(3)
+	}
 
     const getCartDisplayImage = (product) => {
-	    console.log(product.display_image)
       return product.display_image ? `http://127.0.0.1:8000/uploads/${product.display_image.name}` : '';
     };
 
+    const getDisplayFromImagesArray = (product) => {
+      const displayImage = product.images.find(image => image.id === product.display_image_id);
+      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+    };
 
 
 	const handleRegister = (e) => {
@@ -154,6 +276,31 @@ console.log(registerFormData);
 		});
 	};
 
+    const handleResetPassword = (e) => {
+        e.preventDefault();
+    
+        setLoading(true);
+	    console.log(resetFormData);
+
+		if (resetFormData.new_password != resetFormData.new_password_confirmation)
+	    {
+			setResetPasswordError("Passwords do not match");
+	    }
+
+	/*
+	    if (resetPasswordError == '') {
+		dispatch(login(formData.email, formData.password))
+		.then(() => {
+			console.log("Password Reset");
+		})
+		.catch((error) => {
+			console.log(error);
+	setLoginError(true);
+		  setLoading(false);
+		});
+	    }
+	*/
+  }
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -163,7 +310,16 @@ console.log(registerFormData);
 	      dispatch(login(formData.email, formData.password))
         .then(() => {
 	        console.log("LoggedIn");
-          navigate('/admin/products');
+		
+		if (redirect)
+		{
+			navigate('admin/upload-product?redirect=modal')
+		}
+		else
+		{
+          		navigate('admin/default');
+		}
+
           //window.location.reload();
         })
         .catch((error) => {
@@ -183,7 +339,86 @@ setLoginError(true);
 
     return (
         <div>
-            <Top />
+
+<Top />	    
+
+        <div className="bg-white">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="p-4 flex justify-between" style={{"padding": "19px 0rem", "fontSize": "15px"}}>
+                    <ul className="flex justify-between">
+                        <li className="mr-6 hidden md:block">Welcome to our Online Store!</li>
+	    {isAuthenticated ? 
+                        <li className="text-red-500 mr-6" style={{"color": "#ff5959"}}>
+		            <a href="/admin/upload-product?redirect=modal">Upload Your Product</a>
+		        </li>
+		    :
+                        <li onClick={(e) => handleUploadClick(e)} className="text-red-500 mr-6" style={{"color": "#ff5959"}}>Upload Your Product</li>
+	    }
+                        <li onClick={(e) => handleRegisterDriverClick(e)} className="text-red-500 cursor-pointer" style={{"color": "#ff5959"}}>Register as a Driver</li>
+                    </ul>
+                    <ul className="flex justify-between">
+                        <li className="text-red-500 mr-6" style={{"color": "#ff5959", "marginRight": "50px"}}>
+
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900" style={{"color": "#ff5959"}}>
+                    For Sale
+                    <ChevronDownIcon
+                      className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </Menu.Button>
+                </div>
+
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1">
+                      {sortOptions.map((option) => (
+                        <Menu.Item key={option.name}>
+                          {({ active }) => (
+                            <a
+                              href={option.href}
+                              className={classNames(
+                                option.current ? 'font-medium text-gray-900' : 'text-gray-500',
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm'
+                              )}
+                            >
+                              {option.name}
+                            </a>
+                          )}
+                        </Menu.Item>
+                      ))}
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
+
+
+
+</li>
+                        <li className="hidden md:block">United Kingdom</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
             <div className="bg-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4" style={{"paddingBottom": "31px"}}>
                     <div style={{ "height": "51px", "display": "flex", "justify-content": "space-between", "align-items": "center" }} >
@@ -244,8 +479,8 @@ setLoginError(true);
                             leaveFrom="opacity-100 translate-y-0 md:scale-100"
                             leaveTo="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
                             >
-                            <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-xl md:px-4 lg:max-w-2xl">
-                                <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+                            <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-lg md:px-4 lg:max-w-xl">
+                                <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8 rounded-lg">
                                     <button
                                         type="button"
                                         className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
@@ -263,13 +498,93 @@ setLoginError(true);
 
 
 
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white">
+    <div className="max-w-md mx-auto mt-8 pb-6 bg-white">
+	    
+        {activeTab === 3 && (
+
+	 <form onSubmit={handleResetPassword}>   
+      	    <div className="flex mb-4 justify-center">
+	    	<h3 className="text-center inline border-b-2 border-orange-500 pb-1 py-2 px-4">FORGOT PASSWORD</h3>
+	    </div>
+      	    <div className="mt-4">
+	    	<h6 onClick={handleShowLoginForm} className="mb-4 text-sm font-medium">Back</h6>
+
+{resetPasswordError && <p className="mb-4" style={{"color":"red"}}>{resetPasswordError}</p>}
+		    <div>
+		      <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+			Email address
+		      </label>
+		      <div className="mt-2">
+			<input
+			  id="email"
+			  name="email"
+			  type="email"
+			  autoComplete="email"
+			  required
+			  value={resetFormData.email} 
+			  onChange={handleResetInputChange}
+			  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+			/>
+		      </div>
+		    </div>
+
+
+
+		    <div>
+		      <label htmlFor="new_password" className="block text-sm font-medium leading-6 text-gray-900">
+			New Password
+		      </label>
+		      <div className="mt-2">
+			<input
+			  id="new_password"
+			  name="new_password"
+			  type="password"
+			  required
+			  value={resetFormData.new_password} 
+			  onChange={handleResetInputChange}
+			  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+			/>
+		      </div>
+		    </div>
+
+		    <div>
+		      <label htmlFor="new_password_confirmation" className="block text-sm font-medium leading-6 text-gray-900">
+			New Password Again
+		      </label>
+		      <div className="mt-2">
+			<input
+			  id="new_password_confirmation"
+			  name="new_password_confirmation"
+			  type="password"
+			  required
+			  value={resetFormData.new_password_confirmation} 
+			  onChange={handleResetInputChange}
+			  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+			/>
+		      </div>
+		    </div>
+
+
+
+		    <div class="flex items-center mt-6 -mx-2">
+		      <button type="submit" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
+	   {loading ? <span>Loading...</span> : <span>Reset Password</span>}
+			</button>
+		    </div>
+
+
+	    </div>
+	 </form>
+
+  )}
+  {activeTab !== 3 && (
+    <div>
       <div className="flex mb-6">
         <div
           className={`cursor-pointer text-center py-2 w-full px-4 ${
             activeTab === 1 ? 'border-b-2 border-orange-500 transition duration-300' : 'bg-white text-gray-500'
           }`}
-          onClick={() => handleTabClick(1)}
+          onClick={handleShowLoginForm}
         >
 	    SIGN IN
         </div>
@@ -277,7 +592,7 @@ setLoginError(true);
           className={`cursor-pointer text-center py-2 w-full px-4 ${
             activeTab === 2 ? 'border-b-2 border-orange-500 transition duration-300' : 'bg-white text-gray-500'
           }`}
-          onClick={() => handleTabClick(2)}
+          onClick={handleShowRegisterForm}
         >
           REGISTER
         </div>
@@ -291,7 +606,7 @@ setLoginError(true);
                                             <div className="container flex items-center justify-center px-6 mx-auto">
                                                 <form onSubmit={handleLogin} className="w-full max-w-md">          
 {loginError && <p style={{"color":"red"}}>Login combination is wrong</p>}
-{message && <p>{message}</p>}
+{/*message && <p>{message}</p>*/}
 
 
 
@@ -314,27 +629,6 @@ setLoginError(true);
               </div>
             </div>
 
-	{/*
-                                                    <div class="relative flex items-center mt-6">
-                                                        <span class="absolute">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-3 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                                            </svg>
-                                                        </span>
-
-                                                        <input
-                                                          type="email"
-                                                          name="email"
-                                                          value={formData.email} 
-                                                          onChange={handleInputChange}
-                                                          class="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" 
-                                                          placeholder="Email address"
-                                                        />
-
-                                                    </div>
-
-*/}
-
 
             <div className="mt-4">
               <div className="flex items-center justify-between">
@@ -342,7 +636,7 @@ setLoginError(true);
                   Password
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <a onClick={handleShowResetForm} href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
                     Forgot password?
                   </a>
                 </div>
@@ -368,24 +662,6 @@ setLoginError(true);
 		    </div>
 
 
-	{/*
-                                                    <div class="relative flex items-center mt-4">
-                                                        <span class="absolute">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-3 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                                            </svg>
-                                                        </span>
-
-                                                        <input
-                                                          type="password"
-                                                          name='password'
-                                                          value={formData.password} 
-                                                          onChange={handleInputChange}
-                                                          class="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" 
-                                                          placeholder="Password" />
-                                                    </div>
-
-*/}
                                                     <div class="flex items-center justify-between mt-4">
                                                         <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/5"></span>
 
@@ -423,7 +699,16 @@ setLoginError(true);
         {activeTab === 2 && (
           <div className={`transition duration-300 ${activeTab === 2 ? 'opacity-100' : 'opacity-0'}`}>
 
-
+		{driverRegister && <div className="text-center">
+<p>You are about to Register as a Driver</p>
+			<p>
+				Click to
+				<span onClick={() => setDriverRegister(false)} className="mx-1 text-blue-500 cursor-pointer">
+					Register as normal user
+				</span>
+			</p>
+		</div>
+		}
                                         <section class="bg-white dark:bg-gray-900">
                                             <div class="container flex items-center justify-center px-6 mx-auto">
                                                 <form onSubmit={handleRegister} class="w-full max-w-md">          
@@ -544,7 +829,13 @@ setLoginError(true);
           </div>
         )}
       </div>
+
+  </div>
+
+ )}
+
     </div>
+
 
 
 
@@ -630,7 +921,7 @@ setLoginError(true);
                               <li key={item.id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img
-                                    src={getCartDisplayImage(item)}
+                                    src={getDisplayFromImagesArray(item)}
                                     alt={item.name}
                                     className="h-full w-full object-cover object-center"
                                   />
@@ -642,7 +933,7 @@ setLoginError(true);
                                       <h3>
                                         <a href={item.href}>{item.name}</a>
                                       </h3>
-                                      <p className="ml-4">{item.price}</p>
+                                      <p className="ml-4">${item.price*item.quantity}</p>
                                     </div>
                                     <p className="mt-1 text-sm text-gray-500">red</p>
                                   </div>
@@ -652,7 +943,7 @@ setLoginError(true);
                                     <div class="sm:order-1">
                                       <div class="mx-auto flex h-8 items-stretch text-gray-600">
                                         <button onClick={() => handleDecreaseQuantity(item.id)} class="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-gray-800 hover:text-white">-</button>
-                                        <div class="flex w-full items-center justify-center bg-gray-100 px-4 text-xs uppercase transition">1</div>
+                                        <div class="flex w-full items-center justify-center bg-gray-100 px-4 text-xs uppercase transition">{item.quantity}</div>
                                         <button onClick={() => handleIncreaseQuantity(item.id)} class="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-gray-800 hover:text-white">+</button>
                                       </div>
                                     </div>

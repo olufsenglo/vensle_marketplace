@@ -1,5 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 import Banner from "./components/Banner";
 import NFt2 from "assets/img/nfts/Nft2.png";
@@ -18,8 +20,15 @@ import TopCreatorTable from "./components/TableTopCreators";
 import NftCard from "components/card/NftCard";
 
 const Marketplace = () => {
+  const navigate = useNavigate();	
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
+  const accessToken = useSelector((state) => state.auth.user.token);
+  const user = useSelector((state) => state.auth.user.user);
+
   const [products, setProducts] = useState([]);
   const [extractedData, setExtractedData] = useState([]);
+  const [orders, setOrders] = useState([]);
 
 
     const getDisplayImage = (image) => {
@@ -53,10 +62,29 @@ const Marketplace = () => {
     fetchProducts();
   }, []);	
 
+  useEffect(() => {
+	  const fetchOrders = async () => {
+	    try {
+	      const response = await axios.get('http://localhost:8000/api/v1/user/orders', {
+		      headers: {
+			      'Authorization': `Bearer ${accessToken}`,
+		      },
+	      });
+		    console.log("succcces");
+	      setOrders(response.data);
+	    } catch (error) {
+	      console.error('Error fetching orders:', error);
+	    }	  
+	  }
+		  
+	  fetchOrders();
+
+  }, []);	
 
 
   return (
     <div>
+	  {console.log('odaaaaas',orders)}
       <div className="mt-5 grid h-full">
 	  {products && <HistoryCard products={products} />}
       </div>

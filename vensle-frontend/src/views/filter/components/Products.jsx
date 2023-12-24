@@ -16,13 +16,6 @@ const product = {
   ],
 }
 
-const sortOptions = [
-  { name: 'Most Popular', href: '#', current: true },
-  { name: 'Best Rating', href: '#', current: false },
-  { name: 'Newest', href: '#', current: false },
-  { name: 'Price: Low to High', href: '#', current: false },
-  { name: 'Price: High to Low', href: '#', current: false },
-]
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
@@ -39,6 +32,8 @@ const Products = () => {
   // State for filter form inputs
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+  const [type, setType] = useState('');
+  const [sort, setSort] = useState('');
   const [selectedSizes, setSelectedSizes] = useState([]);
 
   // State for filtered products
@@ -63,6 +58,12 @@ const Products = () => {
         case 'maxPrice':
           setMaxPrice(value);
           break;
+        case 'type':
+          setType(value);
+          break;
+        case 'sort':
+          setSort(value);
+          break;
         default:
           break;
       }
@@ -74,6 +75,16 @@ const Products = () => {
     fetchFilteredProducts();
   };
 
+  const handleClearFilters = (e) => {
+	  e.preventDefault();
+
+	  setMinPrice('');
+	  setMaxPrice('');
+	  setType('');
+	  setSort('');
+	  setSelectedSizes([]);
+  }
+
   const fetchFilteredProducts = async () => {
     try {
       // Customize the API endpoint and parameters based on your backend
@@ -83,6 +94,8 @@ const Products = () => {
           category_id,
           minPrice,
           maxPrice,
+	  type,
+	  sort,
           sizes: selectedSizes.join(','), // Convert array to comma-separated string
         },
       });
@@ -96,7 +109,7 @@ const Products = () => {
 
   useEffect(() => {
     fetchFilteredProducts();
-  }, [searchTerm, category_id, minPrice, maxPrice, selectedSizes]);
+  }, [searchTerm, category_id, minPrice, maxPrice, type, sort, selectedSizes]);
 
   return (
  <div className="bg-white">
@@ -196,57 +209,37 @@ const Products = () => {
 
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-10">
             <p className="text-gray-500">240 Bags Ads</p>
-            <h1 className="flex items-center justify-between text-2xl font-bold tracking-tight text-gray-900">
-              Everthing
-              <ChevronDownIcon
-                className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                aria-hidden="true"
-              />
+            <h1 className="flex items-center justify-between text-xl font-semi-bold tracking-tight text-gray-900">
+      <select
+	name="type"
+        value={type}
+	onChange={handleInputChange}
+        className="border p-2 rounded-md h-full"
+      >
+        <option value="">Everything</option>
+        <option value="product">Products</option>
+        <option value="grocery">Groceries</option>
+      </select>
+
             </h1>
 
             <div className="flex items-center">
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                    Sort
-                    <ChevronDownIcon
-                      className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 group-hover:text-gray-500"
-                      aria-hidden="true"
-                    />
-                  </Menu.Button>
-                </div>
 
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1">
-                      {sortOptions.map((option) => (
-                        <Menu.Item key={option.name}>
-                          {({ active }) => (
-                            <a
-                              href={option.href}
-                              className={classNames(
-                                option.current ? 'font-medium text-gray-900' : 'text-gray-500',
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm'
-                              )}
-                            >
-                              {option.name}
-                            </a>
-                          )}
-                        </Menu.Item>
-                      ))}
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
+      <select
+	name="sort"
+        value={sort}
+	onChange={handleInputChange}
+        className="border p-2 rounded-md h-full text-gray-700"
+      >
+        <option
+	  value=""
+	>Sort</option>
+        <option value="views">Most Popular</option>
+        <option value="ratings">Rating</option>
+        <option value="created_at">Newest Upload</option>
+        <option value="price_lowest">Price: Low to High</option>
+        <option value="price_highest">Price: High to Low</option>
+      </select>
 
               <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
                 <span className="sr-only">View grid</span>
@@ -322,7 +315,7 @@ const Products = () => {
 
 
 	<div className="mt-4 flex items-center justify-between">
-		<button className="text-gray-900">CLEAR ALL</button>
+		<button onClick={handleClearFilters} className="text-gray-900">CLEAR ALL</button>
 
 		<button
 		  type="button"
@@ -362,19 +355,9 @@ const Products = () => {
 
           <div className="grid grid-cols-1 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4">
             {filteredProducts && filteredProducts.map((product) => (
-              <a key={product.id} href={product.href} className="group">
-                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-		    {console.log("filllttttxxx",product)}
-		    {product.type == 'product' ? <Product /> : <Grocery />}
-                  <img
-                    src="https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg"
-                    alt={product.imageAlt}
-                    className="h-full w-full object-cover object-center group-hover:opacity-75"
-                  />
-                </div>
-                <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-                <p className="mt-1 text-lg font-medium text-gray-900">{product.price}</p>
-              </a>
+		    <>
+		    {product.type == 'product' ? <Product product={product} /> : <Grocery product={product} />}
+		    </>
             ))}
           </div>
         </div>

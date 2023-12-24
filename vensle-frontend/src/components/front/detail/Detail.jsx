@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+
+import {
+    addToCart,
+} from 'actions/actions';
 
 import { StarIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
@@ -25,11 +30,18 @@ function classNames(...classes) {
 
 
 const ProductDetail = () => {
+    const dispatch = useDispatch();
+
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState(null);
   const [selectedImagePath, setSelectedImagePath] = useState(null);
 
+    const delim = '^%*#$';
+
+    const handleAddToCart = (product) => {
+        dispatch(addToCart({ ...product, quantity: 1 }));
+    };
 
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
@@ -87,7 +99,6 @@ const ProductDetail = () => {
     return (
 
     <div className="bg-white">
-{console.log("sssss",selectedImagePath)}	    
       <div className="pt-6">
         <nav aria-label="Breadcrumb">
           <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -162,7 +173,7 @@ const ProductDetail = () => {
 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
-			11 views
+	    {product.views} view[s]
 		</p>
 	</div>
 
@@ -172,29 +183,28 @@ const ProductDetail = () => {
             <div>
 	      <h3 className="font-bold tracking-tight text-gray-900 text-lg">Condition</h3>
               <div className="mt-2 space-y-6">
-                <p className="text-base text-gray-900">product.description</p>
+                <p className="text-base text-gray-900">{product.condition}</p>
               </div>
             </div>
 
             <div className="mt-10">
 	      <h3 className="font-bold tracking-tight text-gray-900 text-lg">Product Details</h3>
               <div className="mt-2 space-y-6">
-                <p className="text-base text-gray-900">product.description</p>
+                <p className="text-base text-gray-900">{product.description}</p>
               </div>
             </div>
 
             <div className="mt-10">
 	      <h3 className="text-lg font-bold tracking-tight text-gray-900">Key Specifications</h3>
-
+	{console.log('prrrrrro',product)}
               <div className="mt-2">
-                <ul role="list" className="list-disc space-y-2 pl-6">
-                    <li className="text-gray-900">
-                      <span className="">highlight</span>
-                    </li>
-                    <li className="text-gray-900">
-                      <span className="">highlight</span>
-                    </li>
-                </ul>
+			<ul role="list" className="list-disc space-y-2 pl-6">
+			  {product && product.key_specifications && product.key_specifications.split(delim).map((specification, index) => (
+			    <li key={index} className="text-gray-900">
+			      <span className="">{specification.trim()}</span>
+			    </li>
+			  ))}
+			</ul>
               </div>
             </div>
 	  </div>
@@ -226,7 +236,16 @@ const ProductDetail = () => {
 	${product && product.price}
 </p>
 
+			  <button
+                    	    onClick={() => handleAddToCart(product)}
+		  	    style={{"fontSize":"0.8rem"}}
+			    className="bg-transparent w-full hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-3 mt-4 px-2 border border-orange-500 hover:border-transparent rounded"
+			    >
+			    ADD TO CART
+			  </button>
 
+	
+<div>
 	  <div className="flex items-center mt-4">
 		  <img src={seller} alt="seller" />
 		  <div className="ml-4">
@@ -262,7 +281,7 @@ const ProductDetail = () => {
                 >
                   SEND A MESSAGE
                 </a>
-
+</div>
 
 
           </div>

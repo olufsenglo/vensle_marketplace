@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Card from "components/card";
 import axios from 'axios';
@@ -15,32 +15,39 @@ import Checkbox from "components/checkbox";
 import currencySymbolMap from 'currency-symbol-map';
 
 const Tables = () => {
-  const navigate = useNavigate();	
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const paramProductType = queryParams.get('type');
+
   const [currencySymbol, setCurrencySymbol] = useState('');
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const accessToken = useSelector((state) => state.auth.user.token);
   const user = useSelector((state) => state.auth.user.user);
-
+  const [categories, setCategories] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
-    category_id: 1,
-    condition: 'New',
+    category_id: '',
+    condition: '',
     price: '',
+    max_price: '',
     address: '',
     phone_number: '',
     description: '',
-    type:'x',
+    type:'',
     ratings: 3.8,
     quantity: 1,
     sold: 1,
     views: 1,
     status: 'Active',
     images: null,
+    single_specifications: '',
+    key_specifications: '',
     //specifications_ids: [4,5],
   });
 
@@ -65,6 +72,43 @@ const Tables = () => {
       [name]: value,
     });
   };	
+
+const handleAddNewKeySpecs = (e) => {
+	if (formData.key_specifications != '') {
+		console.log("start");
+	}
+}
+
+  const delim = '^%*#$';
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && document.activeElement.id === 'key_specifications') {
+      e.preventDefault();
+      const newKeySpecifications =
+        formData.key_specifications === ''
+          ? formData.single_specifications
+          : `${formData.key_specifications}${delim}${formData.single_specifications}`;
+
+      setFormData({
+        ...formData,
+        key_specifications: newKeySpecifications,
+        single_specifications: '',
+      });
+    }
+  };
+
+  const handleRemoveSpecification = (indexToRemove) => {
+    const updatedSpecifications = formData.key_specifications
+      .split(delim)
+      .filter((_, index) => index !== indexToRemove)
+      .join(delim);
+
+    setFormData({
+      ...formData,
+      key_specifications: updatedSpecifications,
+    });
+  };
+
 
   const handleFileChange = (e) => {
 	  const { name, files } = e.target;
@@ -131,7 +175,7 @@ const Tables = () => {
       console.log(response.data);
 
       // Redirect to another page upon success
-      navigate('/admin/products');
+      navigate('/admin/default');
     } catch (error) {
       console.error('Error creating product:', error);
       setError('An error occurred while uploading. Please try again.');	 
@@ -141,6 +185,37 @@ const Tables = () => {
 
   };
 
+  useEffect(() => {
+	if (paramProductType == 'grocery') {
+	    setFormData({
+	      ...formData,
+	      type: 'grocery',
+	    });
+	} else if (paramProductType == 'request') {
+	    setFormData({
+	      ...formData,
+	      type: 'request',
+	    });
+	} else {
+	    setFormData({
+	      ...formData,
+	      type: 'product',
+	    });
+	}
+
+    const fetchCategories = async () => {
+      try {
+        // Replace the URL with the endpoint that retrieves your categories
+        const response = await fetch('http://localhost:8000/api/v1/categories');
+        const data = await response.json();
+        setCategories(data.categories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const getUserCountry = async () => {
@@ -150,7 +225,7 @@ const Tables = () => {
 
         // Extract country information from the response
         const country = response.data.country;
-        console.log('Country Code:', country); // Log the country code for debugging
+        console.log('Country Code:', country); 
         if (country == 'NG') {
           setCurrencySymbol('₦')
         } else if (country == 'UK') {
@@ -193,7 +268,6 @@ const Tables = () => {
 
 	  <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
 
-
 <p onClick={()=>setUploadPreview(true)}>Upload preview</p>
 {uploadPreview && <UploadPreview formData={formData} imagePreviews={imagePreviews} setUploadPreview={setUploadPreview} />}
 
@@ -217,6 +291,7 @@ const Tables = () => {
 						  type="file"
 						  name="images"
 						  multiple
+						  required
 						  onChange={handleFileChange}
 						  class="hidden"
 						 />
@@ -254,6 +329,7 @@ const Tables = () => {
               autoComplete="product-name"
               value={formData.name} 
               onChange={handleInputChange}
+	      required
 	      className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
           </div>
@@ -265,16 +341,20 @@ const Tables = () => {
           </label>
           <div className="mt-2">
             <select
-              id="category"
-              name="category"
+              id="category_id"
+              name="category_id"
               autoComplete="category"
-              // value={formData.category} 
-              // onChange={handleInputChange}
+              value={formData.category_id} 
+              onChange={handleInputChange}
+	      required
               className="mt-1 text-gray-500 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             >
-              <option>Select Category</option>
-              <option value="1">Electronics</option>
-              <option value="2">Clothing</option>
+              <option value="">Select Category</option>
+	        {categories && categories.map((category) => (
+		  <option key={category.id} value={category.id}>
+		    {category.name}
+		  </option>
+		))}
             </select>
           </div>
         </div>
@@ -287,7 +367,9 @@ const Tables = () => {
                 id="condition-new"
                 name="condition"
                 type="radio"
+                onChange={handleInputChange}
 	        value="new"
+		required
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
               <label htmlFor="condition-new" className="block text-sm font-medium leading-6 text-gray-900">
@@ -300,6 +382,7 @@ const Tables = () => {
                 name="condition"
                 type="radio"
 	        value="used"
+                onChange={handleInputChange}
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
               <label htmlFor="condition-used" className="block text-sm font-medium leading-6 text-gray-900">
@@ -312,6 +395,7 @@ const Tables = () => {
                 name="condition"
                 type="radio"
 	        value="na"
+                onChange={handleInputChange}
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
               <label htmlFor="conditon-na" className="block text-sm font-medium leading-6 text-gray-900">
@@ -332,12 +416,25 @@ const Tables = () => {
               type="text"
               name="price"
               id="price"
-              placeholder="Add Price"
+              placeholder={paramProductType == 'request' ? 'Min price' : 'Add Price'}
               autoComplete="price"
               value={formData.price} 
               onChange={handleInputChange}
+	      required
               className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
+	{paramProductType == 'request' &&
+            <input
+              type="text"
+              name="max_price"
+              id="max_price"
+              placeholder="Max Price"
+              value={formData.max_price} 
+              onChange={handleInputChange}
+	      required
+              className="mt-1 ml-8 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+            />
+	}
           </div>
         </div>
 
@@ -354,6 +451,7 @@ const Tables = () => {
               autoComplete="street-address"
               value={formData.address} 
               onChange={handleInputChange}
+   	      required
               className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
           </div>
@@ -383,6 +481,7 @@ const Tables = () => {
               autoComplete="phone-number"
               value={formData.phone_number} 
               onChange={handleInputChange}
+	      required
               className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
           </div>
@@ -432,14 +531,34 @@ const Tables = () => {
 			  </label>
 			  <div className="mt-2">
 			    <input
-			      type="text"
-			      name="specification"
-			      id="specification"
-			      placeholder="Add specifications"
-			      // value={formData.name} 
-			      // onChange={handleInputChange}
-			      className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+				  type="text"
+				  name="single_specifications"
+				  id="key_specifications"
+				  placeholder="Add specifications"
+				  value={formData.single_specifications}
+				  onChange={handleInputChange}
+				  onKeyPress={handleKeyPress}
+			          className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
 			    />
+
+	{formData.key_specifications &&
+		<ul className="list-disc px-8 py-4">
+		  {formData.key_specifications.split(delim).map((specification, index) => (
+		    <li key={index}>
+		      {specification.trim()}
+		      <button
+			type="button"
+			className="ml-2 text-red-500"
+			onClick={() => handleRemoveSpecification(index)}
+		      >
+			X
+		      </button>
+		    </li>
+		  ))}
+		</ul>
+	}
+
+
 			  </div>
 			  <p className="mt-3 text-sm leading-6 text-gray-600">Hit enter to add each specification</p>
 			<button type="submit" className="linear mt-8 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">

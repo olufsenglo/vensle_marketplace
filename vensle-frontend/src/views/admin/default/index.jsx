@@ -65,7 +65,11 @@ const tableColumnsTopCreators = [
 
 const Dashboard = () => {
   const [extractedData, setExtractedData] = useState([]);
+  const [data, setData] = useState([]);
 
+    const getDisplayImage = (image) => {
+      return image && image.name ? `http://127.0.0.1:8000/uploads/${image.name}` : '';
+    };
 
   useEffect(() => {
     // Function to fetch products
@@ -73,8 +77,8 @@ const Dashboard = () => {
       try {
         const response = await fetch('http://127.0.0.1:8000/api/v1/products');
         const data = await response.json();
-	const extractedData = data.data.map(({ name, category, condition, price, status, created_at }) => ({
-	  name,
+	const extractedData = data.data.map(({ name, display_image, category, condition, price, status, created_at }) => ({
+	  name: [name, getDisplayImage(display_image)],		
 	  category: category.name,
 	  condition,
 	  price,
@@ -82,6 +86,7 @@ const Dashboard = () => {
 	  created_at,
 	}));
 	setExtractedData(extractedData);
+	setData(data);
       } catch (error) {
         console.error('Error fetching products:', error);
       }

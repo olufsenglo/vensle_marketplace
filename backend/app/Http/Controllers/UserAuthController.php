@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\UserAlert;
+//use App\Notifications\PasswordChanged;
 
 class UserAuthController extends Controller
 {
@@ -151,6 +153,24 @@ public function updateProfile(Request $request)
 		}
 
 		$user->update(['password' => bcrypt($request->new_password)]);
+	/*
+	 * TODO ?
+       // Revoke the current user's access token
+        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
+
+        // Create a new access token for the user
+        $newToken = $user->createToken('token-name')->plainTextToken;
+	*/
+		
+		// Send a notification about the password change
+		//$user->notify(new PasswordChanged(), ['database']);
+
+	        // Create a UserAlert for the password change
+		UserAlert::create([
+		    'user_id' => $user->id,
+		    'title' => 'Password Changed',
+		    'message' => 'Your password was successfully changed.',
+		]);	
 
 		return response(['message' => 'Password updated successfully'], 200);
 	}	
@@ -188,5 +208,6 @@ public function updateProfile(Request $request)
 
 	    return response(['user' => $user, 'message' => 'Profile picture updated successfully'], 200);
 	}
-	
+
+
 }

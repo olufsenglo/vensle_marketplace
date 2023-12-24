@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -18,21 +19,57 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+
+    public function index(Request $request)
     {
         try {
-            //$products = Product::paginate(config('constants.PAGINATION_LIMIT'));
-	    $products = Product::with(['images', 'displayImage', 'category'])
-    		->orderBy('created_at', 'desc')
-    		->paginate(config('constants.PAGINATION_LIMIT'));
+            $userLat = $request->input('lat');
+            $userLng = $request->input('lng');
+            $distance = $request->input('distance');
+            $userCountry = $request->input('country'); // Assuming you send user's country from the frontend
+
+            $query = Product::with(['images', 'displayImage', 'category'])
+                ->orderBy('created_at', 'desc');
+
+            if ($userCountry) {
+                $query->where('country', $userCountry);
+            }
+
+            $products = $query->paginate(config('constants.PAGINATION_LIMIT'));
+
+            if ($userLat && $userLng && $distance) {
+                $filteredProducts = $products->filter(function ($product) use ($userLat, $userLng, $distance, $userCountry) {
+                    return $product->country === $userCountry &&
+                        $this->calculateDistance($userLat, $userLng, $product->latitude, $product->longitude) <= $distance;
+                });
+
+                $products = $filteredProducts->values(); // Reindex the array after filtering
+            }
 
             return response()->json($products);
         } catch (\Exception $e) {
             Log::error('Error fetching products: ' . $e->getMessage());
-	    return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    // Helper function to calculate distance using Haversine formula
+    private function calculateDistance($lat1, $lng1, $lat2, $lng2)
+    {
+        $earthRadius = 6371; // in kilometers
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLng = deg2rad($lng2 - $lng1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) * sin($dLng / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        $distance = $earthRadius * $c;
+
+        return $distance;
     }
 
 
@@ -60,6 +97,7 @@ class ProductController extends Controller
                 'phone_number' => 'required|string',
                 'description' => 'required|string',
                 'type' => 'required|string',
+		'key_specifications' => 'nullable|string',
                 'status' => 'required|in:Active,Inactive',
 		'ratings' => 'nullable|numeric|min:0|max:5',
                 'quantity' => 'nullable|integer|min:0',
@@ -341,6 +379,27 @@ return response()->json($product, 201);
             $query->where('price', '<=', $request->input('maxPrice'));
         }
 
+        if ($request->filled('type')) {
+            $query->where('type', $request->input('type'));
+        }
+
+	if ($request->filled('sort')) {
+		$value = $request->input('sort');
+		if ($value == 'price_lowest')
+			$query->orderby('price', 'asc');
+		elseif ($value == 'price_highest')
+			$query->orderby('price', 'desc');
+		elseif ($value == 'ratings')
+			$query->orderby($value, 'desc');
+		elseif ($value == 'views')
+			$query->orderby($value, 'desc');
+		elseif ($value == 'created_at')
+			$query->orderby($value, 'desc');
+
+
+	}
+
+
         //if ($request->has('sizes')) {
             //$sizes = explode(',', $request->input('sizes'));
             //$query->whereIn('size', $sizes);
@@ -348,37 +407,11 @@ return response()->json($product, 201);
 
         // Add more filters as needed
 
-        $filteredProducts = $query->get();
+	$filteredProducts = $query
+		       	    ->with(['images', 'displayImage', 'category'])
+			    ->get();
 
         return response()->json(['data' => $filteredProducts]);
-    }
-
-    /**
-     * Get the top products based on a specific column.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $column
-     * @return \Illuminate\Http\JsonResponse
-     */
-    private function getTopProducts(Request $request, $column)
-    {
-        try {
-            $request->validate([
-                'per_page' => 'required|integer',
-            ]);
-
-            $perPage = $request->input('per_page');
-
-            $products = Product::orderByDesc($column)->paginate($perPage);
-
-            return response()->json($products);
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        } catch (\Exception $e) {
-            // Log the exception and return an error response
-            Log::error("Error fetching top products by $column: " . $e->getMessage());
-            return response()->json(['error' => 'Internal Server Error'], 500);
-        }
     }
 
 public function getProductsByUser()
@@ -393,6 +426,108 @@ public function getProductsByUser()
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }    
+
+    /**
+     * Get the top products based on a specific type.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTopProductsByType(Request $request)
+    {
+        try {
+            $request->validate([
+                'per_page' => 'sometimes|required|integer',
+                'type' => 'sometimes|string|nullable',
+            ]);
+
+	    $perPage = $request->input('per_page');
+	   // dd($perPage);
+            //$perPage = '2';
+            $type = $request->input('type');
+
+        $query = Product::query();
+
+    if ($type !== null && $type !== '') {
+        $query->where('type', $type);
+    }
+	    
+	    $filteredProducts = $query
+    	    	    ->with(['images', 'displayImage', 'category'])
+		    ->orderByDesc('sold')
+		    ->paginate($perPage);
+
+            return response()->json($filteredProducts);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            // Log the exception and return an error response
+            Log::error("Error fetching top products: " . $e->getMessage());
+	    return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Get the top products based on a request type and column.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  $column
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTopProductsbyColumn(Request $request)
+    {
+        try {
+            $request->validate([
+                'per_page' => 'required|integer',
+                'column' => 'sometimes|string|nullable',
+            ]);
+
+            $perPage = $request->input('per_page');
+            $column = $request->input('column');
+
+	    $products = Product::orderByDesc($column)
+        	        ->with(['images', 'displayImage', 'category'])
+		        ->paginate($perPage);
+
+            return response()->json($products);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            // Log the exception and return an error response
+            Log::error("Error fetching top products by $column: " . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }
+
+    /**
+     * Get the top products based on a request per_page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $column
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function getTopProducts(Request $request, $column)
+    {
+        try {
+            $request->validate([
+                'per_page' => 'required|integer',
+            ]);
+
+            $perPage = $request->input('per_page');
+
+	    $products = Product::orderByDesc($column)
+        	        ->with(['images', 'displayImage', 'category'])
+		        ->paginate($perPage);
+
+            return response()->json($products);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            // Log the exception and return an error response
+            Log::error("Error fetching top products by $column: " . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }
 
     /**
      * Get the top products sorted by quantity.
@@ -436,6 +571,28 @@ public function getProductsByUser()
     public function getTopProductsByViews(Request $request)
     {
         return $this->getTopProducts($request, 'views');
+    }
+
+    /**
+     * Get the top products sorted by date.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTopProductsByDate(Request $request)
+    {
+        return $this->getTopProducts($request, 'created_at');
+    }
+
+    public function getAllCategories()
+    {
+        try {
+            $categories = Category::all();
+
+            return response()->json(['categories' => $categories], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error fetching categories'], 500);
+        }    
     }
 
     /**

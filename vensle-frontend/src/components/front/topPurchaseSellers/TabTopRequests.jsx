@@ -1,25 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios';
 
-const products = [
-  {
-    id: 1,
-    name: 'Earthen Bottle',
-    href: '#',
-    price: '$48',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg',
-    imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
-  },
-  {
-    id: 2,
-    name: 'Nomad Tumbler',
-    href: '#',
-    price: '$35',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
-    imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
-  },
-]
-
 export default function TopRequests() {
     const [productRequests, setProductRequests] = useState([]);
 
@@ -31,7 +12,7 @@ export default function TopRequests() {
     try {
       const response = await axios.get('http://localhost:8000/api/v1/products/top-by-type', {
         params: {
-		per_page: '2',
+		per_page: '4',
 		type: 'request'
         },
       });
@@ -47,6 +28,7 @@ export default function TopRequests() {
     }, []);
   return (
     <div className="bg-white">
+	  {console.log('rqqqq',productRequests)}
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold mb-7 tracking-tight text-gray-900 uppercase">TOP REQUESTS</h2>
 

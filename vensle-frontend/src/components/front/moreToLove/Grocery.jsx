@@ -59,7 +59,7 @@ export default function Grocery({ product }) {
 		  	  src={product.display_image && getImagePath(product.display_image)}
                           alt={product.name}
                         />
-		  {product.images && product.images[1] ? <img className="peer absolute top-0 -right-96 h-full w-full object-cover transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0" src={getImagePath(product.images[0])} alt="product image" /> : ""}
+		  {product.images && product.images[1] ? <img className="peer absolute top-0 -right-96 h-full w-full object-cover transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0" src={getImagePath(product.images[1])} alt="product image" /> : ""}
 
                     </a>
                 </div>

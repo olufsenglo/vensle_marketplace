@@ -1,4 +1,6 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
+import axios from 'axios';
+
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
@@ -16,8 +18,113 @@ function classNames(...classes) {
 }
 
 const Top = () => {
+  const [distance, setDistance] = useState(20);
+  const [userLocation, setUserLocation] = useState(null);
+  const [userCountry, setUserCountry] = useState(null);
+  const [products, setProducts] = useState([]);
+
+  const handleDistanceChange = (event) => {
+    const newDistance = parseInt(event.target.value, 10);
+    setDistance(newDistance);
+    fetchProducts(userLocation, newDistance, userCountry);
+	  console.log("coounnt", userLocation)
+  };
+
+  const fetchProducts = (location, selectedDistance, country) => {
+    if (location) {
+
+if (!country)
+	    country = "UK";
+
+      axios.get(`http://127.0.0.1:8000/api/v1/products?lat=${location.lat}&lng=${location.lng}&distance=${selectedDistance}&country=${country}`)
+        .then(response => setProducts(response.data))
+        .catch(error => console.error(error));
+    }
+  };
+
+
+useEffect(() => {
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+          fetchProducts({ lat: latitude, lng: longitude }, distance, userCountry);
+        },
+        (error) => {
+          console.error('Error getting user location:', error);
+	  setUserLocation({ lat: 51.509865, lng: -0.118092});
+          // Handle geolocation permission denied with an alert
+          if (error.code === 1) {
+            alert('Geolocation permission denied. Please enable location services.');
+          }
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+	
+
+  };
+
+  const getUserCountry = () => {
+/*
+    axios.get('https://ipinfo.io')
+      .then(response => {
+        const country = response.data.country;
+        setUserCountry(country);
+      })
+      .catch(error => {
+        console.error('Error getting user country:', error);
+      });
+      */
+	  setUserCountry("UK")
+  };
+
+  getUserLocation();
+  getUserCountry();
+}, [distance]);
+	
+
     return (
         <div className="bg-white">
+	    {console.log(products)}
+
+
+    <div className="container mx-auto my-8 p-8 bg-gray-100">
+      <label className="block mb-4">
+        Select Distance:
+        <select className="ml-2 p-2" value={distance} onChange={handleDistanceChange}>
+          <option value={10}>10 km</option>
+          <option value={20}>20 km</option>
+          <option value={30}>30 km</option>
+        </select>
+      </label>
+
+      {userLocation && (
+        <p className="mb-4">
+          Your Location: {userLocation.lat}, {userLocation.lng}
+        </p>
+      )}
+
+      <p className="mb-4">Selected Distance: {distance} km</p>
+
+      <ul>
+        {products.map(product => (
+          <li key={product.id} className="bg-white shadow p-4 mb-4">
+            <h2 className="text-xl font-semibold">{product.name}</h2>
+            <p>Latitude: {product.latitude}</p>
+            <p>Longitude: {product.longitude}</p>
+            <p>Country: {product.country}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+
+
+
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="p-4 flex justify-between" style={{"padding": "19px 0rem", "fontSize": "15px"}}>
                     <ul className="flex justify-between">

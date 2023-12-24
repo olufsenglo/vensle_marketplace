@@ -32,6 +32,17 @@ const Cart = () => {
       return product.display_image ? `http://127.0.0.1:8000/uploads/${product.display_image.name}` : '';
     };
 
+    const handleRemoveFromCart = (itemId) => {
+      dispatch(removeFromCart(itemId));
+    };
+  
+    const handleDecreaseQuantity = (itemId) => {
+      dispatch(decreaseQuantity(itemId));
+    };
+  
+    const handleIncreaseQuantity = (itemId) => {
+      dispatch(increaseQuantity(itemId));
+    };
 
   const handleToken = async (token) => {
     try {
@@ -50,7 +61,7 @@ const Cart = () => {
 
 	    console.log(response)
 
-      window.location.href = response.data.url; // Redirect to Stripe Checkout
+      //window.location.href = response.data.url; // Redirect to Stripe Checkout
     } catch (error) {
       console.error('Error initiating payment:', error.message);
       // Handle error, e.g., show an error message to the user
@@ -82,18 +93,18 @@ const Cart = () => {
                     <div className="relative flex flex-1 flex-col justify-between">
                     <div className="sm:col-gap-5 sm:grid sm:grid-cols-2">
                         <div className="pr-8 sm:pr-5">
-                        <p className="text-base font-semibold text-gray-900">Nike Air Max 2019</p>
-                        <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">36EU - 4US</p>
+                        <p className="text-base font-semibold text-gray-900">{item.name}</p>
+                        <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">Qty {item.quantity}</p>
                         </div>
 
                         <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
-                        <p className="shrink-0 w-20 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">$259.00</p>
+                        <p className="shrink-0 w-20 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">$ {item.price * item.quantity}</p>
 
                         <div className="sm:order-1">
                             <div className="mx-auto flex h-8 items-stretch text-gray-600">
-                            <button className="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-black hover:text-white">-</button>
-                            <div className="flex w-full items-center justify-center bg-gray-100 px-4 text-xs uppercase transition">1</div>
-                            <button className="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white">+</button>
+                            <button onClick={() => handleDecreaseQuantity(item.id)} className="flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:bg-black hover:text-white">-</button>
+                            <div className="flex w-full items-center justify-center bg-gray-100 px-4 text-xs uppercase transition">{item.quantity}</div>
+                            <button onClick={() => handleIncreaseQuantity(item.id)} className="flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:bg-black hover:text-white">+</button>
                             </div>
                         </div>
                         </div>
@@ -133,7 +144,7 @@ const Cart = () => {
                 <p className="text-sm text-gray-700">including VAT</p>
                 </div>
             </div>
-
+	    {/*
       <StripeCheckout
         stripeKey="pk_test_51OL7LdDwlZKF9BGtT3xl3qSKbORzgTTnqMTT3UnQ1UJQxC1eCcZ9RE3Di0yCzhThEsXqOlEblC5KiqX6RUf6FiH600aDLCBme2"
         token={handleToken}
@@ -141,7 +152,7 @@ const Cart = () => {
         name="Your Product"
         billingAddress
         shippingAddress
-      />
+      />*/}
             <button onClick={handleToken} className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Check out</button>
             </div>
         </div>

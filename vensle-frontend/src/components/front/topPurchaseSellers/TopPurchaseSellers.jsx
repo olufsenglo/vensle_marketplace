@@ -2,17 +2,29 @@ import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
+
+import TabTopRequests from './TabTopRequests'
+import TabTopCategories from './TabTopCategories'
+import Categories from './Categories'
+
 import {
     addToCart,
 } from 'actions/actions';
+
 
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 
 
+import img1 from "assets/img/front/categories/img1.JPG";
+import img2 from "assets/img/front/categories/img2.JPG";
+import img3 from "assets/img/front/categories/img3.JPG";
 import img4 from "assets/img/front/categories/img4.JPG";
 import img5 from "assets/img/front/categories/img5.JPG";
+import img6 from "assets/img/front/categories/img6.JPG";
+import img7 from "assets/img/front/categories/img7.JPG";
+import img8 from "assets/img/front/categories/img8.JPG";
 
 
 function classNames(...classes) {
@@ -24,6 +36,9 @@ const TopPurchaseSellers = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [products, setProducts] = useState([]);
     const [open, setOpen] = useState(false)
+    const [activePill, setActivePill] = useState(1);
+    const [activeTab, setActiveTab] = useState(1);
+    const [type, setType] = useState('');
 
   const [selectedImagePath, setSelectedImagePath] = useState(null);
 
@@ -71,23 +86,78 @@ const TopPurchaseSellers = () => {
 	</a>)
    }
 
+    const handlePillClick = (pillNumber, tabNumber,  productType) => {
+	setActivePill(pillNumber);
+	setActiveTab(tabNumber);
+	setType(productType);
+    };
 
+    const handleTabClick = (tabNumber, productType) => {
+	setActiveTab(tabNumber);
+	setType(productType);
+    };
+
+  const topProductsByType = async () => {
+        const apiUrl = 'http://127.0.0.1:8000/api/v1/products/top-by-type';
+    try {
+      const response = await axios.get('http://localhost:8000/api/v1/products/top-by-type', {
+        params: {
+		per_page: 8,
+		type
+        },
+      });
+
+      setProducts(response.data.data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  }
 
     useEffect(() => {
-        const apiUrl = 'http://127.0.0.1:8000/api/v1/products';
-    
-        axios.get(apiUrl)
-          .then(response => {
-            setProducts(response.data.data);
-            console.log(response.data.data);
-          })
-          .catch(error => {
-            console.error('Error fetching products:', error);
-          });
-    }, []);
+	topProductsByType();
+    }, [type]);
 
     return (
     	<div className="bg-white">
+
+
+		<div className="flex mt-16 justify-center items-center">
+			<button 
+	    			className={`rounded py-1 text-sm px-10 transition duration-300 ${
+				activePill === 1 ? 'text-white bg-gray-900' : 'bg-gray-200'
+				}`}
+		                onClick={() => handlePillClick(1, 1, "")}
+			>
+				FOR SALE
+			</button>
+			<button 
+	    			className={`rounded py-1 text-sm px-10 transition duration-300 ${
+				activePill === 2 ? 'text-white bg-gray-900' : 'bg-gray-200'
+				}`}
+		                onClick={() => handlePillClick(2, 3, "request")}
+			>
+				REQUESTS
+			</button>
+			<button 
+	    			className={`rounded py-1 text-sm px-10 transition duration-300 ${
+				activePill === 3 ? 'text-white bg-gray-900' : 'bg-gray-200'
+				}`}
+		                onClick={() => handlePillClick(3, 4, "grocery")}
+			>
+
+				GROCERIES
+			</button>
+		</div>
+
+	    {activePill === 1 && <Categories />}
+	    {activePill === 2 && <TabTopRequests />}
+	    {activePill === 3 && <TabTopCategories />}
+
+
+
+
+
+
 
 		<div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         	<div className="mx-auto lg:mx-0 lg:flex lg:max-w-none">
@@ -99,14 +169,16 @@ const TopPurchaseSellers = () => {
 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75">
 		  {/*<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">*/}
                 <img
-                  src={img4}
-                  alt="product"
+		  src={products[0] && products[0].display_image ? getImagePath(products[0].display_image.name) : ""}
+		  alt={products.name}
                   className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                 />
               </div>
 	      <div className="p-2">
 
-		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>Dell Computer that has been really used infact it has been so used that i wonder ...</h2>
+		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>
+	    		{products[0] && products[0].name}
+	    	      </h2>
 
 		      <div className="mt-1 flex items-center">
 			{[0, 1, 2, 3, 4].map((rating) => (
@@ -124,6 +196,7 @@ const TopPurchaseSellers = () => {
 			  <h3 className="text-sm text-gray-700">
 			    <a onClick={(e) => handleModal(e, 11)} href="">
 			      <span aria-hidden="true" className="absolute inset-0" />
+	    		      {products[0] && products[0].price}
 			      124.50
 			    </a>
 			  </h3>
@@ -148,24 +221,47 @@ const TopPurchaseSellers = () => {
 
                 	<div className="w-full bg-white">
 
-		<div className="flex justify-between items-center">
+		<div className="lg:flex justify-between items-center">
 
 	    			<h1 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl pb-1 tracking-tight text-gray-900 sm:text-2xl">BEST SELLERS</h1>
 
                         <div class="flex overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700">
-                            <button class="inline-flex items-center h-10 px-4 -mb-px text-sm text-center text-red-600 bg-transparent border-b-2 border-red-500 sm:text-base dark:border-red-400 dark:text-red-300 whitespace-nowrap focus:outline-none">
+                            <button
+	    			class={`inline-flex items-center h-10 px-4 -mb-px text-sm text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none transition duration-300 ${
+					activeTab === 1 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
+				}`}
+		                onClick={() => handleTabClick(1, "")}
+	    		     >
                                 All Products
                             </button>
 
-                            <button class="inline-flex items-center h-10 px-4 -mb-px text-sm text-center text-gray-700 bg-transparent border-b-2 border-transparent sm:text-base dark:text-white whitespace-nowrap cursor-base focus:outline-none hover:border-gray-400">
+
+                            <button
+	    			class={`inline-flex items-center h-10 px-4 -mb-px text-sm text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+					activeTab === 2 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
+				}`}
+		                onClick={() => handleTabClick(2, "product")}
+	    		     >
                                 For Sale
                             </button>
 
-                            <button class="inline-flex items-center h-10 px-4 -mb-px text-sm text-center text-gray-700 bg-transparent border-b-2 border-transparent sm:text-base dark:text-white whitespace-nowrap cursor-base focus:outline-none hover:border-gray-400">
+
+                            <button
+	    			class={`inline-flex items-center h-10 px-4 -mb-px text-sm text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+					activeTab === 3 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
+				}`}
+		                onClick={() => handleTabClick(3, "request")}
+	    		     >
+
                                 Requests
                             </button>
 
-                            <button class="inline-flex items-center h-10 px-4 -mb-px text-sm text-center text-gray-700 bg-transparent border-b-2 border-transparent sm:text-base dark:text-white whitespace-nowrap cursor-base focus:outline-none hover:border-gray-400">
+                            <button
+	    			class={`inline-flex items-center h-10 px-4 -mb-px text-sm text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+					activeTab === 4 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
+				}`}
+		                onClick={() => handleTabClick(4, "grocery")}
+	    		     >	    
                                 Groceries
                             </button>
                         </div>
@@ -269,7 +365,7 @@ const TopPurchaseSellers = () => {
               leaveTo="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
             >
               <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-6xl md:px-4 lg:max-w-7xl">
-                <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+                <div className="relative flex w-full rounded-3xl items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-1 lg:p-2">
                   <button
                     type="button"
                     className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"

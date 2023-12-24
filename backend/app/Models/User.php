@@ -54,4 +54,24 @@ class User extends Authenticatable
     {
         return $this->hasMany(Product::class);
     }
+
+    public function userAlerts()
+    {
+        return $this->hasMany(UserAlert::class);
+    }    
+
+    /*
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+     */
+
+    /*
+    public function notifications()
+    {
+        return $this->morphMany(DatabaseNotification::class, 'notifiable')
+            ->orderBy('created_at', 'desc');
+    }
+     */    
 }

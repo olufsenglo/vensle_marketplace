@@ -21,7 +21,7 @@ const Hero = () => {
         <Slider {...settings}>
             <div>
       <div className="mx-auto max-w-2xl lg:max-w-7xl" style={{"height":"569.69px"}}>
-        <div className="flex items-center" style={{"background":"#aaa", "height":"100%"}}>
+        <div className="flex items-center w-full h-full" style={{backgroundImage:`url(${slider1})`}}>
            <div className="pr-8" style={{"paddingLeft":"7%", "width":"100%"}}>
 
                 <h2 style={{"color":"red"}} className="text-2xl font-normal tracking-tight text-white">Enjoy 20% off</h2>

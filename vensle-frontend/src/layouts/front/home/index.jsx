@@ -8,6 +8,7 @@ import StoreBanner from "components/front/storeBanner/StoreBanner";
 import TopRequests from "components/front/topRequests/TopRequests";
 import MoreToLove from "components/front/moreToLove/MoreToLove";
 import TopPurchaseSellers from "components/front/topPurchaseSellers/TopPurchaseSellers";
+import Subscribe from "components/front/subscribe/Subscribe";
 
 
 
@@ -20,7 +21,8 @@ const Home = () => {
         <div className="min-h-full">
             <Header />
             <Hero />
-            <Categories />
+
+	    {/*<Categories />*/}
 	    <TopPurchaseSellers />
 	    {/*<Best />*/}
 	    <DeliverBanner />
@@ -29,7 +31,7 @@ const Home = () => {
 	    <StoreBanner />
 	    <TopRequests />
 	    <MoreToLove />
-
+	    <Subscribe />
 	    {/*<GrocerySuggest />*/}
             <Footer />
         </div>

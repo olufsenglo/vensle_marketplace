@@ -1,5 +1,8 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+
+import NotificationIcon from './NotificationIcon';
 
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
@@ -22,6 +25,11 @@ function classNames(...classes) {
 }
 
 const Navbar = (props) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const paramRedirect = queryParams.get('redirect');
+
+
   const { onOpenSidenav, brandText } = props;
   const [darkmode, setDarkmode] = React.useState(false);
   const [open, setOpen] = useState(false)
@@ -32,6 +40,10 @@ const Navbar = (props) => {
       return `http://127.0.0.1:8000/uploads/${name}`;
     };
 	
+useEffect(() => {
+	if (paramRedirect == 'modal')
+		setOpen(true);
+})
 
   return (
 <>	  
@@ -84,7 +96,7 @@ const Navbar = (props) => {
         </span>
 
 <p onClick={()=>setOpen(true)}>Upload</p>		
-
+<NotificationIcon />
         {/* start Notification */}
         <Dropdown
           button={
@@ -234,6 +246,7 @@ const Navbar = (props) => {
 
 
             <div>
+	      <a href="/admin/upload-product">
                 <div class="relative flex items-center justify-center mx-auto">
                     <svg class="text-purple-100" width="66" height="68" viewBox="0 0 66 68" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z" />
@@ -246,10 +259,11 @@ const Navbar = (props) => {
 	  		Regular Products
 	        </h3>
                 <p class="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint</p>
-            </div>
-
+	   	</a>
+             </div>
 
             <div>
+	      <a href="/admin/upload-product?type=request">
                 <div class="relative flex items-center justify-center mx-auto">
                     <svg class="text-orange-100" width="62" height="64" viewBox="0 0 62 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M62 13.001C62 33.4355 53.9345 64.001 33.5 64.001C13.0655 64.001 0 50.435 0 30.0005C0 9.56596 2.56546 4.00021 23 4.00021C43.4345 4.00021 62 -7.43358 62 13.001Z" />
@@ -262,9 +276,11 @@ const Navbar = (props) => {
 	  		Request a Product
 	  	</h3>
                 <p class="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.</p>
+	      </a>
             </div>
 
             <div>
+	      <a href="/admin/upload-product?type=grocery">
                 <div class="relative flex items-center justify-center mx-auto">
                     <svg class="text-green-100" width="66" height="68" viewBox="0 0 66 68" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z" />
@@ -277,6 +293,7 @@ const Navbar = (props) => {
 	  		Groceries
 	  	</h3>
                 <p class="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.</p>
+	      </a>
             </div>
 
 
