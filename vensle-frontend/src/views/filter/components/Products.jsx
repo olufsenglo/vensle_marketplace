@@ -28,6 +28,14 @@ const Products = () => {
   const searchTerm = queryParams.get('searchTerm') || '';
   const category_id = queryParams.get('category_id') || '';
 
+ const initialDistance = queryParams.get('distance') || '';	
+
+  const storedLocation = JSON.parse(localStorage.getItem('userLocation')) || { lat: 0, lng: 0 };
+  const storedCountry = localStorage.getItem('userCountry') || 'Unknown';
+	
+
+
+
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   // State for filter form inputs
   const [minPrice, setMinPrice] = useState('');
@@ -35,6 +43,22 @@ const Products = () => {
   const [type, setType] = useState('');
   const [sort, setSort] = useState('');
   const [selectedSizes, setSelectedSizes] = useState([]);
+
+
+  const [distance, setDistance] = useState(initialDistance);
+  const [userLocation, setUserLocation] = useState({
+	lat: storedLocation.lat,
+	lng: storedLocation.lng
+  });
+  const [userCountry, setUserCountry] = useState(storedCountry);
+
+  const handleDistanceChange = (event) => {
+    const newDistance = parseInt(event.target.value, 10);
+    setDistance(newDistance);
+    //fetchProducts(userLocation, newDistance, userCountry);
+    //console.log("coounnt", userLocation)
+  };
+
 
   // State for filtered products
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -94,13 +118,17 @@ const Products = () => {
           category_id,
           minPrice,
           maxPrice,
+	  distance,
+	  lat: userLocation.lat,
+	  lng: userLocation.lng,
+	  country: userCountry,
 	  type,
 	  sort,
           sizes: selectedSizes.join(','), // Convert array to comma-separated string
         },
       });
-
-      const filteredProducts = response.data.data; // Use the 'data' property
+console.log('resss', response.data);
+      const filteredProducts = response.data.data;
       setFilteredProducts(filteredProducts);
     } catch (error) {
       console.error('Error fetching filtered products:', error);
@@ -109,13 +137,15 @@ const Products = () => {
 
   useEffect(() => {
     fetchFilteredProducts();
-  }, [searchTerm, category_id, minPrice, maxPrice, type, sort, selectedSizes]);
+
+
+  }, [searchTerm, category_id, minPrice, maxPrice, distance, userLocation, userCountry, type, sort, selectedSizes]);
 
   return (
  <div className="bg-white">
 
 
-
+	  {console.log("stooooor", storedLocation, storedCountry)}
 
       <div>
         {/* Mobile filter dialog */}
@@ -262,6 +292,21 @@ const Products = () => {
               {/* Filters */}
               <form className="hidden lg:block">
 
+ <h3 className="text-xl mb-2 flow-root">Distance</h3>
+      <label className="block mb-4">
+        <select
+          className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+	  value={distance}
+	  onChange={handleDistanceChange}
+	>
+          <option value={10}>10 km</option>
+          <option value={20}>20 km</option>
+          <option value={30}>30 km</option>
+          <option value={500}>500 km</option>
+        </select>
+      </label>
+
+
           <h3 className="text-xl mb-2 flow-root">Price</h3>
 	  <div className="mb-7 flex justify-between items-center">
 	  	<div className="flex items-center">
@@ -332,24 +377,22 @@ const Products = () => {
               </form>
 
               {/* Product grid */}
-              <div className="lg:col-span-3">
+              <div className="lg:col-span-3 relative">
 
-
-
-
-
-
-
-
-
+{!filteredProducts.length &&
+<div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
+	
+	<p>Loading...</p>
+</div>
+}
 
 
 {/*----------*/}	  
-   <div>
-      {/* Display the filter form */}
 
       {/* Display the filtered products */}
       <div className="bg-white">
+
+
         <div className="mx-auto max-w-2xl lg:max-w-7xl">
           <h2 className="sr-only">Products</h2>
 
@@ -362,7 +405,6 @@ const Products = () => {
           </div>
         </div>
       </div>
-    </div>
 
 
 

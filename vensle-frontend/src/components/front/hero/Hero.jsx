@@ -16,7 +16,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="" style={{"marginTop":"32px"}}>
+    <div className="bg-white pt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Slider {...settings}>
             <div>

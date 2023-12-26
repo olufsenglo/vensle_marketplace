@@ -43,3 +43,21 @@ input:checked.defaultCheckbox::before {
 .slick-prev:before, .slick-next:before {
     font-size: 36px!important;
 }
+
+.slick-dots {
+	bottom: 10px!important;
+}
+
+.slick-dots li button {
+    background: white!important;
+}
+
+.slick-dots li button {
+    border-radius: 5px!important;
+}
+
+.slick-dots li button:before {
+    font-size: 10px!important;	
+    border: 1px solid white!important;
+    border-radius: 5px!important;
+}

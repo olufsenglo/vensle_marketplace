@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\Category;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 /**
  * Class ProductController
@@ -29,7 +32,7 @@ class ProductController extends Controller
             $userLat = $request->input('lat');
             $userLng = $request->input('lng');
             $distance = $request->input('distance');
-            $userCountry = $request->input('country'); // Assuming you send user's country from the frontend
+            $userCountry = $request->input('country');
 
             $query = Product::with(['images', 'displayImage', 'category'])
                 ->orderBy('created_at', 'desc');
@@ -40,6 +43,25 @@ class ProductController extends Controller
 
             $products = $query->paginate(config('constants.PAGINATION_LIMIT'));
 
+        if ($userLat && $userLng && $distance) {
+            $filteredProducts = $products->filter(function ($product) use ($userLat, $userLng, $distance, $userCountry) {
+                return $product->country === $userCountry &&
+                    $this->calculateDistance($userLat, $userLng, $product->latitude, $product->longitude) <= $distance;
+            });
+
+            $filteredProducts = $filteredProducts->values(); // Reindex the array after filtering
+
+            // Create a new Paginator instance with the filtered products
+            $products = new LengthAwarePaginator(
+                $filteredProducts,
+                $products->total(),
+                $products->perPage(),
+                $products->currentPage(),
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        }
+
+	    /**
             if ($userLat && $userLng && $distance) {
                 $filteredProducts = $products->filter(function ($product) use ($userLat, $userLng, $distance, $userCountry) {
                     return $product->country === $userCountry &&
@@ -47,7 +69,8 @@ class ProductController extends Controller
                 });
 
                 $products = $filteredProducts->values(); // Reindex the array after filtering
-            }
+	    }
+	     */
 
             return response()->json($products);
         } catch (\Exception $e) {
@@ -88,10 +111,11 @@ class ProductController extends Controller
     {
 	$response = [];
 
+	//TODO chang condition in seeder
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string',
-                'condition' => 'required|in:New,Fairly Used,N/A',
+                'condition' => 'required|in:new,used,n/a',
                 'price' => 'required|numeric',
                 'address' => 'required|string',
                 'phone_number' => 'required|string',
@@ -104,11 +128,14 @@ class ProductController extends Controller
                 'sold' => 'nullable|integer|min:0',
                 'views' => 'nullable|integer|min:0',
                 'category_id' => 'required|exists:categories,id',
+		'latitude' => 'required|numeric',
+		'longitude' => 'required|numeric',
 		//'specification_ids' => 'required|array',
 		'images' => 'required',
 		'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 	    ]);
 
+		dd($validatedData);
 
 	$user = Auth::user();
         if (!$user) {
@@ -231,6 +258,21 @@ return response()->json($product, 201);
         return $similarProducts;
     }
 
+public function getUserProducts($userId)
+{
+    try {
+        $user = User::findOrFail($userId);
+        
+        $products = Product::where('user_id', $user->id)
+            ->with(['images', 'category', 'displayImage'])
+            ->paginate(10);
+
+        return response()->json(['user' => $user, 'products' => $products]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }	
+}    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -252,21 +294,25 @@ return response()->json($product, 201);
 	    try {
 		$validatedData = $request->validate([
 		    'name' => 'sometimes|required|string',
-		    'condition' => 'sometimes|required|in:New,Fairly Used,N/A',
+		    'condition' => 'sometimes|required|in:new,used,n/a',
 		    'price' => 'sometimes|required|numeric',
 		    'address' => 'sometimes|required|string',
 		    'phone_number' => 'sometimes|required|string',
 		    'description' => 'sometimes|required|string',
 		    'type' => 'sometimes|required|string',
+		    'key_specifications' => 'sometimes|required|string',
 		    'status' => 'sometimes|required|in:Active,Inactive',
 		    'ratings' => 'sometimes|nullable|numeric|min:0|max:5',
 		    'quantity' => 'sometimes|nullable|integer|min:0',
 		    'sold' => 'sometimes|nullable|integer|min:0',
 		    'views' => 'sometimes|nullable|integer|min:0',
 		    'category_id' => 'sometimes|required|exists:categories,id',
-		    'specification_ids' => 'sometimes|required|array',
+		    'latitude' => 'sometimes|nullable',
+		    'longitude' => 'sometimes|nullable',
 		    'images' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',	
 		]);
+
+		dd($validatedData);
 
 		$product = Product::findOrFail($productId);
 
@@ -307,112 +353,120 @@ return response()->json($product, 201);
 	    }	    
     }
 
-    /** For Test only, move to its controller */
-/*public function filter(Request $request)
+    /** TODO: move to its controller, try catch */
+
+public function filter(Request $request)
 {
-    $searchInput = $request->input('searchTerm');
-    $categoryId = $request->input('category_id');
+    try {
+        $userLat = $request->input('lat');
+        $userLng = $request->input('lng');
+        $distance = $request->input('distance');
+        $userCountry = $request->input('country');
+        $searchTerm = $request->input('searchTerm');
+        $category_id = $request->input('category_id');
+        $minPrice = $request->input('minPrice');
+        $maxPrice = $request->input('maxPrice');
+        $type = $request->input('type');
+        $sortBy = $request->input('sortby', 'created_at');
 
-    $products = Product::when($searchInput, function ($query) use ($searchInput) {
-        $query->where('name', 'like', "%$searchInput%");
-    })->when($categoryId, function ($query) use ($categoryId) {
-        $query->where('category_id', $categoryId);
-    })->get();
+        $query = Product::with(['images', 'displayImage', 'category']);
 
-    return response()->json(['data' => $products]);
+        if ($userCountry) {
+            $query->where('country', $userCountry);
+        }
+
+        if ($searchTerm) {
+            $query->where('name', 'like', '%' . $searchTerm . '%');
+        }
+
+        if ($category_id) {
+            $query->where('category_id', $category_id);
+        }
+
+        if ($minPrice) {
+            $query->where('price', '>=', $minPrice);
+        }
+
+        if ($maxPrice) {
+            $query->where('price', '<=', $maxPrice);
+        }
+
+        if ($type) {
+            $query->where('type', $type);
+        }
+
+        // Sorting logic
+        if ($request->input('sort')) {
+            $value = $request->input('sort');
+            if ($value == 'price_lowest') {
+                $query->orderBy('price', 'asc');
+            } elseif ($value == 'price_highest') {
+                $query->orderBy('price', 'desc');
+            } elseif ($value == 'ratings' || $value == 'views' || $value == 'created_at') {
+                $query->orderBy($value, 'desc');
+            }
+        } else {
+            $query->orderBy($sortBy, 'desc'); // Default sorting if not provided in the request
+        }
+
+	$products = $query->paginate(config('constants.PAGINATION_LIMIT'));
+
+        if ($userLat && $userLng && $distance) {
+            $filteredProducts = $products->filter(function ($product) use ($userLat, $userLng, $distance, $userCountry) {
+                return $product->country === $userCountry &&
+                    $this->calculateDistance($userLat, $userLng, $product->latitude, $product->longitude) <= $distance;
+            });
+
+            $filteredProducts = $filteredProducts->values(); // Reindex the array after filtering
+
+            // Create a new Paginator instance with the filtered products
+            $products = new LengthAwarePaginator(
+                $filteredProducts,
+                $products->total(),
+                $products->perPage(),
+                $products->currentPage(),
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        }
+
+/*
+        if ($userLat && $userLng && $distance) {
+            $filteredProducts = $products->filter(function ($product) use ($userLat, $userLng, $distance, $userCountry) {
+                return $product->country === $userCountry &&
+                    $this->calculateDistance($userLat, $userLng, $product->latitude, $product->longitude) <= $distance;
+            });
+
+            $products = $filteredProducts->values(); // Reindex the array after filtering
+        }
+ */
+
+        return response()->json($products);
+    } catch (\Exception $e) {
+        Log::error('Error fetching products: ' . $e->getMessage());
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
 }
 
 
-    public function filter(Request $request)
-    {
-        $query = Product::query();
 
-        // Apply filters based on request parameters
-        if ($request->has('searchTerm')) {
-            $query->where('name', 'like', '%' . $request->input('searchTerm') . '%');
-        }
+private function calculateHaversine($latColumn, $lngColumn, $userLat, $userLng)
+{
+    $earthRadius = 6371; // in kilometers
 
-        if ($request->has('category_id')) {
-            $query->where('category_id', $request->input('category_id'));
-        }
+    $latDiff = deg2rad($latColumn - $userLat);
+    $lngDiff = deg2rad($lngColumn - $userLng);
 
-        if ($request->filled('minPrice')) {
-            $query->where('price', '>=', $request->input('minPrice'));
-        }
+    $a = sin($latDiff / 2) * sin($latDiff / 2) +
+         cos(deg2rad($userLat)) * cos(deg2rad($latColumn)) *
+         sin($lngDiff / 2) * sin($lngDiff / 2);
 
-        if ($request->filled('maxPrice')) {
-            $query->where('price', '<=', $request->input('maxPrice'));
-        }
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
-        //if ($request->has('sizes')) {
-            //$sizes = explode(',', $request->input('sizes'));
-            //$query->whereIn('size', $sizes);
-        //}
+    $distance = $earthRadius * $c;
 
-        // Add more filters as needed
+    return $distance;
+}
 
-        $filteredProducts = $query->get();
-
-        return response()->json(['data' => $filteredProducts]);
-    }
- */
-
-    public function filter(Request $request)
-    {
-        $query = Product::query();
-
-        // Apply filters based on request parameters
-        if ($request->has('searchTerm')) {
-            $query->where('name', 'like', '%' . $request->input('searchTerm') . '%');
-        }
-
-        // Only add category_id filter if it is not empty
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->input('category_id'));
-        }
-
-        if ($request->filled('minPrice')) {
-            $query->where('price', '>=', $request->input('minPrice'));
-        }
-
-        if ($request->filled('maxPrice')) {
-            $query->where('price', '<=', $request->input('maxPrice'));
-        }
-
-        if ($request->filled('type')) {
-            $query->where('type', $request->input('type'));
-        }
-
-	if ($request->filled('sort')) {
-		$value = $request->input('sort');
-		if ($value == 'price_lowest')
-			$query->orderby('price', 'asc');
-		elseif ($value == 'price_highest')
-			$query->orderby('price', 'desc');
-		elseif ($value == 'ratings')
-			$query->orderby($value, 'desc');
-		elseif ($value == 'views')
-			$query->orderby($value, 'desc');
-		elseif ($value == 'created_at')
-			$query->orderby($value, 'desc');
-
-
-	}
-
-
-        //if ($request->has('sizes')) {
-            //$sizes = explode(',', $request->input('sizes'));
-            //$query->whereIn('size', $sizes);
-        //}
-
-        // Add more filters as needed
-
-	$filteredProducts = $query
-		       	    ->with(['images', 'displayImage', 'category'])
-			    ->get();
-
-        return response()->json(['data' => $filteredProducts]);
-    }
 
 public function getProductsByUser()
 {

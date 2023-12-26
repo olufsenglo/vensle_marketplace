@@ -37,7 +37,7 @@ if (!country)
 	    country = "UK";
 
       axios.get(`http://127.0.0.1:8000/api/v1/products?lat=${location.lat}&lng=${location.lng}&distance=${selectedDistance}&country=${country}`)
-        .then(response => setProducts(response.data))
+        .then(response => setProducts(response.data.data))
         .catch(error => console.error(error));
     }
   };

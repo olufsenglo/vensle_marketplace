@@ -1,3 +1,5 @@
+import React, { Fragment, useEffect, useState } from 'react'
+
 import CardMenu from "components/card/CardMenu";
 import Card from "components/card";
 import {
@@ -9,8 +11,14 @@ import {
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 import { useMemo } from "react";
 import Progress from "components/progress";
+
+import PreviewPopup from "./PreviewPopup";
+
 const ComplexTable = (props) => {
   const { columnsData, tableData } = props;
+
+  const [open, setOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
@@ -35,15 +43,26 @@ const ComplexTable = (props) => {
   } = tableInstance;
   initialState.pageSize = 5;
 
+  const handleProductQuickView = (e, product) => {
+      e.preventDefault();
+	  console.log(product)
+      setSelectedProduct(product)
+      setOpen(true);
+  }
+
   return (
+ <>
+	  
     <Card extra={"w-full h-full p-4 sm:overflow-x-auto"}>
+
+  {selectedProduct && open && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
+	  
       <div class="relative flex items-center justify-between">
         <div class="text-xl font-bold text-navy-700 dark:text-white">
           Products
         </div>
         <CardMenu />
       </div>
-
       <div class="mt-8 h-full overflow-x-scroll xl:overflow-hidden">
         <table {...getTableProps()} className="w-full">
           <thead>
@@ -67,7 +86,12 @@ const ComplexTable = (props) => {
             {page.map((row, index) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} key={index}>
+                <tr 
+      		      style={{cursor:"pointer"}}
+		      onClick={(e) => handleProductQuickView(e, row.original)}
+		      {...row.getRowProps()} 
+		      key={index}
+		>
                   {row.cells.map((cell, index) => {
                     let data = "";
                     if (cell.column.Header === "NAME") {
@@ -137,6 +161,7 @@ const ComplexTable = (props) => {
         </table>
       </div>
     </Card>
+</>	  
   );
 };
 

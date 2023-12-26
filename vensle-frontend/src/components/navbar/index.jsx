@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 import NotificationIcon from './NotificationIcon';
@@ -29,7 +30,16 @@ const Navbar = (props) => {
   const queryParams = new URLSearchParams(location.search);
   const paramRedirect = queryParams.get('redirect');
 
+  /**-Notification-**/
+  const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
+  const accessToken = useSelector((state) => state.auth.user.token);
 
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [userAlerts, setUserAlerts] = useState([]);
+  /**-Notification-**/
+
+  
   const { onOpenSidenav, brandText } = props;
   const [darkmode, setDarkmode] = React.useState(false);
   const [open, setOpen] = useState(false)
@@ -44,6 +54,47 @@ useEffect(() => {
 	if (paramRedirect == 'modal')
 		setOpen(true);
 })
+
+/**-Notification-**/
+  const markAsRead = () => {
+    axios.put(
+	    'http://localhost:8000/api/v1/user-alerts/mark-as-read',
+	    {},
+	    {
+              headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${accessToken}`,
+              },	
+    })
+      .then(() => {
+        setUnreadCount(0);
+        setUserAlerts([]);
+      })
+      .catch(error => console.error('Error marking alerts as read:', error));
+  };
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/v1/user-alerts/unread-count', {
+              headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${accessToken}`,
+              },	
+    })
+      .then(response => setUnreadCount(response.data.unreadCount))
+      .catch(error => console.error('Error fetching unread count:', error));
+
+    axios.get('http://localhost:8000/api/v1/user-alerts/unread', {
+              headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${accessToken}`,
+              },	
+    })
+      .then(response => setUserAlerts(response.data.userAlerts))
+      .catch(error => console.error('Error fetching unread alerts:', error));
+  }, []);
+
+/**-Notification-**/
+
 
   return (
 <>	  
@@ -100,8 +151,16 @@ useEffect(() => {
         {/* start Notification */}
         <Dropdown
           button={
-            <p className="cursor-pointer">
+            <p className="cursor-pointer relative">
               <IoMdNotificationsOutline className="h-4 w-4 text-gray-600 dark:text-white" />
+		  {unreadCount > 0 && (
+		  <span
+		   style={{top: "-0.3rem", left: "0.6rem", fontSize: "0.6rem", padding: "0.4rem", borderRadius:"50%", background:"red"}}
+		   className="absolute flex justify-center items-center text-white h-2 w-2">
+		       {unreadCount}
+		  </span>
+	          )}
+
             </p>
           }
           animation="origin-[65%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
@@ -111,7 +170,7 @@ useEffect(() => {
                 <p className="text-base font-bold text-navy-700 dark:text-white">
                   Notification
                 </p>
-                <p className="text-sm font-bold text-navy-700 dark:text-white">
+                <p onClick={markAsRead} style={{cursor:"pointer"}} className="text-sm font-bold text-navy-700 dark:text-white">
                   Mark all read
                 </p>
               </div>

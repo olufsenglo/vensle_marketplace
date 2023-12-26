@@ -132,6 +132,7 @@ const ProductDetail = () => {
 
         <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
           <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8 bg-white">
+{!product && <p className="text-center mt-8">Loading</p>}	    
             <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl">{product && product.name}</h1>
 
 
@@ -173,7 +174,7 @@ const ProductDetail = () => {
 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
-	    {product.views} view[s]
+	    {product && product.views} view[s]
 		</p>
 	</div>
 
@@ -183,14 +184,14 @@ const ProductDetail = () => {
             <div>
 	      <h3 className="font-bold tracking-tight text-gray-900 text-lg">Condition</h3>
               <div className="mt-2 space-y-6">
-                <p className="text-base text-gray-900">{product.condition}</p>
+                <p className="text-base text-gray-900">{product && product.condition}</p>
               </div>
             </div>
 
             <div className="mt-10">
 	      <h3 className="font-bold tracking-tight text-gray-900 text-lg">Product Details</h3>
               <div className="mt-2 space-y-6">
-                <p className="text-base text-gray-900">{product.description}</p>
+                <p className="text-base text-gray-900">{product && product.description}</p>
               </div>
             </div>
 

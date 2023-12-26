@@ -42,11 +42,18 @@ export default function PopularGroceries() {
     }, []);
 
   return (
-    <div className="bg-white">
+    <div style={{"minHeight":"30rem"}} className="bg-white relative">
+{!products.length &&
+<div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
+	
+	<p>Loading...</p>
+</div>
+}
+	  
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
         <h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl font-normal pb-1 tracking-tight text-gray-900 uppercase">most poplar in groceries</h2>
 
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
+        <div className="mt-6 relative grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
 
           {products && products.map((product) => (
             <a key={product.id} href={product.href} style={{"background": "#eee"}} className="group">

@@ -45,14 +45,21 @@ const MoreToLove = () => {
   }, [perPage]);
 
 	return (
-<>
+<div style={{minHeight:"30rem"}} className="bg-white relative">
+		
+{!products &&
+<div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
+	<p>Loading...</p>
+</div>
+}
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-normal tracking-tight text-gray-900 uppercase">More to Love</h2>
+{products &&
+   <>
+        <div className="mt-6 relative grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
 
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
 
-
-            {products && products.map((product) => (
+            {products.map((product) => (
 		    <>
 		    {product.type == 'product' ? <Product product={product} /> : <Grocery product={product} />}
 		    </>
@@ -72,6 +79,8 @@ const MoreToLove = () => {
 			  </button>
 
 	</div>
+</>
+}
 
       </div>
 
@@ -87,7 +96,7 @@ const MoreToLove = () => {
 
 
 
-</>
+</div>
 	)
 }
 

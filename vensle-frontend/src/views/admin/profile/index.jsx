@@ -20,13 +20,6 @@ const ProfileOverview = () => {
   const user = useSelector((state) => state.auth.user.user);
 
 
-  const [userProfile, setUserProfile] = useState({
-    name: '',
-    email: '',
-    number: '',
-    address: '',
-    profile_picture: null,
-  });
   const [passwordData, setPasswordData] = useState({
     old_password: '',
     new_password: '',
@@ -34,16 +27,51 @@ const ProfileOverview = () => {
   });
   const [imagePreview, setImagePreview] = useState('');
   const [imgPath, setImgPath] = useState('');
+  const [activeTab, setActiveTab] = useState(1);
 
+  const [userProfile, setUserProfile] = useState({
+    name: '',
+    email: '',
+    number: '',
+    address: '',
+    profile_picture: null,
+  });
   const [profileMessage, setProfileMessage] = useState('');
   const [profileError, setProfileError] = useState('');
+  const [businessError, setBusinessError] = useState('');
   const [message, setMessage] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
+
+
+  const [businessProfile, setBusinessProfile] = useState({
+    user_id: user.id,
+    business_email: '',
+    business_name: '',
+    business_address: '',
+    business_number: '',
+    bank_name: '',
+    account_number: '',
+    documentation: '',
+    profile_picture: null,
+  });
+
+
+  const handleTabClick = (tabNumber) => {
+	setActiveTab(tabNumber);
+  };
 
   const userProfileChange = (e) => {
     const { name, value } = e.target;
     setUserProfile({
       ...userProfile,
+      [name]: value,
+    });
+  };	 
+
+  const businessProfileChange = (e) => {
+    const { name, value } = e.target;
+    setBusinessProfile({
+      ...businessProfile,
       [name]: value,
     });
   };	 
@@ -79,6 +107,23 @@ const ProfileOverview = () => {
     }
   }, [isAuthenticated, navigate]);
 */
+  const handleBusinessDetailsSubmit = async (e) => {
+	  const formData = null;
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8000/api/v1/business-details', formData);
+
+      console.log(response.data);
+    } catch (error) {
+      if (error.response) {
+        setBusinessError(error.response.data.error || 'An error occurred.');
+      } else {
+        setBusinessError('An error occurred.');
+      }
+    }
+
+
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -175,6 +220,34 @@ console.log(user);
 
   return (
     <div className="flex w-full flex-col gap-5">
+
+
+                        <div class="flex justify-center overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700">
+                            <button
+	    			class={`inline-flex w-full justify-center items-center h-10 pr-4 -mb-px text-2xl text-left bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none transition duration-300 ${
+					activeTab === 1 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
+				}`}
+		                onClick={() => handleTabClick(1)}
+	    		     >
+	  			Account
+                            </button>
+
+
+                            <button
+	    			class={`inline-flex w-full justify-center items-center h-10 px-4 -mb-px text-2xl text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+					activeTab === 2 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
+				}`}
+		                onClick={() => handleTabClick(2)}
+	    		     >
+                                Business
+                            </button>
+
+
+                        </div>
+	  
+
+{activeTab === 1 &&
+<>	
       <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
         <div className="col-span-6 lg:!mb-0">
           <Banner user={user} setImagePreview={setImagePreview} path={imgPath} imagePreview={imagePreview} handleFileChange={handleFileChange} />
@@ -209,9 +282,9 @@ console.log(user);
 {profileMessage && <p style={{"color":"green"}}>{profileMessage}</p>}
 {profileError && <p style={{"color":"red"}}>{profileError}</p>}
 
-              <div class="mt-10 flex flex-col space-y-4">
+              <div class="mt-11 flex flex-col space-y-4">
                 <div>
-                  <label for="name" class="text-xs font-semibold text-gray-500">Name</label>
+                  <label for="name" class="text-xs font-semibold text-gray-501">Name</label>
                   <input
                     type="text"
                     id="name"
@@ -219,11 +292,11 @@ console.log(user);
                     onChange={userProfileChange}
                     name="name"
 		    required
-                    class="mt-1 block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                    class="mt-2 block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                   />
                 </div>                
                 <div>
-                  <label for="email" class="text-xs font-semibold text-gray-500">Email</label>
+                  <label for="email" class="text-xs font-semibold text-gray-501">Email</label>
                   <input
                     type="email"
                     id="email"
@@ -231,33 +304,33 @@ console.log(user);
                     value={userProfile.email}
                     onChange={userProfileChange}
 		    required
-                    class="mt-1 block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                    class="mt-2 block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
                 <div class="relative">
-                  <label for="number" class="text-xs font-semibold text-gray-500">Phone number</label>
+                  <label for="number" class="text-xs font-semibold text-gray-501">Phone number</label>
                   <input
                     type="text"
                     id="number"
                     name="number"
                     value={userProfile.number}
                     onChange={userProfileChange}
-                    class="block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" /><img src="/images/uQUFIfCYVYcLK0qVJF5Yw.png" alt="" class="absolute bottom-3 right-3 max-h-4"
+                    class="block w-full rounded border-gray-301 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" /><img src="/images/uQUFIfCYVYcLK0qVJF5Yw.png" alt="" class="absolute bottom-3 right-3 max-h-4"
                   />
                 </div>
                 <div class="relative">
-                  <label for="Address" class="text-xs font-semibold text-gray-500">Address</label>
+                  <label for="address" class="text-xs font-semibold text-gray-501">Address</label>
                   <input
                     type="text"
                     id="address"
                     name="address"
                     value={userProfile.address}
                     onChange={userProfileChange}
-                    class="block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" /><img src="/images/uQUFIfCYVYcLK0qVJF5Yw.png" alt="" class="absolute bottom-3 right-3 max-h-4"
+                    class="block w-full rounded border-gray-301 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" /><img src="/images/uQUFIfCYVYcLK0qVJF5Yw.png" alt="" class="absolute bottom-3 right-3 max-h-4"
                   />
                 </div>
-                <div className="mt-4">
-                  <button type="submit" className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+                <div className="mt-5">
+                  <button type="submit" className="linear mt-3 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
                     Update details
                   </button>
                 </div>
@@ -320,7 +393,6 @@ console.log(user);
           </Card>
         </div>
       </div>
-      {/* all project & ... */}
 
       <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-12">
 
@@ -337,6 +409,94 @@ console.log(user);
           <General />
         </div>
       </div>
+</>
+}
+{activeTab === 2 &&
+      <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
+
+
+        <form onSubmit={handleBusinessDetailsSubmit} className="col-span-12 lg:col-span-12 lg:mb-0 3xl:col-span-4">
+
+          <Card extra={"w-full p-4 h-full"}>
+            <div className="mb-8 w-full">
+              <h4 className="text-xl font-bold text-navy-700 dark:text-white">
+                Update Details
+              </h4>
+
+{profileMessage && <p style={{"color":"green"}}>{profileMessage}</p>}
+{profileError && <p style={{"color":"red"}}>{profileError}</p>}
+
+              <div class="mt-11 flex flex-col space-y-4">
+                <div>
+                  <label for="business_name" class="text-xs font-semibold text-gray-501">Name</label>
+                  <input
+                    type="text"
+                    id="business_name"
+                    value={businessProfile.business_name}
+                    onChange={businessProfileChange}
+                    name="business_name"
+		    required
+                    class="mt-2 block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>                
+                <div>
+                  <label for="business_email" class="text-xs font-semibold text-gray-501">Email</label>
+                  <input
+                    type="email"
+                    id="business_email"
+                    name="business_email"
+                    value={businessProfile.business_email}
+                    onChange={businessProfileChange}
+		    required
+                    class="mt-2 block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
+                <div class="relative">
+                  <label for="business_number" class="text-xs font-semibold text-gray-501">Phone number</label>
+                  <input
+                    type="text"
+                    id="business_number"
+                    name="business_number"
+                    value={businessProfile.business_number}
+                    onChange={businessProfileChange}
+                    class="block w-full rounded border-gray-301 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" /><img src="/images/uQUFIfCYVYcLK0qVJF5Yw.png" alt="" class="absolute bottom-3 right-3 max-h-4"
+                  />
+                </div>
+                <div class="relative">
+                  <label for="business_address" class="text-xs font-semibold text-gray-501">Address</label>
+                  <input
+                    type="text"
+                    id="business_address"
+                    name="business_address"
+                    value={businessProfile.business_address}
+                    onChange={businessProfileChange}
+                    class="block w-full rounded border-gray-301 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" /><img src="/images/uQUFIfCYVYcLK0qVJF5Yw.png" alt="" class="absolute bottom-3 right-3 max-h-4"
+                  />
+                </div>
+                <div className="mt-5">
+                  <button type="submit" className="linear mt-3 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+                    Update business details
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+
+
+
+
+	</form>
+
+
+	{/*
+        <div className="col-span-6 lg:!mb-0">
+            <p>Business</p>
+	</div>
+	*/}
+
+      </div>
+}
 
     </div>
   );

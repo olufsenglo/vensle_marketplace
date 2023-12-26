@@ -95,6 +95,8 @@ const Marketplace = () => {
             columnsData={tableColumnsTopCreators}
           />
       </div>
+
+      <h2 className="text-xl font-bold pl-2 mt-6">Requests</h2>
       <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-4">
           {products && products.map((product) => (
             <NftCard

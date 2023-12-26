@@ -46,17 +46,28 @@ export default function TopRequests() {
 	fetchProductRequests();
     }, []);
   return (
-    <div className="bg-white">
+    <div style={{minHeight:"30rem"}} className="bg-white relative">
+
+{!productRequests.length &&
+<div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
+	<p>Loading...</p>
+</div>
+}
+
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold mb-7 tracking-tight text-gray-900 uppercase">TOP REQUESTS</h2>
 
         <h2 className="sr-only">Products</h2>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
+        <div className="grid relative grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
+
           {productRequests && productRequests.map((product) => (
 
             <a key={product.id} href={product.href} className="group">
-<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
+<div className="aspect-h-1 relative aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
+<div style={{"top":"1rem", "right":"1rem"}} className="text-white py-1 px-2 rounded absolute bg-orange-500">
+		  <p>${product.price} - $400</p>
+</div>
                 <img
 		  src={product.display_image && getImagePath(product.display_image.name)}
 		  alt={product.name}

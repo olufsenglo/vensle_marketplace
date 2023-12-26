@@ -45,7 +45,7 @@ useEffect(() => {
 }, [ imagePreviews ]); 
 
 	return (
-		<div style={{"top":"0", "left":"0", "zIndex":"5"}} className="absolute w-full h-full bg-gray-300">
+		<div style={{"top":"0", "left":"0", "zIndex":"5"}} className="absolute w-full h-full p-4 bg-white">
 <p onClick={()=>setUploadPreview(false)}>Back</p>
 
     <div className="bg-white">
@@ -130,26 +130,11 @@ useEffect(() => {
 		  	</p>
 
 <div className="flex items-center">
-                <a
-                  href="#"
-                  className="mt-10 block w-full rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Upload
-                </a>
+			<button type="submit" className="linear mt-8 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+			  PREVIEW & SUBMIT
+			</button>
 
 
-                <a
-                  href="#"
-                  className="mt-10 ml-3 block rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  call
-                </a>
-                <a
-                  href="#"
-                  className="mt-10 ml-3 block rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  msg
-                </a>
 </div>	  
               </div>
             </div>

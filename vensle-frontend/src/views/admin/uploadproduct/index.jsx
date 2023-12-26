@@ -47,6 +47,9 @@ const Tables = () => {
     status: 'Active',
     images: null,
     single_specifications: '',
+latitude: 32.45435,
+longitude: 2.34902,
+country: 'UK',
     key_specifications: '',
     //specifications_ids: [4,5],
   });
@@ -147,6 +150,17 @@ const handleAddNewKeySpecs = (e) => {
     ));
   };
 
+const handleUploadPreview = (e) => {
+	e.preventDefault();
+	if (formData.images == null)
+	{
+		setError("Please upload an image")
+	}
+	else {
+		setUploadPreview(true);
+		setError(null)
+	}
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -172,14 +186,17 @@ const handleAddNewKeySpecs = (e) => {
 		      'Authorization': `Bearer ${accessToken}`,
 	      },
       });
-      console.log(response.data);
 
-      // Redirect to another page upon success
-      navigate('/admin/default');
+      if (response.error) {
+        setError(response.error);
+      } else {
+        setError(null);
+      }
+
+      navigate('/admin/products');
     } catch (error) {
+      console.log("inngjjk",error.response.data.error);
       console.error('Error creating product:', error);
-      setError('An error occurred while uploading. Please try again.');	 
-      // Handle error
     }	  
   
 
@@ -205,7 +222,6 @@ const handleAddNewKeySpecs = (e) => {
 
     const fetchCategories = async () => {
       try {
-        // Replace the URL with the endpoint that retrieves your categories
         const response = await fetch('http://localhost:8000/api/v1/categories');
         const data = await response.json();
         setCategories(data.categories);
@@ -268,7 +284,7 @@ const handleAddNewKeySpecs = (e) => {
 
 	  <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
 
-<p onClick={()=>setUploadPreview(true)}>Upload preview</p>
+
 {uploadPreview && <UploadPreview formData={formData} imagePreviews={imagePreviews} setUploadPreview={setUploadPreview} />}
 
 
@@ -291,7 +307,6 @@ const handleAddNewKeySpecs = (e) => {
 						  type="file"
 						  name="images"
 						  multiple
-						  required
 						  onChange={handleFileChange}
 						  class="hidden"
 						 />
@@ -329,7 +344,6 @@ const handleAddNewKeySpecs = (e) => {
               autoComplete="product-name"
               value={formData.name} 
               onChange={handleInputChange}
-	      required
 	      className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
           </div>
@@ -346,7 +360,6 @@ const handleAddNewKeySpecs = (e) => {
               autoComplete="category"
               value={formData.category_id} 
               onChange={handleInputChange}
-	      required
               className="mt-1 text-gray-500 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             >
               <option value="">Select Category</option>
@@ -369,7 +382,6 @@ const handleAddNewKeySpecs = (e) => {
                 type="radio"
                 onChange={handleInputChange}
 	        value="new"
-		required
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
               <label htmlFor="condition-new" className="block text-sm font-medium leading-6 text-gray-900">
@@ -420,7 +432,6 @@ const handleAddNewKeySpecs = (e) => {
               autoComplete="price"
               value={formData.price} 
               onChange={handleInputChange}
-	      required
               className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
 	{paramProductType == 'request' &&
@@ -431,7 +442,6 @@ const handleAddNewKeySpecs = (e) => {
               placeholder="Max Price"
               value={formData.max_price} 
               onChange={handleInputChange}
-	      required
               className="mt-1 ml-8 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
 	}
@@ -451,7 +461,6 @@ const handleAddNewKeySpecs = (e) => {
               autoComplete="street-address"
               value={formData.address} 
               onChange={handleInputChange}
-   	      required
               className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
           </div>
@@ -481,7 +490,6 @@ const handleAddNewKeySpecs = (e) => {
               autoComplete="phone-number"
               value={formData.phone_number} 
               onChange={handleInputChange}
-	      required
               className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
             />
           </div>
@@ -561,7 +569,7 @@ const handleAddNewKeySpecs = (e) => {
 
 			  </div>
 			  <p className="mt-3 text-sm leading-6 text-gray-600">Hit enter to add each specification</p>
-			<button type="submit" className="linear mt-8 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
+			<button onClick={handleUploadPreview} className="linear mt-8 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
 			  PREVIEW & SUBMIT
 			</button>
 

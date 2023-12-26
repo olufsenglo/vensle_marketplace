@@ -131,6 +131,40 @@ public function updateProfile(Request $request)
 		return response(['user' => $user, 'message' => 'Profile updated successfully'], 200);
 	}*/
 
+
+        //TODO try catch
+        /**
+        * Change reset password
+        *
+        * @param  \Illuminate\Http\Request  $request
+        * @return \Illuminate\Http\JsonResponse
+        */
+	public function resetPassword(Request $request)
+	{
+		$request->validate([
+		    'email' => 'required|email',
+		    'new_password' => 'required',
+		    'new_password_confirmation' => 'required|same:new_password',
+		]);
+
+		$user = auth()->user();
+
+		//Check email
+		/*if (!Hash::check($request->old_password, $user->password)) {
+		    return response(['error' => 'Old password is incorrect'], 401);
+		}*/
+
+		$user->update(['password' => bcrypt($request->new_password)]);
+		UserAlert::create([
+		    'user_id' => $user->id,
+		    'title' => 'Password Changed',
+		    'message' => 'Your password was successfully changed.',
+		]);	
+
+		return response(['message' => 'Password reset successfully'], 200);
+	}	
+
+
         //TODO try catch
         /**
         * Change user password
@@ -209,5 +243,28 @@ public function updateProfile(Request $request)
 	    return response(['user' => $user, 'message' => 'Profile picture updated successfully'], 200);
 	}
 
+
+	/**
+	 * Get user by ID with business details
+	 *
+	 * @param  int  $userId
+	 * @return JsonResponse
+	 */
+	public function getUserById($userId)
+	{
+	    try {
+		$userWithBusinessDetails = User::with('businessDetails')->find($userId);
+
+		if (!$userWithBusinessDetails) {
+		    return response()->json(['message' => 'User not found'], 404);
+		}
+
+		return response()->json(['user' => $userWithBusinessDetails], 200);
+	    } catch (\Exception $e) {
+		return response()->json(['error' => $e->getMessage()], 500);
+	    }
+	}
+
+	
 
 }

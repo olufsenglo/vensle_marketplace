@@ -56,13 +56,15 @@ const Tables = () => {
       try {
         const response = await fetch('http://127.0.0.1:8000/api/v1/products');
         const data = await response.json();
-	const extractedData = data.data.map(({ name, category, condition, price, status, created_at }) => ({
+	const extractedData = data.data.map(({ id, name, category, condition, price, status, created_at, ...rest }) => ({
+	  id,
 	  name,
 	  category: category.name,
 	  condition,
 	  price,
 	  status,
 	  created_at,
+          ...rest
 	}));
 	console.log(extractedData);
 	setProducts(data.data);

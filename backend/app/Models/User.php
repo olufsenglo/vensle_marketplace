@@ -25,6 +25,7 @@ class User extends Authenticatable
 	'address',
 	'phone_number',
 	'profile_picture',
+	'provider_id',
     ];
 
     /**
@@ -59,6 +60,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserAlert::class);
     }    
+
+public function businessDetails()
+{
+    return $this->hasOne(BusinessDetails::class);
+}
 
     /*
     public function notifications()

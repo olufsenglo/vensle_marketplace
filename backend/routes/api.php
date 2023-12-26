@@ -11,6 +11,11 @@ use App\Http\Controllers\StripeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserAlertController;
+use App\Http\Controllers\Auth\GoogleLoginController;
+use App\Http\Controllers\BusinessDetailsController;
+use App\Http\Controllers\AuthSocialiteController;
+
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +34,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/v1/register', [UserAuthController::class, 'register']);
 Route::post('/v1/login', [UserAuthController::class, 'login']);
+Route::get('/v1/user/{userId}', [UserAuthController::class, 'getUserById']);
 
 //Route::post('/v1/payment', 'App\Http\Controllers\StripeController@payment');
 Route::post('/v1/payment', [StripeController::class, 'payment']);
@@ -78,6 +84,8 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('v1/products', ProductController::class)->except(['index']);
 });
 
+Route::get('/v1/user/{userId}/products', [ProductController::class, 'getUserProducts']);
+
 Route::get('/v1/categories', [ProductController::class, 'getAllCategories']);
 
 //[ Product request
@@ -102,3 +110,14 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/v1/user-alerts/mark-as-read', [UserAlertController::class, 'markAlertsAsRead']);
     Route::get('/v1/user-alerts/unread-count', [UserAlertController::class, 'getUnreadAlertsCount']);
 });
+
+//Route::group(['prefix' => 'auth'], function () {});
+Route::get('/v1/auth/google', [AuthSocialiteController::class, 'redirectToGoogle']);
+//Route::get('/v1/auth/google/callback', [AuthSocialiteController::class, 'handleGoogleCallback']);
+Route::match(['get', 'post'], '/v1/auth/google/callback', [AuthSocialiteController::class, 'handleGoogleCallback']);
+
+
+Route::post('/v1/business-details', [BusinessDetailsController::class, 'store']);
+Route::get('/v1/business-details/{id}', [BusinessDetailsController::class, 'show']);
+Route::put('/v1/business-details/{id}', [BusinessDetailsController::class, 'update']);
+Route::delete('/v1/business-details/{id}', [BusinessDetailsController::class, 'destroy']);

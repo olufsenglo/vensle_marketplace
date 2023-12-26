@@ -121,7 +121,7 @@ const TopPurchaseSellers = () => {
     	<div className="bg-white">
 
 
-		<div className="flex mt-16 justify-center items-center">
+		<div className="flex pt-16 justify-center gap-5 items-center">
 			<button 
 	    			className={`rounded py-1 text-sm px-10 transition duration-300 ${
 				activePill === 1 ? 'text-white bg-gray-900' : 'bg-gray-200'
@@ -159,13 +159,23 @@ const TopPurchaseSellers = () => {
 
 
 
-		<div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
+		<div style={{minHeight:"30rem"}} className="mx-auto relative max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
+
+{!products.length &&
+<div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
+	<p>Loading...</p>
+</div>
+}
+
+
         	<div className="mx-auto lg:mx-0 lg:flex lg:max-w-none">
           		<div className="lg:mt-0 lg:pr-8 bg-white lg:w-full lg:max-w-md lg:flex-shrink-0">
         			<h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl pb-1 font-normal tracking-tight text-gray-900 uppercase">Top Purchases</h2>
 
-
+{products && products[0] &&
             <div style={{"background": "#f4f4f4a3"}} className="group mt-6 relative rounded-md">
+
+
 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75">
 		  {/*<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">*/}
                 <img
@@ -215,7 +225,7 @@ const TopPurchaseSellers = () => {
 
             </div>
 
-
+}
 	    		</div>
 
 

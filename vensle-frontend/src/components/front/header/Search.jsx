@@ -16,6 +16,19 @@ const Search = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const inputRef = useRef(null);
 
+
+  const [categories, setCategories] = useState('');
+  const [distance, setDistance] = useState(20);
+
+  const handleDistanceChange = (event) => {
+    const newDistance = parseInt(event.target.value, 10);
+    setDistance(newDistance);
+    //fetchProducts(userLocation, newDistance, userCountry);
+    //console.log("coounnt", userLocation)
+  };
+
+
+
   const handleInputChange = async (e) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -23,11 +36,10 @@ const Search = () => {
     // Fetch suggestions from Laravel backend using Axios
     try {
       const response = await axios.get(`http://localhost:8000/api/v1/products/filter`, {
-        params: { searchTerm: value, category_id: selectedCategory },
+        params: { searchTerm: value, category_id: selectedCategory, distance },
       });
 
       const fetchedSuggestions = response.data.data; // Use the 'data' property
-      console.log(fetchedSuggestions);
       setSuggestions(fetchedSuggestions);
       setSelectedSuggestionIndex(-1);
     } catch (error) {
@@ -60,7 +72,7 @@ const Search = () => {
     const isClickInsideSuggestions = e.target.closest('.suggestions-list');
 
     if (!isClickInsideInput && !isClickInsideSuggestions) {
-      setSearchTerm('');
+      //setSearchTerm('');
       setSuggestions([]);
     }
   };
@@ -81,6 +93,21 @@ const Search = () => {
   };
 
   useEffect(() => {
+
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/categories');
+        const data = await response.json();
+        setCategories(data.categories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     setSelectedSuggestionIndex(-1);
   }, [suggestions]);
 
@@ -95,9 +122,18 @@ const Search = () => {
   }, []);
 
   return (
-     <form style={{ "display": "flex", "position": "relative", "align-items": "center", "height": "100%", "flex": "1", "margin-left":"82px" }} onSubmit={handleSearchButtonClick}>
+     <form className="flex items-center h-full relative" style={{ "flex": "1" }} onSubmit={handleSearchButtonClick}>
+
+
+        <select className="ml-2 p-2 h-full border" value={distance} onChange={handleDistanceChange}>
+          <option value={10}>10 km</option>
+          <option value={20}>20 km</option>
+          <option value={30}>30 km</option>
+        </select>
+
+
       <input
-        style={{ "height": "100%", "flex": "1", "border": "1px solid #ccc", "padding-left":"54px" }}
+        style={{ "height": "100%", "flex": "1", "border": "1px solid #ccc", "padding-left":"20px" }}
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
@@ -106,14 +142,17 @@ const Search = () => {
         ref={inputRef}
       />
       <select
-	style={{"paddingRight":"26px"}}
         value={selectedCategory}
         onChange={handleCategoryChange}
-        className="border p-2 rounded-md h-full"
+        className="border p-2 h-full"
       >
-        <option value="">Everything</option>
-        <option value="1">Category 1</option>
-        <option value="2">Category 2</option>
+                <option value="">Everything</option>
+                {categories && categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+	  
       </select>
       {searchTerm && suggestions.length > 0 && (
         <ul style={{ "top": "2.8rem", "width": "100%" }} className="suggestions-list absolute z-10 right-0 left-0 bg-white border p-2 mt-1 w-64">
@@ -129,8 +168,9 @@ const Search = () => {
         </ul>
       )}
       <button
-        style={{ "background": "#ff5959", "color": "white", "height": "100%", "padding-right": "22px", "padding-left": "22px" }}
-        type="button"
+	  className="h-full text-white"
+        style={{ "background": "#ff5959", "padding-right": "22px", "padding-left": "22px" }}
+        type="submit"
       >
         SEARCH
       </button>

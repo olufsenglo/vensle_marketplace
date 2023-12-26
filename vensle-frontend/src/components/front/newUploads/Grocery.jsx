@@ -53,7 +53,6 @@ export default function Grocery({ product }) {
 
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                     <a class="relative flex lg:h-40 overflow-hidden rounded-xl" href="#">
-	  {console.log(product)}
                         <img
                           class="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
 		  	  src={product.display_image && getImagePath(product.display_image)}
