@@ -27,6 +27,10 @@ const Product = ({ product }) => {
       return `http://127.0.0.1:8000/uploads/${name}`;
     };
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
 	return (
 <>
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
@@ -47,7 +51,10 @@ const Product = ({ product }) => {
 			{[0, 1, 2, 3, 4].map((rating) => (
 			  <StarIcon
 			    key={rating}
-			    className='text-orange-900 h-3 w-3 mr-1 flex-shrink-0'
+                    className={classNames(
+                      product.ratings > rating ? 'text-orange-900' : 'text-orange-200',
+                      'h-3 w-3 flex-shrink-0'
+                    )}
 			    aria-hidden="true"
 			  />
 			))}

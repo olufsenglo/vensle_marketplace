@@ -3,6 +3,10 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
    const defaultImagePath = selectedProduct.display_image && selectedProduct.display_image.name ? 
 		`http://127.0.0.1:8000/uploads/${selectedProduct.display_image.name}` : 
@@ -60,7 +64,9 @@ return (
 
 
     <div className="bg-white">
-      <p onClick={() => setOpen(false)}>Back</p>
+
+      <p className="cursor-pointer ml-2 mb-4" onClick={()=>setOpen(false)}>Back</p>
+
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
 
@@ -69,17 +75,15 @@ return (
                 <div class="w-full px-4">
                     <div class="sticky top-0 z-50 overflow-hidden ">
                         <div class="relative mb-6 lg:mb-10 lg:h-[28rem]">
-	{console.log("innnn dx", imgIndex)}
-	{console.log("mggggg",previewImage)}			 
 	
-	<span onClick={handlePreviousPreviewImage}>Prev</span>
+	<span className="absolute left-0 cursor-pointer" style={{top: "50%"}} onClick={handlePreviousPreviewImage}>Prev</span>
                             <img
-	   			style={{"width":"200rem"}} 
+	   			style={{"width":"200rem", "padding": "1rem"}} 
 				src={previewImage}
 				alt=" /"
                                 className="object-cover w-full lg:h-full "
 		             />
-	<span onClick={handleNextPreviewImage}>Next</span>
+	<span className="absolute right-0 cursor-pointer" style={{top: "50%"}} onClick={handleNextPreviewImage}>Next</span>
                         </div>
                         <div class="flex-wrap hidden md:flex ">
             {selectedProduct.images[0] && selectedProduct.images.map((image, index) => (
@@ -107,23 +111,25 @@ return (
 			{[0, 1, 2, 3, 4].map((rating) => (
 			  <StarIcon
 			    key={rating}
-			    className='text-orange-900 h-3 w-3 mr-1 flex-shrink-0'
+                    className={classNames(
+                      selectedProduct?.ratings > rating ? 'text-orange-900' : 'text-orange-200',
+                      'h-3 w-3 flex-shrink-0'
+                    )}
 			    aria-hidden="true"
 			  />
 			))}
 		      </div>
 
                 <p className="text-sm leading-5 text-gray-600">
-	  		<span className="text-gray-400">4.0</span> (16 Feedbacks)
+	  		<span className="text-gray-400">{selectedProduct?.ratings}</span> (16 Feedbacks)
                 </p>
 </div>
-                <h4 className="text-xl mt-3 mb-5 text-gray-600">$124.80</h4>
+                <h4 className="text-xl mt-3 mb-5 text-gray-600">${selectedProduct?.price}</h4>
                 <h4 className="text-xl font-semibold text-gray-600">Product Details</h4>
 
 
             <p className="mt-3 text-base leading-7 text-gray-600">
-              Lorem ipsum dolor sit amet consect etur adipisicing elit. Itaque amet indis perferendis blanditiis
-              repellendus etur quidem dwelling.
+		{selectedProduct?.description}
             </p>
 
 			<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-3">

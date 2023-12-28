@@ -5,6 +5,7 @@ import axios from "axios";
 import RtlLayout from "layouts/rtl";
 import AdminLayout from "layouts/admin";
 import AuthLayout from "layouts/auth";
+import Facebook from "layouts/front/socialAuthRedirect/Facebook";
 import Filter from "layouts/front/filter";
 import Home from "layouts/front/home";
 import Detail from "layouts/front/detail";
@@ -73,6 +74,7 @@ console.log("counteryyyy", country)
   return (
     <Routes>
       <Route path="auth/*" element={<AuthLayout />} />
+      <Route path="social/facebook/callback/*" element={<Facebook />} />
       <Route path="admin/*" element={<AdminLayout />} />
       <Route path="rtl/*" element={<RtlLayout />} />
       <Route path="filter/*" element={<Filter />} />

@@ -37,4 +37,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT'),
     ],    
 
+    'facebook' => [
+        'client_id' => '685180687065499',
+        'client_secret' => '24c8b99923a8c8a9231ac69e939b75c1',
+        'redirect' => 'http://localhost:8000/api/v1/auth/facebook/callback',
+    ],
+        //'redirect' => 'http://localhost:3000/social/facebook/callback',
+
 ];

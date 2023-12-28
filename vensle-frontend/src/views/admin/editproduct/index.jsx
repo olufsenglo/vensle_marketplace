@@ -20,6 +20,9 @@ const Tables = () => {
   const queryParams = new URLSearchParams(location.search);
   const paramProductId = queryParams.get('id');
 
+  const storedLocation = JSON.parse(localStorage.getItem('userLocation')) || { lat: 0, lng: 0 };
+  const storedCountry = localStorage.getItem('userCountry') || 'Unknown';	
+	
   const [currencySymbol, setCurrencySymbol] = useState('');
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
@@ -50,9 +53,9 @@ const Tables = () => {
     status: 'Active',
     images: null,
     single_specifications: '',
-latitude: 32.45435,
-longitude: 2.34902,
-country: 'UK',
+latitude: storedLocation.lat,
+longitude: storedLocation.lng,
+country: storedCountry,
     key_specifications: '',
     //specifications_ids: [4,5],
   });
@@ -177,11 +180,18 @@ e.preventDefault();
       console.log('Product updated successfully:', response.data);
       navigate('/admin/products');
     } catch (error) {
+
       if (error.response) {
-        setError(error.response.data.error || 'An error occurred.');
-      } else {
-        setError('An error occurred.');
+        if (error.response.data.error) {
+          setError(error.response.data.error);
+        } else if (error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors).flat();
+          setError(errorMessages);
+        } else {
+          setError('An unexpected error occurred.');
+        }
       }
+
     }
   };
 
@@ -333,8 +343,8 @@ country: product.country,
 
   return (
     <div className="flex w-full flex-col gap-5">
-    {error && <div className="text-red-500">{error}</div>}
-<h1>Edit product</h1>
+{error && <div className="mt-8 ml-4 text-red-500">{error}</div>}
+	  
 	  <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
 
 
@@ -434,6 +444,7 @@ country: product.country,
                 name="condition"
                 type="radio"
                 onChange={handleInputChange}
+		checked={formData.condition == 'new' ? true : false }
 	        value="new"
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
@@ -447,6 +458,7 @@ country: product.country,
                 name="condition"
                 type="radio"
 	        value="used"
+		checked={formData.condition == 'used' ? true : false }
                 onChange={handleInputChange}
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
@@ -460,6 +472,7 @@ country: product.country,
                 name="condition"
                 type="radio"
 	        value="na"
+		checked={formData.condition == 'na' ? true : false }
                 onChange={handleInputChange}
                 className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />

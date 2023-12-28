@@ -35,9 +35,8 @@ class StripeController extends Controller
             }
 
             $lineItems = [];
-/*
+
             foreach ($products as $product) {
-                // Ensure price is a valid numeric value
                 $priceInCents = is_numeric($product->price) ? $product->price * 100 : 0;
 
                 $lineItems[] = [
@@ -62,7 +61,6 @@ class StripeController extends Controller
                 'success_url' => 'http://localhost:3000/payment/success',
                 'cancel_url' => 'http://localhost:3000/payment/cancel',
             ]);
- */
 
             //$userId = Auth::id();
 	    
@@ -71,15 +69,13 @@ class StripeController extends Controller
                 'user_id' => 1,
                 //'user_id' => $userId,
                 'stripe_session_id' => 2139,	
-                //'stripe_session_id' => $session->id,
+                'stripe_session_id' => $session->id,
             ]);
 
-            // Assuming there's a relationship between orders and products
-            // Attach the selected products to the order
             $order->products()->attach($productIds);	    
 
-            return response()->json(['url' => 'www']);
-            //return response()->json(['url' => $session->url]);
+            //return response()->json(['url' => 'www']);
+            return response()->json(['url' => $session->url]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

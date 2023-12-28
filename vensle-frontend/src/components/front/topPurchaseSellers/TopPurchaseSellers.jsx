@@ -211,6 +211,19 @@ const TopPurchaseSellers = () => {
 			    </a>
 			  </h3>
 			</div>
+
+		    {products[0] && products[0].type == 'grocery' ?
+			  <button
+			    type="submit"
+                    	    onClick={() => handleAddToCart(products[0])}
+		  	    style={{"fontSize":"0.8rem"}}
+			    className="bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-1 px-2 border border-orange-500 hover:border-transparent rounded"
+			    >
+			    ADD TO CART
+			  </button>
+
+			    :
+
 			<p className="text-xs flex items-center text-black-200 font-medium text-gray-700" style={{"color":"#aaa"}}>
 		  	
 <svg class="h-3 w-3 mr-1 text-gray-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -220,6 +233,11 @@ const TopPurchaseSellers = () => {
 
 		  		London
 		  	</p>
+		    }
+
+
+
+
 		      </div>
 	      </div>
 
@@ -299,7 +317,10 @@ const TopPurchaseSellers = () => {
 			{[0, 1, 2, 3, 4].map((rating) => (
 			  <StarIcon
 			    key={rating}
-			    className='text-orange-900 h-3 w-3 mr-1 flex-shrink-0'
+			    className={classNames(
+			      product.ratings > rating ? 'text-orange-900' : 'text-orange-200',
+			      'h-3 w-3 flex-shrink-0'
+			    )}
 			    aria-hidden="true"
 			  />
 			))}
@@ -315,6 +336,19 @@ const TopPurchaseSellers = () => {
 			    </a>
 			  </h3>
 			</div>
+
+		    {product && product.type == 'grocery' ?
+			  <button
+			    type="submit"
+                    	    onClick={() => handleAddToCart(product)}
+		  	    style={{"fontSize":"0.6rem"}}
+			    className="bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-1 px-2 border border-orange-500 hover:border-transparent rounded"
+			    >
+			    ADD TO CART
+			  </button>
+
+			    :
+
 			<p className="text-xs flex items-center text-black-200 font-medium text-gray-700" style={{"color":"#aaa"}}>
 		  	
 <svg class="h-3 w-3 mr-1 text-gray-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -324,6 +358,8 @@ const TopPurchaseSellers = () => {
 
 		  		London
 		  	</p>
+		    }
+
 		      </div>
 	      </div>
 
@@ -445,7 +481,9 @@ const TopPurchaseSellers = () => {
                 </p>
 </div>
                 <h4 className="text-xl mt-3 mb-5 text-gray-600">${selectedProduct && selectedProduct.price}</h4>
-                <h4 className="text-xl font-semibold text-gray-600">Product Details</h4>
+                <h4 className="text-xl font-semibold text-gray-600">
+			Product Details
+		</h4>
 
 
             <p className="mt-3 text-base leading-7 text-gray-600">
@@ -473,10 +511,10 @@ const TopPurchaseSellers = () => {
 
 <div className="flex items-center">
                 <a
-                  href="#"
+                  href={`/product-detail/${selectedProduct && selectedProduct.id}`}
                   className="mt-10 block w-full rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Get access
+			MORE DETAILS
                 </a>
 
 

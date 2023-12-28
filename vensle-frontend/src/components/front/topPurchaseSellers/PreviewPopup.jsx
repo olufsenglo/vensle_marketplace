@@ -140,8 +140,8 @@ return (
 	  		<span className="text-gray-400">4.0</span> (16 Feedbacks)
                 </p>
 </div>
-                <h4 className="text-xl mt-3 mb-5 text-gray-600">$124.80</h4>
-                <h4 className="text-xl font-semibold text-gray-600">Product Details</h4>
+                <h4 className="text-xl mt-3 mb-5 text-gray-600">{selectedProduct.price}</h4>
+                <h4 className="text-xl font-semibold text-gray-600">Product Detail</h4>
 
 
             <p className="mt-3 text-base leading-7 text-gray-600">
@@ -170,10 +170,10 @@ return (
 
 <div className="flex items-center">
                 <a
-                  href="#"
+                  href={`/product-detail/${selectedProduct.id}`}
                   className="mt-10 block w-full rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Get access
+                  MORE DETAILS
                 </a>
 
 

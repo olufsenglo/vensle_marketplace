@@ -16,7 +16,7 @@ return new class extends Migration
 	    $table->string('name');
 	    $table->foreignId('user_id');
 	    $table->unsignedBigInteger('category_id');
-	    $table->enum('condition', ['New', 'Fairly Used', 'N/A']);
+	    $table->enum('condition', ['new', 'used', 'na']);
 	    $table->decimal('price', 8, 2);
 	    $table->string('address');
 	    $table->string('phone_number');

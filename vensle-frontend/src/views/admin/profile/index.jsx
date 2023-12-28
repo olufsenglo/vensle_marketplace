@@ -153,8 +153,20 @@ const ProfileOverview = () => {
         setIsSuccess(false);
       }
     } catch (error) {
+
       console.error('Error updating password:', error);
-      setMessage('An unexpected error occurred. Please try again later.');
+      
+      if (error.response) {
+        if (error.response.data.error) {
+          setMessage(error.response.data.error);
+        } else if (error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors).flat();
+          setMessage(errorMessages);
+        } else {
+          setMessage('An unexpected error occurred.');
+        }
+      }
+
       setIsSuccess(false);
     }
   };	
@@ -180,24 +192,29 @@ console.log("profile",userProfile)
       });
 
       if (response.data) {
-        // Dispatch the action to update the user profile in Redux store
         dispatch(updateUserProfile(response.data));
         setProfileMessage('Details updated successfully!');
 
-      //const updatedUser = { ...user, ...response.data };
-      //localStorage.setItem('user', JSON.stringify(updatedUser));	      
 
         console.log(response.data);
         setProfileMessage('Profile updated successfully!');
       } else {
-        // Handle errors appropriately
         alert('Failed to update profile. Please try again.');
       }
 	    
     } catch (error) {
       console.error('Error updating profile:', error);
-      // Handle errors appropriately
-      setProfileError('The email has been taken');
+
+      if (error.response) {
+        if (error.response.data.error) {
+          setProfileError(error.response.data.error);
+        } else if (error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors).flat();
+          setProfileError(errorMessages);
+        } else {
+          setProfileError('An unexpected error occurred.');
+        }
+      }
     }	  
 	  
   }

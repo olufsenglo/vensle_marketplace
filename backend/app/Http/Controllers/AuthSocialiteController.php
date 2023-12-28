@@ -32,7 +32,6 @@ class AuthSocialiteController extends Controller
         try {
             $socialiteUser = Socialite::driver('google')->stateless()->user();
             //$socialiteUser = Socialite::driver('google')->user();
-dd($socialiteUser);
             // Check if the user already exists in your database
             $user = User::where('email', $socialiteUser->email)->first();
 	    

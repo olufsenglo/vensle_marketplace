@@ -48,7 +48,7 @@ useEffect(() => {
 
 	return (
 		<div style={{"top":"0", "left":"0", "zIndex":"5"}} className="absolute w-full h-full p-4 bg-white">
-<p onClick={()=>setUploadPreview(false)}>Back</p>
+<p className="cursor-pointer ml-2 mb-4" onClick={()=>setUploadPreview(false)}>Back</p>
 
     <div className="bg-white">
       <div className="mx-auto max-w-7xl">
@@ -83,7 +83,7 @@ useEffect(() => {
 
 
 
-          <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
+          <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-xs lg:flex-shrink-0">
             <div className="rounded-2xl bg-gray-50 py-5 ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:pb-8 lg:pt:6">
               <div className="px-8">
 		<h3 className="text-2xl mb-5 font-bold tracking-tight text-gray-900">

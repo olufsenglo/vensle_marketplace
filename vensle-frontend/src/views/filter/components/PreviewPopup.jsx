@@ -133,8 +133,7 @@ return (
 
 
             <p className="mt-3 text-base leading-7 text-gray-600">
-              Lorem ipsum dolor sit amet consect etur adipisicing elit. Itaque amet indis perferendis blanditiis
-              repellendus etur quidem dwelling.
+		{selectedProduct.description}
             </p>
 
 			<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-3">
@@ -158,10 +157,10 @@ return (
 
 <div className="flex items-center">
                 <a
-                  href="#"
+                  href={`/product-detail/${selectedProduct && selectedProduct.id}`}
                   className="mt-10 block w-full rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Get access
+			MORE DETAILS
                 </a>
 
 

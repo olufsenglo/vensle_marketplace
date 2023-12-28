@@ -122,10 +122,10 @@ const Search = () => {
   }, []);
 
   return (
-     <form className="flex items-center h-full relative" style={{ "flex": "1" }} onSubmit={handleSearchButtonClick}>
+     <form className="flex w-full lg:w-auto my-8 lg:my-2 items-center h-full relative" style={{ "height":"51px" }} onSubmit={handleSearchButtonClick}>
 
 
-        <select className="ml-2 p-2 h-full border" value={distance} onChange={handleDistanceChange}>
+        <select className="lg:ml-2 p-2 h-full border" value={distance} onChange={handleDistanceChange}>
           <option value={10}>10 km</option>
           <option value={20}>20 km</option>
           <option value={30}>30 km</option>

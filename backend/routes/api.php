@@ -14,6 +14,8 @@ use App\Http\Controllers\UserAlertController;
 use App\Http\Controllers\Auth\GoogleLoginController;
 use App\Http\Controllers\BusinessDetailsController;
 use App\Http\Controllers\AuthSocialiteController;
+use App\Http\Controllers\CustomPasswordResetController;
+use App\Http\Controllers\FacebookController;
 
 use Laravel\Socialite\Facades\Socialite;
 
@@ -35,6 +37,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/v1/register', [UserAuthController::class, 'register']);
 Route::post('/v1/login', [UserAuthController::class, 'login']);
 Route::get('/v1/user/{userId}', [UserAuthController::class, 'getUserById']);
+
+
+route::get('/v1/auth/facebook', [FacebookController::class, 'facebookpage']);
+route::get('/v1/auth/facebook/callback', [FacebookController::class, 'facebookredirect']);
+
+Route::post('/v1/forgot-password', [CustomPasswordResetController::class, 'forgotPassword']);
+Route::post('/v1/reset-password', [CustomPasswordResetController::class, 'resetPassword']);
 
 //Route::post('/v1/payment', 'App\Http\Controllers\StripeController@payment');
 Route::post('/v1/payment', [StripeController::class, 'payment']);
@@ -73,16 +82,30 @@ Route::get('/v1/products/top-by-date', [ProductController::class, 'getTopProduct
 Route::get('/v1/products/top-by-type', [ProductController::class, 'getTopProductsByType']);
 Route::get('/v1/products/top-by-column', [ProductController::class, 'getTopProductsByColumn']);
 
-//Route::middleware('auth:api')->apiResource('v1/products', ProductController::class);
+
+
+
+
+
+
 
 Route::get('v1/products', [ProductController::class, 'index']);
 Route::get('/v1/products/{id}', [ProductController::class, 'show']);
+    Route::put('/v1/products/{id}', [ProductController::class, 'update']);
 
+Route::middleware('auth:api')->group(function () {
+    Route::post('/v1/products', [ProductController::class, 'store']);
+    //Route::put('/v1/products/{id}', [ProductController::class, 'update']);
+});
 
-//Route::apiResource('v1/products', ProductController::class);
+/*
+Route::apiResource('v1/products', ProductController::class);
+Route::middleware('auth:api')->apiResource('v1/products', ProductController::class);
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('v1/products', ProductController::class)->except(['index']);
 });
+ */
+
 
 Route::get('/v1/user/{userId}/products', [ProductController::class, 'getUserProducts']);
 
@@ -113,11 +136,12 @@ Route::middleware('auth:api')->group(function () {
 
 //Route::group(['prefix' => 'auth'], function () {});
 Route::get('/v1/auth/google', [AuthSocialiteController::class, 'redirectToGoogle']);
-//Route::get('/v1/auth/google/callback', [AuthSocialiteController::class, 'handleGoogleCallback']);
-Route::match(['get', 'post'], '/v1/auth/google/callback', [AuthSocialiteController::class, 'handleGoogleCallback']);
+Route::get('/v1/auth/google/callback', [AuthSocialiteController::class, 'handleGoogleCallback']);
+//Route::match(['get', 'post'], '/v1/auth/google/callback', [AuthSocialiteController::class, 'handleGoogleCallback']);
 
 
 Route::post('/v1/business-details', [BusinessDetailsController::class, 'store']);
 Route::get('/v1/business-details/{id}', [BusinessDetailsController::class, 'show']);
 Route::put('/v1/business-details/{id}', [BusinessDetailsController::class, 'update']);
 Route::delete('/v1/business-details/{id}', [BusinessDetailsController::class, 'destroy']);
+

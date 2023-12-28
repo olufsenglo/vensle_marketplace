@@ -25,7 +25,6 @@ class Kernel extends HttpKernel
     ];
          //\Illuminate\Http\Middleware\HandleCors::class,
 
-
     /**
      * The application's route middleware groups.
      *

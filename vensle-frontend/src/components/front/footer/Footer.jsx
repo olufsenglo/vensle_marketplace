@@ -130,7 +130,7 @@ const Footer = () => {
                 </li>
             </ul>
 
-            <p class="w-full mt-8 text-sm text-center text-gray-100 md:mt-0 md:w-auto md:order-2">© Copyright 2021, All Rights Reserved by Postcraft</p>
+            <p class="w-full mt-8 text-sm text-center text-gray-100 md:mt-0 md:w-auto md:order-2">© Copyright 2024, All Rights Reserved by Vensle</p>
         </div>
     </div>
 </section>

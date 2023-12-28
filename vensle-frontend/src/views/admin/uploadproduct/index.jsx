@@ -20,6 +20,9 @@ const Tables = () => {
   const queryParams = new URLSearchParams(location.search);
   const paramProductType = queryParams.get('type');
 
+  const storedLocation = JSON.parse(localStorage.getItem('userLocation')) || { lat: 0, lng: 0 };
+  const storedCountry = localStorage.getItem('userCountry') || 'Unknown';	
+
   const [currencySymbol, setCurrencySymbol] = useState('');
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
@@ -29,6 +32,7 @@ const Tables = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(false);
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -40,16 +44,16 @@ const Tables = () => {
     phone_number: '',
     description: '',
     type:'',
-    ratings: 3.8,
+    ratings: 2.0,
     quantity: 1,
     sold: 1,
     views: 1,
     status: 'Active',
     images: null,
     single_specifications: '',
-latitude: 32.45435,
-longitude: 2.34902,
-country: 'UK',
+latitude: storedLocation.lat,
+longitude: storedLocation.lng,
+country: storedCountry,
     key_specifications: '',
     //specifications_ids: [4,5],
   });
@@ -164,7 +168,7 @@ const handleUploadPreview = (e) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+setError(null);
     const data = new FormData();
 
     for (const key in formData) {
@@ -187,15 +191,28 @@ const handleUploadPreview = (e) => {
 	      },
       });
 
-      if (response.error) {
+      /*if (response.error) {
         setError(response.error);
       } else {
         setError(null);
-      }
+      }*/
+
 
       navigate('/admin/products');
     } catch (error) {
-      console.log("inngjjk",error.response.data.error);
+
+      if (error.response) {
+        if (error.response.data.error) {
+          setError(error.response.data.error);
+        } else if (error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors).flat();
+          setError(errorMessages);
+        } else {
+          setError('An unexpected error occurred.');
+        }
+      }
+	    
+
       console.error('Error creating product:', error);
     }	  
   
@@ -280,7 +297,7 @@ const handleUploadPreview = (e) => {
 
   return (
     <div className="flex w-full flex-col gap-5">
-    {error && <div className="text-red-500">{error}</div>}
+    {error && <div className="mt-8 ml-4 text-red-500">{error}</div>}
 
 	  <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
 

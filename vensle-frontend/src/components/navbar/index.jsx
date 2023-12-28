@@ -3,8 +3,6 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
-import NotificationIcon from './NotificationIcon';
-
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
@@ -32,6 +30,7 @@ const Navbar = (props) => {
 
   /**-Notification-**/
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
+  const user = useSelector((state) => state.auth.user?.user);
   const accessToken = useSelector((state) => state.auth.user.token);
 
   const [unreadCount, setUnreadCount] = useState(0);
@@ -43,7 +42,6 @@ const Navbar = (props) => {
   const { onOpenSidenav, brandText } = props;
   const [darkmode, setDarkmode] = React.useState(false);
   const [open, setOpen] = useState(false)
-  const user = useSelector((state) => state.auth.user.user);
 
     const getDisplayImage = (image) => {
       const name = image ? image : "";
@@ -147,7 +145,6 @@ useEffect(() => {
         </span>
 
 <p onClick={()=>setOpen(true)}>Upload</p>		
-<NotificationIcon />
         {/* start Notification */}
         <Dropdown
           button={
@@ -175,33 +172,31 @@ useEffect(() => {
                 </p>
               </div>
 
-              <button className="flex w-full items-center">
-                <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
-                  <BsArrowBarUp />
-                </div>
-                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                    New Update: Horizon UI Dashboard PRO
-                  </p>
-                  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                    A new update for your downloaded item is available!
-                  </p>
-                </div>
-              </button>
 
-              <button className="flex w-full items-center">
-                <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
-                  <BsArrowBarUp />
-                </div>
-                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                    New Update: Horizon UI Dashboard PRO
-                  </p>
-                  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                    A new update for your downloaded item is available!
-                  </p>
-                </div>
-              </button>
+      {userAlerts.length > 0 ? (
+	      <>
+                {userAlerts.map(alert => (
+		      <button key={alert.id }className="flex w-full items-center">
+			<div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
+			  <BsArrowBarUp />
+			</div>
+			<div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
+			  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
+				{alert.title}
+			  </p>
+			  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
+				{alert.message}
+			  </p>
+			</div>
+		      </button>
+                ))}
+	      </>
+    ) : (
+      <p className="text-gray-500">No new notifications.</p>
+    )}
+
+
+
             </div>
           }
           classNames={"py-2 top-4 -left-[230px] md:-left-[440px] w-max"}
@@ -220,7 +215,7 @@ useEffect(() => {
               <div className="p-4">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-navy-700 dark:text-white">
-                    👋 Hey, Adela
+                    👋 Hey, {user.name}
                   </p>{" "}
                 </div>
               </div>
@@ -228,16 +223,10 @@ useEffect(() => {
 
               <div className="flex flex-col p-4">
                 <a
-                  href=" "
+                  href="/admin/profile"
                   className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
                 >
                   Profile Settings
-                </a>
-                <a
-                  href=" "
-                  className="mt-3 text-sm text-gray-800 dark:text-white hover:dark:text-white"
-                >
-                  Newsletter Settings
                 </a>
                 <a
                   href=" "

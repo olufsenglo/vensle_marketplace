@@ -111,7 +111,7 @@ class ProductController extends Controller
     {
 	$response = [];
 
-	//TODO chang condition in seeder
+	//TODO change condition in seeder
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string',
@@ -249,7 +249,7 @@ return response()->json($product, 201);
 
 
         $similarProducts = Product::where('category_id', $product->category_id)
-            ->where('name', 'like', '%' . $product->name . '%')
+         //   ->where('name', 'like', '%' . $product->name . '%')
 	    ->where('id', '<>', $product->id)
     	    ->with(['images', 'displayImage', 'category'])
             ->take(4)
@@ -306,13 +306,12 @@ public function getUserProducts($userId)
 		    'quantity' => 'sometimes|nullable|integer|min:0',
 		    'sold' => 'sometimes|nullable|integer|min:0',
 		    'views' => 'sometimes|nullable|integer|min:0',
-		    'category_id' => 'sometimes|required|exists:categories,id',
+		    'category_id' => 'required|exists:categories,id',
 		    'latitude' => 'sometimes|nullable',
 		    'longitude' => 'sometimes|nullable',
 		    'images' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',	
 		]);
 
-		dd($validatedData);
 
 		$product = Product::findOrFail($productId);
 

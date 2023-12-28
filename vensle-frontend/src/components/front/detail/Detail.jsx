@@ -223,20 +223,23 @@ const ProductDetail = () => {
 			{[0, 1, 2, 3, 4].map((rating) => (
 			  <StarIcon
 			    key={rating}
-			    className='text-orange-900 h-3 w-3 mr-1 flex-shrink-0'
+                    className={classNames(
+                      product && product.ratings > rating ? 'text-orange-900' : 'text-orange-200',
+                      'h-3 w-3 flex-shrink-0'
+                    )}
 			    aria-hidden="true"
 			  />
 			))}
 		      </div>
 
                 <p className="text-sm leading-5 text-gray-600">
-	  		<span className="text-gray-400">4.0</span> (16 Feedbacks)
+	  		<span className="text-gray-400">{product?.ratings}</span> (16 Feedbacks)
                 </p>
 </div>
 <p className="text-lg font-bold mt-3 tracking-tight text-gray-900">
 	${product && product.price}
 </p>
-
+	{product && product.type == 'grocery' &&
 			  <button
                     	    onClick={() => handleAddToCart(product)}
 		  	    style={{"fontSize":"0.8rem"}}
@@ -244,16 +247,17 @@ const ProductDetail = () => {
 			    >
 			    ADD TO CART
 			  </button>
-
+	}
 	
 <div>
-	  <div className="flex items-center mt-4">
+	  <a href={`/user-profile/${product?.user_id}/products`} className="flex items-center mt-4">
+
 		  <img src={seller} alt="seller" />
 		  <div className="ml-4">
 		    <h3 className="text-lg tracking-tight text-gray-900 sm:text-lg">Absolutely Anything Store</h3>
 		    <h4 className="text-lg tracking-tight text-gray-400 sm:text-lg">Ibrahim Jonas</h4>
 	  	</div>
-	  </div>
+	  </a>
 
 		<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-8">
 		

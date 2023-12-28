@@ -22,8 +22,8 @@ const NavLinks = () => {
 	
 
     return (
-        <div style={{ "background-color":"black", "color": "white" }}>
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-white" style={{ "background-color":"black" }}>
+            <div className="mx-auto max-w-2xl px-4 py-2 sm:px-6 sm:py-1 lg:max-w-7xl lg:px-8">
                 <ul style={{gap:"2%"}} className="flex py-2">
                     <li className="mr-6">
 	    		<NavCategories />
@@ -31,7 +31,7 @@ const NavLinks = () => {
 	    		
 
                 {categories ? categories.map((category) => (
-                  <li key={category.id}>
+                  <li className="hidden lg:block" key={category.id}>
 			<a href={`/filter?searchTerm=&category_id=${category.id}`}>
                     	    {category.name}
 			</a>
