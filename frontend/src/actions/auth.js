@@ -19,7 +19,7 @@ import {
   
         dispatch({
           type: SET_MESSAGE,
-          payload: response.data.message,
+          payload: {type: "success", message: "Registration successfull, you can now login"},
         });
   
         return Promise.resolve();

@@ -1,5 +1,3 @@
-// actions.js
-
 import axios from 'axios';
 import {
   ADD_TO_CART,
@@ -8,6 +6,10 @@ import {
   INCREASE_QUANTITY,
   FETCH_CART_ITEMS,
 } from '../types/actionTypes';
+
+import {
+    SET_MESSAGE,
+  } from "./types";
 
 export const addToCart = (item) => (dispatch, getState) => {
   const isInCart = getState().cart.items.some((cartItem) => cartItem.id === item.id);
@@ -24,6 +26,11 @@ export const addToCart = (item) => (dispatch, getState) => {
   }
 
   localStorage.setItem('cart', JSON.stringify(getState().cart.items));
+
+        dispatch({
+          type: SET_MESSAGE,
+          payload: {type: "success", message: "Item added to cart"},
+        });
 };
 
 export const removeFromCart = (itemId) => (dispatch, getState) => {
