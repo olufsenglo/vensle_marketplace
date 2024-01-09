@@ -53,61 +53,6 @@ import {
 
 
 
-  // export const login = (email, password) => async (dispatch) => {
-  //   try {
-  //     const mergedCart = [];
-  //     // Retrieve unauthenticated cart from localStorage
-  //     const unauthenticatedCart = JSON.parse(localStorage.getItem('unauthenticatedCart')) || [];
-  
-  //     const userData = await AuthService.login(email, password);
-  
-  //     // Merge the carts after successful login
-  //     if (unauthenticatedCart.length > 0) {
-  //       mergedCart = await apiService.mergeCarts(unauthenticatedCart);
-  //       // update cart
-  //       //localStorage.removeItem('unauthenticatedCart');
-  //       //localStorage.setItem('cart', JSON.stringify(updatedIncreaseState))
-  //       dispatch({
-  //         type: 'ADD_TO_CART',
-  //         payload: mergedCart,
-  //       });
-  //     }
-  
-  //     dispatch({
-  //       type: LOGIN_SUCCESS,
-  //       payload: {
-  //         user: userData,
-  //         cart: mergedCart,
-  //       },
-  //     });
-  
-  
-  //     return Promise.resolve();
-  //   } catch (error) {
-  //     const message =
-  //       (error.response && error.response.data && error.response.data.message) ||
-  //       error.message ||
-//       B
-  //       error.toString();
-  
-  //     dispatch({
-  //       type: LOGIN_FAIL,
-  //     });
-  
-  //     dispatch({
-  //       type: SET_MESSAGE,
-  //       payload: message,
-  //     });
-  
-  //     return Promise.reject();
-  //   }
-  // };  
-
-
-
-// if (unauthenticatedCart.length > 0) {
-      // const mergedCart = await apiService.mergeCarts(userData.id, unauthenticatedCart);
-// cart: []
 
   export const login = (email, password) => (dispatch) => {
     return AuthService.login(email, password).then(
@@ -116,25 +61,31 @@ import {
           type: LOGIN_SUCCESS,
           payload: { user: data },
         });
-  
+ 
+        dispatch({
+          type: SET_MESSAGE,
+          payload: {type: "success", message: "Login sucessfull"},
+        });
+
         return Promise.resolve();
       },
       (error) => {
-        const message =
-          (error.response.data &&
-            error.response &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
+        const message = error.response.data.errors ? error.response.data.errors :
+		      { dispatchError: error.response.data.message }
+
         dispatch({
           type: LOGIN_FAIL,
         });
   
+	      console.log("errorzzz", error);
+
         dispatch({
           type: SET_MESSAGE,
-          payload: message,
+          payload: {type: "error", message},
         });
-  
+
+
+
         return Promise.reject();
       }
     );
