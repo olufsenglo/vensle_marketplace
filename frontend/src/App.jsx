@@ -19,6 +19,7 @@ import Checkout from "layouts/front/checkout";
 import UserProfile from "layouts/front/userProfile";
 import NotFound from "layouts/front/notFound";
 
+import Toaster from "components/front/toaster/Toaster";
 
 const App = () => {
 
@@ -72,6 +73,9 @@ console.log("counteryyyy", country)
   }, []);
 
   return (
+<>
+    <Toaster />
+
     <Routes>
       <Route path="auth/*" element={<AuthLayout />} />
       <Route path="social/facebook/callback/*" element={<Facebook />} />
@@ -92,6 +96,7 @@ console.log("counteryyyy", country)
 
       <Route path="/*" element={<NotFound />} />
     </Routes>
+</>	  
   );
 };
 
