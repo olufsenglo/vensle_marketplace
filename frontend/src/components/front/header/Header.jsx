@@ -421,9 +421,8 @@ window.location.href = 'http://127.0.0.1:8000/api/v1/auth/facebook';
 
     const handleLogin = (e) => {
         e.preventDefault();
-    
         setLoading(true);
-    if (loginError == '')
+    //if (loginError == '')
 	      dispatch(login(formData.email, formData.password))
         .then(() => {
 	        console.log("LoggedIn");
@@ -784,10 +783,10 @@ setLoginError(true);
                                         <section className="bg-white dark:bg-gray-900">
                                             <div className="container flex items-center justify-center px-6 mx-auto">
                                                 <form onSubmit={handleLogin} className="w-full max-w-md">          
-{loginError && <p style={{"color":"red"}}>Login combination is wrong</p>}
-{message && <p>{message}</p>}
 
 
+
+{message?.message?.dispatchError && <p style={{"color":"red", marginTop: "16px"}}>{message.message.dispatchError}</p>}
 
 
             <div>
@@ -798,14 +797,20 @@ setLoginError(true);
                 <input
                   id="email"
                   name="email"
-                  type="email"
+                  type="text"
                   autoComplete="email"
-                  required
 		  value={formData.email} 
 		  onChange={handleInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className={`block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+		message && message?.message?.email ? "border border-red-400":"border-0"
+    	    }`}
+
                 />
               </div>
+	{message && message?.message?.email && 
+		message.message.email.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
+	}
+
             </div>
 
 
@@ -828,14 +833,25 @@ setLoginError(true);
                   autoComplete="current-password"
 		  value={formData.password} 
 		  onChange={handleInputChange}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className={`block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+		message && message?.message?.password ? "border border-red-400":"border-0"
+    	    }`}
                 />
               </div>
+	{message && message?.message?.password && 
+		message.message.password.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
+	}
+	
             </div>
 
 		    <div class="flex items-center mt-6 -mx-2">
-		      <button type="submit" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
+		      <button 
+			type="submit"
+			disabled={loading ? true : false}
+			className={`flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none ${
+loading ? "bg-blue-400" : ""
+			}`}
+		      >
 	   {loading ? <span>Loading...</span> : <span>Login</span>}
 			</button>
 		    </div>
