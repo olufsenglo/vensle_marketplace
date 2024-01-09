@@ -25,17 +25,16 @@ import {
         return Promise.resolve();
       },
       (error) => {
-         const message =
+        const message = error.response.data.errors ? error.response.data.errors :
+		      { dispatchError: error.response.data.message }
+
+         /*const message =
          (error.response.data &&
            error.response &&
            error.response.data.message) ||
            error.message ||
            error.toString();
-
-        //const message = error.response.data.errors;
-//const errorMessages = Object.values(error.response.data).flat();
-//payload: errorMessages.join(", "), // Concatenate error messages into a string
-	      console.log('msgszzzz',message)
+*/
 
         dispatch({
           type: REGISTER_FAIL,
@@ -43,9 +42,10 @@ import {
   
         dispatch({
           type: SET_MESSAGE,
-          payload: message,
+          payload: {type: "error", message},
         });
-  
+
+
         return Promise.reject();
       }
     );

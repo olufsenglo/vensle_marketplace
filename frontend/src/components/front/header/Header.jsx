@@ -128,6 +128,9 @@ const formattedTotalPrice = totalPrice.toFixed(2);
 
     const handleTabClick = (tabNumber) => {
 	setActiveTab(tabNumber);
+        dispatch({
+          type: 'CLEAR_MESSAGE',
+        });
     };
 
 
@@ -220,6 +223,11 @@ const formattedTotalPrice = totalPrice.toFixed(2);
 	      new_password: '',
 	      new_password_confirmation: '',
 	    });
+
+        dispatch({
+          type: 'CLEAR_MESSAGE',
+        });
+
 		setActiveTab(1)
 	}
 
@@ -248,6 +256,11 @@ const formattedTotalPrice = totalPrice.toFixed(2);
 	      new_password: '',
 	      new_password_confirmation: '',
 	    });
+
+        dispatch({
+          type: 'CLEAR_MESSAGE',
+        });
+
 		setActiveTab(2)
 	}
 
@@ -270,6 +283,10 @@ const formattedTotalPrice = totalPrice.toFixed(2);
 	      new_password: '',
 	      new_password_confirmation: '',
 	    });
+
+        dispatch({
+          type: 'CLEAR_MESSAGE',
+        });
 		setActiveTab(3)
 	}
 
@@ -920,7 +937,9 @@ loading ? "bg-blue-400" : ""
                                             <div class="container flex items-center justify-center px-6 mx-auto">
                                                 <form onSubmit={handleRegister} class="w-full max-w-md">          
 
-{registerError && <p style={{"color":"red"}}>{registerError}</p>}
+
+{message?.message?.dispatchError && <p style={{"color":"red", marginTop: "16px"}}>{message.message.dispatchError}</p>}
+
             <div>
               <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
 		Name
@@ -931,12 +950,19 @@ loading ? "bg-blue-400" : ""
                   name="name"
                   type="text"
                   autoComplete="name"
-                  required
 		  value={registerFormData.name}
 		  onChange={handleRegisterInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className={`block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+		message && message?.message?.name ? "border border-red-400":"border-0"
+    	    }`}
+
                 />
               </div>
+
+	{message && message?.message?.name && 
+		message.message.name.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
+	}
+
             </div>
 
 
@@ -948,14 +974,21 @@ loading ? "bg-blue-400" : ""
                 <input
                   id="email"
                   name="email"
-                  type="email"
+                  type="text"
                   autoComplete="email"
-                  required
 		  value={registerFormData.email}
 		  onChange={handleRegisterInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className={`block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+		message && message?.message?.email ? "border border-red-400":"border-0"
+    	    }`}
                 />
+
               </div>
+
+	{message && message?.message?.email && 
+		message.message.email.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
+	}
+
             </div>
 
             <div className="mt-4">
@@ -968,12 +1001,19 @@ loading ? "bg-blue-400" : ""
                   name="password"
                   type="password"
                   autoComplete="password"
-                  required
 		  value={registerFormData.password} 
 		  onChange={handleRegisterInputChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+
+                  className={`block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+		message && message?.message?.password ? "border border-red-400":"border-0"
+    	    }`}
+
                 />
               </div>
+
+	{message && message?.message?.password && 
+		message.message.password.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
+	}
             </div>
 
 
@@ -986,12 +1026,14 @@ loading ? "bg-blue-400" : ""
                   id="password_confirmation"
                   name="password_confirmation"
                   type="password"
-                  required
 		  value={registerFormData.password_confirmation} 
 		  onChange={handleRegisterInputChange}
+
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+
                 />
               </div>
+
             </div>
 
                                                     <div class="flex items-center mt-6 -mx-2">
