@@ -28,6 +28,8 @@ const CartLink = () => {
     const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
     const cartItems = useSelector(state => state.cart.items);
     
+ const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+
 const totalPrice = cartItems.reduce((total, product) => {
   const productPrice = parseFloat(product.price);
   return total + productPrice;
@@ -72,9 +74,17 @@ const formattedTotalPrice = formatPrice(totalPrice);
 
 		    <div
 			onClick={() => setOpen(true)}
-			className="flex items-center cursor-pointer"
+			className="flex items-center relative cursor-pointer"
 			style={{marginLeft:"20px"}}
 		    >
+			{totalItems > 0 && 
+				<span 
+				  style={{top:"0", left: "16px", height: "15px", width: "15px", fontSize: "0.7rem"}}
+				  className="absolute text-white rounded-full flex justify-center items-center bg-red-500"
+				>
+					{totalItems}
+				</span>
+			}
 			<img src={cart} style={{"marginTop":"0px"}}/>
 			<div className="flex flex-col justify-space-between h-full" style={{ marginLeft:"1px"}}>
 			    <p 

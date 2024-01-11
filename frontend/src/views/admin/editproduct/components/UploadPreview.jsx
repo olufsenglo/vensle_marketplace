@@ -9,11 +9,11 @@ function classNames(...classes) {
 }
 
 
-const UploadPreview = ({ formData, imagePreviews, setUploadPreview }) => {
+const UploadPreview = ({ formData, imagePreviews, newImagePreviews, mainImageIndex, setUploadPreview }) => {
    const [mainPreviewImage, setMainPreviewImage] = useState(null);
 
     const getDisplayImage = (product) => {
-      const displayImage = product.images.find(image => image.id === product.display_image_id);
+      const displayImage = product.oldImages.find(image => image.id === product.display_image_id);
       return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
     };
 
@@ -22,12 +22,26 @@ const UploadPreview = ({ formData, imagePreviews, setUploadPreview }) => {
       return `http://127.0.0.1:8000/uploads/${name}`;
     };
 
+   const handleSetNewMainPreviewImage = (e, preview) => {
+        e.preventDefault();
+        setMainPreviewImage(preview);
+   }
    const handleSetMainPreviewImage = (e, preview) => {
 	e.preventDefault();
 	   console.log('prev',preview)
 	setMainPreviewImage(getImagePath(preview.name));
    }
 
+   const handleShowNewSelectedImage = (preview) => {
+        return (<a onClick={(e) =>handleSetNewMainPreviewImage(e, preview)} href="#"
+            class="block border border-blue-300 dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300">
+            <img
+              src={preview}
+              alt="Preview"
+              class="object-cover w-full lg:h-20"
+            />
+        </a>)
+   }
    const handleShowSelectedImage = (preview) => {
 	return (<a onClick={(e) =>handleSetMainPreviewImage(e, preview)} href="#"
 	    class="block border border-blue-300 dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300">
@@ -41,8 +55,7 @@ const UploadPreview = ({ formData, imagePreviews, setUploadPreview }) => {
 
 
 useEffect(() => {
-	console.log(imagePreviews);
-	const defaultImagePreview = imagePreviews[0] ? getImagePath(imagePreviews[0].name) : "";
+	const defaultImagePreview = (formData?.display_image_id && formData?.oldImages?.length > 0) ? getDisplayImage(formData) : newImagePreviews[mainImageIndex] || newImagePreviews[0] || "";
 	setMainPreviewImage(defaultImagePreview);
 }, [ imagePreviews ]); 
 
@@ -53,7 +66,6 @@ useEffect(() => {
     <div className="bg-white">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
-
 
 
                 <div className="w-full px-4">
@@ -73,7 +85,13 @@ useEffect(() => {
                             <div className="w-1/2 p-2 sm:w-1/4">
 		    {handleShowSelectedImage(preview)}
                             </div>
-	  ))}
+	    ))}
+
+            {newImagePreviews && newImagePreviews.map((preview) => (
+                            <div className="w-1/2 p-2 sm:w-1/4">
+                    {handleShowNewSelectedImage(preview)}
+                            </div>
+            ))}
 
 
                         </div>

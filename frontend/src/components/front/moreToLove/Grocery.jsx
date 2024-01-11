@@ -29,7 +29,8 @@ export default function Grocery({ product }) {
         setOpen(true);
     }
   
-    const handleAddToCart = (product) => {
+    const handleAddToCart = (e, product) => {
+        e.preventDefault();
         dispatch(addToCart({ ...product, quantity: 1 }));
     };
 
@@ -41,7 +42,7 @@ export default function Grocery({ product }) {
     <>
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
-            <a onClick={(e) => handleProductQuickView(e, product)} key={product.id} href="#" style={{"background": "#eee"}} className="group">
+            <a key={product.id} href="#" style={{"background": "#eee"}} className="group">
 
 
 		  {/*	      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
@@ -55,7 +56,10 @@ export default function Grocery({ product }) {
 	      */}
 
 
-                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                <div
+	  	    onClick={(e) => handleProductQuickView(e, product)}
+	  	    className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7"
+	    	>
                     <a class="relative flex lg:h-40 overflow-hidden rounded-xl" href="#">
                         <img
                           class="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
@@ -92,7 +96,7 @@ export default function Grocery({ product }) {
 
 			  <button
 			    type="submit"
-                    	    onClick={() => handleAddToCart(product)}
+                    	    onClick={(e) => handleAddToCart(e, product)}
 		  	    style={{"fontSize":"0.8rem"}}
 			    className="bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-1 px-2 border border-orange-500 hover:border-transparent rounded"
 			    >

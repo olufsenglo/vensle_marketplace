@@ -32,6 +32,7 @@ const Tables = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(false);
+const [mainImageIndex, setMainImageIndex] = useState(0);
 
 
   const [formData, setFormData] = useState({
@@ -117,7 +118,34 @@ const handleAddNewKeySpecs = (e) => {
   };
 
 
-  const handleFileChange = (e) => {
+const handleFileChange = (e) => {
+  const { name, files } = e.target;
+
+  const existingFiles = formData.images ? [...formData.images] : [];
+
+  const newFiles = [...existingFiles, ...files];
+
+  setFormData({
+    ...formData,
+    images: newFiles,
+  });
+
+  const previews = [];
+  for (let i = 0; i < newFiles.length; i++) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      previews.push(event.target.result);
+      if (previews.length === newFiles.length) {
+        setImagePreviews(previews);
+      }
+    };
+    reader.readAsDataURL(newFiles[i]);
+  }
+};
+
+
+
+  /**const handleFileChange = (e) => {
 	  const { name, files } = e.target;
 
     const previews = [];
@@ -137,7 +165,35 @@ const handleAddNewKeySpecs = (e) => {
 		  ...formData,
 		  [name]: files,
 	  });
+  }*/
+
+/*
+const handleFileChange = (e) => {
+  const { name, files } = e.target;
+
+  const previews = [];
+  const existingImages = formData.images || [];
+
+  for (let i = 0; i < existingImages.length; i++) {
+    previews.push(existingImages[i]);
   }
+
+  for (let i = 0; i < files.length; i++) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      previews.push(event.target.result);
+      if (previews.length === existingImages.length + files.length) {
+        setImagePreviews(previews);
+      }
+    };
+    reader.readAsDataURL(files[i]);
+  }
+
+  setFormData({
+    ...formData,
+    [name]: [...existingImages, ...files],
+  });
+};
 
 
   const renderImagePreviews = () => {
@@ -153,6 +209,61 @@ const handleAddNewKeySpecs = (e) => {
 	/>
     ));
   };
+*/
+
+
+const renderImagePreviews = () => {
+  return imagePreviews.map((preview, index) => (
+    <div key={index} className="relative">
+      <img
+        src={preview}
+        alt={`Preview ${index}`}
+        className={`object-cover w-full lg:h-20 ${index === mainImageIndex ? 'border-2 border-green-500' : ''}`}
+      />
+      {!isMainPreview(index) && (
+        <button
+          className="absolute top-0 right-0 p-2 bg-red-500 text-white cursor-pointer"
+          onClick={(e) => handleRemoveImage(e, index)}
+        >
+          x
+        </button>
+      )}
+      {!isMainPreview(index) && (
+        <button
+          className="absolute bottom-0 left-0 p-2 bg-green-500 text-white cursor-pointer"
+          onClick={(e) => handleSetMainImageIndex(e, index)}
+        >
+          Set as Preview
+        </button>
+      )}
+    </div>
+  ));
+};
+
+const isMainPreview = (index) => {
+  return index === mainImageIndex;
+};
+
+const handleSetMainImageIndex = (e, index) => {
+	e.preventDefault();
+	setMainImageIndex(index);
+}
+
+
+
+const handleRemoveImage = (e, indexToRemove) => {
+	e.preventDefault();
+  const updatedPreviews = [...imagePreviews];
+
+  updatedPreviews.splice(indexToRemove, 1);
+
+  setImagePreviews(updatedPreviews);
+
+  setFormData({
+    ...formData,
+    images: formData.images.filter((_, index) => index !== indexToRemove),
+  });
+};
 
 const handleUploadPreview = (e) => {
 	e.preventDefault();
@@ -298,40 +409,46 @@ setError(null);
   return (
     <div className="flex w-full flex-col gap-5">
     {error && <div className="mt-8 ml-4 text-red-500">{error}</div>}
-
+{console.log("prevvv", imagePreviews)}
+{console.log("datttt", formData)}
 	  <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
 
 
-{uploadPreview && <UploadPreview formData={formData} imagePreviews={imagePreviews} setUploadPreview={setUploadPreview} />}
+{uploadPreview && <UploadPreview formData={formData} imagePreviews={imagePreviews} mainImageIndex={mainImageIndex} setUploadPreview={setUploadPreview} />}
 
 
       <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
 
         <div className="col-span-12 lg:!mb-0">
      		<Card extra={"w-full p-4 h-full"}>
-			<div class="grid grid-cols-1 space-y-2">
-				<label class="text-sm font-bold text-gray-500 tracking-wide">Attach Document</label>
-				<div class="flex items-center justify-center w-full">
-					<label class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
-						<div class="h-full w-full text-center flex flex-col items-center justify-center items-center  ">
-							<div class="flex flex-auto max-h-48 mx-auto -mt-10">
+			<div className="grid grid-cols-1 space-y-2">
+				<label className="text-sm font-bold text-gray-500 tracking-wide">Attach Document</label>
+				<div className="flex items-center justify-center w-full">
+
+
+							<div className="flex flex-auto max-h-48 mx-auto -mt-10">
 							      	{renderImagePreviews()}	
-	  {imagePreviews && imagePreviews[0] ? "" : <img class="has-mask h-36 object-center" src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg" alt="freepik image" />}
+	  {imagePreviews && imagePreviews[0] ? "" : <img className="has-mask h-36 object-center" src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg" alt="freepik image" />}
 							</div>
-							<p class="pointer-none text-gray-500 "><span class="text-sm">Drag and drop</span> files here <br /> or <a href="" id="" class="text-blue-600 hover:underline">select a file</a> from your computer</p>
+
+
+
+					<label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
+						<div className="h-full w-full text-center flex flex-col items-center justify-center items-center  ">
+							<p className="pointer-none text-gray-500 ">Select files from your computer</p>
 						</div>
 						<input
 						  type="file"
 						  name="images"
 						  multiple
 						  onChange={handleFileChange}
-						  class="hidden"
+						  className="hidden"
 						 />
 					</label>
 				</div>
 			</div>
 			<p class="text-sm text-gray-300">
-				<span>File type: doc,pdf,types of images</span>
+				<span>File type: jpg,png,types of images</span>
 			</p>
 	  
 	  	</Card>
@@ -346,7 +463,6 @@ setError(null);
 
             <div>
             </div>
-	{console.log('data',formData)}
 
         <div className="sm:col-span-3">
           <label htmlFor="name" className="text-xs font-semibold text-gray-500">

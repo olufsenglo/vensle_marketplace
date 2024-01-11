@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 import MiniCalendar from "components/calendar/MiniCalendar";
 import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
@@ -64,6 +66,10 @@ const tableColumnsTopCreators = [
 
 
 const Dashboard = () => {
+ const accessToken = useSelector((state) => state.auth.user.token);	
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalRequests, setTotalRequests] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);	
   const [extractedData, setExtractedData] = useState([]);
   const [data, setData] = useState([]);
 
@@ -72,7 +78,6 @@ const Dashboard = () => {
     };
 
   useEffect(() => {
-    // Function to fetch products
     const fetchProducts = async () => {
       try {
         const response = await fetch('http://127.0.0.1:8000/api/v1/products');
@@ -92,10 +97,31 @@ const Dashboard = () => {
       }
     };
 
-    // Call the fetch function
     fetchProducts();
   }, []);	
 
+  const fetchData = async () => {
+    try {
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
+
+      const productsResponse = await axios.get('http://127.0.0.1:8000/api/v1/products/upload/total', { headers });
+      setTotalProducts(productsResponse.data.totalUploadedProducts);
+
+      const requestsResponse = await axios.get('http://127.0.0.1:8000/api/v1/products/request/total', { headers });
+      setTotalRequests(requestsResponse.data.totalRequests);
+
+      const ordersResponse = await axios.get('http://127.0.0.1:8000/api/v1/orders/total', { headers });
+      setTotalOrders(ordersResponse.data.totalOrders);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+	
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div>
@@ -105,17 +131,17 @@ const Dashboard = () => {
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
           title={"For sale uploads"}
-          subtitle={"$340.5"}
+	  subtitle={`$${totalProducts}`}
         />
         <Widget
           icon={<IoDocuments className="h-6 w-6" />}
           title={"Request uploads"}
-          subtitle={"$642.39"}
+	  subtitle={`$${totalRequests}`}
         />
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
           title={"Orders Recieved"}
-          subtitle={"$574.34"}
+	  subtitle={`${totalOrders}`}
         />
       </div>
 

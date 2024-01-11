@@ -11,17 +11,21 @@ const Toaster = () => {
     const dispatch = useDispatch();
     const message = useSelector(state => state.message);
 
-/*	
-	setTimeout(() => (
-		dispatch({
-			type: CLEAR_MESSAGE,
-		})
-	), 20000)
-
+  useEffect(() => {
+    let timer;
+    
+    if (message && message?.message?.type === "success") {
+      timer = setTimeout(() => {
         dispatch({
-		type: CLEAR_MESSAGE,
+          type: CLEAR_MESSAGE,
         });
-*/
+      }, 20000);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [message, dispatch]);
 
     return (
 	<>

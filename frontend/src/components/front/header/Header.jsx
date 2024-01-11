@@ -321,11 +321,7 @@ console.log(registerFormData);
     });
 
 
-			handleTabClick(1);
-        dispatch({
-          type: 'SET_MESSAGE',
-          payload: "Registration successfull, you can now login",
-        });
+	setActiveTab(1);
 
 		})
 		.catch((error) => {
@@ -576,7 +572,7 @@ setLoginError(true);
 			    }
 	    			  <h2 style={{"cursor":"pointer", "fontWeight":"600","marginTop":"-3px"}}>
 			    {isAuthenticated ?
-				    <a href="/admin/dashboard">Dashboard</a>
+				    <a href="/admin/default">Dashboard</a>
 			     :
 				    <>
                                       <span onClick={handleSignInClick}>Sign In </span>/
@@ -942,7 +938,7 @@ loading ? "bg-blue-400" : ""
 
             <div>
               <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
-		Name
+		Full Name
               </label>
               <div className="mt-2">
                 <input

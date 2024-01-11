@@ -9,7 +9,7 @@ function classNames(...classes) {
 }
 
 
-const UploadPreview = ({ formData, imagePreviews, setUploadPreview }) => {
+const UploadPreview = ({ formData, imagePreviews, mainImageIndex, setUploadPreview }) => {
    const [mainPreviewImage, setMainPreviewImage] = useState(null);
 
     const getDisplayImage = (product) => {
@@ -40,7 +40,9 @@ const UploadPreview = ({ formData, imagePreviews, setUploadPreview }) => {
 
 
 useEffect(() => {
-	const defaultImagePreview = imagePreviews[0] ? imagePreviews[0] : "";
+	//const defaultImagePreview = imagePreviews[0] ? imagePreviews[0] : "";
+	const defaultImagePreview = imagePreviews[mainImageIndex] || imagePreviews[0] || "";
+
 	setMainPreviewImage(defaultImagePreview);
 }, [ imagePreviews ]); 
 

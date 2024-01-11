@@ -84,7 +84,8 @@ const Footer = () => {
         <hr class="mt-16 mb-10 border-gray-800" />
 
         <div class="flex flex-wrap items-center justify-between">
-            <img class="h-8 auto md:order-1" src="https://cdn.rareblocks.xyz/collection/celebration/images/logo-alt.svg" alt="" />
+	    <span className="text-white">VensleMARKETPLACE</span>
+	    {/**<img class="h-8 auto md:order-1" src="https://cdn.rareblocks.xyz/collection/celebration/images/logo-alt.svg" alt="" />*/}
 
             <ul class="flex items-center space-x-3 md:order-3">
                 <li>

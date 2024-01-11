@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,6 +33,9 @@ const Tables = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(false);
+  const [mainImageDisplayId, setMainImageDisplayId] = useState(0);
+const [mainImageIndex, setMainImageIndex] = useState('');
+const [removedImages, setRemovedImages] = useState([]);
 
   const [productImages, setProductImages] = useState(false);
 
@@ -51,7 +55,9 @@ const Tables = () => {
     sold: 1,
     views: 1,
     status: 'Active',
+    display_image_id: '',
     images: null,
+oldImages: null,	  
     single_specifications: '',
 latitude: storedLocation.lat,
 longitude: storedLocation.lng,
@@ -82,11 +88,6 @@ country: storedCountry,
     });
   };	
 
-const handleAddNewKeySpecs = (e) => {
-	if (formData.key_specifications != '') {
-		console.log("start");
-	}
-}
 
   const delim = '^%*#$';
 
@@ -119,42 +120,159 @@ const handleAddNewKeySpecs = (e) => {
   };
 
 
-  const handleFileChange = (e) => {
-	  const { name, files } = e.target;
+const handleFileChange = (e) => {
+  const { name, files } = e.target;
 
-    const previews = [];
-    for (let i = 0; i < files.length; i++) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        previews.push(event.target.result);
-        if (previews.length === files.length) {
-          setImagePreviews(previews);
-        }
-      };
-      reader.readAsDataURL(files[i]);
-    }	  
+  const existingFiles = formData.images ? [...formData.images] : [];
 
+  const newFiles = [...existingFiles, ...files];
 
-	  setFormData({
-		  ...formData,
-		  [name]: files,
-	  });
+  setFormData({
+    ...formData,
+    images: newFiles,
+  });
+
+  const previews = [];
+  for (let i = 0; i < newFiles.length; i++) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      previews.push(event.target.result);
+      if (previews.length === newFiles.length) {
+        setImagePreviews(previews);
+      }
+    };
+    reader.readAsDataURL(newFiles[i]);
   }
+};
 
 
-  const renderImagePreviews = () => {
-    return imagePreviews.map((preview, index) => (
 
-	    
-
+const renderImagePreviews = () => {
+  return imagePreviews.map((preview, index) => (
+    <div key={index} className="relative">
       <img
-	    key={index}
-	    src={preview}
-	    alt={`Preview ${index}`}
-	    className="object-cover w-full lg:h-20"
-	/>
-    ));
-  };
+        src={preview}
+        alt={`Preview ${index}`}
+        className={`object-cover w-full lg:h-20 ${index === mainImageIndex ? 'border-2 border-green-500' : ''}`}
+      />
+      {!isMainPreview(index) && (
+        <button
+	  style={{fontSize: "0.8rem", padding: "0.3rem", height: "1.4rem", width: "1.4rem"}}
+          className="absolute flex justify-center items-center top-0 rounded-full right-0 bg-red-500 text-white cursor-pointer"
+          onClick={(e) => handleRemoveImage(e, index)}
+        >
+          x
+        </button>
+      )}
+      {!isMainPreview(index) && (
+        <button
+	  style={{fontSize: "0.6rem", padding: "0.3rem", left: "30%"}}
+          className="absolute bottom-0 opacity-80 hover:opacity-100 rounded-lg p-2 bg-green-500 text-white cursor-pointer"
+          onClick={(e) => handleSetMainImageIndex(e, index)}
+        >
+          Set as Preview
+        </button>
+      )}
+    </div>
+  ));
+};
+
+const isMainPreview = (index) => {
+  return index === mainImageIndex;
+};
+
+const handleSetMainImageIndex = (e, index) => {
+	e.preventDefault();
+	setMainImageIndex(index);
+	
+	setFormData({
+    	   ...formData,
+    	   display_image_id: '',
+  	});
+}
+
+
+const handleRemoveImage = (e, indexToRemove) => {
+	e.preventDefault();
+  const updatedPreviews = [...imagePreviews];
+
+  updatedPreviews.splice(indexToRemove, 1);
+
+  setImagePreviews(updatedPreviews);
+
+  setFormData({
+    ...formData,
+    images: formData.images.filter((_, index) => index !== indexToRemove),
+  });
+};
+
+
+
+const renderOldImagePreviews = (images) => {
+  return images.map((image, index) => (
+    <div key={index} className="relative">
+      <img
+        src={getImagePath(image.name)}
+        alt={`Preview ${index}`}
+        className={`object-cover w-full lg:h-20 ${isMainDisplayImage(image.id) ? 'border-2 border-green-500' : ''}`}
+      />
+      {!isMainDisplayImage(image.id) && (
+        <button
+	  style={{fontSize: "0.8rem", padding: "0.3rem", height: "1.4rem", width: "1.4rem"}}
+          className="absolute flex justify-center items-center top-0 rounded-full right-0 bg-red-500 text-white cursor-pointer"
+          onClick={(e) => handleRemoveOldImage(e, image.id, image.name)}
+        >
+          x
+        </button>
+      )}
+      {!isMainDisplayImage(image.id) && (
+        <button
+	  style={{fontSize: "0.6rem", padding: "0.3rem", left: "30%"}}
+          className="absolute bottom-0 opacity-80 hover:opacity-100 rounded-lg p-2 bg-green-500 text-white cursor-pointer"
+          onClick={(e) => setMainOldImageDisplay(e, image.id)}
+        >
+          Set as Display
+        </button>
+      )}
+    </div>
+  ));
+};
+
+const isMainDisplayImage = (imageId) => {
+  //return imageId === mainImageDisplayId;
+  return imageId === formData.display_image_id;
+};
+
+const setMainOldImageDisplay = (e, imageId) => {
+	e.preventDefault();
+
+  setFormData({
+    ...formData,
+    display_image_id: imageId,
+  });
+
+  setMainImageIndex('');
+  //setMainImageDisplayId(imageId);
+};
+
+
+const handleRemoveOldImage = (e, imageId, imageName) => {
+  e.preventDefault();
+  
+  setRemovedImages((prevNames) => [...prevNames, imageName]);
+
+  const updatedImages = formData.oldImages.filter((image) => image.id !== imageId);
+
+  setFormData({
+    ...formData,
+    oldImages: updatedImages,
+  });
+};
+
+
+    const getImagePath = (name) => {
+      return `http://127.0.0.1:8000/uploads/${name}`;
+    };
 
 const handleUploadPreview = (e) => {
 	e.preventDefault();
@@ -169,9 +287,16 @@ const handleUploadPreview = (e) => {
 }
 
   const handleSubmit = async (e) => {
-e.preventDefault();
+	e.preventDefault();
+
+	let proofImageIndex = mainImageIndex;
+	if (mainImageIndex && !imagePreviews[mainImageIndex]) {
+		proofImageIndex = 0;
+	}
+
+
     try {
-      const response = await axios.put(`http://localhost:8000/api/v1/products/${paramProductId}`, formData, {
+      const response = await axios.post(`http://localhost:8000/api/v1/products/${paramProductId}`, {...formData, removedImages, mainImageIndex: proofImageIndex}, {
               headers: {
                       'Content-Type': 'multipart/form-data',
                       'Authorization': `Bearer ${accessToken}`,
@@ -245,6 +370,7 @@ useEffect(() => {
       console.log("Product:", product);
 
   setFormData({
+    ...formData,
     name: product.name,
     category_id: product.category_id,
     condition: product.condition,
@@ -259,7 +385,8 @@ useEffect(() => {
     sold: product.sold,
     views: product.views,
     status: product.status,
-    //images: product.images,
+    display_image_id: product.display_image_id,
+    oldImages: product.images,
     single_specifications: '',
 latitude: 32.45435,
 longitude: 2.34902,
@@ -268,6 +395,7 @@ country: product.country,
   });
 
 	    setProductImages(product.images);
+	    setMainImageDisplayId(product.display_image_id);
 
     } catch (error) {
       console.error('Error fetching product:', error);
@@ -344,11 +472,11 @@ country: product.country,
   return (
     <div className="flex w-full flex-col gap-5">
 {error && <div className="mt-8 ml-4 text-red-500">{error}</div>}
-	  
+
 	  <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
 
 
-{uploadPreview && <UploadPreview formData={formData} imagePreviews={productImages ? productImages : ''} setUploadPreview={setUploadPreview} />}
+{uploadPreview && <UploadPreview formData={formData} imagePreviews={formData.oldImages ? formData.oldImages : ''} newImagePreviews={imagePreviews} mainImageIndex={mainImageIndex} setUploadPreview={setUploadPreview} />}
 
 
       <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
@@ -358,28 +486,44 @@ country: product.country,
 			<div class="grid grid-cols-1 space-y-2">
 				<label class="text-sm font-bold text-gray-500 tracking-wide">Attach Document</label>
 				<div class="flex items-center justify-center w-full">
-					<label class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
-						<div class="h-full w-full text-center flex flex-col items-center justify-center items-center  ">
 							<div class="flex flex-auto max-h-48 mx-auto -mt-10">
-							      	{renderImagePreviews()}	
-	  {imagePreviews && imagePreviews[0] ? "" : <img class="has-mask h-36 object-center" src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg" alt="freepik image" />}
+
+	      	{formData?.oldImages?.length > 0 && renderOldImagePreviews(formData.oldImages)}	
+
+		{imagePreviews && imagePreviews?.length > 0 && renderImagePreviews()}	
+
 							</div>
-							<p class="pointer-none text-gray-500 "><span class="text-sm">Drag and drop</span> files here <br /> or <a href="" id="" class="text-blue-600 hover:underline">select a file</a> from your computer</p>
+
+		{(formData?.oldImages?.length > 0 || imagePreviews?.length > 0) ?
+				    <label className="cursor-pointer" htmlFor="images">
+				    	<div>
+					     + Add more
+			            	</div>
+				    </label>
+			  	    : 
+			            <label htmlFor="images" class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
+						<div class="h-full w-full text-center flex flex-col items-center justify-center items-center  ">
+
+	  <img class="has-mask h-36 object-center" src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg" alt="freepik image" />
+
+							<p className="pointer-none text-gray-500 "><span className="text-sm">Drag and drop</span> files here <br /> or <a href="" id="" className="text-blue-600 hover:underline">select a file</a> from your computer</p>
 						</div>
+			             </label>}
+				</div>
+			</div>
+			<p className="text-sm text-gray-300">
+				<span>Image type: jpg, jpeg, png</span>
+			</p>
+	  
 						<input
+						  id="images"
 						  type="file"
 						  name="images"
 						  multiple
 						  onChange={handleFileChange}
-						  class="hidden"
+						  className="hidden"
 						 />
-					</label>
-				</div>
-			</div>
-			<p class="text-sm text-gray-300">
-				<span>File type: doc,pdf,types of images</span>
-			</p>
-	  
+
 	  	</Card>
 	</div>
 

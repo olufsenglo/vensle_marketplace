@@ -144,7 +144,7 @@ useEffect(() => {
           <FiAlignJustify className="h-5 w-5" />
         </span>
 
-<p onClick={()=>setOpen(true)}>Upload</p>		
+<p className="dark:text-white" onClick={()=>setOpen(true)}>Upload</p>		
         {/* start Notification */}
         <Dropdown
           button={
@@ -201,6 +201,30 @@ useEffect(() => {
           }
           classNames={"py-2 top-4 -left-[230px] md:-left-[440px] w-max"}
         />
+
+
+        <div
+          className="cursor-pointer text-gray-600"
+          onClick={() => {
+            if (darkmode) {
+              document.body.classList.remove("dark");
+              setDarkmode(false);
+            } else {
+              document.body.classList.add("dark");
+              setDarkmode(true);
+            }
+          }}
+        >
+          {darkmode ? (
+            <RiSunFill className="h-4 w-4 text-gray-600 dark:text-white" />
+          ) : (
+            <RiMoonFill className="h-4 w-4 text-gray-600 dark:text-white" />
+          )}
+        </div>
+
+
+
+
         {/* Profile & Dropdown */}
         <Dropdown
           button={
