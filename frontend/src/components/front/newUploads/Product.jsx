@@ -4,7 +4,7 @@ import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 
-import PreviewPopup from "./PreviewPopup";
+import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
 const Product = ({ product }) => {
   const [open, setOpen] = useState(false)
@@ -38,7 +38,6 @@ function classNames(...classes) {
             <div onClick={(e) => handleProductQuickView(e, product)} key={product.id} style={{"background": "#f4f4f4a3"}} className="group relative rounded-md">
 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
                 <img
-		  //src={getDisplayImage(product)}
 		  src={product.display_image && getImagePath(product.display_image.name)}
 		  alt={product.name}
                   className="h-full w-full object-cover object-center lg:h-full lg:w-full"

@@ -122,10 +122,10 @@ const Search = () => {
   }, []);
 
   return (
-     <form className="flex w-full lg:w-auto my-8 lg:my-2 items-center h-full relative" style={{ "height":"51px" }} onSubmit={handleSearchButtonClick}>
+     <form className="flex w-full lg:flex-1 lg:w-auto my-8 lg:my-2 items-center h-full relative" style={{ "height":"51px" }} onSubmit={handleSearchButtonClick}>
 
 
-        <select className="lg:ml-2 p-2 h-full border" value={distance} onChange={handleDistanceChange}>
+        <select style={{fontSize: "14px"}} className="pl-1 h-full border" value={distance} onChange={handleDistanceChange}>
           <option value={10}>10 km</option>
           <option value={20}>20 km</option>
           <option value={30}>30 km</option>
@@ -133,7 +133,8 @@ const Search = () => {
 
 
       <input
-        style={{ "height": "100%", "flex": "1", "border": "1px solid #ccc", "padding-left":"20px" }}
+        style={{ "height": "100%", "flex": "1", borderLeft: "none", borderRight: "none", "padding-left":"20px" }}
+	className="border"
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
@@ -144,7 +145,7 @@ const Search = () => {
       <select
         value={selectedCategory}
         onChange={handleCategoryChange}
-        className="border p-2 h-full"
+        className="border border-r-0 p-2 h-full"
       >
                 <option value="">Everything</option>
                 {categories && categories.map((category) => (

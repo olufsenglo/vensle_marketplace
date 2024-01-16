@@ -16,6 +16,10 @@ import {
   fetchCartItems,
 } from 'actions/actions';
 
+import {
+    SET_MESSAGE,
+  } from "actions/types";
+
 import Top from "./Top";
 import NavLinks from "./NavLinks";
 import CartLink from "./CartLink";
@@ -109,7 +113,10 @@ const formattedTotalPrice = totalPrice.toFixed(2);
 
     const [registerFormData, setRegisterFormData] = useState({
       name: '',
+      business_name: '',
       email: '',
+      phone_number: '',
+      address: '',
       password: '',
       password_confirmation: '',
     });
@@ -188,7 +195,13 @@ const formattedTotalPrice = totalPrice.toFixed(2);
 	const handleUploadClick = (e) => {
 		e.preventDefault();
 		setRedirect('?redirect=modal');
+		setActiveTab(1);
 		setLoginOpen(true);
+
+		dispatch({
+		  type: SET_MESSAGE,
+		  payload: {type: "success", message: "Please sign in to upload a product"},
+		});
 	}
 
 	const handleRegisterDriverClick = (e) => {
@@ -308,7 +321,7 @@ console.log(registerFormData);
 		if (registerFormData.password != registerFormData.password_confirmation)
 			setRegisterError("Passwords do not match");
 
-		dispatch(register(registerFormData.name, registerFormData.email, registerFormData.password, registerFormData.password_confirmation))
+		dispatch(register(registerFormData.name, registerFormData.business_name, registerFormData.email, registerFormData.phone_number, registerFormData.address, registerFormData.password, registerFormData.password_confirmation))
 		.then(() => {
 			console.log("Register success");
 			setLoading(false);
@@ -478,16 +491,16 @@ setLoginError(true);
 
 
         <div className="bg-white">
-            <div className="mx-auto max-w-2xl pt-2 sm:pt-4 sm:px-6 lg:px-8 lg:max-w-7xl lg:px-8">
-                <div className="p-4 flex justify-between" style={{"padding": "19px 0rem", "fontSize": "15px"}}>
+            <div className="mx-auto max-w-2xl sm:px-6 lg:px-8 lg:max-w-7xl lg:px-8">
+                <div className="pt-4 flex justify-between" style={{fontSize: "15px"}}>
                     <ul className="flex justify-between">
                         <li className="mr-6 hidden lg:block">Welcome to our Online Store!</li>
 	    {isAuthenticated ? 
-                        <li className="text-red-500 mr-6 sm:mr-2" style={{"color": "#ff5959"}}>
+                        <li className="text-red-500 mr-6" style={{"color": "#ff5959"}}>
 		            <a href="/admin/upload-product?redirect=modal">Upload Your Product</a>
 		        </li>
 		    :
-                        <li onClick={(e) => handleUploadClick(e)} className="text-red-500 mr-6" style={{"color": "#ff5959"}}>Upload Your Product</li>
+                        <li onClick={(e) => handleUploadClick(e)} className="text-red-500 cursor-pointer mr-6" style={{"color": "#ff5959"}}>Upload Your Product</li>
 	    }
                         <li onClick={(e) => handleRegisterDriverClick(e)} className="text-red-500 cursor-pointer" style={{"color": "#ff5959"}}>Register as a Driver</li>
                     </ul>
@@ -962,6 +975,33 @@ loading ? "bg-blue-400" : ""
             </div>
 
 
+
+            <div className="mt-4">
+              <label htmlFor="business_name" className="block text-sm font-medium leading-6 text-gray-900">
+		Business Name
+              </label>
+              <div className="mt-2">
+                <input
+                  id="business_name"
+                  name="business_name"
+                  type="text"
+                  autoComplete="business_name"
+		  value={registerFormData.business_name}
+		  onChange={handleRegisterInputChange}
+                  className={`block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+		message && message?.message?.business_name ? "border border-red-400":"border-0"
+    	    }`}
+
+                />
+              </div>
+
+	{message && message?.message?.business_name && 
+		message.message.business_name.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
+	}
+
+            </div>
+	
+
             <div className="mt-4">
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
@@ -983,6 +1023,58 @@ loading ? "bg-blue-400" : ""
 
 	{message && message?.message?.email && 
 		message.message.email.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
+	}
+
+            </div>
+
+
+            <div className="mt-4">
+              <label htmlFor="phone_number" className="block text-sm font-medium leading-6 text-gray-900">
+                Phone Number
+              </label>
+              <div className="mt-2">
+                <input
+                  id="phone_number"
+                  name="phone_number"
+                  type="text"
+                  autoComplete="phone_number"
+		  value={registerFormData.phone_number}
+		  onChange={handleRegisterInputChange}
+                  className={`block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+		message && message?.message?.phone_number ? "border border-red-400":"border-0"
+    	    }`}
+                />
+
+              </div>
+
+	{message && message?.message?.phone_number && 
+		message.message.phone_number.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
+	}
+
+            </div>
+
+
+            <div className="mt-4">
+              <label htmlFor="address" className="block text-sm font-medium leading-6 text-gray-900">
+                Address
+              </label>
+              <div className="mt-2">
+                <input
+                  id="address"
+                  name="address"
+                  type="text"
+                  autoComplete="address"
+		  value={registerFormData.address}
+		  onChange={handleRegisterInputChange}
+                  className={`block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+		message && message?.message?.address? "border border-red-400":"border-0"
+    	    }`}
+                />
+
+              </div>
+
+	{message && message?.message?.address && 
+		message.message.address.map((error, index)=>(<p style={{color:"red", fontSize: "13px"}}>{error}</p>))
 	}
 
             </div>

@@ -79,6 +79,7 @@ const ShopCategories = () => {
           <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-6 xl:gap-x-6">
             {products.map((product) => (
               <div key={product.id} className="group relative">
+               <a href={product.href}>
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-sm bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                   <img
                     src={product.imageSrc}
@@ -91,15 +92,12 @@ const ShopCategories = () => {
 
                   <div className="w-full">
                     <h3 style={{"color":"white"}} className="uppercase text-center font-medium text-white">
-                      <a href={product.href}>
-                        <span aria-hidden="true" className="absolute inset-0" />
                         {product.name}
-                      </a>
                     </h3>
                   </div>
                 </div>
 
-
+	       </a>
               </div>
             ))}
           </div>

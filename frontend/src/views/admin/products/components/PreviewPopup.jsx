@@ -1,13 +1,24 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { StarIcon } from '@heroicons/react/20/solid'
+import { StarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
+    
+    const settings = {
+      infinite: true,
+      speed: 500,
+      slidesToShow: 6,
+      slidesToScroll: 1
+    };
+
    const defaultImagePath = selectedProduct.display_image && selectedProduct.display_image.name ? 
 		`http://127.0.0.1:8000/uploads/${selectedProduct.display_image.name}` : 
 		"";
@@ -44,8 +55,8 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 
    const handleShowSelectedImage = (image, index) => {
 	return (<a onClick={(e) =>handleSetPreviewImage(e, image.name, index)} href="#"
-	    class={`block border dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300 ${
-		index == imgIndex ? 'border-blue-300' : 'border-transparent'
+	    className={`block border-2 rounded-lg overflow-hidden dark:border-transparent dark:hover:border-blue-300 hover:border-red-300 ${
+		index == imgIndex ? 'border-red-300' : 'border-transparent'
 	    }`}>
 	    <img
 	      src={getImagePath(image.name)} 
@@ -68,32 +79,28 @@ return (
       <p className="cursor-pointer ml-2 mb-4" onClick={()=>setOpen(false)}>Back</p>
 
       <div className="mx-auto max-w-7xl">
-        <div className="mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
+        <div className="mx-auto lg:mx-0 lg:flex lg:max-w-none">
 
 
-
-                <div class="w-full px-4">
-                    <div class="sticky top-0 z-50 overflow-hidden ">
-                        <div class="relative mb-6 lg:mb-10 lg:h-[28rem]">
+                <div className="w-full px-4">
+                    <div className="">
+                        <div className="relative mb-2 lg:h-[28rem]">
 	
-	<span className="absolute left-0 cursor-pointer" style={{top: "50%"}} onClick={handlePreviousPreviewImage}>Prev</span>
+	<span className="absolute left-0 cursor-pointer" style={{top: "50%"}} onClick={handlePreviousPreviewImage}>
+		<ChevronLeftIcon className="h-8 w-8"/>
+	</span>
                             <img
-	   			style={{"width":"200rem", "padding": "1rem"}} 
+	   			style={{padding: "0 3rem"}} 
 				src={previewImage}
-				alt=" /"
-                                className="object-cover w-full lg:h-full "
+				alt="/"
+                                className=" object-cover w-full lg:h-full "
 		             />
-	<span className="absolute right-0 cursor-pointer" style={{top: "50%"}} onClick={handleNextPreviewImage}>Next</span>
+	<span className="absolute right-0 cursor-pointer" style={{top: "50%"}} onClick={handleNextPreviewImage}>
+		<ChevronRightIcon className="h-8 w-8"/>
+	</span>
                         </div>
-                        <div class="flex-wrap hidden md:flex ">
-            {selectedProduct.images[0] && selectedProduct.images.map((image, index) => (
-                            <div className="w-1/2 p-2 sm:w-1/4">
-				{handleShowSelectedImage(image, index)}
-                            </div>
-	     ))}
 
 
-                        </div>
                     </div>
                 </div>
 
@@ -102,7 +109,7 @@ return (
 
           <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-xs lg:flex-shrink-0">
             <div className="rounded-2xl bg-gray-50 py-5 ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:pb-8 lg:pt:6">
-              <div className="mx-auto px-8">
+              <div className="mx-auto px-2">
 		<h3 className="text-2xl mb-5 font-bold tracking-tight text-gray-900">
 		{selectedProduct.name}
 	  	</h3>
@@ -124,11 +131,11 @@ return (
 	  		<span className="text-gray-400">{selectedProduct?.ratings}</span> (16 Feedbacks)
                 </p>
 </div>
-                <h4 className="text-xl mt-3 mb-5 text-gray-600">${selectedProduct?.price}</h4>
-                <h4 className="text-xl font-semibold text-gray-600">Product Details</h4>
+                <h4 className="text-xl mt-3 mb-5">${selectedProduct?.price}</h4>
+                <h4 className="text-lg font-semibold text-gray-600">Product Details</h4>
 
 
-            <p className="mt-3 text-base leading-7 text-gray-600">
+            <p className="mt-2 text-base leading-7">
 		{selectedProduct?.description}
             </p>
 
@@ -164,6 +171,25 @@ return (
             </div>
           </div>
         </div>
+
+
+	{/*
+	<div className="flex">
+	*/}
+	<Slider {...settings}>
+			    {selectedProduct.images[0] && selectedProduct.images.map((image, index) => (
+					    <div className="p-2">
+						{handleShowSelectedImage(image, index)}
+					    </div>
+			     ))}
+	</Slider>
+	{/*
+        </div>
+	*/}
+	
+
+
+
       </div>
     </div>
 

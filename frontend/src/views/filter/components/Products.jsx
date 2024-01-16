@@ -43,6 +43,7 @@ const Products = () => {
   const [type, setType] = useState('');
   const [sort, setSort] = useState('');
   const [selectedSizes, setSelectedSizes] = useState([]);
+  const [loading, setLoading] = useState([]);
 
 
   const [distance, setDistance] = useState(initialDistance);
@@ -60,7 +61,6 @@ const Products = () => {
   };
 
 
-  // State for filtered products
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   const handleInputChange = (e) => {
@@ -111,6 +111,7 @@ const Products = () => {
 
   const fetchFilteredProducts = async () => {
     try {
+      setLoading(true);
       // Customize the API endpoint and parameters based on your backend
       const response = await axios.get('http://localhost:8000/api/v1/products/filter', {
         params: {
@@ -127,11 +128,12 @@ const Products = () => {
           sizes: selectedSizes.join(','), // Convert array to comma-separated string
         },
       });
-console.log('resss', response.data);
-      const filteredProducts = response.data.data;
-      setFilteredProducts(filteredProducts);
+
+      setFilteredProducts(response.data);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching filtered products:', error);
+      setLoading(false);
     }
   };
 
@@ -143,9 +145,6 @@ console.log('resss', response.data);
 
   return (
  <div className="bg-white">
-
-
-	  {console.log("stooooor", storedLocation, storedCountry)}
 
       <div>
         {/* Mobile filter dialog */}
@@ -238,7 +237,8 @@ console.log('resss', response.data);
 
 
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-10">
-            <p className="text-gray-500">240 Bags Ads</p>
+	  {console.log('fillltaa',filteredProducts)}
+            <p className="text-gray-500">{filteredProducts.total} Ads</p>
             <h1 className="flex items-center justify-between text-xl font-semi-bold tracking-tight text-gray-900">
       <select
 	name="type"
@@ -299,7 +299,6 @@ console.log('resss', response.data);
 	  value={distance}
 	  onChange={handleDistanceChange}
 	>
-          <option value={10}>10 km</option>
           <option value={20}>20 km</option>
           <option value={30}>30 km</option>
           <option value={500}>500 km</option>
@@ -379,13 +378,18 @@ console.log('resss', response.data);
               {/* Product grid */}
               <div className="lg:col-span-3 relative">
 
-{!filteredProducts.length &&
+{loading &&
 <div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
 	
 	<p>Loading...</p>
 </div>
 }
 
+{!loading && filteredProducts?.data?.length === 0 &&
+<div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
+	<p>Your filter returned no products</p>
+</div>
+}
 
 {/*----------*/}	  
 
@@ -397,7 +401,7 @@ console.log('resss', response.data);
           <h2 className="sr-only">Products</h2>
 
           <div className="grid grid-cols-1 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4">
-            {filteredProducts && filteredProducts.map((product) => (
+            {filteredProducts.data && filteredProducts.data.map((product) => (
 		    <>
 		    {product.type == 'product' ? <Product product={product} /> : <Grocery product={product} />}
 		    </>

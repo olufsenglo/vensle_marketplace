@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { ChevronLeftIcon, ChevronRightIcon, PhoneIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Slider from 'react-slick';
+
+import Feedback from './Feedback';
+import Message from './Message';
 
 import {
     addToCart,
@@ -33,11 +38,25 @@ const ProductDetail = () => {
     const dispatch = useDispatch();
 
   const { productId } = useParams();
+
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState(null);
   const [selectedImagePath, setSelectedImagePath] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [messageOpen, setMessageOpen] = useState(false);
+  const [imgIndex, setImgIndex] = useState(0);
+   const [previewImage, setPreviewImage] = useState(null);
+   const [showContact, setShowContact] = useState(false);
+  const [loading, setLoading] = useState(false);
 
     const delim = '^%*#$';
+
+    const settings = {
+      infinite: false,
+      speed: 500,
+      slidesToShow: 6,
+      slidesToScroll: 1
+    };
 
     const handleAddToCart = (product) => {
         dispatch(addToCart({ ...product, quantity: 1 }));
@@ -52,16 +71,19 @@ const ProductDetail = () => {
       return `http://127.0.0.1:8000/uploads/${name}`;
     };
 
-   const handleSetSelectedImagePath = (e, thumbnail) => {
+   const handleSetSelectedImagePath = (e, thumbnail, index) => {
 	e.preventDefault();
-	setSelectedImagePath(thumbnail)
+	setImgIndex(index);
+	setPreviewImage(thumbnail);
    }
 
-   const handleShowSelectedImage = (productImage) => {
+   const handleShowSelectedImage = (productImage, index) => {
    	const thumbnail = getImagePath(productImage.name);
 
-	return (<a onClick={(e) => handleSetSelectedImagePath(e, thumbnail)} href="#"
-	    class="block border border-blue-300 dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300">
+	return (<a onClick={(e) => handleSetSelectedImagePath(e, thumbnail, index)} href="#"
+	    className={`block border-2 rounded-lg overflow-hidden dark:border-transparent dark:hover:border-blue-300 hover:border-red-300 ${
+		index == imgIndex ? 'border-red-300' : 'border-transparent'
+	    }`}>
 	    <img
 	      src={thumbnail} 
 	      alt={productImage.name}
@@ -70,10 +92,37 @@ const ProductDetail = () => {
 	</a>)
    }
 
+   const handleNextPreviewImage = () => {
+	   const selectedIndexLen = product.images.length - 1
+	   const index = (imgIndex + 1) > selectedIndexLen ? 0 : imgIndex + 1;
+	   setImgIndex(index);
+	   const path = getImagePath(product.images[index].name)
+	   setPreviewImage(path)
+   }
+
+   const handlePreviousPreviewImage = () => {
+	   const selectedIndexLen = product.images.length - 1
+	   const index = (imgIndex - 1) < 0 ? selectedIndexLen : imgIndex - 1;
+	   setImgIndex(index);
+	   const path = getImagePath(product.images[index].name)
+	   setPreviewImage(path)
+   }
+
+    const handleShowFeedback = (e) => {
+	    e.preventDefault();
+	    setOpen(true);
+    }
+
+    const handleShowMessage = (e) => {
+	    e.preventDefault();
+	    setMessageOpen(true);
+    }
+
   useEffect(() => {
   
     const fetchProduct = async () => {
       try {
+	setLoading(true);
 	const response = await axios.get(`http://localhost:8000/api/v1/products/${productId}`);
         
 	setProduct(response.data.product);
@@ -81,10 +130,12 @@ const ProductDetail = () => {
 
         const defaultPath = getDisplayImage(response.data.product);
         //console.log(defaultPath)
-	setSelectedImagePath(defaultPath);
-
+	//setSelectedImagePath(defaultPath);
+	setPreviewImage(defaultPath);
+	setLoading(false);
       } catch (error) {
         console.error('Error fetching product details:', error);
+	setLoading(false);
       }
     };
 
@@ -99,7 +150,11 @@ const ProductDetail = () => {
     return (
 
     <div className="bg-white">
-      <div className="pt-6">
+
+<Feedback open={open} setOpen={setOpen} productId={product?.id} />	    
+<Message open={messageOpen} setOpen={setMessageOpen} product={product} />	    
+
+      <div style={{minHeight: "75vh"}} className="pt-6 relative">
         <nav aria-label="Breadcrumb">
           <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
             {breadProduct.breadcrumbs.map((breadcrumb) => (
@@ -130,31 +185,51 @@ const ProductDetail = () => {
         </nav>
 
 
-        <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
-          <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8 bg-white">
-{!product && <p className="text-center mt-8">Loading</p>}	    
-            <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl">{product && product.name}</h1>
+	    {loading &&
+		    <p
+	     		style={{top: "30vh"}}
+	    		className="absolute left-0 right-0 text-center"
+	            >
+		       Loading
+		    </p>
+	    }
+
+	    {!loading && product &&
+		    <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-16">
+          <div className="lg:col-span-3 lg:border-r lg:border-gray-200 lg:pr-8 bg-white">
+
+            
+	    <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl">{product && product.name}</h1>
 
 
 
                 <div class="w-full mt-10">
-                    <div class="sticky top-0 z-50 overflow-hidden ">
-                        <div class="relative mb-6 lg:mb-10 lg:h-2/4 px-10">
+                    <div class="sticky top-0 overflow-hidden ">
+                        <div class="relative mb-6 lg:mb-10 lg:h-[28rem] px-10">
+	<span className="absolute left-0 cursor-pointer" style={{top: "50%"}} onClick={handlePreviousPreviewImage}>
+		<ChevronLeftIcon className="h-8 w-8"/>
+	</span>
                             <img 
-	    			src={selectedImagePath }
+				src={previewImage}
 	    			alt={product && product.name}
-                                class="object-cover w-full lg:h-full "
+                                className="object-cover w-full lg:h-full px-6"
 	    		    />
+	<span className="absolute right-0 cursor-pointer" style={{top: "50%"}} onClick={handleNextPreviewImage}>
+		<ChevronRightIcon className="h-8 w-8"/>
+        </span>
                         </div>
-                        <div class="flex-wrap hidden md:flex ">
 	    
-            {product && product.images.map((productImage) => (
-                            <div class="w-1/2 p-2 sm:w-1/4">
-				{handleShowSelectedImage(productImage)}
-                            </div>
-    	    ))}
 
-                        </div>
+
+	<Slider {...settings}>
+            		    {product && product.images.map((productImage, index) => (
+					    <div className="p-2">
+						{handleShowSelectedImage(productImage, index)}
+					    </div>
+			     ))}
+	</Slider>
+	    
+
                     </div>
                 </div>
 
@@ -197,7 +272,6 @@ const ProductDetail = () => {
 
             <div className="mt-10">
 	      <h3 className="text-lg font-bold tracking-tight text-gray-900">Key Specifications</h3>
-	{console.log('prrrrrro',product)}
               <div className="mt-2">
 			<ul role="list" className="list-disc space-y-2 pl-6">
 			  {product && product.key_specifications && product.key_specifications.split(delim).map((specification, index) => (
@@ -265,24 +339,34 @@ const ProductDetail = () => {
 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
-			61 Church Street Manchester M4 IPD
+			    {product.address}
 		</p>
 
+                <span
+		    onClick={() => setShowContact(true)}
+                  className="mt-8 cursor-pointer block w-full rounded-md bg-red-600 px-3 py-3 text-center text-sm text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                >
+			    {showContact ?
+				    product.phone_number
+				    : 
+				    <span className="flex justify-center items-center">
+				    	<PhoneIcon className="h-4 w-4 mr-4"/> VIEW CONTACT
+				    </span>
+			    }
+                </span>
                 <a
                   href="#"
-                  className="mt-8 block w-full rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+		  onClick={(e) => handleShowFeedback(e)}
+                  className="mt-6 block w-full rounded-md border border-red-600 bg-white px-3 py-3 text-center text-sm text-red-600 hover:text-white hover:border-red-500 shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  View Contact
+				    <span className="flex justify-center items-center">
+		  			<ChatBubbleBottomCenterTextIcon className="h-4 w-4 mr-4"/> VIEW FEEDBACKS (20)
+				    </span>
                 </a>
                 <a
                   href="#"
-                  className="mt-6 block w-full rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  View FEEDBACKS (20)
-                </a>
-                <a
-                  href="#"
-                  className="mt-6 block w-full rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+		  onClick={(e) => handleShowMessage(e)}
+                  className="mt-6 block w-full rounded-md px-3 py-3 text-center text-sm text-red-600 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   SEND A MESSAGE
                 </a>
@@ -292,6 +376,8 @@ const ProductDetail = () => {
           </div>
 
         </div>
+      }
+
       </div>
 
       {product && <SimilarProduct products={similarProducts} />}

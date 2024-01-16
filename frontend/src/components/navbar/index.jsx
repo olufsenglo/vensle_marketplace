@@ -18,20 +18,22 @@ import {
   IoMdNotificationsOutline,
   IoMdInformationCircleOutline,
 } from "react-icons/io";
+import { logout } from "actions/auth";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const Navbar = (props) => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const paramRedirect = queryParams.get('redirect');
 
   /**-Notification-**/
-  const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
-  const user = useSelector((state) => state.auth.user?.user);
-  const accessToken = useSelector((state) => state.auth.user.token);
+  const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
+  const user = useSelector((state) => state.auth?.user?.user);
+  const accessToken = useSelector((state) => state?.auth?.user?.token);
 
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -91,8 +93,10 @@ useEffect(() => {
       .catch(error => console.error('Error fetching unread alerts:', error));
   }, []);
 
-/**-Notification-**/
-
+  const handleLogout = (e) => {
+	  e.preventDefault();
+	  dispatch(logout())
+  }
 
   return (
 <>	  
@@ -144,7 +148,7 @@ useEffect(() => {
           <FiAlignJustify className="h-5 w-5" />
         </span>
 
-<p className="dark:text-white" onClick={()=>setOpen(true)}>Upload</p>		
+<p className="dark:text-white cursor-pointer" onClick={()=>setOpen(true)}>Upload</p>		
         {/* start Notification */}
         <Dropdown
           button={
@@ -230,7 +234,7 @@ useEffect(() => {
           button={
             <img
               className="h-10 w-10 rounded-full"
-              src={getDisplayImage(user.profile_picture)}
+              src={getDisplayImage(user?.profile_picture)}
               alt="Elon Musk"
             />
           }
@@ -239,7 +243,7 @@ useEffect(() => {
               <div className="p-4">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-navy-700 dark:text-white">
-                    👋 Hey, {user.name}
+                    👋 Hey, {user?.name}
                   </p>{" "}
                 </div>
               </div>
@@ -254,6 +258,7 @@ useEffect(() => {
                 </a>
                 <a
                   href=" "
+		   onClick={handleLogout}
                   className="mt-3 text-sm font-medium text-red-500 hover:text-red-500"
                 >
                   Log Out

@@ -52,16 +52,24 @@ if (navigator.geolocation) {
 
 
     const storedCountry = localStorage.getItem('userCountry');
+    const storedCity = localStorage.getItem('userCity');
 if (!storedCountry)
 	localStorage.setItem('userCountry', 'UK');
+if (!storedCity)
+	localStorage.setItem('userCity', 'London');
 
 /*
   axios.get('https://ipinfo.io/json?token=09389931bcf565')
     .then(response => {
       const country = response.data.country;
+      const city = response.data.city;
 console.log("counteryyyy", country)
+console.log("counteryyyy", city)
       if (!storedCountry || storedCountry !== country) {
         localStorage.setItem('userCountry', country);
+      }
+      if (!storedCity || storedCity !== city) {
+        localStorage.setItem('userCity', city);
       }
     })
     .catch(error => {

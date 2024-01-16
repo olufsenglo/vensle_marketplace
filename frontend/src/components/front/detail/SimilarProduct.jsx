@@ -3,7 +3,7 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
-import PreviewPopup from "./PreviewPopup";
+import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
 import img5 from "assets/img/front/categories/img5.JPG";
 

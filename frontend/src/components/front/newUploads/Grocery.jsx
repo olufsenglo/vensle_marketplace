@@ -9,7 +9,7 @@ import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 
-import PreviewPopup from "./PreviewPopup";
+import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
 export default function Grocery({ product }) {
     const dispatch = useDispatch();

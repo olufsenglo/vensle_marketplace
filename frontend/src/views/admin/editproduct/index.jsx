@@ -1,9 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Card from "components/card";
 import axios from 'axios';
+
+import {
+    SET_MESSAGE,
+} from "actions/types";
 
 import UploadPreview from "./components/UploadPreview";
 
@@ -303,6 +306,10 @@ const handleUploadPreview = (e) => {
               },	      
       });
       console.log('Product updated successfully:', response.data);
+	dispatch({
+	  type: SET_MESSAGE,
+	  payload: {type: "success", message: "Product updated successfully!"},
+	});
       navigate('/admin/products');
     } catch (error) {
 
@@ -483,10 +490,12 @@ country: product.country,
 
         <div className="col-span-12 lg:!mb-0">
      		<Card extra={"w-full p-4 h-full"}>
-			<div class="grid grid-cols-1 space-y-2">
-				<label class="text-sm font-bold text-gray-500 tracking-wide">Attach Document</label>
-				<div class="flex items-center justify-center w-full">
-							<div class="flex flex-auto max-h-48 mx-auto -mt-10">
+			<div className="grid grid-cols-1 space-y-2">
+				<label className="text-sm font-bold text-gray-500 tracking-wide">Attach Document</label>
+				<div className="flex items-center justify-center w-full">
+
+
+							<div className="flex flex-auto max-h-48 mx-auto -mt-10">
 
 	      	{formData?.oldImages?.length > 0 && renderOldImagePreviews(formData.oldImages)}	
 
@@ -504,9 +513,9 @@ country: product.country,
 			            <label htmlFor="images" class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
 						<div class="h-full w-full text-center flex flex-col items-center justify-center items-center  ">
 
-	  <img class="has-mask h-36 object-center" src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg" alt="freepik image" />
+	  <img className="has-mask h-36 object-center" src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg" alt="freepik image" />
 
-							<p className="pointer-none text-gray-500 "><span className="text-sm">Drag and drop</span> files here <br /> or <a href="" id="" className="text-blue-600 hover:underline">select a file</a> from your computer</p>
+							<p className="pointer-none text-gray-500 ">Select files from your computer</p>
 						</div>
 			             </label>}
 				</div>

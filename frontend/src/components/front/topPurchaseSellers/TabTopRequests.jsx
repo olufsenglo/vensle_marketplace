@@ -56,14 +56,14 @@ export default function TopRequests() {
 
 <div className="py-5 px-7">
 	<h1 className="mt-2 text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-		  {product.description}
+		  {product.name}
 	</h1>
 	<div className="mt-4">
             <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
               <li className="text-lg"><span className="text-gray-600">Im a white make who lives in a pretty huge apartment</span></li>
               <li className="text-lg">
 		  <span className="text-gray-600">
-		  	product.description
+		  	{product.description}
 		  </span>
 	      </li>
             </ul>

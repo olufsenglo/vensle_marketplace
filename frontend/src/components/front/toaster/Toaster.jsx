@@ -11,6 +11,12 @@ const Toaster = () => {
     const dispatch = useDispatch();
     const message = useSelector(state => state.message);
 
+    const handleClearMessageClick = () => {
+        dispatch({
+          type: CLEAR_MESSAGE,
+        });
+    }
+
   useEffect(() => {
     let timer;
     
@@ -19,7 +25,7 @@ const Toaster = () => {
         dispatch({
           type: CLEAR_MESSAGE,
         });
-      }, 20000);
+      }, 15000);
     }
 
     return () => {
@@ -30,7 +36,7 @@ const Toaster = () => {
     return (
 	<>
 {message && message?.message?.type == "success" &&
-	    <div style={{top:"5rem", zIndex: "99999", left: "0", right: "0"}} className="text-center fixed">
+	    <div onClick={() => handleClearMessageClick()} style={{top:"5rem", zIndex: "99999", left: "0", right: "0"}} className="text-center cursor-pointer fixed">
 		<span style={{border:"1px solid green", padding: "5px 18px", borderRadius: "5px"}} className="text-green-500 bg-white">
 	    		{message.message.message}
 	    	</span>

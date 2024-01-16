@@ -9,12 +9,16 @@ import {
 import { StarIcon } from '@heroicons/react/20/solid'
 import img5 from "assets/img/front/categories/img5.JPG";
 
+import PreviewPopup from "components/front/previewPopup/PreviewPopup";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function PopularGroceries() {
     const [products, setProducts] = useState([]);
+  const [open, setOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
@@ -22,6 +26,12 @@ export default function PopularGroceries() {
     const handleAddToCart = (product) => {
         dispatch(addToCart({ ...product, quantity: 1 }));
     };
+
+  const handleProductQuickView = (e, product) => {
+      e.preventDefault();
+      setSelectedProduct(product)
+      setOpen(true);
+  }
 
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
@@ -47,6 +57,9 @@ export default function PopularGroceries() {
 
   return (
     <div style={{"minHeight":"30rem"}} className="bg-white relative">
+
+	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
+	  
 {!products.length &&
 <div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
 	
@@ -57,27 +70,24 @@ export default function PopularGroceries() {
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
         <h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl font-normal pb-1 tracking-tight text-gray-900 uppercase">most poplar in groceries</h2>
 
-        <div className="mt-6 relative grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
+        <div className="mt-6 relative grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8"
+	>
 
           {products && products.map((product) => (
-            <a key={product.id} href={product.href} style={{"background": "#eee"}} className="group">
+            <a
+	          onClick={(e) => handleProductQuickView(e, product)}
+		  key={product.id}
+		  href={product.href}
+		  style={{"background": "#eee"}}
+		  className="group"
+  	    >
 
-
-		  {/*	      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
-
-                <img
-                  src={getDisplayImage(product)}
-                  alt={product.name}
-                  className="h-full w-full object-cover object-center group-hover:opacity-75"
-                />
-              </div>
-	      */}
-
-
-                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                    <a class="relative flex h-60 overflow-hidden rounded-xl" href="#">
+                <div
+		  className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7"
+		>
+                    <a className="relative flex h-60 overflow-hidden rounded-xl" href="#">
                         <img
-                          class="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
+                          className="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
                           src={getDisplayImage(product)}
                           alt={product.name}
                         />

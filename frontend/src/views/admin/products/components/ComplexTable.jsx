@@ -16,7 +16,6 @@ import PreviewPopup from "./PreviewPopup";
 
 const ComplexTable = (props) => {
   const { columnsData, tableData } = props;
-
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -83,7 +82,11 @@ const ComplexTable = (props) => {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, index) => {
+            {tableData.length === 0 
+	    ?
+	    <tr className="text-center py-8">Loading...</tr>
+	    :
+	    page.map((row, index) => {
               prepareRow(row);
               return (
                 <tr 

@@ -86,7 +86,7 @@ const formattedTotalPrice = formatPrice(totalPrice);
 				</span>
 			}
 			<img src={cart} style={{"marginTop":"0px"}}/>
-			<div className="flex flex-col justify-space-between h-full" style={{ marginLeft:"1px"}}>
+			<div className="flex flex-col text-right justify-space-between h-full" style={{ marginLeft:"1px"}}>
 			    <p 
 				style={{fontSize:"12px", marginTop:"0px", fontWeight:"bold"}}
 			    >

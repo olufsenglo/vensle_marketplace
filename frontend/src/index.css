@@ -48,16 +48,29 @@ input:checked.defaultCheckbox::before {
 	bottom: 10px!important;
 }
 
-.slick-dots li button {
-    background: white!important;
+.slick-dots li, .slick-dots li button {
+    height: 5px!important;
+    width: 48px!important;
 }
 
 .slick-dots li button {
+    background: white!important;
+    padding: 0!important;
     border-radius: 5px!important;
 }
 
 .slick-dots li button:before {
+    content: ''!important;
+    height: 5px!important;
+    line-height: 5px!important;	
+    width: 48px!important;
+    background: red!important;
+    opacity: 0!important;	
     font-size: 10px!important;	
     border: 1px solid white!important;
     border-radius: 5px!important;
+}
+
+.slick-dots li.slick-active button:before {
+    opacity: 1!important;
 }

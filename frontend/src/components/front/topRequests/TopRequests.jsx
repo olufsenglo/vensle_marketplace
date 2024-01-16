@@ -1,31 +1,23 @@
 import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios';
+import { ArrowRightIcon } from '@heroicons/react/20/solid'
 
-const products = [
-  {
-    id: 1,
-    name: 'Earthen Bottle',
-    href: '#',
-    price: '$48',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg',
-    imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
-  },
-  {
-    id: 2,
-    name: 'Nomad Tumbler',
-    href: '#',
-    price: '$35',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
-    imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
-  },
-]
+import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
 export default function TopRequests() {
     const [productRequests, setProductRequests] = useState([]);
+  const [open, setOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
     const getImagePath = (name) => {
       return `http://127.0.0.1:8000/uploads/${name}`;
     };
+
+  const handleProductQuickView = (e, product) => {
+      e.preventDefault();
+      setSelectedProduct(product)
+      setOpen(true);
+  }
 
   const fetchProductRequests = async () => {
     try {
@@ -48,6 +40,8 @@ export default function TopRequests() {
   return (
     <div style={{minHeight:"30rem"}} className="bg-white relative">
 
+	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
+
 {!productRequests.length &&
 <div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
 	<p>Loading...</p>
@@ -57,13 +51,16 @@ export default function TopRequests() {
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold mb-7 tracking-tight text-gray-900 uppercase">TOP REQUESTS</h2>
 
-        <h2 className="sr-only">Products</h2>
-
         <div className="grid relative grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
 
           {productRequests && productRequests.map((product) => (
 
-            <a key={product.id} href={product.href} className="group">
+            <a
+		  onClick={(e) => handleProductQuickView(e, product)}
+		  key={product.id}
+		  href={product.href}
+		  className="group cursor-pointer"
+	    >
 <div className="aspect-h-1 relative aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
 <div style={{"top":"1rem", "right":"1rem"}} className="text-white py-1 px-2 rounded absolute bg-orange-500">
 		  <p>${product.price} - $400</p>
@@ -77,7 +74,7 @@ export default function TopRequests() {
 
 <div className="py-5 px-7">
 	<h1 className="mt-2 text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
-		  {product.description}
+		  {product.name}
 	</h1>
 	<div className="mt-4">
             <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
@@ -107,6 +104,9 @@ export default function TopRequests() {
 </svg>
 		  		London
 		  	</p>
+		  <span className="flex cursor-pointer text-xs flex-1 justify-end items-center text-red-600">
+		  	VIEW <ArrowRightIcon className="ml-1 h-4 w-4"/>
+		  </span>
 </div>
 
 </div>
