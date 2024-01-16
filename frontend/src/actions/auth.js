@@ -28,13 +28,6 @@ import {
         const message = error.response.data.errors ? error.response.data.errors :
 		      { dispatchError: error.response.data.message }
 
-         /*const message =
-         (error.response.data &&
-           error.response &&
-           error.response.data.message) ||
-           error.message ||
-           error.toString();
-*/
 
         dispatch({
           type: REGISTER_FAIL,
@@ -61,7 +54,18 @@ import {
           type: LOGIN_SUCCESS,
           payload: { user: data },
         });
- 
+
+//Merge cart	     
+const cart = JSON.parse(localStorage.getItem('cart')) || [];
+if (cart.length > 0) {
+    axios.post('http://127.0.0.1:8000/api/v1/merge-cart', {cart}, {
+	      headers: {
+		      'Content-Type': 'multipart/form-data',
+		      'Authorization': `Bearer ${data.token}`,
+	      },
+    });
+}
+
         dispatch({
           type: SET_MESSAGE,
           payload: {type: "success", message: "Login sucessfull"},
