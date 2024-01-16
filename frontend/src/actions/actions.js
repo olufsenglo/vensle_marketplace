@@ -7,10 +7,6 @@ import {
   FETCH_CART_ITEMS,
 } from '../types/actionTypes';
 
-import {
-    SET_MESSAGE,
-  } from "./types";
-
 export const addToCart = (item) => (dispatch, getState) => {
   const isInCart = getState().cart.items.some((cartItem) => cartItem.id === item.id);
 
@@ -20,17 +16,17 @@ export const addToCart = (item) => (dispatch, getState) => {
     dispatch({ type: ADD_TO_CART, payload: item });
   }
 
-  const token = localStorage.getItem('token');
-  if (token) {
-    axios.post('/api/cart/add', { item });
+  if (getState()?.auth?.user?.token) {
+    const token = getState().auth.user.token
+    axios.post('http://127.0.0.1:8000/api/v1/add-to-cart', { id: item.id, quantity: item.quantity }, {
+	      headers: {
+		      'Content-Type': 'multipart/form-data',
+		      'Authorization': `Bearer ${token}`,
+	      },
+    });
   }
 
   localStorage.setItem('cart', JSON.stringify(getState().cart.items));
-
-        dispatch({
-          type: SET_MESSAGE,
-          payload: {type: "success", message: "Item added to cart"},
-        });
 };
 
 export const removeFromCart = (itemId) => (dispatch, getState) => {
