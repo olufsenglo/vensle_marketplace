@@ -11,6 +11,7 @@ function classNames(...classes) {
 }
 
 const Product = ({ product }) => {
+  const baseURL = 'https://nominet.vensle.com/backend';
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -23,12 +24,12 @@ const Product = ({ product }) => {
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
       //Utilize getImagePath
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
 	return (

@@ -3,12 +3,13 @@ import axios from "axios";
 import NavCategories from "./NavCategories";
 
 const NavLinks = () => {
+  const baseURL = "https://nominet.vensle.com/backend"
   const [categories, setCategories] = useState('');
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/categories');
+        const response = await fetch(`${baseURL}/api/v1/categories`);
         const data = await response.json();
         setCategories(data.categories);
       } catch (error) {

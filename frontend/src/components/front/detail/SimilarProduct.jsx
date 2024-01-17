@@ -23,7 +23,7 @@ export default function SimilarProducts({ products }) {
   }
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `https://nominet.vensle.com/backend/uploads/${name}`;
     };
 
   return (
@@ -58,7 +58,7 @@ export default function SimilarProducts({ products }) {
               </div>
               <div className="mt-1 flex justify-between items-center">
                 <p className="text-md font-medium text-orange-900">{product.price}</p>
-                <p className="text-sm font-medium text-gray-900">London</p>
+                <p className="text-sm font-medium text-gray-900">{product.city}</p>
               </div>
             </a>
           ))}

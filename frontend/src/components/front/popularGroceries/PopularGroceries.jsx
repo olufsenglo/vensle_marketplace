@@ -16,7 +16,8 @@ function classNames(...classes) {
 }
 
 export default function PopularGroceries() {
-    const [products, setProducts] = useState([]);
+	const baseURL = 'https://nominet.vensle.com/backend';
+  const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -35,15 +36,15 @@ export default function PopularGroceries() {
 
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
     const getImagePath = (product) => {
-      return `http://127.0.0.1:8000/uploads/${product.name}`;
+      return `${baseURL}/uploads/${product.name}`;
     };
 
     useEffect(() => {
-        const apiUrl = 'http://127.0.0.1:8000/api/v1/products';
+        const apiUrl = `${baseURL}/api/v1/products`;
     
         axios.get(apiUrl)
           .then(response => {
@@ -116,7 +117,9 @@ export default function PopularGroceries() {
 			  />
 			))}
 		      </div>
-		      <p className="text-sm mt-1 font-medium text-orange-900" style={{"fontSize":"0.75rem"}}>${product.price}</p>
+		      <p className="text-sm mt-1 font-medium text-orange-900" style={{"fontSize":"0.75rem"}}>
+		  {product.currency} {product.price}
+		  </p>
                 </div>
 
 			  <button

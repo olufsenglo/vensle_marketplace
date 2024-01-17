@@ -9,24 +9,36 @@ import {
 } from "actions/types";
 
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
+	console.log("elllllll",selectedProduct);
+	const baseURL = 'https://nominet.vensle.com/backend';
   const dispatch = useDispatch();
-   const defaultImagePath = selectedProduct.display_image && selectedProduct.display_image.name ? 
-		`http://127.0.0.1:8000/uploads/${selectedProduct.display_image.name}` : 
-		"";
 
    const [msgContent, setMsgContent] = useState('');
-   const [previewImage, setPreviewImage] = useState(defaultImagePath);
+   const [previewImage, setPreviewImage] = useState('');
    const [imgIndex, setImgIndex] = useState(0);
    const [showNumber, setShowNumber] = useState(false);
 
   const [isLeftVisible, setLeftVisible] = useState(true);
 
-  const toggleVisibility = (e) => {
+  useEffect(()=>{
+     const defaultImagePath = selectedProduct.display_image && selectedProduct.display_image.name ? 
+		`${baseURL}/uploads/${selectedProduct.display_image.name}` : 
+		"";
+  	setPreviewImage(defaultImagePath);
+  }, [selectedProduct])
+
+  const handleSendMessage = (e) => {
 	e.preventDefault();
 	dispatch({
 	  type: SET_MESSAGE,
 	  payload: {type: "success", message: "Message sent!"},
 	});
+	setMsgContent("");
+    	setLeftVisible(!isLeftVisible);
+  };	
+
+  const toggleVisibility = (e) => {
+	e.preventDefault();
 	setMsgContent("");
     	setLeftVisible(!isLeftVisible);
   };	
@@ -37,7 +49,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
   };	
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
    const handleNextPreviewImage = () => {
@@ -194,10 +206,12 @@ return (
 		      </div>
 
                 <p className="text-sm leading-5 text-gray-600">
-	  		<span className="text-gray-400">{selectedProduct.ratings}</span> (16 Feedbacks)
+	  		<span className="text-gray-400">{selectedProduct.ratings}</span> ({selectedProduct && selectedProduct.total_feedback} Feedback{selectedProduct && selectedProduct.total_feedback > 1 && 's'})
                 </p>
 </div>
-                <h4 className="text-xl mt-3 mb-5">${selectedProduct.price}</h4>
+                <h4 className="text-xl mt-3 mb-5">
+			        {selectedProduct.currency} {selectedProduct.price} 
+		</h4>
                 <h4 className="text-xl font-semibold text-gray-600">Product Details</h4>
 
             <p className="mt-1 text-base leading-7">
@@ -214,7 +228,7 @@ return (
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
 
-		  		London
+				{selectedProduct.city}
 		  	</p>
 			<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-3">
 		  	
@@ -223,7 +237,7 @@ return (
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
 
-		  		Posted 11 hours ago
+		  		Posted {selectedProduct.created_at}
 		  	</p>
 
 
@@ -270,7 +284,7 @@ return (
 	</p>
 
 
-	<form onSubmit={toggleVisibility} className="flex flex-col flex-1">
+	<form onSubmit={handleSendMessage} className="flex flex-col flex-1">
 			    <div className="mt-2.5 flex-1">
 			      <textarea
 				name="message"

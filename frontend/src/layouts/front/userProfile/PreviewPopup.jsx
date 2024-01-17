@@ -3,9 +3,11 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
+const baseURL = 'https://nominet.vensle.com/backend';
+
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
    const defaultImagePath = selectedProduct.display_image && selectedProduct.display_image.name ? 
-		`http://127.0.0.1:8000/uploads/${selectedProduct.display_image.name}` : 
+		`${baseURL}/uploads/${selectedProduct.display_image.name}` : 
 		"";
    console.log(defaultImagePath);
    const [previewImage, setPreviewImage] = useState(defaultImagePath);
@@ -13,7 +15,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
    const handleNextPreviewImage = () => {

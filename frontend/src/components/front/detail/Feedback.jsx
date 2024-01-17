@@ -11,6 +11,7 @@ function classNames(...classes) {
 }
 
 export default function Feedback({ open, setOpen, productId }) {
+  const baseURL = 'https://nominet.vensle.com/backend';
   const accessToken = useSelector((state) => state?.auth?.user?.token);
 
   const [content, setContent] = useState('');
@@ -27,7 +28,7 @@ export default function Feedback({ open, setOpen, productId }) {
   const [replies, setReplies] = useState([]);
 	
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
   const handleShowReplyForm = (parentId) => {
@@ -44,7 +45,7 @@ setLoading(true);
          Authorization: `Bearer ${accessToken}`,
       };
 
-      const response = await axios.post('http://127.0.0.1:8000/api/v1/feedback', {
+      const response = await axios.post(`${baseURL}/api/v1/feedback`, {
         content,
         rating,
         product_id: productId,
@@ -72,7 +73,7 @@ setReplyLoading(true);
 const headers = {
   Authorization: `Bearer ${accessToken}`,
 };	    
-      const response = await axios.post('http://127.0.0.1:8000/api/v1/feedback', {
+      const response = await axios.post(`${baseURL}/api/v1/feedback`, {
 	content: replyContent,
         rating,
         product_id: productId,
@@ -93,31 +94,10 @@ const headers = {
     }
   };
 
-/*	      
-    const fetchFeedback = async () => {
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/v1/feedback/${productId}`);
-
-  const feedbackGroups = response.data.reduce((groups, feedback) => {
-    const parentId = feedback.parent ? feedback.parent.id : null;
-    if (!groups[parentId]) {
-      groups[parentId] = [];
-    }
-    groups[parentId].push(feedback);
-    return groups;
-  }, {});
-
-        setFeedbackList(feedbackGroups);
-      } catch (error) {
-        console.error('Error fetching feedback:', error.message);
-      }
-    };
-*/
-
 
   const fetchFeedback = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/v1/feedback/${productId}`);
+      const response = await axios.get(`${baseURL}/api/v1/feedback/${productId}`);
 
       // Separate feedbacks and replies
       const feedbackArray = response.data.filter((feedback) => !feedback.parent);

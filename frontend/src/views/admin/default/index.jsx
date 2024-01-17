@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import MiniCalendar from "components/calendar/MiniCalendar";
 import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
@@ -66,21 +67,32 @@ const tableColumnsTopCreators = [
 
 
 const Dashboard = () => {
- const accessToken = useSelector((state) => state.auth.user.token);	
+   const baseURL = 'https://nominet.vensle.com/backend';
+    const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
+  const accessToken = useSelector((state) => state.auth?.user?.token);	
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalRequests, setTotalRequests] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);	
   const [extractedData, setExtractedData] = useState([]);
   const [data, setData] = useState([]);
+  
+
 
     const getDisplayImage = (image) => {
-      return image && image.name ? `http://127.0.0.1:8000/uploads/${image.name}` : '';
+      return image && image.name ? `${baseURL}/uploads/${image.name}` : '';
     };
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    } 
+  }, [isAuthenticated, accessToken]);
+	
+  useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/products');
+        const response = await fetch(`${baseURL}/api/v1/products`);
         const data = await response.json();
 	const extractedData = data.data.map(({ name, display_image, category, condition, price, status, created_at }) => ({
 	  name: [name, getDisplayImage(display_image)],		
@@ -106,13 +118,13 @@ const Dashboard = () => {
         Authorization: `Bearer ${accessToken}`,
       };
 
-      const productsResponse = await axios.get('http://127.0.0.1:8000/api/v1/products/upload/total', { headers });
+      const productsResponse = await axios.get(`${baseURL}/api/v1/products/upload/total`, { headers });
       setTotalProducts(productsResponse.data.totalUploadedProducts);
 
-      const requestsResponse = await axios.get('http://127.0.0.1:8000/api/v1/products/request/total', { headers });
+      const requestsResponse = await axios.get(`${baseURL}/api/v1/products/request/total`, { headers });
       setTotalRequests(requestsResponse.data.totalRequests);
 
-      const ordersResponse = await axios.get('http://127.0.0.1:8000/api/v1/orders/total', { headers });
+      const ordersResponse = await axios.get(`${baseURL}/api/v1/orders/total`, { headers });
       setTotalOrders(ordersResponse.data.totalOrders);
     } catch (error) {
       console.error('Error fetching data:', error);

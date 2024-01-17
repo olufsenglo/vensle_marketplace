@@ -7,7 +7,6 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/tables";
 import Products from "views/admin/products";
 import UploadProduct from "views/admin/uploadproduct";
-import EditProduct from "views/admin/editproduct";
 import RTLDefault from "views/rtl/default";
 
 // Auth Imports
@@ -79,13 +78,6 @@ const routes = [
     icon: <MdBarChart className="h-6 w-6" />,
     path: "upload-product",
     component: <UploadProduct />,
-  },  
-  {
-    name: "Edit Product",
-    layout: "/admin",
-    icon: <MdBarChart className="h-6 w-6" />,
-    path: "edit-product",
-    component: <EditProduct />,
   },  
   // {
   //   name: "RTL Admin",

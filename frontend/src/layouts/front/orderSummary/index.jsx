@@ -3,13 +3,14 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const OrderSummary = () => {
-  const { orderId } = useParams();
+    const baseURL = 'https://nominet.vensle.com/backend';
+    const { orderId } = useParams();
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/v1/user/orders/${orderId}`);
+        const response = await axios.get(`${baseURL}/api/v1/user/orders/${orderId}`);
         setOrder(response.data);
       } catch (error) {
         console.error('Error fetching order:', error);

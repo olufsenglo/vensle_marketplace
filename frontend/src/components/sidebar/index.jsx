@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+import { Link } from 'react-router-dom';
 import { HiX } from "react-icons/hi";
 import Links from "./components/Links";
 
@@ -21,9 +22,9 @@ const Sidebar = ({ open, onClose }) => {
       </span>
 
       <div className={`mx-[56px] mt-[50px] flex items-center`}>
-        <div className="mt-1 ml-1 h-2.5 font-poppins text-[26px] font-bold uppercase text-navy-700 dark:text-white">
+        <Link to='/' className="mt-1 ml-1 h-2.5 font-poppins text-[26px] font-bold uppercase text-navy-700 dark:text-white">
           VENSLE <span class="font-medium">MARKET</span>
-        </div>
+        </Link>
       </div>
       <div class="mt-[58px] mb-7 h-px bg-gray-300 dark:bg-white/30" />
       {/* Nav item */}
@@ -33,9 +34,6 @@ const Sidebar = ({ open, onClose }) => {
       </ul>
 
       {/* Nav item end */}
-      <a href="/" className={`mx-[56px] mt-[50px] flex items-center`}>
-	  <p>Homepage</p>
-      </a>
     </div>
   );
 };

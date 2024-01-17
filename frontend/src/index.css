@@ -28,6 +28,12 @@ input:checked.defaultCheckbox::before {
 	opacity: 1;
 }
 
+@media (max-width: 992px) {
+	body {
+		background: red;
+	}
+}
+
 .slick-prev {
     left: 38px!important;
 }

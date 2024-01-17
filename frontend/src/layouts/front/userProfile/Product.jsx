@@ -6,7 +6,12 @@ import { StarIcon } from '@heroicons/react/20/solid'
 
 import PreviewPopup from "./PreviewPopup";
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
 const Product = ({ product }) => {
+  const baseURL = "https://nominet.vensle.com/backend"
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -19,12 +24,12 @@ const Product = ({ product }) => {
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
       //Utilize getImagePath
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
 	return (
@@ -47,7 +52,10 @@ const Product = ({ product }) => {
 			{[0, 1, 2, 3, 4].map((rating) => (
 			  <StarIcon
 			    key={rating}
-			    className='text-orange-900 h-3 w-3 mr-1 flex-shrink-0'
+			    className={classNames(
+			      product.ratings > rating ? 'text-orange-900' : 'text-orange-200',
+			      'h-3 w-3 flex-shrink-0'
+			    )}
 			    aria-hidden="true"
 			  />
 			))}
@@ -70,7 +78,7 @@ const Product = ({ product }) => {
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
 
-		  		London
+		  		{product.city} 
 		  	</p>
 		      </div>
 	      </div>

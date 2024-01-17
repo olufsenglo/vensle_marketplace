@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, PhoneIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Slider from 'react-slick';
 
@@ -35,7 +35,9 @@ function classNames(...classes) {
 
 
 const ProductDetail = () => {
-    const dispatch = useDispatch();
+  const baseURL = 'https://nominet.vensle.com/backend';
+	
+  const dispatch = useDispatch();
 
   const { productId } = useParams();
 
@@ -64,11 +66,11 @@ const ProductDetail = () => {
 
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
    const handleSetSelectedImagePath = (e, thumbnail, index) => {
@@ -123,14 +125,12 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
 	setLoading(true);
-	const response = await axios.get(`http://localhost:8000/api/v1/products/${productId}`);
+	const response = await axios.get(`${baseURL}/api/v1/products/${productId}`);
         
 	setProduct(response.data.product);
 	setSimilarProducts(response.data.similarProducts);
 
         const defaultPath = getDisplayImage(response.data.product);
-        //console.log(defaultPath)
-	//setSelectedImagePath(defaultPath);
 	setPreviewImage(defaultPath);
 	setLoading(false);
       } catch (error) {
@@ -160,9 +160,9 @@ const ProductDetail = () => {
             {breadProduct.breadcrumbs.map((breadcrumb) => (
               <li key={breadcrumb.id}>
                 <div className="flex items-center">
-                  <a href={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
+                  <Link to={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
                     {breadcrumb.name}
-                  </a>
+                  </Link>
                   <svg
                     width={16}
                     height={20}
@@ -177,9 +177,9 @@ const ProductDetail = () => {
               </li>
             ))}
             <li className="text-sm">
-              <a href="" aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
+              <Link to="" aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
                 {breadProduct.name}
-              </a>
+              </Link>
             </li>
           </ol>
         </nav>
@@ -307,7 +307,7 @@ const ProductDetail = () => {
 		      </div>
 
                 <p className="text-sm leading-5 text-gray-600">
-	  		<span className="text-gray-400">{product?.ratings}</span> (16 Feedbacks)
+	  		<span className="text-gray-400">{product.ratings}</span> ({product && product.total_feedback} Feedback{product && product.total_feedback > 1 && 's'})
                 </p>
 </div>
 <p className="text-lg font-bold mt-3 tracking-tight text-gray-900">
@@ -324,14 +324,14 @@ const ProductDetail = () => {
 	}
 	
 <div>
-	  <a href={`/user-profile/${product?.user_id}/products`} className="flex items-center mt-4">
+	  <Link href={`/user-profile/${product?.user_id}/products`} className="flex items-center mt-4">
 
 		  <img src={seller} alt="seller" />
 		  <div className="ml-4">
 		    <h3 className="text-lg tracking-tight text-gray-900 sm:text-lg">Absolutely Anything Store</h3>
 		    <h4 className="text-lg tracking-tight text-gray-400 sm:text-lg">Ibrahim Jonas</h4>
 	  	</div>
-	  </a>
+	  </Link>
 
 		<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-8">
 		

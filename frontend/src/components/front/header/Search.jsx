@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
 const Search = () => {
+  const baseURL = "https://nominet.vensle.com/backend";
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
   const [searchTerm, setSearchTerm] = useState(queryParams.get('searchTerm') || '');
-  // const [searchTerm, setSearchTerm] = useState('');
-  // const [category_id, setCategoryId] = useState(queryParams.get('category_id') || '');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -23,8 +22,6 @@ const Search = () => {
   const handleDistanceChange = (event) => {
     const newDistance = parseInt(event.target.value, 10);
     setDistance(newDistance);
-    //fetchProducts(userLocation, newDistance, userCountry);
-    //console.log("coounnt", userLocation)
   };
 
 
@@ -33,9 +30,8 @@ const Search = () => {
     const value = e.target.value;
     setSearchTerm(value);
 
-    // Fetch suggestions from Laravel backend using Axios
     try {
-      const response = await axios.get(`http://localhost:8000/api/v1/products/filter`, {
+      const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
         params: { searchTerm: value, category_id: selectedCategory, distance },
       });
 
@@ -96,7 +92,7 @@ const Search = () => {
 
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/categories');
+        const response = await fetch(`${baseURL}/api/v1/categories`);
         const data = await response.json();
         setCategories(data.categories);
       } catch (error) {

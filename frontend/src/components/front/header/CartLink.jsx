@@ -1,4 +1,5 @@
 import { Fragment, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 
 import { Dialog, RadioGroup, Transition, Disclosure, Menu } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
@@ -23,6 +24,7 @@ function classNames(...classes) {
 }
 
 const CartLink = () => {
+    const baseURL = 'https://nominet.vensle.com/backend';
     const dispatch = useDispatch();
 
     const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
@@ -60,12 +62,7 @@ const formattedTotalPrice = formatPrice(totalPrice);
     };
 
     const getCartDisplayImage = (product) => {
-      return product.display_image ? `http://127.0.0.1:8000/uploads/${product.display_image.name}` : '';
-    };
-
-    const getDisplayFromImagesArray = (product) => {
-      const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return product.display_image ? `${baseURL}/uploads/${product.display_image.name}` : '';
     };
 
 	return (
@@ -157,7 +154,7 @@ const formattedTotalPrice = formatPrice(totalPrice);
                               <li key={item.id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img
-                                    src={getDisplayFromImagesArray(item)}
+                                    src={getCartDisplayImage(item)}
                                     alt={item.name}
                                     className="h-full w-full object-cover object-center"
                                   />
@@ -167,7 +164,7 @@ const formattedTotalPrice = formatPrice(totalPrice);
                                   <div>
                                     <div className="flex justify-between text-base font-medium text-gray-900">
                                       <h3>
-                                        <a href={item.href}>{item.name}</a>
+                                        <Link to={item.href}>{item.name}</Link>
                                       </h3>
                                       <p className="ml-4">${formatPrice(item.price*item.quantity)}</p>
                                     </div>
@@ -211,16 +208,16 @@ const formattedTotalPrice = formatPrice(totalPrice);
                       </div>
                       <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                       <div className="mt-6">
-                        <a
-                          href="/cart"
+                        <Link
+                          to="/cart"
                           className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                         >
                           Checkout
-                        </a>
+                        </Link>
                       </div>
                       <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                         <p>
-                          or
+                          or{" "}
                           <button
                             type="button"
                             className="font-medium text-indigo-600 hover:text-indigo-500"

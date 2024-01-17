@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
@@ -9,7 +9,6 @@ import { StarIcon } from '@heroicons/react/20/solid'
 
 import Dropdown from "components/dropdown";
 import { FiAlignJustify } from "react-icons/fi";
-import { Link } from "react-router-dom";
 import navbarimage from "assets/img/layout/Navbar.png";
 import { BsArrowBarUp } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
@@ -25,7 +24,9 @@ function classNames(...classes) {
 }
 
 const Navbar = (props) => {
+  const baseURL = 'https://nominet.vensle.com/backend';
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const paramRedirect = queryParams.get('redirect');
@@ -33,6 +34,7 @@ const Navbar = (props) => {
   /**-Notification-**/
   const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
   const user = useSelector((state) => state.auth?.user?.user);
+  const isSocialProfile = useSelector((state) => state.auth?.user?.socialProfile);
   const accessToken = useSelector((state) => state?.auth?.user?.token);
 
   const [unreadCount, setUnreadCount] = useState(0);
@@ -40,16 +42,15 @@ const Navbar = (props) => {
   const [userAlerts, setUserAlerts] = useState([]);
   /**-Notification-**/
 
-  
   const { onOpenSidenav, brandText } = props;
   const [darkmode, setDarkmode] = React.useState(false);
   const [open, setOpen] = useState(false)
 
     const getDisplayImage = (image) => {
       const name = image ? image : "";
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
-	
+ 
 useEffect(() => {
 	if (paramRedirect == 'modal')
 		setOpen(true);
@@ -58,7 +59,7 @@ useEffect(() => {
 /**-Notification-**/
   const markAsRead = () => {
     axios.put(
-	    'http://localhost:8000/api/v1/user-alerts/mark-as-read',
+	    `${baseURL}/api/v1/user-alerts/mark-as-read`,
 	    {},
 	    {
               headers: {
@@ -74,7 +75,7 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/v1/user-alerts/unread-count', {
+    axios.get(`${baseURL}/api/v1/user-alerts/unread-count`, {
               headers: {
                       'Content-Type': 'application/json',
                       'Authorization': `Bearer ${accessToken}`,
@@ -83,7 +84,7 @@ useEffect(() => {
       .then(response => setUnreadCount(response.data.unreadCount))
       .catch(error => console.error('Error fetching unread count:', error));
 
-    axios.get('http://localhost:8000/api/v1/user-alerts/unread', {
+    axios.get(`${baseURL}/api/v1/user-alerts/unread`, {
               headers: {
                       'Content-Type': 'application/json',
                       'Authorization': `Bearer ${accessToken}`,
@@ -103,16 +104,16 @@ useEffect(() => {
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
       <div className="ml-[6px]">
         <div className="h-6 w-[224px] pt-1">
-          <a
+          <Link
             className="text-sm font-normal text-navy-700 hover:underline dark:text-white dark:hover:text-white"
-            href=" "
+            to=" "
           >
             Pages
             <span className="mx-1 text-sm text-navy-700 hover:text-navy-700 dark:text-white">
               {" "}
               /{" "}
             </span>
-          </a>
+          </Link>
           <Link
             className="text-sm font-normal capitalize text-navy-700 hover:underline dark:text-white dark:hover:text-white"
             to="#"
@@ -130,7 +131,7 @@ useEffect(() => {
         </p>
       </div>
 
-      <div className="relative mt-[3px] flex h-[61px] w-[355px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-navy-800 dark:shadow-none md:w-[365px] md:flex-grow-0 md:gap-1 xl:w-[365px] xl:gap-2">
+      <div className="relative mt-[3px] flex h-[61px] w-[405px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-navy-800 dark:shadow-none md:w-[415px] md:flex-grow-0 md:gap-1 xl:w-[415px] xl:gap-2">
         <div className="flex h-full items-center rounded-full bg-lightPrimary text-navy-700 dark:bg-navy-900 dark:text-white xl:w-[225px]">
           <p className="pl-3 pr-2 text-xl">
             <FiSearch className="h-4 w-4 text-gray-400 dark:text-white" />
@@ -148,7 +149,7 @@ useEffect(() => {
           <FiAlignJustify className="h-5 w-5" />
         </span>
 
-<p className="dark:text-white cursor-pointer" onClick={()=>setOpen(true)}>Upload</p>		
+<p className="dark:text-white hover:bg-gray-200 rounded-full py-1 px-4 cursor-pointer" onClick={()=>setOpen(true)}>Upload</p>		
         {/* start Notification */}
         <Dropdown
           button={
@@ -233,8 +234,8 @@ useEffect(() => {
         <Dropdown
           button={
             <img
-              className="h-10 w-10 rounded-full"
-              src={getDisplayImage(user?.profile_picture)}
+              className="h-10 cursor-pointer border border-4 border-white hover:border-gray-200 w-10 rounded-full"
+              src={isSocialProfile ? user.profile_picture : getDisplayImage(user?.profile_picture)}
               alt="Elon Musk"
             />
           }
@@ -250,19 +251,25 @@ useEffect(() => {
               <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
 
               <div className="flex flex-col p-4">
-                <a
-                  href="/admin/profile"
+                <Link
+                  to="/admin/profile"
                   className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
                 >
                   Profile Settings
-                </a>
-                <a
-                  href=" "
+                </Link>
+                <Link
+                  to="/"
+                  className="mt-3 text-sm text-gray-800 dark:text-white hover:dark:text-white"
+                >
+		  Homepage
+                </Link>
+                <Link
+                  to=" "
 		   onClick={handleLogout}
                   className="mt-3 text-sm font-medium text-red-500 hover:text-red-500"
                 >
                   Log Out
-                </a>
+                </Link>
               </div>
             </div>
           }
@@ -323,7 +330,7 @@ useEffect(() => {
 
 
             <div>
-	      <a href="/admin/upload-product">
+	      <Link to="/admin/upload-product">
                 <div class="relative flex items-center justify-center mx-auto">
                     <svg class="text-purple-100" width="66" height="68" viewBox="0 0 66 68" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z" />
@@ -336,11 +343,11 @@ useEffect(() => {
 	  		Regular Products
 	        </h3>
                 <p class="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint</p>
-	   	</a>
+	   	</Link>
              </div>
 
             <div>
-	      <a href="/admin/upload-product?type=request">
+	      <Link to="/admin/upload-product?type=request">
                 <div class="relative flex items-center justify-center mx-auto">
                     <svg class="text-orange-100" width="62" height="64" viewBox="0 0 62 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M62 13.001C62 33.4355 53.9345 64.001 33.5 64.001C13.0655 64.001 0 50.435 0 30.0005C0 9.56596 2.56546 4.00021 23 4.00021C43.4345 4.00021 62 -7.43358 62 13.001Z" />
@@ -353,11 +360,11 @@ useEffect(() => {
 	  		Request a Product
 	  	</h3>
                 <p class="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.</p>
-	      </a>
+	      </Link>
             </div>
 
             <div>
-	      <a href="/admin/upload-product?type=grocery">
+	      <Link to="/admin/upload-product?type=grocery">
                 <div class="relative flex items-center justify-center mx-auto">
                     <svg class="text-green-100" width="66" height="68" viewBox="0 0 66 68" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z" />
@@ -370,7 +377,7 @@ useEffect(() => {
 	  		Groceries
 	  	</h3>
                 <p class="mt-4 text-base text-gray-600">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.</p>
-	      </a>
+	      </Link>
             </div>
 
 

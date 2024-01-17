@@ -17,6 +17,7 @@ function classNames(...classes) {
 }
 
 const NewUploads = () => {
+    const baseURL = 'https://nominet.vensle.com/backend';
     const [products, setProducts] = useState(null);
     const [column, setColumn] = useState('created_at');
     const [activeTab, setActiveTab] = useState(1);
@@ -31,7 +32,7 @@ const NewUploads = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/v1/products/top-by-column', {
+      const response = await axios.get(`${baseURL}/api/v1/products/top-by-column`, {
 	params: {
 		per_page: 15,
 		column

@@ -1,3 +1,5 @@
+import axios from "axios"
+
 import {
     REGISTER_SUCCESS,
     REGISTER_FAIL,
@@ -55,16 +57,17 @@ import {
           payload: { user: data },
         });
 
-//Merge cart	     
+//Merge cart TODO:put in await     
 const cart = JSON.parse(localStorage.getItem('cart')) || [];
 if (cart.length > 0) {
-    axios.post('http://127.0.0.1:8000/api/v1/merge-cart', {cart}, {
+    axios.post('https://nominet.vensle.com/backend/api/v1/merge-cart', {cart}, {
 	      headers: {
 		      'Content-Type': 'multipart/form-data',
 		      'Authorization': `Bearer ${data.token}`,
 	      },
     });
 }
+
 
         dispatch({
           type: SET_MESSAGE,
@@ -111,6 +114,8 @@ export const updateUserProfile = (userData) => (dispatch, getState) => {
 //});
   
 export const logout = () => (dispatch) => {
+	console.log('inn auth');
+    localStorage.removeItem("cart");
     AuthService.logout();
   
     dispatch({

@@ -11,19 +11,20 @@ import Grocery from "./Grocery";
 import seller from "assets/img/front/productDetail/seller.jpg";
 
 const UserProfile = () => {
-    const [products, setProducts] = useState([]);
+  const baseURL = 'https://nominet.vensle.com/backend';
+  const [products, setProducts] = useState([]);
   const { userId } = useParams();
   const [user, setUser] = useState(null);
 
 
     const getImagePath = (product) => {
-      return `http://127.0.0.1:8000/uploads/${product.name}`;
+      return `${baseURL}/uploads/${product.name}`;
     };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/v1/user/${userId}/products`);
+        const response = await axios.get(`${baseURL}/api/v1/user/${userId}/products`);
         setUser(response.data.user);
         setProducts(response.data.products.data);
         console.log('uerrr',response.data);

@@ -46,6 +46,8 @@ const columnsData = [
 ];
 
 const Tables = () => {
+  const baseURL = 'https://nominet.vensle.com/backend';
+  
   const [products, setProducts] = useState([]);
   const [extractedData, setExtractedData] = useState([]);
 
@@ -54,7 +56,7 @@ const Tables = () => {
     // Function to fetch products
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/products');
+        const response = await fetch(`${baseURL}/api/v1/products`);
         const data = await response.json();
 	const extractedData = data.data.map(({ id, name, category, condition, price, status, created_at, ...rest }) => ({
 	  id,

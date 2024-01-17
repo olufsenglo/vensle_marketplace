@@ -4,8 +4,9 @@ import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
+   const baseURL = 'https://nominet.vensle.com/backend';
    const defaultImagePath = selectedProduct && selectedProduct.display_image.name ? 
-		`http://127.0.0.1:8000/uploads/${selectedProduct.display_image.name}` : 
+		`${baseURL}/uploads/${selectedProduct.display_image.name}` : 
 		"";
    console.log(defaultImagePath);
    const [previewImage, setPreviewImage] = useState(defaultImagePath);
@@ -13,16 +14,12 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
    const handleNextPreviewImage = () => {
 	   const index = imgIndx + 1
 	   setImgIndx(index);
-	   //const path = getImagePath(selectedProduct.images[index])
-	   console.log('patttt', index)
-	   //console.log('patttt', selectedProduct.image[index])
-	   //setPreviewImage(path)
    }
 
    const handleSetPreviewImage = (e, image) => {

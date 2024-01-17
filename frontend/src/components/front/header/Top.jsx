@@ -18,6 +18,7 @@ function classNames(...classes) {
 }
 
 const Top = () => {
+  const baseURL = 'https://nominet.vensle.com/backend';
   const [distance, setDistance] = useState(20);
   const [userLocation, setUserLocation] = useState(null);
   const [userCountry, setUserCountry] = useState(null);
@@ -36,7 +37,7 @@ const Top = () => {
 if (!country)
 	    country = "UK";
 
-      axios.get(`http://127.0.0.1:8000/api/v1/products?lat=${location.lat}&lng=${location.lng}&distance=${selectedDistance}&country=${country}`)
+      axios.get(`${baseURL}/api/v1/products?lat=${location.lat}&lng=${location.lng}&distance=${selectedDistance}&country=${country}`)
         .then(response => setProducts(response.data.data))
         .catch(error => console.error(error));
     }

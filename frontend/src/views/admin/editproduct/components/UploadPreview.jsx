@@ -6,20 +6,22 @@ import { StarIcon } from '@heroicons/react/20/solid'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
+
 }
 
+const baseURL = 'https://nominet.vensle.com/backend';
 
 const UploadPreview = ({ formData, imagePreviews, newImagePreviews, mainImageIndex, setUploadPreview }) => {
    const [mainPreviewImage, setMainPreviewImage] = useState(null);
 
     const getDisplayImage = (product) => {
       const displayImage = product.oldImages.find(image => image.id === product.display_image_id);
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
    const handleSetNewMainPreviewImage = (e, preview) => {

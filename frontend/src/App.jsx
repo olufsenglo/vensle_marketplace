@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 
@@ -8,6 +9,7 @@ import AuthLayout from "layouts/auth";
 import Facebook from "layouts/front/socialAuthRedirect/Facebook";
 import Filter from "layouts/front/filter";
 import Home from "layouts/front/home";
+import SocialRedirect from "layouts/front/socialAuthentication/SocialRedirect";
 import Detail from "layouts/front/detail";
 import ProductDetail from "layouts/front/productDetail";
 import GroceryDetail from "layouts/front/groceryDetail";
@@ -22,6 +24,37 @@ import NotFound from "layouts/front/notFound";
 import Toaster from "components/front/toaster/Toaster";
 
 const App = () => {
+  const [countryCode, setCountryCode] = useState(null);
+  const [countryFlagUrl, setCountryFlagUrl] = useState(null);
+ useEffect(() => {
+    const fetchCountryInfo = async () => {
+      try {
+        //const ipinfoResponse = await axios.get('https://ipinfo.io/json?token=09389931bcf565');
+        //const storedCountryCode = ipinfoResponse.data.country;
+
+        const storedCountryCode = 'NG';
+
+        setCountryCode(storedCountryCode);
+
+        const countriesNowResponse = await axios.get(`https://countriesnow.space/api/v0.1/countries/flag/images/q?iso2=${storedCountryCode}`);
+
+        const flagUrl = countriesNowResponse.data.data.flag;
+        localStorage.setItem('countryCode', storedCountryCode);
+        localStorage.setItem('countryFlag', flagUrl);
+
+        setCountryFlagUrl(flagUrl);
+      } catch (error) {
+        console.error('Error fetching country info:', error);
+      }
+    };
+
+    fetchCountryInfo();
+  }, []);
+
+
+
+
+
 
 useEffect(() => {
     const storedLocation = JSON.parse(localStorage.getItem('userLocation'));
@@ -90,6 +123,8 @@ console.log("counteryyyy", city)
       <Route path="admin/*" element={<AdminLayout />} />
       <Route path="rtl/*" element={<RtlLayout />} />
       <Route path="filter/*" element={<Filter />} />
+      <Route path="social-auth-redirect/*" element={<SocialRedirect />} />
+
       <Route path="detail/*" element={<Detail />} />
       <Route path="/product-detail/:productId" element={<ProductDetail />} />
 

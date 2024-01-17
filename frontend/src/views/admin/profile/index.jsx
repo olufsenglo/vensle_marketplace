@@ -17,10 +17,12 @@ import Storage from "./components/Storage";
 import Upload from "./components/Upload";
 
 const ProfileOverview = () => {
+  const baseURL = 'https://nominet.vensle.com/backend';
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const accessToken = useSelector((state) => state.auth.user.token);
+  const isSocialProfile = useSelector((state) => state.auth?.user?.socialProfile);
   const user = useSelector((state) => state.auth.user.user);
 
 
@@ -110,33 +112,17 @@ const ProfileOverview = () => {
     }
   };
 
-/*  useEffect(() => {
+ useEffect(() => {
     if (!isAuthenticated) {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
-  const handleBusinessDetailsSubmit = async (e) => {
-	  const formData = null;
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:8000/api/v1/business-details', formData);
-
-      console.log(response.data);
-    } catch (error) {
-      if (error.response) {
-        setBusinessError(error.response.data.error || 'An error occurred.');
-      } else {
-        setBusinessError('An error occurred.');
-      }
-    }
-  }
-*/
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 setPasswordLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/update-password', passwordData, {
+      const response = await axios.post(`${baseURL}/api/v1/update-password`, passwordData, {
               headers: {
                       'Content-Type': 'application/json',
                       'Authorization': `Bearer ${accessToken}`,
@@ -193,7 +179,7 @@ setLoading(true);
       formDataWithFile.append('imageStatus', userProfile.imageStatus);
       formDataWithFile.append('profile_picture', userProfile.profile_picture);
 
-      const response = await axios.post('http://localhost:8000/api/v1/update-profile', formDataWithFile, {
+      const response = await axios.post(`${baseURL}/api/v1/update-profile`, formDataWithFile, {
               headers: {
                       'Content-Type': 'multipart/form-data',
                       'Authorization': `Bearer ${accessToken}`,
@@ -252,7 +238,7 @@ setLoading(true);
 console.log(user);
     // Display the current profile picture
     if (user.profile_picture) {
-      const path =  `http://127.0.0.1:8000/uploads/${user.profile_picture}`;
+      const path =  isSocialProfile ? user.profile_picture : `${baseURL}/uploads/${user.profile_picture}`;
       setImgPath(path);
       setImagePreview(path);
     }
@@ -276,7 +262,7 @@ console.log(user);
   useEffect(() => {
     const fetchBusinessDetails = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/v1/business-details', {
+        const response = await axios.get(`${baseURL}/api/v1/business-details`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -359,7 +345,7 @@ setBusinessDetailsLoading(true)
     formData.append('profile_picture_status', businessDetails.profile_picture_status || null);
     formData.append('certificate_status', businessDetails.certificate_status || null);
 
-    await axios.post('http://localhost:8000/api/v1/business-details/update', formData, {
+    await axios.post(`${baseURL}/api/v1/business-details/update`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${accessToken}`,
@@ -385,7 +371,7 @@ setBusinessDetailsLoading(true)
 };
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
   return (
@@ -722,7 +708,7 @@ setBusinessDetailsLoading(true)
                     name="phone"
                     value={businessDetails.phone || ''}
                     onChange={handleChange}
-                    class="block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" /><img src="/images/uQUFIfCYVYcLK0qVJF5Yw.png" alt="" class="absolute bottom-3 right-3 max-h-4"
+                    class="block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" />
                   />
                 </div>
                 <div class="relative">
@@ -733,7 +719,7 @@ setBusinessDetailsLoading(true)
                     name="business_address"
                     value={businessDetails.business_address || ''}
                     onChange={handleChange}
-                    class="block w-full rounded border-gray-301 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" /><img src="/images/uQUFIfCYVYcLK0qVJF5Yw.png" alt="" class="absolute bottom-3 right-3 max-h-4"
+                    class="block w-full rounded border-gray-301 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" />
                   />
                 </div>
 

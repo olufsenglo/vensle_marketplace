@@ -21,6 +21,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const baseURL = 'https://nominet.vensle.com/backend';
 
 const TopPurchaseSellers = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -55,12 +56,12 @@ const TopPurchaseSellers = () => {
 
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
    const handleSetSelectedImagePath = (e, thumbnail) => {
@@ -93,9 +94,9 @@ const TopPurchaseSellers = () => {
     };
 
   const topProductsByType = async () => {
-        const apiUrl = 'http://127.0.0.1:8000/api/v1/products/top-by-type';
+        const apiUrl = `${baseURL}/api/v1/products/top-by-type`;
     try {
-      const response = await axios.get('http://localhost:8000/api/v1/products/top-by-type', {
+      const response = await axios.get(`${baseURL}/api/v1/products/top-by-type`, {
         params: {
 		per_page: 8,
 		type
@@ -189,7 +190,10 @@ const TopPurchaseSellers = () => {
 			{[0, 1, 2, 3, 4].map((rating) => (
 			  <StarIcon
 			    key={rating}
-			    className='text-orange-900 h-3 w-3 mr-1 flex-shrink-0'
+			    className={classNames(
+			      products[0].ratings > rating ? 'text-orange-900' : 'text-orange-200',
+			      'h-3 w-3 flex-shrink-0'
+			    )}
 			    aria-hidden="true"
 			  />
 			))}
@@ -201,8 +205,7 @@ const TopPurchaseSellers = () => {
 			  <h3 className="text-sm text-gray-700">
 			    <a onClick={(e) => handleModal(e, 11)} href="">
 			      <span aria-hidden="true" className="absolute inset-0" />
-	    		      {products[0] && products[0].price}
-			      124.50
+			        {products[0] && products[0].currency} {products[0] && products[0].price}
 			    </a>
 			  </h3>
 			</div>
@@ -226,7 +229,7 @@ const TopPurchaseSellers = () => {
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
 
-		  		London
+			    {products[0].city}
 		  	</p>
 		    }
 
@@ -297,13 +300,12 @@ const TopPurchaseSellers = () => {
 
             {products && products.map((product) => (
             <div
-		    onClick={(e) => handleProductQuickView(e, product)}
 		    key={product}
 		    style={{"background": "#f4f4f4a3"}}
 		    className="group cursor-pointer relative rounded-md"
 	    >
-<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
-                <img
+<div  className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
+                <img onClick={(e) => handleProductQuickView(e, product)}
 		  src={getDisplayImage(product)}
 		  alt={product.name}
                   className="h-full w-full object-cover object-center lg:h-full lg:w-full"
@@ -330,8 +332,7 @@ const TopPurchaseSellers = () => {
 			<div>
 			  <h3 className="text-sm text-gray-700">
 			    <a href={product.href}>
-			      <span aria-hidden="true" className="absolute inset-0" />
-			        ${product.price} 
+			        {product.currency} {product.price} 
 			    </a>
 			  </h3>
 			</div>
@@ -355,7 +356,7 @@ const TopPurchaseSellers = () => {
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
 
-		  		London
+		  		{product.city}
 		  	</p>
 		    }
 

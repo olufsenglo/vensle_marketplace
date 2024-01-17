@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 
 const NotificationIcon = () => {
+  const baseURL = 'https://nominet.vensle.com/backend';
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const accessToken = useSelector((state) => state.auth.user.token);
 
@@ -11,7 +12,7 @@ const NotificationIcon = () => {
   const [userAlerts, setUserAlerts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/v1/user-alerts/unread-count', {
+    axios.get(`${baseURL}/api/v1/user-alerts/unread-count`, {
               headers: {
                       'Content-Type': 'application/json',
                       'Authorization': `Bearer ${accessToken}`,
@@ -20,7 +21,7 @@ const NotificationIcon = () => {
       .then(response => setUnreadCount(response.data.unreadCount))
       .catch(error => console.error('Error fetching unread count:', error));
 
-    axios.get('http://localhost:8000/api/v1/user-alerts/unread', {
+    axios.get(`${baseURL}/api/v1/user-alerts/unread`, {
               headers: {
                       'Content-Type': 'application/json',
                       'Authorization': `Bearer ${accessToken}`,
@@ -32,7 +33,7 @@ const NotificationIcon = () => {
 
   const markAsRead = () => {
     axios.put(
-	    'http://localhost:8000/api/v1/user-alerts/mark-as-read',
+	    `${baseURL}/api/v1/user-alerts/mark-as-read`,
 	    {},
 	    {
               headers: {

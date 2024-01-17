@@ -8,6 +8,7 @@ import Nft6 from "assets/img/nfts/Nft6.png";
 import Card from "components/card";
 
 const HistoryCard = ({ products }) => {
+  const baseURL = 'https://nominet.vensle.com/backend';
 
   const HistoryData = [
     {
@@ -56,7 +57,7 @@ const HistoryCard = ({ products }) => {
 
     const getDisplayImage = (image) => {
       const name = image ? image.name : "";
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
 

@@ -1,4 +1,5 @@
 import { Fragment, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import { Dialog, RadioGroup, Transition, Disclosure, Menu } from '@headlessui/react'
@@ -8,7 +9,7 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from
 
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { login, register } from "actions/auth";
+import { login, register, logout } from "actions/auth";
 import {
   removeFromCart,
   decreaseQuantity,
@@ -30,52 +31,27 @@ import cart from "assets/img/front/cart.PNG";
 import Search from './Search';
 
 const sortOptions = [
-  { name: 'Most Popular', href: '#', current: true },
-  { name: 'Best Rating', href: '#', current: false },
-  { name: 'Newest', href: '#', current: false },
-  { name: 'Price: Low to High', href: '#', current: false },
-  { name: 'Price: High to Low', href: '#', current: false },
+  { name: 'Profile', href: '/admin/profile', current: false },
+  { name: 'Upload a product', href: '/admin/upload-product', current: false },
+  { name: 'Dashboard', href: '/admin/default', current: false },
+  { name: 'Logout', href: '#', current: false },
 ]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const products = [
-    {
-      id: 1,
-      name: 'Throwback Hip Bag',
-      href: '#',
-      color: 'Salmon',
-      price: '$90.00',
-      quantity: 1,
-      imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-      imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-    },
-    {
-      id: 2,
-      name: 'Medium Stuff Satchel',
-      href: '#',
-      color: 'Blue',
-      price: '$32.00',
-      quantity: 1,
-      imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-      imageAlt:
-        'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-    },
-    // More products...
-]
-
-
 const Header = () => {
     const navigate = useNavigate();
+    
+    const baseURL = 'https://nominet.vensle.com/backend';
 
     const dispatch = useDispatch();
     const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
     const user = useSelector((state) => state.auth.user?.user);
     const cartItems = useSelector(state => state.cart.items);
-
     const storedCountry = localStorage.getItem('userCountry') || 'Unknown';	
+    const storedCountryFlag = localStorage.getItem('countryFlag') || '';	
     
 const totalPrice = cartItems.reduce((total, product) => {
   const productPrice = parseFloat(product.price);
@@ -96,6 +72,8 @@ const formattedTotalPrice = totalPrice.toFixed(2);
     const [driverRegister, setDriverRegister] = useState(false)
 
     const [loading, setLoading] = useState(false);
+    const [facebookLoading, setFacebookLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
     const [loginError, setLoginError] = useState(false);
     const [resetPasswordError, setResetPasswordError] = useState("");
     const [registerError, setRegisterError] = useState("");
@@ -150,6 +128,13 @@ const formattedTotalPrice = totalPrice.toFixed(2);
 	    setLoginOpen(true)
 	    setActiveTab(2)
     }
+
+const handleTopNavClick = (e, name) => {
+	if (name === 'Logout') {
+		e.preventDefault()
+	  	dispatch(logout())
+	}
+}
 
     const handleGetUserCountry = () => {
 	if (storedCountry == 'UK')
@@ -304,12 +289,12 @@ const formattedTotalPrice = totalPrice.toFixed(2);
 	}
 
     const getCartDisplayImage = (product) => {
-      return product.display_image ? `http://127.0.0.1:8000/uploads/${product.display_image.name}` : '';
+      return product.display_image ? `${baseURL}0/uploads/${product.display_image.name}` : '';
     };
 
     const getDisplayFromImagesArray = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
 
@@ -364,7 +349,7 @@ const handleForgotLinkClick = (resetLink) => {
 
 		    try {
 		      const forgotData = {email: forgotFormData.forgot_email}
-		      const response = await axios.post('http://127.0.0.1:8000/api/v1/forgot-password', forgotData);
+		      const response = await axios.post(`${baseURL}/api/v1/forgot-password`, forgotData);
 		      setResetLink(response.data.token);
 		      setSuccessMessage(response.data.message);
 		      setResetPasswordError('');
@@ -393,7 +378,7 @@ const handleForgotLinkClick = (resetLink) => {
       try {
                       const resetData = {email: forgotFormData.forgot_email, token: resetToken, password: resetFormData.new_password , password_confirmation: resetFormData.new_password_confirmation}
 
-                      const response = await axios.post('http://127.0.0.1:8000/api/v1/reset-password', resetData);
+                      const response = await axios.post(`${baseURL}/api/v1/reset-password`, resetData);
                       setSuccessMessage('');
                       setResetPasswordError('');
                       setLoading(false);
@@ -442,7 +427,8 @@ const handleForgotLinkClick = (resetLink) => {
   }
 
 const handleFacebookLogin = async (e) => {
-window.location.href = 'http://127.0.0.1:8000/api/v1/auth/facebook';	
+setFacebookLoading(true);
+window.location.href = `${baseURL}/api/v1/auth/facebook`;
 }
 
     const handleLogin = (e) => {
@@ -451,7 +437,6 @@ window.location.href = 'http://127.0.0.1:8000/api/v1/auth/facebook';
     //if (loginError == '')
 	      dispatch(login(formData.email, formData.password))
         .then(() => {
-	        console.log("LoggedIn");
 		
 		if (redirect)
 		{
@@ -474,7 +459,8 @@ setLoginError(true);
 
   const handleGoogleLogin = async (e) => {
 	  e.preventDefault();
-	window.location.href = 'http://127.0.0.1:8000/api/v1/auth/google';	
+	  setGoogleLoading(true);
+	window.location.href = `${baseURL}/api/v1/auth/google`;
   };
 
 
@@ -491,22 +477,22 @@ setLoginError(true);
 
 
         <div className="bg-white">
-            <div className="mx-auto max-w-2xl sm:px-6 lg:px-8 lg:max-w-7xl lg:px-8">
+            <div className="mx-auto max-w-3xl px-4 pt-2 sm:px-6 sm:pt-2 lg:max-w-7xl lg:pt-2">
                 <div className="pt-4 flex justify-between" style={{fontSize: "15px"}}>
                     <ul className="flex justify-between">
                         <li className="mr-6 hidden lg:block">Welcome to our Online Store!</li>
 	    {isAuthenticated ? 
-                        <li className="text-red-500 mr-6" style={{"color": "#ff5959"}}>
-		            <a href="/admin/upload-product?redirect=modal">Upload Your Product</a>
+                        <li className="text-red-500 hidden md:flex mr-6" style={{"color": "#ff5959"}}>
+		            <Link to="/admin/upload-product?redirect=modal">Upload Your Product</Link>
 		        </li>
 		    :
-                        <li onClick={(e) => handleUploadClick(e)} className="text-red-500 cursor-pointer mr-6" style={{"color": "#ff5959"}}>Upload Your Product</li>
+                        <li onClick={(e) => handleUploadClick(e)} className="text-red-500 hidden lg:flex cursor-pointer mr-6" style={{"color": "#ff5959"}}>Upload Your Product</li>
 	    }
                         <li onClick={(e) => handleRegisterDriverClick(e)} className="text-red-500 cursor-pointer" style={{"color": "#ff5959"}}>Register as a Driver</li>
                     </ul>
                     <ul className="flex justify-between">
-                        <li className="text-red-500 mr-6 sm:mr-2" style={{"color": "#ff5959", "marginRight": "50px"}}>
-
+                        <li className="text-red-500 mr-0 lg:mr-6" style={{"color": "#ff5959"}}>
+	    {isAuthenticated &&
               <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900" style={{"color": "#ff5959"}}>
@@ -532,8 +518,9 @@ setLoginError(true);
                       {sortOptions.map((option) => (
                         <Menu.Item key={option.name}>
                           {({ active }) => (
-                            <a
-                              href={option.href}
+                            <Link
+                              to={option.href}
+			      onClick={(e) => handleTopNavClick(e, option.name)}
                               className={classNames(
                                 option.current ? 'font-medium text-gray-900' : 'text-gray-500',
                                 active ? 'bg-gray-100' : '',
@@ -541,7 +528,7 @@ setLoginError(true);
                               )}
                             >
                               {option.name}
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       ))}
@@ -549,11 +536,16 @@ setLoginError(true);
                   </Menu.Items>
                 </Transition>
               </Menu>
-
+	    }
 
 
 </li>
-                        <li className="hidden md:block">{handleGetUserCountry()}</li>
+                        <li className="hidden md:flex items-center">
+	    			{storedCountryFlag && 
+					<img className="w-6 h-6 mr-2 rounded-full" src={storedCountryFlag} alt="country flg" />
+				}
+	    			{handleGetUserCountry()}
+	    		</li>
                     </ul>
                 </div>
             </div>
@@ -571,9 +563,9 @@ setLoginError(true);
                 <div className="mx-auto max-w-2xl py-4 sm:py-6 lg:max-w-7xl lg:px-8">
                     <div className="flex flex-col lg:flex-row justify-between items-center" style={{ "gap": "1%" }} >
                         
-                      <a href="/">
+                      <Link to="/">
 	    		<img style={{ "width": "218px" }} src={logo} alt="vensle" />
-                       </a>
+                       </Link>
 	    		<Search />
 
                         <div className="flex items-center" style={{ "font-size": "0.9rem" }}>
@@ -585,7 +577,7 @@ setLoginError(true);
 			    }
 	    			  <h2 style={{"cursor":"pointer", "fontWeight":"600","marginTop":"-3px"}}>
 			    {isAuthenticated ?
-				    <a href="/admin/default">Dashboard</a>
+				    <Link to="/admin/default">Dashboard</Link>
 			     :
 				    <>
                                       <span onClick={handleSignInClick}>Sign In </span>/
@@ -886,41 +878,35 @@ loading ? "bg-blue-400" : ""
                                                     <div class="flex items-center justify-between mt-4">
                                                         <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/5"></span>
 
-                                                        <a href="#" class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline">
+                                                        <Link to="#" class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline">
                                                             or login with Social Media
-                                                        </a>
+                                                        </Link>
 
                                                         <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/5"></span>
                                                     </div>
 
                                                     <div class="flex items-center mt-6 -mx-2">
 
-<button
-    onClick={handleFacebookLogin}
-    type="button" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
+							<button
+							    onClick={handleFacebookLogin}
+							    disabled={facebookLoading}
+							    type="button" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
 
-    <span class="hidden mx-2 sm:inline">Sign in with Facebook</span>
-</button>
+							    <span className="hidden mx-2 sm:inline">
+								{facebookLoading ? 'Loading' : 'Sign in with Facebook'}
+							    </span>
+							</button>
 
-	{/*
-                                                        <button 
-							 onClick={handleGoogleLogin}
-							  type="button" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
-                                                            <svg class="w-4 h-4 mx-2 fill-current" viewBox="0 0 24 24">
-                                                            <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z">
-                                                                </path>
-                                                            </svg>
-
-                                                            <span class="hidden mx-2 sm:inline">Sign in with Google</span>
-                                                        </button>
-         */}
     
-                                                        <a onClick={handleGoogleLogin} href="#" class="p-2 mx-2 text-sm font-medium text-gray-500 transition-colors duration-300 transform bg-gray-300 rounded-lg hover:bg-gray-200">
-                                                            <svg class="w-4 h-4 mx-2 fill-current" viewBox="0 0 24 24">
+                                                        <button
+							  disable={googleLoading}
+							  onClick={handleGoogleLogin} href="#" class="p-2 mx-2 text-sm font-medium text-gray-900 transition-colors duration-300 transform bg-gray-300 rounded-lg hover:bg-gray-200">
+				{googleLoading ? 'Loading' : <svg class="w-4 h-4 mx-2 fill-current" viewBox="0 0 24 24">
                                                             <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z">
                                                                 </path>
                                                             </svg>
-                                                        </a>
+				}
+                                                        </button>
                                                     </div>
 
                                                 </form>
@@ -1133,30 +1119,40 @@ loading ? "bg-blue-400" : ""
                                                     <div class="flex items-center justify-between mt-4">
                                                         <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/5"></span>
 
-                                                        <a href="#" class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline">
+                                                        <Link to="#" class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline">
                                                             or login with Social Media
-                                                        </a>
+                                                        </Link>
 
                                                         <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/5"></span>
                                                     </div>
 
+
                                                     <div class="flex items-center mt-6 -mx-2">
-                                                        <button type="button" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
-                                                            <svg class="w-4 h-4 mx-2 fill-current" viewBox="0 0 24 24">
-                                                                <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z">
+
+							<button
+							    onClick={handleFacebookLogin}
+							    disabled={facebookLoading}
+							    type="button" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
+
+							    <span className="hidden mx-2 sm:inline">
+								{facebookLoading ? 'Loading' : 'Sign in with Facebook'}
+							    </span>
+							</button>
+
+    
+                                                        <button
+							  disable={googleLoading}
+							  onClick={handleGoogleLogin} href="#" class="p-2 mx-2 text-sm font-medium text-gray-900 transition-colors duration-300 transform bg-gray-300 rounded-lg hover:bg-gray-200">
+				{googleLoading ? 'Loading' : <svg class="w-4 h-4 mx-2 fill-current" viewBox="0 0 24 24">
+                                                            <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z">
                                                                 </path>
                                                             </svg>
-
-                                                            <span class="hidden mx-2 sm:inline">Sign in with Google</span>
+				}
                                                         </button>
-
-                                                        <a href="#" class="p-2 mx-2 text-sm font-medium text-gray-500 transition-colors duration-300 transform bg-gray-300 rounded-lg hover:bg-gray-200">
-                                                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                                                                <path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z">
-                                                                </path>
-                                                            </svg>
-                                                        </a>
                                                     </div>
+
+
+
 
                                                 </form>
                                             </div>

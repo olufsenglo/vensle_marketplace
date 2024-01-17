@@ -20,11 +20,12 @@ import TopCreatorTable from "./components/TableTopCreators";
 import NftCard from "components/card/NftCard";
 
 const Marketplace = () => {
+  const baseURL = 'https://nominet.vensle.com/backend';
   const navigate = useNavigate();	
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
-  const accessToken = useSelector((state) => state.auth.user.token);
-  const user = useSelector((state) => state.auth.user.user);
+  const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
+  const accessToken = useSelector((state) => state.auth?.user?.token);
+  const user = useSelector((state) => state.auth.user?.user);
 
   const [products, setProducts] = useState([]);
   const [extractedData, setExtractedData] = useState([]);
@@ -33,14 +34,20 @@ const Marketplace = () => {
 
     const getDisplayImage = (image) => {
       const name = image ? image.name : "";
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     // Function to fetch products
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/products');
+        const response = await fetch(`${baseURL}/api/v1/products`);
         const data = await response.json();
 	const extractedData = data.data.map(({ name, category, condition, price, status, created_at }) => ({
 	  name,
@@ -65,7 +72,7 @@ const Marketplace = () => {
   useEffect(() => {
 	  const fetchOrders = async () => {
 	    try {
-	      const response = await axios.get('http://localhost:8000/api/v1/user/orders', {
+	      const response = await axios.get(`${baseURL}/api/v1/user/orders`, {
 		      headers: {
 			      'Authorization': `Bearer ${accessToken}`,
 		      },

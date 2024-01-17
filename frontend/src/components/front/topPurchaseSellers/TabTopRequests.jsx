@@ -2,15 +2,16 @@ import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios';
 
 export default function TopRequests() {
+    const baseURL = 'https://nominet.vensle.com/backend';
     const [productRequests, setProductRequests] = useState([]);
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
   const fetchProductRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/v1/products/top-by-type', {
+      const response = await axios.get(`${baseURL}/api/v1/products/top-by-type`, {
         params: {
 		per_page: '4',
 		type: 'request'

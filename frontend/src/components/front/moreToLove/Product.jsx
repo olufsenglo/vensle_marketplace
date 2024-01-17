@@ -11,6 +11,7 @@ function classNames(...classes) {
 }
 
 const Product = ({ product }) => {
+	const baseURL = 'https://nominet.vensle.com/backend';
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -23,12 +24,12 @@ const Product = ({ product }) => {
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
       //Utilize getImagePath
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
 	return (
@@ -70,7 +71,7 @@ const Product = ({ product }) => {
 			  <h3 className="text-sm text-gray-700">
 			    <a href={product.href}>
 			      <span aria-hidden="true" className="absolute inset-0" />
-			        ${product.price} 
+			        {product.currency} {product.price} 
 			    </a>
 			  </h3>
 			</div>
@@ -81,7 +82,7 @@ const Product = ({ product }) => {
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
 
-		  		London
+		{product.city}
 		  	</p>
 		      </div>
 	      </div>

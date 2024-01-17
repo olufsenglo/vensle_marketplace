@@ -14,6 +14,8 @@ import Checkbox from "components/checkbox";
 
 import currencySymbolMap from 'currency-symbol-map';
 
+const baseURL = 'https://nominet.vensle.com/backend';
+
 const Tables = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,16 +26,16 @@ const Tables = () => {
   const storedCountry = localStorage.getItem('userCountry') || 'Unknown';	
   const storedCity = localStorage.getItem('userCity') || 'Unknown';	
 
-  const [currencySymbol, setCurrencySymbol] = useState('');
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
-  const accessToken = useSelector((state) => state.auth.user.token);
-  const user = useSelector((state) => state.auth.user.user);
+  const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
+  const accessToken = useSelector((state) => state.auth?.user?.token);
+  const user = useSelector((state) => state.auth?.user?.user);
   const [categories, setCategories] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(false);
-const [mainImageIndex, setMainImageIndex] = useState(0);
+  const [mainImageIndex, setMainImageIndex] = useState(0);
+  const [loading, setLoading] = useState(0);
 
 
   const [formData, setFormData] = useState({
@@ -45,8 +47,8 @@ const [mainImageIndex, setMainImageIndex] = useState(0);
     address: '',
     phone_number: '',
     description: '',
-    type:'',
-    ratings: 2.0,
+    type:'product',
+    ratings: 0,
     quantity: 1,
     sold: 1,
     views: 1,
@@ -148,72 +150,6 @@ const handleFileChange = (e) => {
 
 
 
-  /**const handleFileChange = (e) => {
-	  const { name, files } = e.target;
-
-    const previews = [];
-    for (let i = 0; i < files.length; i++) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        previews.push(event.target.result);
-        if (previews.length === files.length) {
-          setImagePreviews(previews);
-        }
-      };
-      reader.readAsDataURL(files[i]);
-    }	  
-
-
-	  setFormData({
-		  ...formData,
-		  [name]: files,
-	  });
-  }*/
-
-/*
-const handleFileChange = (e) => {
-  const { name, files } = e.target;
-
-  const previews = [];
-  const existingImages = formData.images || [];
-
-  for (let i = 0; i < existingImages.length; i++) {
-    previews.push(existingImages[i]);
-  }
-
-  for (let i = 0; i < files.length; i++) {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      previews.push(event.target.result);
-      if (previews.length === existingImages.length + files.length) {
-        setImagePreviews(previews);
-      }
-    };
-    reader.readAsDataURL(files[i]);
-  }
-
-  setFormData({
-    ...formData,
-    [name]: [...existingImages, ...files],
-  });
-};
-
-
-  const renderImagePreviews = () => {
-    return imagePreviews.map((preview, index) => (
-
-	    
-
-      <img
-	    key={index}
-	    src={preview}
-	    alt={`Preview ${index}`}
-	    className="object-cover w-full lg:h-20"
-	/>
-    ));
-  };
-*/
-
 
 const renderImagePreviews = () => {
   return imagePreviews.map((preview, index) => (
@@ -251,31 +187,6 @@ const renderImagePreviews = () => {
 		</button>
 	      )}
           </a>
-{/*
-    <div key={index} className="relative">
-      <img
-        src={preview}
-        alt={`Preview ${index}`}
-        className={`object-cover w-full lg:h-20 ${index === mainImageIndex ? 'border-2 border-green-500' : ''}`}
-      />
-      {!isMainPreview(index) && (
-        <button
-          className="absolute top-0 right-0 p-2 bg-red-500 text-white cursor-pointer"
-          onClick={(e) => handleRemoveImage(e, index)}
-        >
-          x
-        </button>
-      )}
-      {!isMainPreview(index) && (
-        <button
-          className="absolute bottom-0 left-0 p-2 bg-green-500 text-white cursor-pointer"
-          onClick={(e) => handleSetMainImageIndex(e, index)}
-        >
-          Set as Preview
-        </button>
-      )}
-    </div>
- */}
 	  </>
   ));
 };
@@ -319,7 +230,8 @@ const handleUploadPreview = (e) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-setError(null);
+    setError(null);
+    setLoading(true);
     const data = new FormData();
 
     for (const key in formData) {
@@ -335,7 +247,7 @@ setError(null);
 
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/products', data, {
+      const response = await axios.post(`${baseURL}/api/v1/products`, data, {
 	      headers: {
 		      'Content-Type': 'multipart/form-data',
 		      'Authorization': `Bearer ${accessToken}`,
@@ -349,6 +261,7 @@ setError(null);
       }*/
 
 
+      setLoading(false);
       navigate('/admin/products');
     } catch (error) {
 
@@ -363,20 +276,21 @@ setError(null);
         }
       }
 	    
-
       console.error('Error creating product:', error);
+
+      setLoading(false);
     }	  
   
 
   };
 
   useEffect(() => {
-	if (paramProductType == 'grocery') {
+	if (paramProductType === 'grocery') {
 	    setFormData({
 	      ...formData,
 	      type: 'grocery',
 	    });
-	} else if (paramProductType == 'request') {
+	} else if (paramProductType === 'request') {
 	    setFormData({
 	      ...formData,
 	      type: 'request',
@@ -390,7 +304,7 @@ setError(null);
 
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/categories');
+        const response = await fetch(`${baseURL}/api/v1/categories`);
         const data = await response.json();
         setCategories(data.categories);
       } catch (error) {
@@ -402,60 +316,44 @@ setError(null);
   }, []);
 
   useEffect(() => {
-    const getUserCountry = async () => {
-      try {
-        // Fetch user's country based on IP address using the IPinfo API
-        const response = await axios.get('https://ipinfo.io/json?token=09389931bcf565');
+    const getUserCountry = () => {
 
-        // Extract country information from the response
-        const country = response.data.country;
-        console.log('Country Code:', country); 
-        if (country == 'NG') {
-          setCurrencySymbol('₦')
+        if (storedCountry == 'NG') {
 	  setFormData({
 		...formData,
 		currency: '₦'
 	  })
-        } else if (country == 'UK') {
-          setCurrencySymbol('£')
+        } else if (storedCountry == 'UK') {
 	  setFormData({
 		...formData,
 		currency: '£'
 	  })
-        } else if (country == 'US') {
-          setCurrencySymbol('$')
+        } else if (storedCountry == 'US') {
 	  setFormData({
 		...formData,
 		currency: '$'
 	  })
         } else {
-          setCurrencySymbol('£')
 	  setFormData({
 		...formData,
 		currency: '£'
 	  })
         }
         // setCurrencySymbol(getCurrencySymbolForCountry(country));
-      } catch (error) {
-        console.error('Error fetching user country:', error);
-      }
     };
 
     getUserCountry();
   }, []); 
   
-/*  useEffect(() => {
+  useEffect(() => {
     if (!isAuthenticated) {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
-*/
 
 
   const getCurrencySymbolForCountry = (country) => {
-    console.log('Mapped Currency Symbol:', currencySymbolMap(country)); // Log the mapped currency symbol for debugging
 
-    // Extract the currency symbol from the map
     const currencySymbol = currencySymbolMap[country] || '$'; // Default to '$' if not found
     console.log('Mapped Currency Symbol:', currencySymbol); // Log the mapped currency symbol for debugging
     
@@ -469,12 +367,11 @@ setError(null);
   return (
     <div className="flex w-full flex-col gap-5">
     {error && <div className="mt-8 ml-4 text-red-500">{error}</div>}
-{console.log("prevvv", imagePreviews)}
-{console.log("datttt", formData)}
 	  <form className={"relative w-full p-4 h-full"} onSubmit={handleSubmit} encType="multipart/form-data" id="imageForm">
 
+{console.log("datttt", formData)}
 
-{uploadPreview && <UploadPreview formData={formData} imagePreviews={imagePreviews} mainImageIndex={mainImageIndex} setUploadPreview={setUploadPreview} />}
+{uploadPreview && <UploadPreview formData={formData} loading={loading} imagePreviews={imagePreviews} mainImageIndex={mainImageIndex} setUploadPreview={setUploadPreview} />}
 
 
       <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
@@ -632,7 +529,7 @@ setError(null);
             Price*
           </label>
           <div className="mt-2 flex items-center">
-            <span className="mr-2">{currencySymbol}</span>
+            <span className="mr-2">{formData.currency}</span>
             <input
               type="text"
               name="price"

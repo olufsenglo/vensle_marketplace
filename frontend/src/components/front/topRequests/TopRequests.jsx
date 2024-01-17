@@ -5,12 +5,13 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid'
 import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
 export default function TopRequests() {
+    const baseURL = 'https://nominet.vensle.com/backend';
     const [productRequests, setProductRequests] = useState([]);
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
   const handleProductQuickView = (e, product) => {
@@ -21,7 +22,7 @@ export default function TopRequests() {
 
   const fetchProductRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/v1/products/top-by-type', {
+      const response = await axios.get(`${baseURL}/api/v1/products/top-by-type`, {
         params: {
 		per_page: '2',
 		type: 'request'
@@ -94,15 +95,15 @@ export default function TopRequests() {
 <svg className="h-4 w-4 mr-2 text-gray-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
 </svg>
-		  		Requested 11 hours ago
-		  	</p>
+		  		Requested {product.created_at}
+		  		  	</p>
 			<p className="text-xs flex items-center text-black-200 font-medium text-gray-700" style={{"color":"#aaa"}}>
 		  	
 <svg className="h-4 w-4 mr-1 text-gray-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
-		  		London
+		  {product.city}
 		  	</p>
 		  <span className="flex cursor-pointer text-xs flex-1 justify-end items-center text-red-600">
 		  	VIEW <ArrowRightIcon className="ml-1 h-4 w-4"/>

@@ -11,7 +11,8 @@ function classNames(...classes) {
 }
 
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
-    
+	const baseURL = 'https://nominet.vensle.com/backend';
+	
     const settings = {
       infinite: true,
       speed: 500,
@@ -20,7 +21,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
     };
 
    const defaultImagePath = selectedProduct.display_image && selectedProduct.display_image.name ? 
-		`http://127.0.0.1:8000/uploads/${selectedProduct.display_image.name}` : 
+		`${baseURL}/uploads/${selectedProduct.display_image.name}` : 
 		"";
    console.log(defaultImagePath);
    const [previewImage, setPreviewImage] = useState(defaultImagePath);
@@ -28,7 +29,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
    const handleNextPreviewImage = () => {
@@ -131,7 +132,9 @@ return (
 	  		<span className="text-gray-400">{selectedProduct?.ratings}</span> (16 Feedbacks)
                 </p>
 </div>
-                <h4 className="text-xl mt-3 mb-5">${selectedProduct?.price}</h4>
+                <h4 className="text-xl mt-3 mb-5">
+			{selectedProduct?.currency} {selectedProduct?.price}
+		</h4>
                 <h4 className="text-lg font-semibold text-gray-600">Product Details</h4>
 
 
@@ -146,7 +149,7 @@ return (
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
 
-		  		London
+		  		{selectedProduct?.city}
 		  	</p>
 			<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-3">
 		  	
@@ -155,7 +158,7 @@ return (
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
 
-		  		Posted 11 hours ago
+		  		Posted {selectedProduct?.created_at}
 		  	</p>
 
 <div className="flex items-center">

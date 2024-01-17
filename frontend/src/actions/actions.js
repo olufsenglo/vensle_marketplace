@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import {
   ADD_TO_CART,
   REMOVE_FROM_CART,
@@ -6,6 +7,9 @@ import {
   INCREASE_QUANTITY,
   FETCH_CART_ITEMS,
 } from '../types/actionTypes';
+import {
+    SET_MESSAGE,
+  } from "./types";
 
 export const addToCart = (item) => (dispatch, getState) => {
   const isInCart = getState().cart.items.some((cartItem) => cartItem.id === item.id);
@@ -16,9 +20,12 @@ export const addToCart = (item) => (dispatch, getState) => {
     dispatch({ type: ADD_TO_CART, payload: item });
   }
 
-  if (getState()?.auth?.user?.token) {
-    const token = getState().auth.user.token
-    axios.post('http://127.0.0.1:8000/api/v1/add-to-cart', { id: item.id, quantity: item.quantity }, {
+  const authInfo = localStorage.getItem('user');
+  //if (getState()?.auth?.user?.token) {
+  console.log('innfooautuza',authInfo?.user);
+  if (authInfo?.user?.token) {
+    const token = authInfo.user.token
+    axios.post('https://nominet.vensle.com/backend/api/v1/add-to-cart', { id: item.id, quantity: item.quantity }, {
 	      headers: {
 		      'Content-Type': 'multipart/form-data',
 		      'Authorization': `Bearer ${token}`,
@@ -27,6 +34,11 @@ export const addToCart = (item) => (dispatch, getState) => {
   }
 
   localStorage.setItem('cart', JSON.stringify(getState().cart.items));
+	
+        dispatch({
+          type: SET_MESSAGE,
+          payload: {type: "success", message: "Item added to cart"},
+        });
 };
 
 export const removeFromCart = (itemId) => (dispatch, getState) => {

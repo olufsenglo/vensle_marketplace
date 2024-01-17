@@ -9,17 +9,18 @@ function classNames(...classes) {
 }
 
 
-const UploadPreview = ({ formData, imagePreviews, mainImageIndex, setUploadPreview }) => {
-   const [mainPreviewImage, setMainPreviewImage] = useState(null);
+const UploadPreview = ({ formData, loading, imagePreviews, mainImageIndex, setUploadPreview }) => {
+    const baseURL = 'https://nominet.vensle.com/backend';
+    const [mainPreviewImage, setMainPreviewImage] = useState(null);
 
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
    const handleSetMainPreviewImage = (e, preview) => {
@@ -132,8 +133,12 @@ useEffect(() => {
 		  	</p>
 
 <div className="flex items-center">
-			<button type="submit" className="linear mt-8 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
-			  PREVIEW & SUBMIT
+			<button
+			   type="submit"
+			   disabled={loading}
+		 	   className="linear mt-8 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
+			>
+		{loading ? 'Loading ...' : 'SUBMIT'}
 			</button>
 
 

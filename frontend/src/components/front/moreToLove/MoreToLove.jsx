@@ -17,6 +17,7 @@ function classNames(...classes) {
 }
 
 const MoreToLove = () => {
+  const baseURL = "https://nominet.vensle.com/backend"
     const [products, setProducts] = useState(null);
     const [perPage, setPerPage] = useState(15);
 
@@ -26,7 +27,7 @@ const MoreToLove = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/v1/products/top-by-column', {
+      const response = await axios.get(`${baseURL}/api/v1/products/top-by-column`, {
 	params: {
 		per_page: perPage,
 		column: "sold"

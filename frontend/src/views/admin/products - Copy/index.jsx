@@ -6,6 +6,8 @@ import {
 import tableDataComplex from "./variables/tableDataComplex.json";
 import ComplexTable from "./components/ComplexTable";
 
+    const baseURL = 'https://nominet.vensle.com/backend';
+
 const Tables = () => {
   const [products, setProducts] = useState([]);
   const [extractedData, setExtractedData] = useState([]);
@@ -15,7 +17,7 @@ const Tables = () => {
     // Function to fetch products
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/products');
+        const response = await fetch(`${baseURL}/api/v1/products`);
         const data = await response.json();
 	const extractedData = data.data.map(({ name, condition, price, status, created_at }) => ({
 	  name,

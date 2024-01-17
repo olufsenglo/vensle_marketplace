@@ -9,14 +9,15 @@ import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 
-import PreviewPopup from "./PreviewPopup";
+import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Grocery({ product }) {
-    const dispatch = useDispatch();
+	const baseURL = 'https://nominet.vensle.com/backend';
+  const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
 
     const [products, setProducts] = useState([]);
@@ -35,7 +36,7 @@ export default function Grocery({ product }) {
     };
 
     const getImagePath = (product) => {
-      return `http://127.0.0.1:8000/uploads/${product.name}`;
+      return `${baseURL}/uploads/${product.name}`;
     };
 
   return (
@@ -91,7 +92,9 @@ export default function Grocery({ product }) {
 			  />
 			))}
 		      </div>
-		      <p className="text-sm mt-1 font-medium text-orange-900" style={{"fontSize":"0.75rem"}}>${product.price}</p>
+		      <p className="text-sm mt-1 font-medium text-orange-900" style={{"fontSize":"0.75rem"}}>
+	  {product.currency} {product.price}
+	  </p>
                 </div>
 
 			  <button

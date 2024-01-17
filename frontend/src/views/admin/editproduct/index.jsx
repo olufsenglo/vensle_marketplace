@@ -19,6 +19,7 @@ import Checkbox from "components/checkbox";
 import currencySymbolMap from 'currency-symbol-map';
 
 const Tables = () => {
+  const baseURL = 'https://nominet.vensle.com/backend';
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -30,8 +31,8 @@ const Tables = () => {
   const [currencySymbol, setCurrencySymbol] = useState('');
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
-  const accessToken = useSelector((state) => state.auth.user.token);
-  const user = useSelector((state) => state.auth.user.user);
+  const accessToken = useSelector((state) => state.auth?.user?.token);
+  const user = useSelector((state) => state.auth?.user?.user);
   const [categories, setCategories] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
@@ -91,6 +92,11 @@ country: storedCountry,
     });
   };	
 
+ useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const delim = '^%*#$';
 
@@ -274,7 +280,7 @@ const handleRemoveOldImage = (e, imageId, imageName) => {
 
 
     const getImagePath = (name) => {
-      return `http://127.0.0.1:8000/uploads/${name}`;
+      return `${baseURL}/uploads/${name}`;
     };
 
 const handleUploadPreview = (e) => {
@@ -299,7 +305,7 @@ const handleUploadPreview = (e) => {
 
 
     try {
-      const response = await axios.post(`http://localhost:8000/api/v1/products/${paramProductId}`, {...formData, removedImages, mainImageIndex: proofImageIndex}, {
+      const response = await axios.post(`${baseURL}/api/v1/products/${paramProductId}`, {...formData, removedImages, mainImageIndex: proofImageIndex}, {
               headers: {
                       'Content-Type': 'multipart/form-data',
                       'Authorization': `Bearer ${accessToken}`,
@@ -327,52 +333,11 @@ const handleUploadPreview = (e) => {
     }
   };
 
-/*
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const data = new FormData();
-
-    for (const key in formData) {
-      if (key !== 'images') {
-        data.append(key, formData[key]);
-      }
-    }	  
-
-    for (let i = 0; i < formData.images.length; i++) {
-      data.append('images[]', formData.images[i]);
-    }
-
-
-
-    try {
-      const response = await axios.post('http://localhost:8000/api/v1/products', data, {
-	      headers: {
-		      'Content-Type': 'multipart/form-data',
-		      'Authorization': `Bearer ${accessToken}`,
-	      },
-      });
-
-      if (response.error) {
-        setError(response.error);
-      } else {
-        setError(null);
-      }
-
-      navigate('/admin/products');
-    } catch (error) {
-      console.log("inngjjk",error.response.data.error);
-      console.error('Error creating product:', error);
-    }	  
-  
-
-  };
-*/
 
 useEffect(() => {
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/v1/products/${paramProductId}`);
+      const response = await axios.get(`${baseURL}/api/v1/products/${paramProductId}`);
       const product = response.data.product;
       console.log("Product:", product);
 
@@ -419,8 +384,7 @@ country: product.country,
 
     const fetchCategories = async () => {
       try {
-        // Replace the URL with the endpoint that retrieves your categories
-        const response = await axios.get('http://localhost:8000/api/v1/categories');
+        const response = await axios.get(`${baseURL}/api/v1/categories`);
         const data = response.data;
         setCategories(data.categories);
       } catch (error) {

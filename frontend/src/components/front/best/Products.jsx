@@ -6,34 +6,9 @@ import {
     addToCart,
 } from 'actions/actions';
 
-// const products = [
-//     {
-//       id: 1,
-//       name: 'Earthen Bottle',
-//       href: '#',
-//       price: '$48',
-//       imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg',
-//       imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
-//     },
-//     {
-//       id: 2,
-//       name: 'Nomad Tumbler',
-//       href: '#',
-//       price: '$35',
-//       imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg',
-//       imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
-//     },
-//     {
-//       id: 3,
-//       name: 'Focus Paper Refill',
-//       href: '#',
-//       price: '$89',
-//       imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-03.jpg',
-//       imageAlt: 'Person using a pen to cross a task off a productivity paper card.',
-//     },
-//   ]
   
 export default function Products() {
+    const baseURL = 'https://nominet.vensle.com/backend';
     const [products, setProducts] = useState([]);
 
     const dispatch = useDispatch();
@@ -45,11 +20,11 @@ export default function Products() {
 
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `http://127.0.0.1:8000/uploads/${displayImage.name}` : '';
+      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
     useEffect(() => {
-        const apiUrl = 'http://127.0.0.1:8000/api/v1/products';
+        const apiUrl = `${baseURL}/api/v1/products`;
     
         axios.get(apiUrl)
           .then(response => {

@@ -22,6 +22,7 @@ function classNames(...classes) {
 
 
 const Products = () => {
+  const baseURL = "https://nominet.vensle.com/backend";
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
@@ -113,7 +114,7 @@ const Products = () => {
     try {
       setLoading(true);
       // Customize the API endpoint and parameters based on your backend
-      const response = await axios.get('http://localhost:8000/api/v1/products/filter', {
+      const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
         params: {
           searchTerm,
           category_id,
