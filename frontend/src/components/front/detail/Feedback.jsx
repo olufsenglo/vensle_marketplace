@@ -11,7 +11,7 @@ function classNames(...classes) {
 }
 
 export default function Feedback({ open, setOpen, productId }) {
-  const baseURL = 'https://nominet.vensle.com/backend';
+  const baseURL = 'http://nominet.vensle.com/backend';
   const accessToken = useSelector((state) => state?.auth?.user?.token);
 
   const [content, setContent] = useState('');

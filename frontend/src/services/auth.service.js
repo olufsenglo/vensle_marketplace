@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://nominet.vensle.com/backend/api/v1/";
+const API_URL = "http://nominet.vensle.com/backend/api/v1/";
 
 const register = (name, business_name, email, phone_number, address, password, password_confirmation) => {
   return axios.post(API_URL + "register", {

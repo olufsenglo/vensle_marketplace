@@ -17,7 +17,7 @@ function classNames(...classes) {
 }
 
 const NewUploads = () => {
-    const baseURL = 'https://nominet.vensle.com/backend';
+    const baseURL = 'http://nominet.vensle.com/backend';
     const [products, setProducts] = useState(null);
     const [column, setColumn] = useState('created_at');
     const [activeTab, setActiveTab] = useState(1);

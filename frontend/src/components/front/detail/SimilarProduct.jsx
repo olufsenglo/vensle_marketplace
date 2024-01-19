@@ -23,7 +23,7 @@ export default function SimilarProducts({ products }) {
   }
 
     const getImagePath = (name) => {
-      return `https://nominet.vensle.com/backend/uploads/${name}`;
+      return `http://nominet.vensle.com/backend/uploads/${name}`;
     };
 
   return (

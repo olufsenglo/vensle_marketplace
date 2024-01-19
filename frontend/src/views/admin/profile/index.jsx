@@ -17,7 +17,7 @@ import Storage from "./components/Storage";
 import Upload from "./components/Upload";
 
 const ProfileOverview = () => {
-  const baseURL = 'https://nominet.vensle.com/backend';
+  const baseURL = 'http://nominet.vensle.com/backend';
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);

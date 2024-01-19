@@ -22,7 +22,7 @@ function classNames(...classes) {
 
 
 const Products = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
+  const baseURL = "http://nominet.vensle.com/backend";
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
@@ -401,7 +401,7 @@ const Products = () => {
         <div className="mx-auto max-w-2xl lg:max-w-7xl">
           <h2 className="sr-only">Products</h2>
 
-          <div className="grid grid-cols-1 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4">
+          <div className="grid grid-cols-3 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4">
             {filteredProducts.data && filteredProducts.data.map((product) => (
 		    <>
 		    {product.type == 'product' ? <Product product={product} /> : <Grocery product={product} />}

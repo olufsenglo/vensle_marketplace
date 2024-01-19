@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios';
 
 export default function TopRequests() {
-    const baseURL = 'https://nominet.vensle.com/backend';
+    const baseURL = 'http://nominet.vensle.com/backend';
     const [productRequests, setProductRequests] = useState([]);
 
     const getImagePath = (name) => {

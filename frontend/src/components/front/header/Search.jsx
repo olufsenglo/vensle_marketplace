@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { ChatBubbleLeftRightIcon } from '@heroicons/react/20/solid'
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 const Search = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
+  const baseURL = "http://nominet.vensle.com/backend";
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -183,7 +183,7 @@ const Search = () => {
         style={{ "background": "#ff5959" }}
         type="submit"
       >
-		<ChatBubbleLeftRightIcon className="h-5 w-5"/>
+		<MagnifyingGlassIcon className="h-5 w-5"/>
       </button>
 
    </form> 

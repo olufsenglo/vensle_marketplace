@@ -5,7 +5,7 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid'
 import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
 export default function TopRequests() {
-    const baseURL = 'https://nominet.vensle.com/backend';
+    const baseURL = 'http://nominet.vensle.com/backend';
     const [productRequests, setProductRequests] = useState([]);
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)

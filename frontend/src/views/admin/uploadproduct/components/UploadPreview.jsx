@@ -10,7 +10,7 @@ function classNames(...classes) {
 
 
 const UploadPreview = ({ formData, loading, imagePreviews, mainImageIndex, setUploadPreview }) => {
-    const baseURL = 'https://nominet.vensle.com/backend';
+    const baseURL = 'http://nominet.vensle.com/backend';
     const [mainPreviewImage, setMainPreviewImage] = useState(null);
 
     const getDisplayImage = (product) => {

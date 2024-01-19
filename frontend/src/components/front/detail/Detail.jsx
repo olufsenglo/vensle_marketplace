@@ -35,7 +35,7 @@ function classNames(...classes) {
 
 
 const ProductDetail = () => {
-  const baseURL = 'https://nominet.vensle.com/backend';
+  const baseURL = 'http://nominet.vensle.com/backend';
 	
   const dispatch = useDispatch();
 

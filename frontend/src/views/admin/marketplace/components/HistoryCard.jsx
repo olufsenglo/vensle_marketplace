@@ -8,7 +8,7 @@ import Nft6 from "assets/img/nfts/Nft6.png";
 import Card from "components/card";
 
 const HistoryCard = ({ products }) => {
-  const baseURL = 'https://nominet.vensle.com/backend';
+  const baseURL = 'http://nominet.vensle.com/backend';
 
   const HistoryData = [
     {

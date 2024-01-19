@@ -44,7 +44,7 @@ function classNames(...classes) {
 const Header = () => {
     const navigate = useNavigate();
     
-    const baseURL = 'https://nominet.vensle.com/backend';
+    const baseURL = 'http://nominet.vensle.com/backend';
 
     const dispatch = useDispatch();
     const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
@@ -491,7 +491,7 @@ setLoginError(true);
                         <li onClick={(e) => handleRegisterDriverClick(e)} className="text-red-500 cursor-pointer" style={{"color": "#ff5959"}}>Register as a Driver</li>
                     </ul>
                     <ul className="flex justify-between">
-                        <li className="text-red-500 mr-0 lg:mr-6" style={{"color": "#ff5959"}}>
+                        <li className="text-red-500 mr-0 md:mr-6" style={{"color": "#ff5959"}}>
 	    {isAuthenticated &&
               <Menu as="div" className="relative inline-block text-left">
                 <div>
@@ -568,10 +568,61 @@ setLoginError(true);
                        </Link>
 	    		<Search />
 
-                        <div className="fixed md:relative right-5 md:right-0 flex items-center" style={{ "font-size": "0.9rem" }}>
+                        <div className="absolute md:relative right-0 md:right-0 flex items-center" style={{ "font-size": "0.9rem" }}>
                             <div className="flex items-center">
-                                <img src={person} style={{"marginRight":"4px"}} />
-                                <div className="flex justify-space-between flex-col h-full">
+            
+
+	    {/*Place in component*/}
+	    {isAuthenticated &&
+              <Menu as="div" className="relative mr-2 inline-block md:hidden text-left">
+                <div>
+                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                    Hello {user.name}
+                    <ChevronDownIcon
+                      className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </Menu.Button>
+                </div>
+
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1">
+                      {sortOptions.map((option) => (
+                        <Menu.Item key={option.name}>
+                          {({ active }) => (
+                            <Link
+                              to={option.href}
+			      onClick={(e) => handleTopNavClick(e, option.name)}
+                              className={classNames(
+                                option.current ? 'font-medium text-gray-900' : 'text-gray-500',
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm'
+                              )}
+                            >
+                              {option.name}
+                            </Link>
+                          )}
+                        </Menu.Item>
+                      ))}
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
+	    }
+	    
+	    {!isAuthenticated && <img src={person} onClick={handleSignInClick} className="mr-[4px] block md:hidden cursor-pointer" />}
+	    <img src={person} className="mr-[4px] hidden md:block" />
+
+                                <div className="flex hidden md:block justify-space-between flex-col h-full">
 	    		    {isAuthenticated &&
                                     <p style={{"fontSize":"12px", "marginTop": "0px", "marginBottom":"3px"}}>Hello {user.name}</p>
 			    }
@@ -599,7 +650,7 @@ setLoginError(true);
                 </div>
             </div>
             
-            <NavLinks />
+            <NavLinks storedCountryFlag={storedCountryFlag} handleGetUserCountry={handleGetUserCountry} />
 
 
             <Transition.Root show={loginOpen} as={Fragment}>
@@ -867,7 +918,7 @@ setLoginError(true);
 			type="submit"
 			disabled={loading ? true : false}
 			className={`flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none ${
-loading ? "bg-blue-400" : ""
+loading ? "bg-blue-400 cursor-not-allowed" : ""
 			}`}
 		      >
 	   {loading ? <span>Loading...</span> : <span>Login</span>}
@@ -888,24 +939,32 @@ loading ? "bg-blue-400" : ""
                                                     <div class="flex items-center mt-6 -mx-2">
 
 							<button
-							    onClick={handleFacebookLogin}
-							    disabled={facebookLoading}
-							    type="button" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
-
-							    <span className="hidden mx-2 sm:inline">
-								{facebookLoading ? 'Loading' : 'Sign in with Facebook'}
-							    </span>
+							  disable={googleLoading}
+							  onClick={handleGoogleLogin}
+							  href="#"
+							  className="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none"
+							>
+				{googleLoading ? 'Loading...' : 'Sign in with Google'				}
 							</button>
 
     
                                                         <button
-							  disable={googleLoading}
-							  onClick={handleGoogleLogin} href="#" class="p-2 mx-2 text-sm font-medium text-gray-900 transition-colors duration-300 transform bg-gray-300 rounded-lg hover:bg-gray-200">
-				{googleLoading ? 'Loading' : <svg class="w-4 h-4 mx-2 fill-current" viewBox="0 0 24 24">
-                                                            <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z">
-                                                                </path>
-                                                            </svg>
-				}
+							    onClick={handleFacebookLogin}
+							    disabled={facebookLoading}
+							    type="button"
+							    className="p-2 mx-2 text-sm font-medium text-gray-900 transition-colors duration-300 transform bg-gray-300 rounded-lg hover:bg-gray-200"
+							>
+							    <span>
+								{facebookLoading ? 'Loading' : 								    <svg
+		    className="w-5 h-5 mx-2 fill-current"
+		    fill="currentColor"
+		    style={{color: "#1877f2"}}
+		    viewBox="0 0 24 24">
+		    <path
+		      d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+		  </svg>
+								}
+							    </span>
                                                         </button>
                                                     </div>
 

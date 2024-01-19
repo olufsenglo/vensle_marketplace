@@ -50,6 +50,7 @@ input:checked.defaultCheckbox::before {
 
 .slick-prev:before, .slick-next:before {
     font-size: 36px!important;
+    font-family: inherit!important;
 }
 
 .slick-dots {

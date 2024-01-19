@@ -10,7 +10,7 @@ import {
 
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 	console.log("elllllll",selectedProduct);
-	const baseURL = 'https://nominet.vensle.com/backend';
+	const baseURL = 'http://nominet.vensle.com/backend';
   const dispatch = useDispatch();
 
    const [msgContent, setMsgContent] = useState('');

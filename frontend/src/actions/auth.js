@@ -60,7 +60,7 @@ import {
 //Merge cart TODO:put in await     
 const cart = JSON.parse(localStorage.getItem('cart')) || [];
 if (cart.length > 0) {
-    axios.post('https://nominet.vensle.com/backend/api/v1/merge-cart', {cart}, {
+    axios.post('http://nominet.vensle.com/backend/api/v1/merge-cart', {cart}, {
 	      headers: {
 		      'Content-Type': 'multipart/form-data',
 		      'Authorization': `Bearer ${data.token}`,

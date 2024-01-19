@@ -46,7 +46,7 @@ const columnsData = [
 ];
 
 const Tables = () => {
-  const baseURL = 'https://nominet.vensle.com/backend';
+  const baseURL = 'http://nominet.vensle.com/backend';
   
   const [products, setProducts] = useState([]);
   const [extractedData, setExtractedData] = useState([]);

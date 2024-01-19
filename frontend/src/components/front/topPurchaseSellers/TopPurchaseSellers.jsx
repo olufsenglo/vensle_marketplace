@@ -21,7 +21,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'https://nominet.vensle.com/backend';
+const baseURL = 'http://nominet.vensle.com/backend';
 
 const TopPurchaseSellers = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -124,7 +124,7 @@ const TopPurchaseSellers = () => {
 
 		<div className="flex pt-16 justify-center gap-2 md:gap-5 items-center">
 			<button 
-	    			className={`rounded py-1 text-xs md:text-sm px-10 transition duration-300 ${
+	    			className={`rounded py-1 text-xs md:text-sm px-4 md:px-10 transition duration-300 ${
 				activePill === 1 ? 'text-white bg-gray-900' : 'bg-gray-200'
 				}`}
 		                onClick={() => handlePillClick(1, 1, "")}
@@ -132,7 +132,7 @@ const TopPurchaseSellers = () => {
 				FOR SALE
 			</button>
 			<button 
-	    			className={`rounded py-1 text-sm px-10 transition duration-300 ${
+	    			className={`rounded py-1 text-sm px-4 md:px-10 transition duration-300 ${
 				activePill === 2 ? 'text-white bg-gray-900' : 'bg-gray-200'
 				}`}
 		                onClick={() => handlePillClick(2, 3, "request")}
@@ -140,7 +140,7 @@ const TopPurchaseSellers = () => {
 				REQUESTS
 			</button>
 			<button 
-	    			className={`rounded py-1 text-sm px-10 transition duration-300 ${
+	    			className={`rounded py-1 text-sm px-4 md:px-10 transition duration-300 ${
 				activePill === 3 ? 'text-white bg-gray-900' : 'bg-gray-200'
 				}`}
 		                onClick={() => handlePillClick(3, 4, "grocery")}

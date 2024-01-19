@@ -10,6 +10,7 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import Dropdown from "components/dropdown";
 import { FiAlignJustify } from "react-icons/fi";
 import navbarimage from "assets/img/layout/Navbar.png";
+import blankProfileimage from "assets/img/front/profile/user.png";
 import { BsArrowBarUp } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { RiMoonFill, RiSunFill } from "react-icons/ri";
@@ -24,7 +25,7 @@ function classNames(...classes) {
 }
 
 const Navbar = (props) => {
-  const baseURL = 'https://nominet.vensle.com/backend';
+  const baseURL = 'http://nominet.vensle.com/backend';
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,8 +48,8 @@ const Navbar = (props) => {
   const [open, setOpen] = useState(false)
 
     const getDisplayImage = (image) => {
-      const name = image ? image : "";
-      return `${baseURL}/uploads/${name}`;
+      const name = image ? `${baseURL}/uploads/${image}` : "https://www.flaticon.com/free-icons/user";
+      return name;
     };
  
 useEffect(() => {

@@ -16,7 +16,7 @@ function classNames(...classes) {
 }
 
 export default function PopularGroceries() {
-	const baseURL = 'https://nominet.vensle.com/backend';
+	const baseURL = 'http://nominet.vensle.com/backend';
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)

@@ -42,7 +42,7 @@ const Banner = ({user, imgPath, setImagePreview, imagePreview, handleFileChange}
 {imagePreview && (
   <img
     className="h-full w-full rounded-full"
-    src={imagePreview}
+    src={imagePreview ? imagePreview : "https://www.flaticon.com/free-icons/user"}
     alt="profile"
   />
 )}

@@ -67,7 +67,7 @@ const tableColumnsTopCreators = [
 
 
 const Dashboard = () => {
-   const baseURL = 'https://nominet.vensle.com/backend';
+   const baseURL = 'http://nominet.vensle.com/backend';
     const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const accessToken = useSelector((state) => state.auth?.user?.token);	

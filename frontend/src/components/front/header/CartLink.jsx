@@ -24,7 +24,7 @@ function classNames(...classes) {
 }
 
 const CartLink = () => {
-    const baseURL = 'https://nominet.vensle.com/backend';
+    const baseURL = 'http://nominet.vensle.com/backend';
     const dispatch = useDispatch();
 
     const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
@@ -71,8 +71,7 @@ const formattedTotalPrice = formatPrice(totalPrice);
 
 		    <div
 			onClick={() => setOpen(true)}
-			className="flex items-center relative cursor-pointer"
-			style={{marginLeft:"20px"}}
+			className="flex items-center ml-0 md:ml-[20px] relative cursor-pointer"
 		    >
 			{totalItems > 0 && 
 				<span 
@@ -82,8 +81,8 @@ const formattedTotalPrice = formatPrice(totalPrice);
 					{totalItems}
 				</span>
 			}
-			<img src={cart} style={{"marginTop":"0px"}}/>
-			<div className="flex flex-col text-right justify-space-between h-full" style={{ marginLeft:"1px"}}>
+			<img src={cart} className="mt-0" />
+			<div className="flex hidden md:block flex-col text-right justify-space-between h-full" style={{ marginLeft:"1px"}}>
 			    <p 
 				style={{fontSize:"12px", marginTop:"0px", fontWeight:"bold"}}
 			    >

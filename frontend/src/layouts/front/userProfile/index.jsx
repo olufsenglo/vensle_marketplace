@@ -11,7 +11,7 @@ import Grocery from "./Grocery";
 import seller from "assets/img/front/productDetail/seller.jpg";
 
 const UserProfile = () => {
-  const baseURL = 'https://nominet.vensle.com/backend';
+  const baseURL = 'http://nominet.vensle.com/backend';
   const [products, setProducts] = useState([]);
   const { userId } = useParams();
   const [user, setUser] = useState(null);

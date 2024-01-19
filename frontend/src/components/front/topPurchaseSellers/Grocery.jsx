@@ -12,7 +12,7 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import PreviewPopup from "./PreviewPopup";
 
 export default function Grocery({ product }) {
-    const baseURL = 'https://nominet.vensle.com/backend';
+    const baseURL = 'http://nominet.vensle.com/backend';
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
 
