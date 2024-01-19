@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { ChatBubbleLeftRightIcon } from '@heroicons/react/20/solid'
 
 const Search = () => {
   const baseURL = "https://nominet.vensle.com/backend";
@@ -45,7 +46,12 @@ const Search = () => {
 
   const handleSelectSuggestion = (selectedSuggestion) => {
     setSearchTerm(selectedSuggestion.name);
+    
+    const encodedSearchTerm = encodeURIComponent(selectedSuggestion.name);
+    navigate(`/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}`);
+
     setSuggestions([]);
+	  
   };
 
   const handleKeyDown = (e) => {
@@ -118,10 +124,10 @@ const Search = () => {
   }, []);
 
   return (
-     <form className="flex w-full lg:flex-1 lg:w-auto my-8 lg:my-2 items-center h-full relative" style={{ "height":"51px" }} onSubmit={handleSearchButtonClick}>
+     <form style={{zIndex: "1"}} className="flex w-full lg:flex-1 lg:w-auto mt-8 mb-0 md:my-8 items-center h-10 md:h-[51px] relative" onSubmit={handleSearchButtonClick}>
 
 
-        <select style={{fontSize: "14px"}} className="pl-1 h-full border" value={distance} onChange={handleDistanceChange}>
+        <select style={{fontSize: "14px"}} className="pl-1 h-full border hidden md:block" value={distance} onChange={handleDistanceChange}>
           <option value={10}>10 km</option>
           <option value={20}>20 km</option>
           <option value={30}>30 km</option>
@@ -141,7 +147,7 @@ const Search = () => {
       <select
         value={selectedCategory}
         onChange={handleCategoryChange}
-        className="border border-r-0 p-2 h-full"
+        className="border border-r-0 p-2 h-full hidden md:block"
       >
                 <option value="">Everything</option>
                 {categories && categories.map((category) => (
@@ -164,14 +170,23 @@ const Search = () => {
           ))}
         </ul>
       )}
+	  
       <button
-	  className="h-full text-white"
+	  className="h-full text-white hidden md:block"
         style={{ "background": "#ff5959", "padding-right": "22px", "padding-left": "22px" }}
         type="submit"
       >
         SEARCH
       </button>
-      </form> 
+      <button
+	  className="h-full text-white block md:hidden px-3 md:px-[22px]"
+        style={{ "background": "#ff5959" }}
+        type="submit"
+      >
+		<ChatBubbleLeftRightIcon className="h-5 w-5"/>
+      </button>
+
+   </form> 
   );
 }
 

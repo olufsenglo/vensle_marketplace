@@ -51,8 +51,8 @@ const NewUploads = () => {
   }, [column]);
 
 	return (
-<>
-      <div style={{"minHeight":"30rem"}} className="mx-auto relative max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
+<div className="bg-white relative">
+      <div style={{"minHeight":"30rem"}} className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
 
 {!products &&
 <div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
@@ -86,7 +86,7 @@ const NewUploads = () => {
                         </div>
 
 
-        <div className="mt-6 relative grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
+        <div className="mt-6 relative grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
 
             {products && products.map((product) => (
 		    <>
@@ -99,7 +99,7 @@ const NewUploads = () => {
 
 
 
-</>
+</div>
 	)
 }
 

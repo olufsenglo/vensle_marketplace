@@ -8,6 +8,7 @@ export default function TopRequests() {
     const baseURL = 'https://nominet.vensle.com/backend';
     const [productRequests, setProductRequests] = useState([]);
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
     const getImagePath = (name) => {
@@ -22,6 +23,7 @@ export default function TopRequests() {
 
   const fetchProductRequests = async () => {
     try {
+      setLoading(true)
       const response = await axios.get(`${baseURL}/api/v1/products/top-by-type`, {
         params: {
 		per_page: '2',
@@ -30,8 +32,10 @@ export default function TopRequests() {
       });
 
       setProductRequests(response.data.data);
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching products:', error);
+      setLoading(false)
     }
   }
 
@@ -43,18 +47,24 @@ export default function TopRequests() {
 
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
-{!productRequests.length &&
+{loading &&
 <div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
 	<p>Loading...</p>
+</div>
+}
+
+{!loading && productRequests.length == 0 &&
+<div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
+	<p>There are no requests</p>
 </div>
 }
 
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold mb-7 tracking-tight text-gray-900 uppercase">TOP REQUESTS</h2>
 
-        <div className="grid relative grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
+        <div className="grid relative grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
 
-          {productRequests && productRequests.map((product) => (
+          {!loading && productRequests.length > 0 && productRequests.map((product) => (
 
             <a
 		  onClick={(e) => handleProductQuickView(e, product)}

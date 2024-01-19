@@ -36,17 +36,17 @@ const Product = ({ product }) => {
 <>
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 		
-            <div onClick={(e) => handleProductQuickView(e, product)} key={product.id} style={{"background": "#f4f4f4a3"}} className="group relative rounded-md">
+            <div key={product.id} style={{"background": "#f4f4f4a3"}} className="group relative rounded-md">
 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
                 <img
-		  //src={getDisplayImage(product)}
+		  onClick={(e) => handleProductQuickView(e, product)}
 		  src={product.display_image && getImagePath(product.display_image.name)}
 		  alt={product.name}
-                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                  className="h-full cursor-pointer w-full object-cover object-center lg:h-full lg:w-full"
                 />
               </div>
 	      <div className="p-2">
-		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
+		      <h2 className="text-lg line-clamp-2 font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
 
 		      <div className="mt-1 flex items-center">
 			{[0, 1, 2, 3, 4].map((rating) => (
@@ -66,7 +66,6 @@ const Product = ({ product }) => {
 			<div>
 			  <h3 className="text-sm text-gray-700">
 			    <a href={product.href}>
-			      <span aria-hidden="true" className="absolute inset-0" />
 			        ${product.price} 
 			    </a>
 			  </h3>

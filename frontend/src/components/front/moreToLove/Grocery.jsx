@@ -73,7 +73,7 @@ export default function Grocery({ product }) {
                 </div>
 
 	      <div className="py-1 px-2">
-		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
+		      <h2 className="text-lg line-clamp-2 font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
 
 
 

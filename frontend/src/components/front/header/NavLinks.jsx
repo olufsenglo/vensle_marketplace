@@ -23,7 +23,7 @@ const NavLinks = () => {
 	
 
     return (
-        <div className="text-white" style={{ "background-color":"black" }}>
+        <div className="text-white relative" style={{ "background-color":"black" }}>
             <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <ul style={{gap:"2%"}} className="flex items-center py-2">
                     <li className="mr-6">

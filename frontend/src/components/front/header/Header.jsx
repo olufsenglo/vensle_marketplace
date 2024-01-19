@@ -476,7 +476,7 @@ setLoginError(true);
         <>
 
 
-        <div className="bg-white">
+        <div className="bg-white hidden md:block">
             <div className="mx-auto max-w-3xl px-4 pt-2 sm:px-6 sm:pt-2 lg:max-w-7xl lg:pt-2">
                 <div className="pt-4 flex justify-between" style={{fontSize: "15px"}}>
                     <ul className="flex justify-between">
@@ -560,15 +560,15 @@ setLoginError(true);
 
 
             <div className="bg-white">
-                <div className="mx-auto max-w-2xl py-4 sm:py-6 lg:max-w-7xl lg:px-8">
-                    <div className="flex flex-col lg:flex-row justify-between items-center" style={{ "gap": "1%" }} >
+                <div className="mx-auto max-w-2xl pt-4 sm:py-6 lg:max-w-7xl lg:px-8">
+                    <div className="flex flex-col lg:flex-row justify-between md:items-center" style={{ "gap": "1%" }} >
                         
                       <Link to="/">
-	    		<img style={{ "width": "218px" }} src={logo} alt="vensle" />
+	    		<img className="md:w-[218px] w-40" src={logo} alt="vensle" />
                        </Link>
 	    		<Search />
 
-                        <div className="flex items-center" style={{ "font-size": "0.9rem" }}>
+                        <div className="fixed md:relative right-5 md:right-0 flex items-center" style={{ "font-size": "0.9rem" }}>
                             <div className="flex items-center">
                                 <img src={person} style={{"marginRight":"4px"}} />
                                 <div className="flex justify-space-between flex-col h-full">

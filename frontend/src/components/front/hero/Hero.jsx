@@ -43,7 +43,7 @@ const SamplePrevArrow = (props) => {
   };
 
   return (
-    <div className="bg-white pt-8">
+    <div className="bg-white relative pt-4 md:pt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Slider {...settings}>
             <div>

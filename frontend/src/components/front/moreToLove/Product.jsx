@@ -50,7 +50,7 @@ const Product = ({ product }) => {
                 />
               </div>
 	      <div className="p-2">
-		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
+		      <h2 className="text-lg font-medium line-clamp-2 text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
 
 		      <div className="mt-1 flex items-center">
 			{[0, 1, 2, 3, 4].map((rating) => (

@@ -27,6 +27,7 @@ const TopPurchaseSellers = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [products, setProducts] = useState([]);
     const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [activePill, setActivePill] = useState(1);
     const [activeTab, setActiveTab] = useState(1);
     const [type, setType] = useState('');
@@ -94,6 +95,7 @@ const TopPurchaseSellers = () => {
     };
 
   const topProductsByType = async () => {
+	setLoading(true);
         const apiUrl = `${baseURL}/api/v1/products/top-by-type`;
     try {
       const response = await axios.get(`${baseURL}/api/v1/products/top-by-type`, {
@@ -104,8 +106,10 @@ const TopPurchaseSellers = () => {
       });
 
       setProducts(response.data.data);
+	    setLoading(false);
     } catch (error) {
       console.error('Error fetching products:', error);
+	    setLoading(false);
     }
   }
 
@@ -114,13 +118,13 @@ const TopPurchaseSellers = () => {
     }, [type]);
 
     return (
-    	<div className="bg-white">
+    	<div className="bg-white relative z-1">
 
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
-		<div className="flex pt-16 justify-center gap-5 items-center">
+		<div className="flex pt-16 justify-center gap-2 md:gap-5 items-center">
 			<button 
-	    			className={`rounded py-1 text-sm px-10 transition duration-300 ${
+	    			className={`rounded py-1 text-xs md:text-sm px-10 transition duration-300 ${
 				activePill === 1 ? 'text-white bg-gray-900' : 'bg-gray-200'
 				}`}
 		                onClick={() => handlePillClick(1, 1, "")}
@@ -153,16 +157,23 @@ const TopPurchaseSellers = () => {
 
 		<div style={{minHeight:"30rem"}} className="mx-auto relative max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
 
-{!products.length &&
+{loading &&
 <div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
 	<p>Loading...</p>
 </div>
 }
 
+{!loading && products.length == 0 &&
+<div style={{"zIndex":"5", left:"0", right:"0", top:"90px", bottom: "0"}} className="absolute flex justify-center items-center">
+		{activeTab == 1 || activeTab == 2 && <p>There are currently no products</p>}
+		{activeTab == 3 && <p>There are Requests no products</p>}
+		{activeTab == 4 && <p>There are Groceries</p>}
+</div>
+}
 
         	<div className="mx-auto lg:mx-0 lg:flex lg:max-w-none">
-          		<div className="flex flex-col items-start lg:mt-0 lg:pr-8 bg-white lg:w-full lg:max-w-md lg:flex-shrink-0">
-        			<h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl pb-1 font-normal tracking-tight text-gray-900 uppercase">Top Purchases</h2>
+          		<div className="flex flex-col mb-10 md:mb-0 items-start lg:mt-0 lg:pr-8 bg-white lg:w-full lg:max-w-md lg:flex-shrink-0">
+        			<h2 style={{"borderBottom":"2px solid red"}} className="text-2xl w-full md:w-initial block text-center md:text-left pb-1 font-normal tracking-tight text-gray-900 uppercase">Top Purchases</h2>
 
 {products && products[0] &&
             <div
@@ -249,7 +260,7 @@ const TopPurchaseSellers = () => {
 
 		<div className="lg:flex justify-between items-center">
 
-	    			<h1 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl pb-1 tracking-tight text-gray-900 sm:text-2xl">BEST SELLERS</h1>
+	    			<h1 style={{"borderBottom":"2px solid red"}} className="text-2xl block md:inline text-center mb-4 md:mb-0 md:text-left pb-1 tracking-tight text-gray-900 sm:text-2xl">BEST SELLERS</h1>
 
                         <div class="flex overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700">
                             <button
@@ -296,9 +307,9 @@ const TopPurchaseSellers = () => {
 
 
 
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        <div className="mt-6 grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 
-            {products && products.map((product) => (
+            {!loading && products.length > 0 && products.map((product) => (
             <div
 		    key={product}
 		    style={{"background": "#f4f4f4a3"}}
@@ -306,13 +317,13 @@ const TopPurchaseSellers = () => {
 	    >
 <div  className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
                 <img onClick={(e) => handleProductQuickView(e, product)}
-		  src={getDisplayImage(product)}
+		  src={getImagePath(product.display_image?.name)}
 		  alt={product.name}
                   className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                 />
               </div>
 	      <div className="p-2">
-		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
+		      <h2 className="text-lg font-medium line-clamp-2 text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
 
 		      <div className="mt-1 flex items-center">
 			{[0, 1, 2, 3, 4].map((rating) => (

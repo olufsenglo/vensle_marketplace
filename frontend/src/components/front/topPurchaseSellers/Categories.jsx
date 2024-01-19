@@ -1,11 +1,11 @@
-import img1 from "assets/img/front/categories/img1.JPG";
-import img2 from "assets/img/front/categories/img2.JPG";
-import img3 from "assets/img/front/categories/img3.JPG";
-import img4 from "assets/img/front/categories/img4.JPG";
-import img5 from "assets/img/front/categories/img5.JPG";
-import img6 from "assets/img/front/categories/img6.JPG";
-import img7 from "assets/img/front/categories/img7.JPG";
-import img8 from "assets/img/front/categories/img8.JPG";
+import img1 from "assets/img/front/suggested_categories/1.jpg";
+import img2 from "assets/img/front/suggested_categories/2.webp";
+import img3 from "assets/img/front/suggested_categories/3.jpg";
+import img4 from "assets/img/front/suggested_categories/4.jpg";
+import img5 from "assets/img/front/suggested_categories/5.jpg";
+import img6 from "assets/img/front/suggested_categories/6.jpg";
+import img7 from "assets/img/front/suggested_categories/8.jpg";
+import img8 from "assets/img/front/suggested_categories/7.jpg";
 
 const products = [
     {
@@ -72,11 +72,11 @@ const ShopCategories = () => {
 
    return(
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
-        	<h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl pb-1 font-normal tracking-tight text-gray-900 uppercase">Shop by categories</h2>
+        	<h2 style={{"borderBottom":"2px solid red" }} className="text-2xl block md:inline text-center md:text-left pb-1 font-normal tracking-tight text-gray-900 uppercase">Shop by categories</h2>
 
 
 
-          <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-6 xl:gap-x-6">
+          <div className="mt-6 grid grid-cols-3 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-6 xl:gap-x-6">
             {products.map((product) => (
               <div key={product.id} className="group relative">
                <a href={product.href}>
@@ -88,10 +88,10 @@ const ShopCategories = () => {
                   />
                 </div>
 
-<div className="w-full" style={containerStyle} className="mt-4 pb-6 pt-12 rounded-sm w-full absolute flex justify-between">
+<div className="w-full" style={containerStyle} className="mt-4 pb-2 md:pb-6 pt-12 rounded-sm w-full absolute flex justify-between">
 
                   <div className="w-full">
-                    <h3 style={{"color":"white"}} className="uppercase text-center font-medium text-white">
+                    <h3 className="text-white text-sm uppercase text-center font-medium text-white">
                         {product.name}
                     </h3>
                   </div>

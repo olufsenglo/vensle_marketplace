@@ -20,7 +20,7 @@ const Subscribe = () => {
   };
 
   return (
-    <div style={{background: "#9e9e9e"}} className="bg-gray-600">
+    <div style={{background: "#9e9e9e"}} className="relative">
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         <div className="mx-auto lg:mx-0 items-center lg:flex lg:max-w-none">
           <div className="lg:mt-0 text-white lg:pr-8 lg:w-full lg:max-w-xs lg:flex-shrink-0">

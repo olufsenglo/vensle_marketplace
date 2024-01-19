@@ -42,7 +42,7 @@ export default function Grocery({ product }) {
     <>
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
-            <a onClick={(e) => handleProductQuickView(e, product)} key={product.id} href="#" style={{"background": "#eee"}} className="group">
+            <a  key={product.id} href="#" style={{"background": "#eee"}} className="group">
 
 
 		  {/*	      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
@@ -57,10 +57,13 @@ export default function Grocery({ product }) {
 
 
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                    <a class="relative flex lg:h-40 overflow-hidden rounded-xl" href="#">
+                    <a
+	  		onClick={(e) => handleProductQuickView(e, product)}
+	  		className="relative flex lg:h-40 overflow-hidden rounded-xl"
+	  		href="#">
 	  {console.log(product)}
                         <img
-                          class="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
+                          className="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
 		  	  src={product.display_image && getImagePath(product.display_image)}
                           alt={product.name}
                         />
@@ -70,7 +73,7 @@ export default function Grocery({ product }) {
                 </div>
 
 	      <div className="py-1 px-2">
-		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
+		      <h2 className="text-lg line-clamp-2 font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
 
 
 

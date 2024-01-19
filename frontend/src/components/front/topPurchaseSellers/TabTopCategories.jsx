@@ -1,11 +1,11 @@
-import img1 from "assets/img/front/categories/img1.JPG";
-import img2 from "assets/img/front/categories/img2.JPG";
-import img3 from "assets/img/front/categories/img3.JPG";
-import img4 from "assets/img/front/categories/img4.JPG";
-import img5 from "assets/img/front/categories/img5.JPG";
-import img6 from "assets/img/front/categories/img6.JPG";
-import img7 from "assets/img/front/categories/img7.JPG";
-import img8 from "assets/img/front/categories/img8.JPG";
+import img1 from "assets/img/front/suggested_categories/premium-steak.webp";
+import img2 from "assets/img/front/suggested_categories/prepped-and-ready-tile.webp";
+import img3 from "assets/img/front/suggested_categories/fast-and-easy.webp";
+import img4 from "assets/img/front/suggested_categories/wellness.webp";
+import img5 from "assets/img/front/suggested_categories/vegetarian.webp";
+import img6 from "assets/img/front/suggested_categories/family-friendly.webp";
+import img7 from "assets/img/front/suggested_categories/desserts.webp";
+import img8 from "assets/img/front/suggested_categories/ready-to-cook.webp";
 
 const products = [
     {
@@ -64,6 +64,11 @@ const products = [
     },                     
   ]
 
+  const containerStyle = {
+    bottom: '0',
+    background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0))',
+  };
+
 const ShopCategories = () => {
    return(
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
@@ -71,7 +76,7 @@ const ShopCategories = () => {
 
 
 
-          <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-6 xl:gap-x-6">
+          <div className="mt-6 grid grid-cols-3 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-6 xl:gap-x-6">
             {products.map((product) => (
               <div key={product.id} className="group relative">
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-sm bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
@@ -81,7 +86,7 @@ const ShopCategories = () => {
                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                   />
                 </div>
-                <div style={{"bottom":"0", "background":"#61616142"}} className="mt-4 pb-6 pt-3 rounded-sm w-full absolute flex justify-between">
+<div className="w-full" style={containerStyle} className="mt-4 pb-2 md:pb-6 pt-12 rounded-sm w-full absolute flex justify-between">
                   <div className="w-full">
                     <h3 style={{"color":"white"}} className="uppercase text-center font-medium text-gray-900">
                       <a href={product.href}>

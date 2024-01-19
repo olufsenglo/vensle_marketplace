@@ -34,13 +34,8 @@ export default function PopularGroceries() {
       setOpen(true);
   }
 
-    const getDisplayImage = (product) => {
-      const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
-    };
-
     const getImagePath = (product) => {
-      return `${baseURL}/uploads/${product.name}`;
+      return `${baseURL}/uploads/${product?.name}`;
     };
 
     useEffect(() => {
@@ -71,12 +66,11 @@ export default function PopularGroceries() {
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
         <h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl font-normal pb-1 tracking-tight text-gray-900 uppercase">most poplar in groceries</h2>
 
-        <div className="mt-6 relative grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8"
+        <div className="mt-6 relative grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:gap-x-8"
 	>
 
           {products && products.map((product) => (
             <a
-	          onClick={(e) => handleProductQuickView(e, product)}
 		  key={product.id}
 		  href={product.href}
 		  style={{"background": "#eee"}}
@@ -86,10 +80,13 @@ export default function PopularGroceries() {
                 <div
 		  className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7"
 		>
-                    <a className="relative flex h-60 overflow-hidden rounded-xl" href="#">
+                    <a
+ 		        onClick={(e) => handleProductQuickView(e, product)}
+		  	className="relative flex h-60 overflow-hidden rounded-xl"
+		  	href="#">
                         <img
                           className="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
-                          src={getDisplayImage(product)}
+                          src={getImagePath(product.display_image)}
                           alt={product.name}
                         />
 		  {product.images && product.images[1] ? <img className="peer absolute top-0 -right-96 h-full w-full object-cover transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0" src={getImagePath(product.images[0])} alt="product image" /> : ""}
@@ -98,11 +95,11 @@ export default function PopularGroceries() {
                 </div>
 
 	      <div className="py-1 px-2">
-		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
+		      <h2 className="text-lg font-medium line-clamp-2 text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
 
 
 
-              <div className="flex justify-between mb-1">
+              <div className="flex flex-col md:flex-row justify-between mb-1">
                 <div className="flex flex-col justify-between">
                   
 		      <div className="flex items-center">
