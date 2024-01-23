@@ -124,7 +124,7 @@ const Search = () => {
   }, []);
 
   return (
-     <form style={{zIndex: "1"}} className="flex w-full lg:flex-1 lg:w-auto mt-8 mb-0 md:my-8 items-center h-10 md:h-[51px] relative" onSubmit={handleSearchButtonClick}>
+     <form style={{zIndex: "1"}} className="flex w-full mt-4 lg:mt-0 lg:flex-1 px-6 md:px-0 lg:w-auto mb-0 items-center h-10 md:h-[51px] relative" onSubmit={handleSearchButtonClick}>
 
 
         <select style={{fontSize: "14px"}} className="pl-1 h-full border hidden md:block" value={distance} onChange={handleDistanceChange}>
@@ -135,8 +135,7 @@ const Search = () => {
 
 
       <input
-        style={{ "height": "100%", "flex": "1", borderLeft: "none", borderRight: "none", "padding-left":"20px" }}
-	className="border"
+	className="border md:border-l-0 border-r-0 h-full flex-1 pl-[20px]"
         type="text"
         value={searchTerm}
         onChange={handleInputChange}

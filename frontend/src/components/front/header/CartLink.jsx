@@ -71,7 +71,7 @@ const formattedTotalPrice = formatPrice(totalPrice);
 
 		    <div
 			onClick={() => setOpen(true)}
-			className="flex items-center ml-0 md:ml-[20px] relative cursor-pointer"
+			className="flex items-center ml-0 md:ml-1 lg:ml-[20px] relative cursor-pointer"
 		    >
 			{totalItems > 0 && 
 				<span 
@@ -82,13 +82,13 @@ const formattedTotalPrice = formatPrice(totalPrice);
 				</span>
 			}
 			<img src={cart} className="mt-0" />
-			<div className="flex hidden md:block flex-col text-right justify-space-between h-full" style={{ marginLeft:"1px"}}>
+			<div className="flex hidden lg:block lg:ml-[1px] flex-col text-right justify-space-between h-full">
 			    <p 
 				style={{fontSize:"12px", marginTop:"0px", fontWeight:"bold"}}
 			    >
 				Your cart
 			    </p>
-			    <h2 style={{"color":"#ff5959", "text-align":"right", "fontSize":"14px", "marginTop": "0px", "fontWeight":"500"}}>
+			    <h2 className="mt-0 text-right" style={{"color":"#ff5959", "fontSize":"14px", "fontWeight":"500"}}>
 				${formattedTotalPrice}
 			    </h2>
 			</div>

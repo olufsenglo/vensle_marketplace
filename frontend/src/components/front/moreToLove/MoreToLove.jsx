@@ -5,8 +5,8 @@ import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 
-import Product from './Product';
-import Grocery from "./Grocery";
+import Product from 'components/front/product/Product';
+import Grocery from 'components/front/product/Grocery';
 
 import img4 from "assets/img/front/categories/img4.JPG";
 import img5 from "assets/img/front/categories/img5.JPG";
@@ -16,8 +16,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const baseURL = 'http://localhost:8000'
 const MoreToLove = () => {
-  const baseURL = "http://nominet.vensle.com/backend"
+  //const baseURL = "http://nominet.vensle.com/backend"
     const [products, setProducts] = useState(null);
     const [perPage, setPerPage] = useState(15);
 
@@ -54,7 +55,7 @@ const MoreToLove = () => {
 </div>
 }
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-normal tracking-tight text-gray-900 uppercase">More to Love</h2>
+        <h2 className="text-lg md:text-2xl font-normal tracking-tight text-gray-900 uppercase">More to Love</h2>
 {products &&
    <>
         <div className="mt-6 relative grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">

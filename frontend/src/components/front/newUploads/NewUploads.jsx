@@ -5,8 +5,8 @@ import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 
-import Product from './Product';
-import Grocery from "./Grocery";
+import Product from 'components/front/product/Product';
+import Grocery from 'components/front/product/Grocery';
 
 import img4 from "assets/img/front/categories/img4.JPG";
 import img5 from "assets/img/front/categories/img5.JPG";
@@ -16,8 +16,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const baseURL = 'http://localhost:8000';
 const NewUploads = () => {
-    const baseURL = 'http://nominet.vensle.com/backend';
+    //const baseURL = 'http://nominet.vensle.com/backend';
     const [products, setProducts] = useState(null);
     const [column, setColumn] = useState('created_at');
     const [activeTab, setActiveTab] = useState(1);
@@ -60,10 +61,9 @@ const NewUploads = () => {
 	<p>Loading...</p>
 </div>
 }
-                        <div class="flex overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700">
+                        <div className="flex overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700">
                             <button
-				style={{"fontSize":"1.5rem"}}
-	    			class={`inline-flex items-center h-10 pr-4 -mb-px text-2xl text-left bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none transition duration-300 ${
+	    			className={`inline-flex items-center h-10 pr-4 -mb-px text-lg md:text-2xl text-left bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none transition duration-300 ${
 					activeTab === 1 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
 				}`}
 		                onClick={() => handleTabClick(1, "created_at")}
@@ -73,8 +73,7 @@ const NewUploads = () => {
 
 
                             <button
-				style={{"fontSize":"1.5rem"}}
-	    			class={`inline-flex items-center h-10 px-4 -mb-px text-2xl text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+	    			className={`inline-flex items-center h-10 px-4 -mb-px text-lg md:text-2xl text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
 					activeTab === 2 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
 				}`}
 		                onClick={() => handleTabClick(2, "ratings")}

@@ -477,7 +477,7 @@ setLoginError(true);
 
 
         <div className="bg-white hidden md:block">
-            <div className="mx-auto max-w-3xl px-4 pt-2 sm:px-6 sm:pt-2 lg:max-w-7xl lg:pt-2">
+            <div className="mx-auto max-w-2xl pt-2 lg:max-w-7xl lg:px-8">
                 <div className="pt-4 flex justify-between" style={{fontSize: "15px"}}>
                     <ul className="flex justify-between">
                         <li className="mr-6 hidden lg:block">Welcome to our Online Store!</li>
@@ -488,10 +488,10 @@ setLoginError(true);
 		    :
                         <li onClick={(e) => handleUploadClick(e)} className="text-red-500 hidden lg:flex cursor-pointer mr-6" style={{"color": "#ff5959"}}>Upload Your Product</li>
 	    }
-                        <li onClick={(e) => handleRegisterDriverClick(e)} className="text-red-500 cursor-pointer" style={{"color": "#ff5959"}}>Register as a Driver</li>
+	    {!isAuthenticated && <li onClick={(e) => handleRegisterDriverClick(e)} className="text-red-500 hidden lg:block cursor-pointer" style={{"color": "#ff5959"}}>Register as a Driver</li>}
                     </ul>
                     <ul className="flex justify-between">
-                        <li className="text-red-500 mr-0 md:mr-6" style={{"color": "#ff5959"}}>
+                        <li className="text-red-500 mr-0 lg:mr-6" style={{"color": "#ff5959"}}>
 	    {isAuthenticated &&
               <Menu as="div" className="relative inline-block text-left">
                 <div>
@@ -540,7 +540,7 @@ setLoginError(true);
 
 
 </li>
-                        <li className="hidden md:flex items-center">
+                        <li className="hidden lg:flex items-center">
 	    			{storedCountryFlag && 
 					<img className="w-6 h-6 mr-2 rounded-full" src={storedCountryFlag} alt="country flg" />
 				}
@@ -560,21 +560,21 @@ setLoginError(true);
 
 
             <div className="bg-white">
-                <div className="mx-auto max-w-2xl pt-4 sm:py-6 lg:max-w-7xl lg:px-8">
+                <div className="mx-auto max-w-2xl pt-4 py-4 md:py-6 lg:max-w-7xl lg:px-8">
                     <div className="flex flex-col lg:flex-row justify-between md:items-center" style={{ "gap": "1%" }} >
                         
-                      <Link to="/">
+                      <Link className="px-6 md:px-0" to="/">
 	    		<img className="md:w-[218px] w-40" src={logo} alt="vensle" />
                        </Link>
 	    		<Search />
 
-                        <div className="absolute md:relative right-0 md:right-0 flex items-center" style={{ "font-size": "0.9rem" }}>
+                        <div className="absolute max-w-2xl lg:max-w-none px-6 md:px-0 lg:relative right-0 left-0 flex justify-end lg:justify-start mr-auto ml-auto items-center" style={{ "font-size": "0.9rem" }}>
                             <div className="flex items-center">
             
 
 	    {/*Place in component*/}
 	    {isAuthenticated &&
-              <Menu as="div" className="relative mr-2 inline-block md:hidden text-left">
+              <Menu as="div" className="relative mr-2 inline-block lg:hidden text-left">
                 <div>
                   <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                     Hello {user.name}
@@ -619,10 +619,10 @@ setLoginError(true);
               </Menu>
 	    }
 	    
-	    {!isAuthenticated && <img src={person} onClick={handleSignInClick} className="mr-[4px] block md:hidden cursor-pointer" />}
-	    <img src={person} className="mr-[4px] hidden md:block" />
+	    {!isAuthenticated && <img src={person} onClick={handleSignInClick} className="mr-[4px] block lg:hidden cursor-pointer" />}
+	    <img src={person} className="mr-[4px] hidden lg:block" />
 
-                                <div className="flex hidden md:block justify-space-between flex-col h-full">
+                                <div className="flex hidden lg:block justify-space-between flex-col h-full">
 	    		    {isAuthenticated &&
                                     <p style={{"fontSize":"12px", "marginTop": "0px", "marginBottom":"3px"}}>Hello {user.name}</p>
 			    }
@@ -929,9 +929,9 @@ loading ? "bg-blue-400 cursor-not-allowed" : ""
                                                     <div class="flex items-center justify-between mt-4">
                                                         <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/5"></span>
 
-                                                        <Link to="#" class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline">
+                                                        <span to="#" class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline">
                                                             or login with Social Media
-                                                        </Link>
+                                                        </span>
 
                                                         <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/5"></span>
                                                     </div>
@@ -1178,38 +1178,44 @@ loading ? "bg-blue-400 cursor-not-allowed" : ""
                                                     <div class="flex items-center justify-between mt-4">
                                                         <span class="w-1/5 border-b dark:border-gray-600 lg:w-1/5"></span>
 
-                                                        <Link to="#" class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline">
-                                                            or login with Social Media
-                                                        </Link>
+                                                        <span class="text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline">
+                                                            or register with Social Media
+                                                        </span>
 
                                                         <span class="w-1/5 border-b dark:border-gray-400 lg:w-1/5"></span>
                                                     </div>
 
-
                                                     <div class="flex items-center mt-6 -mx-2">
 
 							<button
-							    onClick={handleFacebookLogin}
-							    disabled={facebookLoading}
-							    type="button" class="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">
-
-							    <span className="hidden mx-2 sm:inline">
-								{facebookLoading ? 'Loading' : 'Sign in with Facebook'}
-							    </span>
+							  disable={googleLoading}
+							  onClick={handleGoogleLogin}
+							  href="#"
+							  className="flex items-center justify-center w-full px-6 py-2 mx-2 text-sm font-medium text-white transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:bg-blue-400 focus:outline-none"
+							>
+				{googleLoading ? 'Loading...' : 'Register with Google'				}
 							</button>
 
     
                                                         <button
-							  disable={googleLoading}
-							  onClick={handleGoogleLogin} href="#" class="p-2 mx-2 text-sm font-medium text-gray-900 transition-colors duration-300 transform bg-gray-300 rounded-lg hover:bg-gray-200">
-				{googleLoading ? 'Loading' : <svg class="w-4 h-4 mx-2 fill-current" viewBox="0 0 24 24">
-                                                            <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z">
-                                                                </path>
-                                                            </svg>
-				}
+							    onClick={handleFacebookLogin}
+							    disabled={facebookLoading}
+							    type="button"
+							    className="p-2 mx-2 text-sm font-medium text-gray-900 transition-colors duration-300 transform bg-gray-300 rounded-lg hover:bg-gray-200"
+							>
+							    <span>
+								{facebookLoading ? 'Loading' : 								    <svg
+		    className="w-5 h-5 mx-2 fill-current"
+		    fill="currentColor"
+		    style={{color: "#1877f2"}}
+		    viewBox="0 0 24 24">
+		    <path
+		      d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+		  </svg>
+								}
+							    </span>
                                                         </button>
                                                     </div>
-
 
 
 

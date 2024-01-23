@@ -4,8 +4,9 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid'
 
 import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
+const baseURL = 'http://localhost:8000'
 export default function TopRequests() {
-    const baseURL = 'http://nominet.vensle.com/backend';
+    //const baseURL = 'http://nominet.vensle.com/backend';
     const [productRequests, setProductRequests] = useState([]);
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -60,9 +61,9 @@ export default function TopRequests() {
 }
 
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold mb-7 tracking-tight text-gray-900 uppercase">TOP REQUESTS</h2>
+        <h2 className="text-lg md:text-2xl font-normal tracking-tight text-gray-900 uppercase">Top Requests</h2>
 
-        <div className="grid relative grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
+        <div className="grid relative grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
 
           {!loading && productRequests.length > 0 && productRequests.map((product) => (
 
@@ -98,7 +99,7 @@ export default function TopRequests() {
             </ul>
           </div>
 
-<div className="flex mt-6">
+<div className="flex flex-col md:flex-row mt-6">
 			<p className="text-xs flex items-center text-black-200 font-medium text-gray-700 mr-4" style={{"color":"#aaa"}}>
 		  	
 
@@ -115,7 +116,7 @@ export default function TopRequests() {
 </svg>
 		  {product.city}
 		  	</p>
-		  <span className="flex cursor-pointer text-xs flex-1 justify-end items-center text-red-600">
+		  <span className="flex cursor-pointer text-xs flex-1 justify-start md:justify-end items-center text-red-600">
 		  	VIEW <ArrowRightIcon className="ml-1 h-4 w-4"/>
 		  </span>
 </div>

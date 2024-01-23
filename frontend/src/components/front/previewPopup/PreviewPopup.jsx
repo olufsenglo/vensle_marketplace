@@ -8,9 +8,8 @@ import {
     SET_MESSAGE,
 } from "actions/types";
 
+const baseURL = 'http://localhost:8000';
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
-	console.log("elllllll",selectedProduct);
-	const baseURL = 'http://nominet.vensle.com/backend';
   const dispatch = useDispatch();
 
    const [msgContent, setMsgContent] = useState('');

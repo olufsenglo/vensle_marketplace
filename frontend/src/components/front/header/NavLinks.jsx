@@ -25,12 +25,12 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
     return (
         <div className="text-white relative" style={{ "background-color":"black" }}>
             <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-                <ul style={{gap:"2%"}} className="flex justify-between lg:justify-left items-center py-2">
+                <ul style={{gap:"2%"}} className="flex justify-between lg:justify-start items-center py-2">
                     <li className="mr-6">
 	    		<NavCategories />
 	      	    </li>
 	    		
-                        <li className="flex text-xs md:hidden items-center">
+                        <li className="flex text-xs lg:hidden items-center">
 	    			{storedCountryFlag && 
 					<img className="w-4 h-4 mr-2 rounded-full" src={storedCountryFlag} alt="country flg" />
 				}

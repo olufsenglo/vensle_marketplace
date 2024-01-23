@@ -39,7 +39,7 @@ export default function NavCategories() {
         leaveTo="opacity-0 translate-y-1"
       >
         <Popover.Panel className="absolute z-10 mt-5 flex w-screen max-w-max px-4">
-          <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+          <div className="w-[86vw] max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
             <div className="p-4">
               {solutions.map((item) => (
                 <div key={item.name} className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">

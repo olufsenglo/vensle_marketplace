@@ -21,7 +21,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://nominet.vensle.com/backend';
+const baseURL = 'http://localhost:8000';
 
 const TopPurchaseSellers = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
