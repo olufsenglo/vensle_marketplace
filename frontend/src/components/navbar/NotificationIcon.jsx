@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 
 const NotificationIcon = () => {
-  const baseURL = 'http://nominet.vensle.com/backend';
+  const baseURL = 'https://nominet.vensle.com/backend';
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const accessToken = useSelector((state) => state.auth.user.token);
 

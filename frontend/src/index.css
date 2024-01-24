@@ -28,6 +28,21 @@ input:checked.defaultCheckbox::before {
 	opacity: 1;
 }
 
+.line-clamp-1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
 .line-clamp-2 {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -54,7 +69,7 @@ input:checked.defaultCheckbox::before {
 }
 
 .slick-dots {
-	bottom: 10px!important;
+	bottom: 20px!important;
 }
 
 .slick-dots li, .slick-dots li button {

@@ -10,8 +10,32 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000'
-const Product = ({ product }) => {
+const baseURL = 'https://nominet.vensle.com/backend'
+const Product = ({ product, height }) => {
+
+
+const displayImageId = product?.display_image?.id;
+if (product.images.length > 0 && displayImageId ) {
+// Find the index of the display_image in the images array
+const displayImageIndex = product.images.findIndex(img => img.id === displayImageId);
+
+// Rearrange the images array if display_image is found
+const rearrangedImages = displayImageIndex !== -1
+  ? [
+      product.images[displayImageIndex],
+      ...product.images.slice(0, displayImageIndex),
+      ...product.images.slice(displayImageIndex + 1),
+    ]
+  : product.images;
+
+// Update the product object with rearranged or unchanged images
+product = {
+  ...product,
+  images: rearrangedImages,
+};
+
+}
+
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -42,7 +66,9 @@ const Product = ({ product }) => {
 		style={{"background": "#f4f4f4a3"}}
 		className="group cursor-pointer relative rounded-md"
 	    >
-<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
+<div className={`aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 ${
+			height ? `lg:h-[${height}rem]` : "lg:h-40"
+		}`}>
                 <img
 		  src={product.display_image && getImagePath(product.display_image.name)}
 		  alt={product.name}
@@ -50,9 +76,9 @@ const Product = ({ product }) => {
                 />
               </div>
 	      <div className="p-2">
-		      <h2 className="text-lg font-medium line-clamp-2 text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
+		      <h2 className="text-lg font-medium line-clamp-1 text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
 
-		      <div className="mt-1 flex items-center">
+		      <div className="flex items-center">
 			{[0, 1, 2, 3, 4].map((rating) => (
 			  <StarIcon
 			    key={rating}
@@ -68,7 +94,7 @@ const Product = ({ product }) => {
 
 		      <div className="mt-2 flex justify-between">
 			<div>
-			  <h3 className="text-sm text-gray-700">
+			  <h3 className="text-sm text-red-600">
 			    <a href={product.href}>
 			      <span aria-hidden="true" className="absolute inset-0" />
 			        {product.currency} {product.price} 

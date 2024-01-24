@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import Nft2 from "assets/img/nfts/Nft2.png";
 import Nft1 from "assets/img/nfts/Nft1.png";
 import Nft3 from "assets/img/nfts/Nft3.png";
@@ -8,52 +10,8 @@ import Nft6 from "assets/img/nfts/Nft6.png";
 import Card from "components/card";
 
 const HistoryCard = ({ products }) => {
-  const baseURL = 'http://nominet.vensle.com/backend';
+  const baseURL = 'https://nominet.vensle.com/backend';
 
-  const HistoryData = [
-    {
-      image: Nft1,
-      title: "Colorful Heaven",
-      owner: "Mark Benjamin",
-      price: 0.4,
-      time: "30s",
-    },
-    {
-      image: Nft2,
-      title: "Abstract Colors",
-      owner: "Esthera Jackson",
-      price: 2.4,
-      time: "50m",
-    },
-    {
-      image: Nft3,
-      title: "ETH AI Brain",
-      owner: "Nick Wilson",
-      price: 0.3,
-      time: "20s",
-    },
-    {
-      image: Nft4,
-      title: "Swipe Circles",
-      owner: " Peter Will",
-      price: 0.4,
-      time: "4h",
-    },
-    {
-      image: Nft5,
-      title: "Mesh Gradients",
-      owner: "Will Smith",
-      price: 0.4,
-      time: "30s",
-    },
-    {
-      image: Nft6,
-      title: "3D Cubes Art",
-      owner: " Manny Gates",
-      price: 0.4,
-      time: "2m",
-    },
-  ];
 
     const getDisplayImage = (image) => {
       const name = image ? image.name : "";
@@ -82,7 +40,7 @@ const HistoryCard = ({ products }) => {
               {/*data.display_image*/}
 
               <img
-                className="h-full w-full rounded-xl"
+                className="h-full w-full object-cover rounded-xl"
                 src={getDisplayImage(data.display_image)}
                 alt={data.name}
               />
@@ -105,8 +63,7 @@ const HistoryCard = ({ products }) => {
               {data.price} <p className="ml-1"></p>
             </div>
             <div className="ml-2 flex items-center text-sm font-normal text-gray-600 dark:text-white">
-              <p>1 day</p>
-              <p className="ml-1">ago</p>
+              <p>{moment(data.created_at).fromNow()}</p>
             </div>
           </div>
         </div>

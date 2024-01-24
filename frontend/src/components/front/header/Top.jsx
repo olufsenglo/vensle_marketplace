@@ -18,7 +18,7 @@ function classNames(...classes) {
 }
 
 const Top = () => {
-  const baseURL = 'http://nominet.vensle.com/backend';
+  const baseURL = 'https://nominet.vensle.com/backend';
   const [distance, setDistance] = useState(20);
   const [userLocation, setUserLocation] = useState(null);
   const [userCountry, setUserCountry] = useState(null);

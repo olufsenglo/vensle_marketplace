@@ -15,7 +15,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000'
+const baseURL = 'https://nominet.vensle.com/backend'
 export default function Grocery({ product }) {
   const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);

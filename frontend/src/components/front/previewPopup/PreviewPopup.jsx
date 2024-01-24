@@ -1,6 +1,9 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { StarIcon, ArrowLeftIcon, ChevronLeftIcon, PhoneIcon, ChevronRightIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/20/solid'
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+
+import { StarIcon, ArrowLeftIcon, ChevronLeftIcon, PhoneIcon, MapPinIcon, ClockIcon, ChevronRightIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/20/solid'
 import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
@@ -8,7 +11,7 @@ import {
     SET_MESSAGE,
 } from "actions/types";
 
-const baseURL = 'http://localhost:8000';
+const baseURL = 'https://nominet.vensle.com/backend';
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
   const dispatch = useDispatch();
 
@@ -75,13 +78,13 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 
    const handleShowSelectedImage = (image, index) => {
 	return (<a onClick={(e) =>handleSetPreviewImage(e, image.name, index)} href="#"
-	    class={`block border dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300 ${
-		index == imgIndex ? 'border-blue-300' : 'border-transparent'
+	    className={`block border overflow-hidden rounded-md dark:border-transparent dark:hover:border-red-600 hover:border-red-600 ${
+		index == imgIndex ? 'border-red-600' : 'border-transparent'
 	    }`}>
 	    <img
 	      src={getImagePath(image.name)} 
 	      alt="Preview"
-	      class="object-cover w-full lg:h-20"
+	      class="object-cover w-full lg:h-[5.5rem] rounded-md "
 	    />
 	</a>)
    }
@@ -130,7 +133,7 @@ return (
 
 
 
-    <div className="bg-white">
+    <div className="bg-white w-full">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
 
@@ -138,16 +141,15 @@ return (
 
                 <div class="w-full px-4">
                     <div class="sticky top-0 z-50 overflow-hidden ">
-                        <div class="relative mb-6 lg:mb-10 lg:h-[28rem]">
+                        <div class="relative mb-4 lg:mb-6 py-2 lg:pl-[6rem] lg:pr-[6rem] lg:h-[28rem]">
 	
 	<span className="absolute left-0 cursor-pointer" style={{top: "50%"}} onClick={handlePreviousPreviewImage}>
 		<ChevronLeftIcon className="h-8 w-8"/>
 	</span>
                             <img
-	   			style={{"width":"200rem"}} 
 				src={previewImage}
 				alt=" /"
-                                className="object-cover w-full lg:pl-[6rem] lg:pr-[6rem] lg:h-full "
+                                className="object-cover rounded-md w-full lg:h-full "
 		             />
 	<span className="absolute right-0 cursor-pointer" style={{top: "50%"}} onClick={handleNextPreviewImage}>
 		<ChevronRightIcon className="h-8 w-8"/>
@@ -155,7 +157,7 @@ return (
                         </div>
                         <div class="flex-wrap hidden md:flex ">
             {selectedProduct.images[0] && selectedProduct.images.map((image, index) => (
-                            <div className="w-1/2 p-2 sm:w-1/4">
+                            <div className="w-[6.5rem] p-2 sm:w-[6.5rem]">
 				{handleShowSelectedImage(image, index)}
                             </div>
 	     ))}
@@ -190,7 +192,7 @@ return (
           isLeftVisible ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-		<h3 className="text-2xl mb-5 font-bold tracking-tight text-gray-900">
+		<h3 style={{fontWeight: "500"}} className="text-2xl mb-5 tracking-tight">
 		{selectedProduct.name}
 	  	</h3>
 <div className="flex items-center">
@@ -204,14 +206,14 @@ return (
 			))}
 		      </div>
 
-                <p className="text-sm leading-5 text-gray-600">
-	  		<span className="text-gray-400">{selectedProduct.ratings}</span> ({selectedProduct && selectedProduct.total_feedback} Feedback{selectedProduct && selectedProduct.total_feedback > 1 && 's'})
+                <p className="text-sm leading-5">
+	  		<span className="mx-1">{selectedProduct.ratings}</span> ({selectedProduct && selectedProduct.total_feedback} Feedback{selectedProduct && selectedProduct.total_feedback > 1 && 's'})
                 </p>
 </div>
                 <h4 className="text-xl mt-3 mb-5">
 			        {selectedProduct.currency} {selectedProduct.price} 
 		</h4>
-                <h4 className="text-xl font-semibold text-gray-600">Product Details</h4>
+                <h4 className="text-xl">Product Details</h4>
 
             <p className="mt-1 text-base leading-7">
 		{selectedProduct.description}
@@ -220,34 +222,28 @@ return (
 
 
 
-			<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-3">
+			<p className="text-sm flex items-center font-medium mt-5">
 		  	
-<svg class="h-3 w-3 mr-2 text-gray-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-</svg>
+		<MapPinIcon className="h-4 w-4 mr-2"/>
 
 				{selectedProduct.city}
 		  	</p>
-			<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-3">
+			<p className="text-sm flex items-center font-medium mt-3">
 		  	
-<svg class="h-3 w-3 mr-2 text-gray-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-</svg>
+		<ClockIcon className="h-4 w-4 mr-2"/>
 
-		  		Posted {selectedProduct.created_at}
+		  		Posted {moment(selectedProduct.created_at).format('Do MMM YYYY')}
 		  	</p>
 
 
 
-<div className="flex items-end flex-1">
-                <a
-                  href={`product-detail/${selectedProduct.id}`}
+<div className="flex items-end flex-1 mt-4">
+                <Link
+                  to={`/product-detail/${selectedProduct.id}`}
                   className="block w-full rounded-md bg-red-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                 >
 			MORE DETAILS
-                </a>
+                </Link>
 
 
                 <a

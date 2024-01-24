@@ -8,7 +8,7 @@ import {
 
   
 export default function Products() {
-    const baseURL = 'http://nominet.vensle.com/backend';
+    const baseURL = 'https://nominet.vensle.com/backend';
     const [products, setProducts] = useState([]);
 
     const dispatch = useDispatch();

@@ -17,12 +17,12 @@ import Storage from "./components/Storage";
 import Upload from "./components/Upload";
 
 const ProfileOverview = () => {
-  const baseURL = 'http://nominet.vensle.com/backend';
+  const baseURL = 'https://nominet.vensle.com/backend';
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
-  const accessToken = useSelector((state) => state.auth.user.token);
-  const isSocialProfile = useSelector((state) => state.auth?.user?.socialProfile);
+  const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
+  const accessToken = useSelector((state) => state?.auth?.user?.token);
+  const isSocialProfile = useSelector((state) => state?.auth?.user?.socialProfile);
   const user = useSelector((state) => state.auth.user.user);
 
 

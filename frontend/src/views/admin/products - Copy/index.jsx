@@ -6,7 +6,7 @@ import {
 import tableDataComplex from "./variables/tableDataComplex.json";
 import ComplexTable from "./components/ComplexTable";
 
-    const baseURL = 'http://nominet.vensle.com/backend';
+    const baseURL = 'https://nominet.vensle.com/backend';
 
 const Tables = () => {
   const [products, setProducts] = useState([]);

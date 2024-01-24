@@ -4,7 +4,7 @@ import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
-  const baseURL = 'http://nominet.vensle.com/backend';
+  const baseURL = 'https://nominet.vensle.com/backend';
    const defaultImagePath = selectedProduct && selectedProduct.display_image.name ? 
 		`${baseURL}/uploads/${selectedProduct.display_image.name}` : 
 		"";

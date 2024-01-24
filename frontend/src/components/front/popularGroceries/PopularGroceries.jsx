@@ -17,9 +17,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000'
+const baseURL = 'https://nominet.vensle.com/backend'
 export default function PopularGroceries() {
-	//const baseURL = 'http://nominet.vensle.com/backend';
+	//const baseURL = 'https://nominet.vensle.com/backend';
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -49,7 +49,7 @@ export default function PopularGroceries() {
 		setLoading(true)
 	      const response = await axios.get(apiUrl, {
 		params: {
-			per_page: 10,
+			per_page: 5,
 			type: 'grocery'
 		},
 	      });
@@ -67,7 +67,7 @@ export default function PopularGroceries() {
     }, []);
 
   return (
-    <div style={{"minHeight":"30rem"}} className="bg-white relative">
+    <div className="bg-white min-h-[15rem] relative">
 
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 	  
@@ -79,9 +79,9 @@ export default function PopularGroceries() {
 }
 	  
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
-        <h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl font-normal pb-1 tracking-tight text-gray-900 uppercase">most poplar in groceries</h2>
+        <h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-xl md:text-2xl font-normal pb-1 tracking-tight text-gray-900 uppercase">Most Popular in Groceries</h2>
 
-        <div className="mt-6 relative grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:gap-x-8"
+        <div className="mt-6 md:mt-10 relative grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:gap-x-8"
 	>
 
           {products && products.map((product) => (

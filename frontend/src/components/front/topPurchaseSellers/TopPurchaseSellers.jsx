@@ -21,7 +21,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000';
+const baseURL = 'https://nominet.vensle.com/backend';
 
 const TopPurchaseSellers = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -122,9 +122,9 @@ const TopPurchaseSellers = () => {
 
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
-		<div className="flex pt-16 justify-center gap-2 md:gap-5 items-center">
+		<div className="flex pt-10 justify-center gap-2 md:gap-5 items-center">
 			<button 
-	    			className={`rounded py-1 text-xs md:text-sm px-4 md:px-10 transition duration-300 ${
+	    			className={`rounded py-1 lg:py-2 text-xs md:text-sm px-4 md:px-10 transition duration-300 ${
 				activePill === 1 ? 'text-white bg-gray-900' : 'bg-gray-200'
 				}`}
 		                onClick={() => handlePillClick(1, 1, "")}
@@ -132,7 +132,7 @@ const TopPurchaseSellers = () => {
 				FOR SALE
 			</button>
 			<button 
-	    			className={`rounded py-1 text-sm px-4 md:px-10 transition duration-300 ${
+	    			className={`rounded py-1 lg:py-2 text-sm px-4 md:px-10 transition duration-300 ${
 				activePill === 2 ? 'text-white bg-gray-900' : 'bg-gray-200'
 				}`}
 		                onClick={() => handlePillClick(2, 3, "request")}
@@ -140,7 +140,7 @@ const TopPurchaseSellers = () => {
 				REQUESTS
 			</button>
 			<button 
-	    			className={`rounded py-1 text-sm px-4 md:px-10 transition duration-300 ${
+	    			className={`rounded py-1 lg:py-2 text-sm px-4 md:px-10 transition duration-300 ${
 				activePill === 3 ? 'text-white bg-gray-900' : 'bg-gray-200'
 				}`}
 		                onClick={() => handlePillClick(3, 4, "grocery")}
@@ -155,10 +155,10 @@ const TopPurchaseSellers = () => {
 	    {activePill === 3 && <TabTopCategories />}
 
 
-		<div style={{minHeight:"30rem"}} className="mx-auto relative max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
+		<div style={{minHeight:"30rem"}} className="mx-auto relative max-w-2xl px-4 py-4 sm:py-6 sm:px-6 lg:max-w-7xl lg:px-8">
 
 {loading &&
-<div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
+<div style={{"zIndex":"5", left:"0", right:"0", top:"6rem", bottom: "0"}} className="absolute bg-transparent lg:bg-white flex justify-center items-center">
 	<p>Loading...</p>
 </div>
 }
@@ -172,14 +172,14 @@ const TopPurchaseSellers = () => {
 }
 
         	<div className="mx-auto lg:mx-0 lg:flex lg:max-w-none">
-          		<div className="flex flex-col mb-10 md:mb-0 items-start lg:mt-0 lg:pr-8 bg-white lg:w-full lg:max-w-md lg:flex-shrink-0">
-        			<h2 style={{"borderBottom":"2px solid red"}} className="text-2xl w-full md:w-initial block text-center md:text-left pb-1 font-normal tracking-tight text-gray-900 uppercase">Top Purchases</h2>
+          		<div className="flex flex-col mb-10 lg:mb-0 min-h-[15rem] items-start lg:mt-0 lg:pr-8 bg-white lg:w-full lg:max-w-[26rem] lg:flex-shrink-0">
+        			<h2 style={{"borderBottom":"2px solid red"}} className="text-xl md:text-2xl w-full md:w-auto block text-center md:text-left pb-1 font-normal tracking-tight text-gray-900 uppercase">Top Purchases</h2>
 
 {products && products[0] &&
             <div
 		onClick={(e) => handleProductQuickView(e, products[0])}
 		style={{"background": "#f4f4f4a3"}}
-		className="group flex flex-col flex-1 mt-6 relative rounded-md"
+		className="group flex flex-col flex-1 mt-6 md:mt-10 relative rounded-md"
 	    >
 
 
@@ -193,7 +193,7 @@ const TopPurchaseSellers = () => {
               </div>
 	      <div className="p-2">
 
-		      <h2 className="text-lg font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>
+		      <h2 className="text-lg line-clamp-2 font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>
 	    		{products[0] && products[0].name}
 	    	      </h2>
 
@@ -260,11 +260,11 @@ const TopPurchaseSellers = () => {
 
 		<div className="lg:flex justify-between items-center">
 
-	    			<h1 style={{"borderBottom":"2px solid red"}} className="text-2xl block md:inline text-center mb-4 md:mb-0 md:text-left pb-1 tracking-tight text-gray-900 sm:text-2xl">BEST SELLERS</h1>
+        			<h2 style={{"borderBottom":"2px solid red"}} className="text-xl md:text-2xl w-full md:w-auto block text-center md:text-left pb-1 font-normal tracking-tight text-gray-900 uppercase">Best Sellers</h2>
 
-                        <div class="flex overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700">
+                        <div className="flex overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700">
                             <button
-	    			class={`inline-flex items-center h-10 px-4 -mb-px text-sm text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none transition duration-300 ${
+	    			className={`w-full md:w-auto items-center h-10 px-2 text-sm text-center bg-transparent border-b-2 whitespace-nowrap focus:outline-none transition duration-300 ${
 					activeTab === 1 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
 				}`}
 		                onClick={() => handleTabClick(1, "")}
@@ -274,7 +274,7 @@ const TopPurchaseSellers = () => {
 
 
                             <button
-	    			class={`inline-flex items-center h-10 px-4 -mb-px text-sm text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+	    			className={`w-full md:w-auto items-center h-10 px-2 text-sm text-center bg-transparent border-b-2 whitespace-nowrap focus:outline-none ${
 					activeTab === 2 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
 				}`}
 		                onClick={() => handleTabClick(2, "product")}
@@ -284,7 +284,7 @@ const TopPurchaseSellers = () => {
 
 
                             <button
-	    			class={`inline-flex items-center h-10 px-4 -mb-px text-sm text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+	    			className={`w-full md:w-auto items-center h-10 px-2 text-sm text-center bg-transparent border-b-2 whitespace-nowrap focus:outline-none ${
 					activeTab === 3 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
 				}`}
 		                onClick={() => handleTabClick(3, "request")}
@@ -294,7 +294,7 @@ const TopPurchaseSellers = () => {
                             </button>
 
                             <button
-	    			class={`inline-flex items-center h-10 px-4 -mb-px text-sm text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+	    			className={`w-full md:w-auto items-center h-10 px2 text-sm text-center bg-transparent border-b-2 whitespace-nowrap focus:outline-none ${
 					activeTab === 4 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
 				}`}
 		                onClick={() => handleTabClick(4, "grocery")}
@@ -307,7 +307,7 @@ const TopPurchaseSellers = () => {
 
 
 
-        <div className="mt-6 grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        <div className="mt-6 md:mt-10 min-h-[15rem] grid grid-cols-3 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 
             {!loading && products.length > 0 && products.map((product) => (
             <div
@@ -323,7 +323,7 @@ const TopPurchaseSellers = () => {
                 />
               </div>
 	      <div className="p-2">
-		      <h2 className="text-lg font-medium line-clamp-2 text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
+		      <h2 className="text-lg font-medium line-clamp-1 text-gray-900" style={{"fontWeight": "500", "fontSize":"1rem"}}>{product.name}</h2>
 
 		      <div className="mt-1 flex items-center">
 			{[0, 1, 2, 3, 4].map((rating) => (
@@ -341,7 +341,7 @@ const TopPurchaseSellers = () => {
 
 		      <div className="mt-2 flex justify-between">
 			<div>
-			  <h3 className="text-sm text-gray-700">
+			  <h3 className="text-sm text-red-600">
 			    <a href={product.href}>
 			        {product.currency} {product.price} 
 			    </a>

@@ -24,7 +24,7 @@ function classNames(...classes) {
 }
 
 const CartLink = () => {
-    const baseURL = 'http://nominet.vensle.com/backend';
+    const baseURL = 'https://nominet.vensle.com/backend';
     const dispatch = useDispatch();
 
     const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);

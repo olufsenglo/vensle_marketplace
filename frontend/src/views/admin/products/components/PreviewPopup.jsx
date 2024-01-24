@@ -11,7 +11,7 @@ function classNames(...classes) {
 }
 
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
-	const baseURL = 'http://nominet.vensle.com/backend';
+	const baseURL = 'https://nominet.vensle.com/backend';
 	
     const settings = {
       infinite: true,

@@ -16,9 +16,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000'
+const baseURL = 'https://nominet.vensle.com/backend'
 const MoreToLove = () => {
-  //const baseURL = "http://nominet.vensle.com/backend"
+  //const baseURL = "https://nominet.vensle.com/backend"
     const [products, setProducts] = useState(null);
     const [perPage, setPerPage] = useState(15);
 
@@ -55,7 +55,7 @@ const MoreToLove = () => {
 </div>
 }
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
-        <h2 className="text-lg md:text-2xl font-normal tracking-tight text-gray-900 uppercase">More to Love</h2>
+        	<h2 style={{"borderBottom":"2px solid red" }} className="text-xl md:text-2xl block md:inline text-center md:text-left pb-1 font-normal tracking-tight text-gray-900 uppercase">More to Love</h2>
 {products &&
    <>
         <div className="mt-6 relative grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">

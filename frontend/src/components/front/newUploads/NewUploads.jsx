@@ -16,9 +16,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000';
+const baseURL = 'https://nominet.vensle.com/backend';
 const NewUploads = () => {
-    //const baseURL = 'http://nominet.vensle.com/backend';
+    //const baseURL = 'https://nominet.vensle.com/backend';
     const [products, setProducts] = useState(null);
     const [column, setColumn] = useState('created_at');
     const [activeTab, setActiveTab] = useState(1);
@@ -53,7 +53,7 @@ const NewUploads = () => {
 
 	return (
 <div className="bg-white relative">
-      <div style={{"minHeight":"30rem"}} className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
+      <div style={{"minHeight":"30rem"}} className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8">
 
 {!products &&
 <div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
@@ -63,7 +63,7 @@ const NewUploads = () => {
 }
                         <div className="flex overflow-x-auto overflow-y-hidden border-b border-gray-200 whitespace-nowrap dark:border-gray-700">
                             <button
-	    			className={`inline-flex items-center h-10 pr-4 -mb-px text-lg md:text-2xl text-left bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none transition duration-300 ${
+	    			className={`inline-flex items-center h-10 pr-4 text-xl md:text-2xl text-left bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none transition duration-300 ${
 					activeTab === 1 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
 				}`}
 		                onClick={() => handleTabClick(1, "created_at")}
@@ -73,7 +73,7 @@ const NewUploads = () => {
 
 
                             <button
-	    			className={`inline-flex items-center h-10 px-4 -mb-px text-lg md:text-2xl text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
+	    			className={`inline-flex items-center h-10 px-4 text-xl md:text-2xl text-center bg-transparent border-b-2 sm:text-base whitespace-nowrap focus:outline-none ${
 					activeTab === 2 ? 'text-red-600 border-red-500 dark:border-red-400 dark:text-red-300' : 'text-gray-700 border-transparent dark:text-white cursor-base hover:border-gray-400'
 				}`}
 		                onClick={() => handleTabClick(2, "ratings")}
@@ -85,7 +85,7 @@ const NewUploads = () => {
                         </div>
 
 
-        <div className="mt-6 relative grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
+        <div className="mt-6 md:mt-10 relative grid grid-cols-3 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
 
             {products && products.map((product) => (
 		    <>

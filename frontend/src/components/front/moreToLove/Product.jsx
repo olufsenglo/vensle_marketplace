@@ -10,7 +10,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000'
+const baseURL = 'https://nominet.vensle.com/backend'
 const Product = ({ product }) => {
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 
 import {
   columnsDataComplex,
@@ -46,7 +47,7 @@ const columnsData = [
 ];
 
 const Tables = () => {
-  const baseURL = 'http://nominet.vensle.com/backend';
+  const baseURL = 'https://nominet.vensle.com/backend';
   
   const [products, setProducts] = useState([]);
   const [extractedData, setExtractedData] = useState([]);
@@ -65,10 +66,10 @@ const Tables = () => {
 	  condition,
 	  price,
 	  status,
-	  created_at,
+	  created_at: moment(created_at).fromNow(),
           ...rest
 	}));
-	console.log(extractedData);
+	console.log(data.data);
 	setProducts(data.data);
 	setExtractedData(extractedData);
       } catch (error) {

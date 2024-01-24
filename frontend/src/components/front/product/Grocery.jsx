@@ -15,8 +15,34 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000'
-export default function Grocery({ product }) {
+const baseURL = 'https://nominet.vensle.com/backend'
+export default function Grocery({ product, height }) {
+
+
+const displayImageId = product?.display_image?.id;
+if (product.images.length > 0 && displayImageId ) {
+// Find the index of the display_image in the images array
+const displayImageIndex = product.images.findIndex(img => img.id === displayImageId);
+
+// Rearrange the images array if display_image is found
+const rearrangedImages = displayImageIndex !== -1
+  ? [
+      product.images[displayImageIndex],
+      ...product.images.slice(0, displayImageIndex),
+      ...product.images.slice(displayImageIndex + 1),
+    ]
+  : product.images;
+
+// Update the product object with rearranged or unchanged images
+product = {
+  ...product,
+  images: rearrangedImages,
+};
+
+console.log("gupppppa", product);	
+}
+
+
   const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
 
@@ -43,37 +69,30 @@ export default function Grocery({ product }) {
     <>
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
-            <a key={product.id} href="#" style={{"background": "#eee"}} className="group">
-
-
-		  {/*	      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-40">
-
-                <img
-                  src={getDisplayImage(product)}
-                  alt={product.name}
-                  className="h-full w-full object-cover object-center group-hover:opacity-75"
-                />
-              </div>
-	      */}
+            <div key={product.id} style={{"background": "#f4f4f4a3"}} className="group flex flex-col rounded-lg">
 
 
                 <div
 	  	    onClick={(e) => handleProductQuickView(e, product)}
-	  	    className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7"
+	  	    className="flex-1 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7"
 	    	>
-                    <a class="relative flex lg:h-40 overflow-hidden rounded-xl" href="#">
+                    <div 
+	  		className={`relative w-full h-full cursor-pointer flex overflow-hidden rounded-xl ${
+				height ? `lg:h-[${height}rem]` : "lg:h-40"
+			}`}
+	   	    >
                         <img
-                          class="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
+                          className="peer absolute group-hover:opacity-75 top-0 right-0 h-full w-full object-cover"
 		  	  src={product.display_image && getImagePath(product.display_image)}
                           alt={product.name}
                         />
 		  {product.images && product.images[1] ? <img className="peer absolute top-0 -right-96 h-full w-full object-cover transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0" src={getImagePath(product.images[1])} alt="product image" /> : ""}
 
-                    </a>
+                    </div>
                 </div>
 
-	      <div className="py-1 px-2">
-		      <h2 className="text-lg line-clamp-2 font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
+	      <div className="p-2">
+		      <h2 className="text-lg line-clamp-1 font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
 
 
 
@@ -92,7 +111,7 @@ export default function Grocery({ product }) {
 			  />
 			))}
 		      </div>
-		      <p className="text-sm mt-1 font-medium text-orange-900" style={{"fontSize":"0.75rem"}}>
+		      <p className="text-sm mt-1 text-red-600">
 	  {product.currency} {product.price}
 	  </p>
                 </div>
@@ -101,7 +120,7 @@ export default function Grocery({ product }) {
 			    type="submit"
                     	    onClick={(e) => handleAddToCart(e, product)}
 		  	    style={{"fontSize":"0.8rem"}}
-			    className="bg-transparent hover:bg-orange-500 text-orange-500 font-semibold hover:text-white py-1 px-2 border border-orange-500 hover:border-transparent rounded"
+			    className="bg-transparent hover:bg-red-500 text-red-500 font-semibold hover:text-white py-1 px-2 border border-red-500 hover:border-transparent rounded"
 			    >
 			    ADD TO CART
 			  </button>
@@ -110,7 +129,7 @@ export default function Grocery({ product }) {
 
 
                </div>
-            </a>
+            </div>
     </>
   )
 }

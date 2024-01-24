@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const OrderSummary = () => {
-    const baseURL = 'http://nominet.vensle.com/backend';
+    const baseURL = 'https://nominet.vensle.com/backend';
     const { orderId } = useParams();
   const [order, setOrder] = useState(null);
 

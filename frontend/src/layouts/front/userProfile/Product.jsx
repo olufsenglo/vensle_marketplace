@@ -11,7 +11,7 @@ function classNames(...classes) {
 }
 
 const Product = ({ product }) => {
-  const baseURL = "http://nominet.vensle.com/backend"
+  const baseURL = "https://nominet.vensle.com/backend"
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 

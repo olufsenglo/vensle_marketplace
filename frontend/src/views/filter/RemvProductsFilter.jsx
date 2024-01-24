@@ -80,7 +80,7 @@ export default function ProductsFilter() {
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
             <p className="text-gray-500">240 Bags Ads</p>
-            <h1 className="flex items-center justify-between text-2xl font-bold tracking-tight text-gray-900">
+            <h1 className="flex items-center justify-between font-bold tracking-tight text-gray-900">
               Everthing
               <ChevronDownIcon
                 className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
@@ -147,7 +147,7 @@ export default function ProductsFilter() {
             </div>
           </div>
 
-          <section aria-labelledby="products-heading" className="pb-24 pt-6">
+          <section aria-labelledby="products-heading" className="pb-24 pt-6 min-h-[100vh]">
 
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
               {/* Filters */}

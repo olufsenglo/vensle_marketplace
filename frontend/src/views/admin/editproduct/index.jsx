@@ -19,7 +19,7 @@ import Checkbox from "components/checkbox";
 import currencySymbolMap from 'currency-symbol-map';
 
 const Tables = () => {
-  const baseURL = 'http://nominet.vensle.com/backend';
+  const baseURL = 'https://nominet.vensle.com/backend';
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);

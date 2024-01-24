@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Facebook = () => {
-  const baseURL = 'http://nominet.vensle.com/backend'; 
+  const baseURL = 'https://nominet.vensle.com/backend'; 
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 

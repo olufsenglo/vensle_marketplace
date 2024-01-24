@@ -60,7 +60,7 @@ import {
 //Merge cart TODO:put in await     
 const cart = JSON.parse(localStorage.getItem('cart')) || [];
 if (cart.length > 0) {
-    axios.post('http://nominet.vensle.com/backend/api/v1/merge-cart', {cart}, {
+    axios.post('https://nominet.vensle.com/backend/api/v1/merge-cart', {cart}, {
 	      headers: {
 		      'Content-Type': 'multipart/form-data',
 		      'Authorization': `Bearer ${data.token}`,
@@ -77,8 +77,8 @@ if (cart.length > 0) {
         return Promise.resolve();
       },
       (error) => {
-        const message = error.response.data.errors ? error.response.data.errors :
-		      { dispatchError: error.response.data.message }
+        const message = error.response?.data?.errors ? error.response?.data?.errors :
+		      { dispatchError: error.response?.data?.message }
 
         dispatch({
           type: LOGIN_FAIL,
@@ -114,7 +114,6 @@ export const updateUserProfile = (userData) => (dispatch, getState) => {
 //});
   
 export const logout = () => (dispatch) => {
-	console.log('inn auth');
     localStorage.removeItem("cart");
     AuthService.logout();
   

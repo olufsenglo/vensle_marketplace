@@ -3,7 +3,7 @@ import axios from "axios";
 import NavCategories from "./NavCategories";
 
 const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
-  const baseURL = "http://nominet.vensle.com/backend"
+  const baseURL = "https://nominet.vensle.com/backend"
   const [categories, setCategories] = useState('');
 
   useEffect(() => {

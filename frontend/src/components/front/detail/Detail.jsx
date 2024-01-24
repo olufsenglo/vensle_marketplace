@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, PhoneIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/20/solid'
+import moment from 'moment';
+
+import { ChevronLeftIcon, ChevronRightIcon, PhoneIcon, MapPinIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/20/solid'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -33,10 +35,9 @@ function classNames(...classes) {
 }
 
 
+const baseURL = 'https://nominet.vensle.com/backend';
 
 const ProductDetail = () => {
-  const baseURL = 'http://nominet.vensle.com/backend';
-	
   const dispatch = useDispatch();
 
   const { productId } = useParams();
@@ -196,7 +197,7 @@ const ProductDetail = () => {
 
 	    {!loading && product &&
 		    <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-16">
-          <div className="lg:col-span-3 lg:border-r lg:border-gray-200 lg:pr-8 bg-white">
+          <div className="lg:col-span-3 lg:pr-8 bg-white">
 
             
 	    <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl">{product && product.name}</h1>
@@ -235,13 +236,13 @@ const ProductDetail = () => {
 
 
 	  <div className="flex items-center">
-		<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-8">
+		<p className="text-sm mr-6 flex items-center text-black-200 font-medium text-gray-700 mt-8">
 		
 <svg class="h-3 w-3 mr-2 text-gray-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
 </svg>
-	  		Posted 11 hours ago
+	  		Posted {moment(product.created_at).format('Do MMM YYYY')}
 		</p>
 		<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-8">
 		
@@ -306,8 +307,8 @@ const ProductDetail = () => {
 			))}
 		      </div>
 
-                <p className="text-sm leading-5 text-gray-600">
-	  		<span className="text-gray-400">{product.ratings}</span> ({product && product.total_feedback} Feedback{product && product.total_feedback > 1 && 's'})
+                <p className="text-sm leading-5">
+	  		<span className="px-1">{product.ratings}</span> ({product.total_feedback} Feedback{product.total_feedback > 1 && 's'})
                 </p>
 </div>
 <p className="text-lg font-bold mt-3 tracking-tight text-gray-900">
@@ -324,7 +325,7 @@ const ProductDetail = () => {
 	}
 	
 <div>
-	  <Link href={`/user-profile/${product?.user_id}/products`} className="flex items-center mt-4">
+	  <Link to={`/user-profile/${product?.user_id}/products`} className="flex items-center mt-4">
 
 		  <img src={seller} alt="seller" />
 		  <div className="ml-4">
@@ -333,12 +334,9 @@ const ProductDetail = () => {
 	  	</div>
 	  </Link>
 
-		<p className="text-sm flex items-center text-black-200 font-medium text-gray-700 mt-8">
+		<p className="text-sm flex items-center text-black-200 font-medium mt-8">
 		
-<svg class="h-3 w-3 mr-2 text-gray-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-</svg>
+		<MapPinIcon className="h-4 w-4 mr-2"/>
 			    {product.address}
 		</p>
 
@@ -360,7 +358,7 @@ const ProductDetail = () => {
                   className="mt-6 block w-full rounded-md border border-red-600 bg-white px-3 py-3 text-center text-sm text-red-600 hover:text-white hover:border-red-500 shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
 				    <span className="flex justify-center items-center">
-		  			<ChatBubbleBottomCenterTextIcon className="h-4 w-4 mr-4"/> VIEW FEEDBACKS (20)
+		  			<ChatBubbleBottomCenterTextIcon className="h-4 w-4 mr-4"/> VIEW FEEDBACKS ({product.total_feedback})
 				    </span>
                 </a>
                 <a

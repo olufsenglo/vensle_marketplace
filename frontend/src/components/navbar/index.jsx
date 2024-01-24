@@ -25,7 +25,7 @@ function classNames(...classes) {
 }
 
 const Navbar = (props) => {
-  const baseURL = 'http://nominet.vensle.com/backend';
+  const baseURL = 'https://nominet.vensle.com/backend';
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();

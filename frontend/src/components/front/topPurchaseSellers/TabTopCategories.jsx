@@ -72,21 +72,21 @@ const products = [
 const ShopCategories = () => {
    return(
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
-        	<h2 style={{"borderBottom":"2px solid red", "display":"inline"}} className="text-2xl pb-1 font-normal tracking-tight text-gray-900 uppercase">Hottest categories</h2>
+
+        	<h2 style={{"borderBottom":"2px solid red" }} className="text-xl md:text-2xl block md:inline text-center md:text-left pb-1 font-normal tracking-tight text-gray-900 uppercase">Hottest categories</h2>
 
 
-
-          <div className="mt-6 grid grid-cols-3 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-6 xl:gap-x-6">
+          <div className="mt-6 min-h-[10rem] md:mt-10 grid grid-cols-3 gap-x-4 gap-y-8 sm:grid-cols-4 min-h-[5rem] lg:grid-cols-6 lg:gap-x-8">
             {products.map((product) => (
               <div key={product.id} className="group relative">
-                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-sm bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
+                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-[0.3rem] bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-[13rem]">
                   <img
                     src={product.imageSrc}
                     alt={product.imageAlt}
                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                   />
                 </div>
-<div className="w-full" style={containerStyle} className="mt-4 pb-2 md:pb-6 pt-12 rounded-sm w-full absolute flex justify-between">
+<div className="w-full" style={containerStyle} className="mt-4 pb-2 md:pb-6 pt-12 rounded-[0.3rem] w-full absolute flex justify-between">
                   <div className="w-full">
                     <h3 style={{"color":"white"}} className="uppercase text-center font-medium text-gray-900">
                       <a href={product.href}>

@@ -41,10 +41,11 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const baseURL = 'https://nominet.vensle.com/backend';
+
 const Header = () => {
     const navigate = useNavigate();
     
-    const baseURL = 'http://nominet.vensle.com/backend';
 
     const dispatch = useDispatch();
     const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
@@ -560,10 +561,10 @@ setLoginError(true);
 
 
             <div className="bg-white">
-                <div className="mx-auto max-w-2xl pt-4 py-4 md:py-6 lg:max-w-7xl lg:px-8">
+                <div className="mx-auto max-w-2xl pt-4 py-4 md:py-8 lg:max-w-7xl lg:px-8">
                     <div className="flex flex-col lg:flex-row justify-between md:items-center" style={{ "gap": "1%" }} >
                         
-                      <Link className="px-6 md:px-0" to="/">
+                      <Link className="px-6 md:px-0 relative md:z-10" to="/">
 	    		<img className="md:w-[218px] w-40" src={logo} alt="vensle" />
                        </Link>
 	    		<Search />

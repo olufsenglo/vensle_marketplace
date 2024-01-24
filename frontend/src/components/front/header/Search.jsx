@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 const Search = () => {
-  const baseURL = "http://nominet.vensle.com/backend";
+  const baseURL = "https://nominet.vensle.com/backend";
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -124,10 +124,10 @@ const Search = () => {
   }, []);
 
   return (
-     <form style={{zIndex: "1"}} className="flex w-full mt-4 lg:mt-0 lg:flex-1 px-6 md:px-0 lg:w-auto mb-0 items-center h-10 md:h-[51px] relative" onSubmit={handleSearchButtonClick}>
+     <form style={{zIndex: "1"}} className="flex w-full mt-4 lg:mt-0 lg:flex-1 px-6 md:px-0 lg:px-[2%] lg:w-auto mb-0 items-center h-10 md:h-[51px] relative" onSubmit={handleSearchButtonClick}>
 
 
-        <select style={{fontSize: "14px"}} className="pl-1 h-full border hidden md:block" value={distance} onChange={handleDistanceChange}>
+        <select style={{fontSize: "14px"}} className="pl-1 h-full border hidden lg:block" value={distance} onChange={handleDistanceChange}>
           <option value={10}>10 km</option>
           <option value={20}>20 km</option>
           <option value={30}>30 km</option>
@@ -135,7 +135,7 @@ const Search = () => {
 
 
       <input
-	className="border md:border-l-0 border-r-0 h-full flex-1 pl-[20px]"
+	className="border lg:border-l-0 border-r-0 h-full flex-1 pl-[20px]"
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
@@ -146,7 +146,7 @@ const Search = () => {
       <select
         value={selectedCategory}
         onChange={handleCategoryChange}
-        className="border border-r-0 p-2 h-full hidden md:block"
+        className="border border-r-0 p-2 h-full hidden lg:block"
       >
                 <option value="">Everything</option>
                 {categories && categories.map((category) => (
@@ -157,16 +157,40 @@ const Search = () => {
 	  
       </select>
       {searchTerm && suggestions.length > 0 && (
-        <ul style={{ "top": "2.8rem", "width": "100%" }} className="suggestions-list absolute z-10 right-0 left-0 bg-white border p-2 mt-1 w-64">
+        <ul style={{ "top": "2.8rem", "width": "100%" }} className="suggestions-list absolute z-10 right-0 left-0 bg-white border mt-1 w-64">
           {suggestions.map((suggestion, index) => (
             <li
               key={index}
               onClick={() => handleSelectSuggestion(suggestion)}
-              className={`cursor-pointer p-2 ${selectedSuggestionIndex === index ? 'bg-gray-200' : ''} hover:bg-gray-200`}
+              className={`cursor-pointer p-2 md:p-4 ${selectedSuggestionIndex === index ? 'bg-gray-200' : ''} hover:bg-gray-200`}
             >
               {suggestion.name}
             </li>
           ))}
+	  <li className="grid lg:hidden grid-cols-2 py-4 px-8 gap-4 divide-x divide-gray-900/5 bg-gray-50">
+
+		<select
+	      	  style={{fontSize: "14px"}}
+	      	  className="flex items-center justify-center gap-x-2.5 p-3 text-gray-900 hover:bg-gray-100" value={distance} onChange={handleDistanceChange}>
+		  <option value={10}>10 km</option>
+		  <option value={20}>20 km</option>
+		  <option value={30}>30 km</option>
+		</select>
+
+	      <select
+		value={selectedCategory}
+		onChange={handleCategoryChange}
+		className="flex items-center justify-center gap-x-2.5 p-3 text-gray-900 hover:bg-gray-100"
+	      >
+			<option value="">Everything</option>
+			{categories && categories.map((category) => (
+			  <option key={category.id} value={category.id}>
+			    {category.name}
+			  </option>
+			))}
+		  
+	      </select>
+	  </li>
         </ul>
       )}
 	  

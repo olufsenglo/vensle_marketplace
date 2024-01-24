@@ -25,7 +25,7 @@ export const addToCart = (item) => (dispatch, getState) => {
   console.log('innfooautuza',authInfo?.user);
   if (authInfo?.user?.token) {
     const token = authInfo.user.token
-    axios.post('http://nominet.vensle.com/backend/api/v1/add-to-cart', { id: item.id, quantity: item.quantity }, {
+    axios.post('https://nominet.vensle.com/backend/api/v1/add-to-cart', { id: item.id, quantity: item.quantity }, {
 	      headers: {
 		      'Content-Type': 'multipart/form-data',
 		      'Authorization': `Bearer ${token}`,

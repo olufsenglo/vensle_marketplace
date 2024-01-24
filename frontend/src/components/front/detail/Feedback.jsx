@@ -10,9 +10,10 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+const baseURL = 'https://nominet.vensle.com/backend';
 export default function Feedback({ open, setOpen, productId }) {
-  const baseURL = 'http://nominet.vensle.com/backend';
   const accessToken = useSelector((state) => state?.auth?.user?.token);
+  const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
 
   const [content, setContent] = useState('');
   const [replyContent, setReplyContent] = useState('');
@@ -49,12 +50,9 @@ setLoading(true);
         content,
         rating,
         product_id: productId,
-        //parent_id: parentFeedbackId, // If it's a reply
       }, { headers });
 
-      console.log('Feedback submitted:', response.data);
 
-      // Clear the form fields
       setContent('');
       setRating(1);
       setShowFeedbackForm(false);
@@ -77,12 +75,11 @@ const headers = {
 	content: replyContent,
         rating,
         product_id: productId,
-        parent_id: parentFeedbackId, // If it's a reply
+        parent_id: parentFeedbackId,
       }, { headers });
 
       console.log('Feedback submitted:', response.data);
 
-      // Clear the form fields
       setReplyContent('');
       setRating(1);
       setShowReplyForm(false);	
@@ -155,7 +152,7 @@ const headers = {
                   <div className="w-full">
                         <p className="text-2xl text-gray-900">Feedbacks</p>
 	  		
-                        {!showFeedbackForm && <p onClick={() =>setShowFeedbackForm(true)} className="cursor-pointer mt-2 text-center mt-2 mb-3 cursor-pointer rounded-full px-3 py-1 hover:bg-gray-200">New Feedback</p>}
+                        {isAuthenticated && !showFeedbackForm && <p onClick={() =>setShowFeedbackForm(true)} className="cursor-pointer mt-2 text-center mt-2 mb-3 cursor-pointer rounded-full px-3 py-1 hover:bg-gray-200">New Feedback</p>}
 
 	  		{showFeedbackForm && <form className="mb-8" onSubmit={handleSubmit}>
 
@@ -241,7 +238,7 @@ const headers = {
 					))}
 				</div>
 				<div className="ml-3">
-					{(!showReplyForm || feedbackParentId !== feedback.id) && 
+					{(isAuthenticated && (!showReplyForm || feedbackParentId !== feedback.id)) && 
 						<p onClick={() => handleShowReplyForm(feedback.id)} className="cursor-pointer text-right text-sm rounded-full px-3 py-1 hover:bg-gray-200">
 						   Reply
 						</p>

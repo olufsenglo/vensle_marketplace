@@ -16,7 +16,7 @@ function classNames(...classes) {
 }
 
 export default function Grocery({ product }) {
-    const baseURL = 'http://nominet.vensle.com/backend';
+    const baseURL = 'https://nominet.vensle.com/backend';
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
 
