@@ -65,15 +65,6 @@ const ProductDetail = () => {
         dispatch(addToCart({ ...product, quantity: 1 }));
     };
 
-    const getDisplayImage = (product) => {
-      const displayImage = product.images.find(image => image.id === product.display_image_id);
-      return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
-    };
-
-    const getImagePath = (name) => {
-      return `${baseURL}/uploads/${name}`;
-    };
-
    const handleSetSelectedImagePath = (e, thumbnail, index) => {
 	e.preventDefault();
 	setImgIndex(index);
@@ -121,6 +112,10 @@ const ProductDetail = () => {
 	    setMessageOpen(true);
     }
 
+    const getImagePath = (name) => {
+      return `${baseURL}/uploads/${name}`;
+    };
+
   useEffect(() => {
   
     const fetchProduct = async () => {
@@ -131,11 +126,12 @@ const ProductDetail = () => {
 	setProduct(response.data.product);
 	setSimilarProducts(response.data.similarProducts);
 
-        const defaultPath = getDisplayImage(response.data.product);
+        const defaultPath = getImagePath(response.data.product.name);
 	setPreviewImage(defaultPath);
 	setLoading(false);
       } catch (error) {
         console.error('Error fetching product details:', error);
+	//TODO: if product not found redirect to 404
 	setLoading(false);
       }
     };
@@ -143,10 +139,6 @@ const ProductDetail = () => {
     fetchProduct();
   }, [productId]);
 
-  //if (!proaduct) {
-	//
-    //return <div>Loading...</div>;
-  //}
 
     return (
 
