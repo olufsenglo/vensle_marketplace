@@ -1,7 +1,5 @@
-import img1 from "assets/img/front/suggested_categories/premium-steak.webp";
 import img2 from "assets/img/front/suggested_categories/prepped-and-ready-tile.webp";
 import img3 from "assets/img/front/suggested_categories/fast-and-easy.webp";
-import img4 from "assets/img/front/suggested_categories/wellness.webp";
 import img5 from "assets/img/front/suggested_categories/vegetarian.webp";
 import img6 from "assets/img/front/suggested_categories/family-friendly.webp";
 import img7 from "assets/img/front/suggested_categories/desserts.webp";
@@ -64,7 +62,7 @@ const products = [
     },                     
   ]
 
-  const containerStyle = {
+  const categoryStyle = {
     bottom: '0',
     background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0))',
   };
@@ -86,16 +84,17 @@ const ShopCategories = () => {
                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                   />
                 </div>
-<div className="w-full" style={containerStyle} className="mt-4 pb-2 md:pb-6 pt-12 rounded-[0.3rem] w-full absolute flex justify-between">
+
+<div style={categoryStyle} className="mt-4 pb-2 md:pb-6 pt-12 rounded-[0.3rem] w-full absolute flex justify-between">
+
                   <div className="w-full">
-                    <h3 style={{"color":"white"}} className="uppercase text-center font-medium text-gray-900">
-                      <a href={product.href}>
-                        <span aria-hidden="true" className="absolute inset-0" />
+                    <h3 className="text-white text-sm uppercase text-center font-medium text-white">
                         {product.name}
-                      </a>
                     </h3>
                   </div>
                 </div>
+
+
               </div>
             ))}
           </div>

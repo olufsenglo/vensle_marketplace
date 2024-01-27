@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, FunnelIcon, MinusIcon, MapPinIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 
 import Product from "./Product";
 import Grocery from "./Grocery";
@@ -33,6 +33,7 @@ const Products = () => {
 
   const storedLocation = JSON.parse(localStorage.getItem('userLocation')) || { lat: 0, lng: 0 };
   const storedCountry = localStorage.getItem('userCountry') || 'Unknown';
+  const storedCity = localStorage.getItem('userCity');
 	
 
 
@@ -239,7 +240,13 @@ const Products = () => {
 
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-10">
 	  {console.log('fillltaa',filteredProducts)}
-            <p className="text-gray-500">{filteredProducts.total} Ads</p>
+            <p className="flex items-center">
+	  	<span className="text-gray-500 mr-6">{filteredProducts.total} Ads</span>
+	  	<span className="flex items-center">
+	                <MapPinIcon className="h-4 w-4 mr-1" aria-hidden="true" />
+	  		{storedCity}
+	  	</span>
+	    </p>
             <h1 className="flex items-center justify-between font-semi-bold tracking-tight text-gray-900">
       <select
 	name="type"
@@ -294,7 +301,7 @@ const Products = () => {
               <form className="hidden lg:block">
 
  <h3 className="text-xl mb-2 flow-root">Distance</h3>
-      <label className="block mb-4">
+      <label className="block border-b border-gray-200 pb-6 mb-3">
         <select
           className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
 	  value={distance}
@@ -308,7 +315,7 @@ const Products = () => {
 
 
           <h3 className="text-xl mb-2 flow-root">Price</h3>
-	  <div className="mb-7 flex justify-between items-center">
+	  <div className="flex justify-between items-center border-b border-gray-200 pb-6 mb-3">
 	  	<div className="flex items-center">
 	  		<span className="mr-2">
 	  			$
@@ -340,7 +347,7 @@ const Products = () => {
 	  
           <h3 className="mb-2 text-xl flow-root">Size</h3>
 	  
-	  <div>
+	  <div className="border-b border-gray-200 pb-6">
 	  	<ul>
 	  		<li>
 			  <input className="mr-3" type="checkbox" name="small" value="small" onChange={handleInputChange} />

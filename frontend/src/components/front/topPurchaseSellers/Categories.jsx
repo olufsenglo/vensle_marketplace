@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 
-import img1 from "assets/img/front/suggested_categories/1.jpg";
 import img2 from "assets/img/front/suggested_categories/2.webp";
 import img3 from "assets/img/front/suggested_categories/3.jpg";
-import img4 from "assets/img/front/suggested_categories/4.jpg";
 import img5 from "assets/img/front/suggested_categories/5.jpg";
 import img6 from "assets/img/front/suggested_categories/6.jpg";
 import img7 from "assets/img/front/suggested_categories/8.jpg";
@@ -90,7 +88,7 @@ const ShopCategories = () => {
                   />
                 </div>
 
-<div className="w-full" style={containerStyle} className="mt-4 pb-2 md:pb-6 pt-12 rounded-[0.3rem] w-full absolute flex justify-between">
+<div style={containerStyle} className="mt-4 pb-2 md:pb-6 pt-12 rounded-[0.3rem] w-full absolute flex justify-between">
 
                   <div className="w-full">
                     <h3 className="text-white text-sm uppercase text-center font-medium text-white">

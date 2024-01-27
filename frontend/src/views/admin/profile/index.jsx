@@ -708,7 +708,7 @@ setBusinessDetailsLoading(true)
                     name="phone"
                     value={businessDetails.phone || ''}
                     onChange={handleChange}
-                    class="block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" />
+                    class="block w-full rounded border-gray-300 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
                 <div class="relative">
@@ -719,7 +719,7 @@ setBusinessDetailsLoading(true)
                     name="business_address"
                     value={businessDetails.business_address || ''}
                     onChange={handleChange}
-                    class="block w-full rounded border-gray-301 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500" />
+                    class="block w-full rounded border-gray-301 bg-gray-50 py-3 px-4 pr-10 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
 

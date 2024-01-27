@@ -196,7 +196,7 @@ const Search = () => {
 	  
       <button
 	  className="h-full text-white hidden md:block"
-        style={{ "background": "#ff5959", "padding-right": "22px", "padding-left": "22px" }}
+        style={{ background: "#ff5959", paddingRight: "22px", paddingLeft: "22px", borderTopRightRadius: "4px", borderBottomRightRadius: "4px"}}
         type="submit"
       >
         SEARCH

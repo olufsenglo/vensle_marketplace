@@ -151,7 +151,8 @@ const headers = {
 
                   <div className="w-full">
                         <p className="text-2xl text-gray-900">Feedbacks</p>
-	  		
+
+	  		{!isAuthenticated && !showFeedbackForm && <p>Got feedback? Login to create one.</p>}
                         {isAuthenticated && !showFeedbackForm && <p onClick={() =>setShowFeedbackForm(true)} className="cursor-pointer mt-2 text-center mt-2 mb-3 cursor-pointer rounded-full px-3 py-1 hover:bg-gray-200">New Feedback</p>}
 
 	  		{showFeedbackForm && <form className="mb-8" onSubmit={handleSubmit}>

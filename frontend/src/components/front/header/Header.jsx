@@ -632,7 +632,7 @@ setLoginError(true);
 				    <Link to="/admin/default">Dashboard</Link>
 			     :
 				    <>
-                                      <span onClick={handleSignInClick}>Sign In </span>/
+                                      <span onClick={handleSignInClick}>Sign In</span>/
                                       <span onClick={handleRegisterClick}>Register</span>
 				    </>
 			    }
