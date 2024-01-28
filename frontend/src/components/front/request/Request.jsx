@@ -44,12 +44,12 @@ export default function Request({ product }) {
               </div>
 
 <div className="py-4 px-7">
-	<h1 className="mt-2 text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+	<h1 style={{fontWeight: '500', fontSize: '1.4rem'}} className="mt-2 line-clamp-1 text-xl tracking-tight sm:text-2xl">
 		  {product.name}
 	</h1>
 	<div className="mt-4">
             <ul role="list" className="list-disc line-clamp-2 space-y-2 pl-4 text-sm">
-              <li className="text-lg">
+              <li style={{fontSize: '1rem', lineHeight: '1.5rem'}} className="">
 		  <span>
 		  {product.description}
 		  </span>

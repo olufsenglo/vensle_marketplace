@@ -16,7 +16,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'https://nominet.vensle.com/backend';
+const baseURL = 'http://localhost:8000';
 const NewUploads = () => {
     //const baseURL = 'https://nominet.vensle.com/backend';
     const [products, setProducts] = useState(null);

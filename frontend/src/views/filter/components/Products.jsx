@@ -6,8 +6,9 @@ import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, MapPinIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 
-import Product from "./Product";
-import Grocery from "./Grocery";
+import Product from 'components/front/product/Product';
+import Grocery from 'components/front/product/Grocery';
+import Pagination from './Pagination';
 
 const product = {
   breadcrumbs: [
@@ -21,8 +22,8 @@ function classNames(...classes) {
 }
 
 
+const baseURL = "http://localhost:8000";
 const Products = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
@@ -44,6 +45,7 @@ const Products = () => {
   const [maxPrice, setMaxPrice] = useState('');
   const [type, setType] = useState('');
   const [sort, setSort] = useState('');
+  const [listView, setListView] = useState('grid');
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [loading, setLoading] = useState([]);
 
@@ -239,7 +241,6 @@ const Products = () => {
 
 
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-10">
-	  {console.log('fillltaa',filteredProducts)}
             <p className="flex items-center">
 	  	<span className="text-gray-500 mr-6">{filteredProducts.total} Ads</span>
 	  	<span className="flex items-center">
@@ -279,7 +280,11 @@ const Products = () => {
         <option value="price_highest">Price: High to Low</option>
       </select>
 
-              <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+              <button onClick={() => setListView('list')} type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+                <span className="sr-only">View list</span>
+                <FunnelIcon className="h-5 w-5" aria-hidden="true" />
+              </button>
+              <button onClick={() => setListView('grid')} type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
                 <span className="sr-only">View grid</span>
                 <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
               </button>
@@ -408,10 +413,12 @@ const Products = () => {
         <div className="mx-auto max-w-2xl lg:max-w-7xl">
           <h2 className="sr-only">Products</h2>
 
-          <div className="grid grid-cols-3 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4">
+          <div className={`grid gap-y-10 ${
+		listView === 'grid' ? "grid-cols-3 gap-x-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4 " : "grid-cols-1"
+	  }`}>
             {filteredProducts.data && filteredProducts.data.map((product) => (
 		    <>
-		    {product.type == 'product' ? <Product product={product} /> : <Grocery product={product} />}
+		    {product.type == 'product' ? <Product product={product} listView={listView} /> : <Grocery product={product} listView={listView} />}
 		    </>
             ))}
           </div>
@@ -424,8 +431,21 @@ const Products = () => {
               </div>
             </div>
           </section>
-
+	{console.log('filllllm', filteredProducts)}
 	{/*<Pagination />*/}
+
+	{/*Temp pagination*/}
+{filteredProducts && filteredProducts.last_page > 1 &&
+		<div className="py-4">
+			{filteredProducts.links.map((link, index) =>
+				<span className={`mx-3 cursor-pointer ${
+					link.active && "font-bold text-blue-900"
+				}`}>
+					{link.label}
+				</span>
+			)}
+		</div>
+}
         </main>
       </div>
 

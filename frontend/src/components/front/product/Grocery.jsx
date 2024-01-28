@@ -15,8 +15,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'https://nominet.vensle.com/backend'
-export default function Grocery({ product, height }) {
+const baseURL = 'http://localhost:8000';
+export default function Grocery({ product, height, listView }) {
 
 
 const displayImageId = product?.display_image?.id;
@@ -39,7 +39,6 @@ product = {
   images: rearrangedImages,
 };
 
-console.log("gupppppa", product);	
 }
 
 
@@ -69,16 +68,25 @@ console.log("gupppppa", product);
     <>
 	  {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
-            <div key={product.id} style={{"background": "#f4f4f4a3"}} className="group flex flex-col rounded-lg">
+            <div
+	  	key={product.id}
+	  	style={{"background": "#f4f4f4a3"}}
+	   	className={`group flex rounded-lg ${
+			listView === "list" ? "flex-row" : "flex-col"
+		}`}
+	     >
 
 
                 <div
 	  	    onClick={(e) => handleProductQuickView(e, product)}
-	  	    className="flex-1 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7"
+	  	    className={`aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7 ${
+			listView === 'list' ? '' : 'flex-1 w-full'
+		    }`}
 	    	>
                     <div 
 	  		className={`relative w-full h-full cursor-pointer flex overflow-hidden rounded-xl ${
-				height ? `lg:h-[${height}rem]` : "lg:h-40"
+				height ? `lg:h-[${height}rem]` : "lg:h-40"}
+				${listView === 'list' && " w-40"
 			}`}
 	   	    >
                         <img
@@ -91,12 +99,14 @@ console.log("gupppppa", product);
                     </div>
                 </div>
 
-	      <div className="p-2">
+	      <div className={`p-2 ${listView === 'list' && "flex flex-1 items-start flex-col px-4 py-2"}`}>
 		      <h2 className="text-lg line-clamp-1 font-medium text-gray-900" style={{"fontWeight": "500", "fontSize":"0.95rem"}}>{product.name}</h2>
 
 
 
-              <div className="flex flex-col md:flex-row justify-between mb-1">
+              <div className={`flex flex-col justify-between mb-1 ${
+		listView === 'list' ? "flex-1" : "md:flex-row "
+	      }`}>
                 <div className="flex flex-col justify-between">
                   
 		      <div className="flex items-center">

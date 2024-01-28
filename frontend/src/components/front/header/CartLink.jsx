@@ -71,7 +71,7 @@ const formattedTotalPrice = formatPrice(totalPrice);
 
 		    <div
 			onClick={() => setOpen(true)}
-			className="flex items-center ml-0 md:ml-1 lg:ml-[20px] relative cursor-pointer"
+			className="flex items-center justify-end ml-0 md:ml-1 lg:ml-[20px] relative min-w-auto lg:min-w-[5.1rem] cursor-pointer"
 		    >
 			{totalItems > 0 && 
 				<span 
