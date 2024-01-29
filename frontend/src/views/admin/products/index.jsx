@@ -7,18 +7,6 @@ import {
 import tableDataComplex from "./variables/tableDataComplex.json";
 import ComplexTable from "./components/ComplexTable";
 
-
-const content = [
-  {
-    "name": "Marketname",
-    "category": "Fashion",
-    "price": "261",
-    "condition": "old",
-    "status": "Approved",
-    "date": "24.Jan.2021",
-  },
-]
-
 const columnsData = [
   {
     Header: "NAME",

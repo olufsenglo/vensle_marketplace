@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
+const baseURL = "https://nominet.vensle.com/backend";
 const Search = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -88,10 +88,11 @@ const Search = () => {
 
   const handleSearchButtonClick = (e) => {
     e.preventDefault();
-    // Navigate to the filter page with the appropriate query parameters
-    const encodedSearchTerm = encodeURIComponent(searchTerm);
 
-    navigate(`/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}`);
+    const encodedSearchTerm = encodeURIComponent(searchTerm);
+    
+    //TODO:  distance
+    navigate(`/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}&distance=20`);
   };
 
   useEffect(() => {
