@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, MapPinIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, FunnelIcon, MinusIcon, MapPinIcon, PlusIcon, Squares2X2Icon, ListBulletIcon } from '@heroicons/react/20/solid'
 
 import Product from 'components/front/product/Product';
 import Grocery from 'components/front/product/Grocery';
@@ -153,7 +153,7 @@ const Products = () => {
     fetchFilteredProducts();
 
 
-  }, [searchTerm, currentPage, category_id, minPrice, maxPrice, distance, userLocation, userCountry, type, sort, selectedSizes]);
+  }, [searchTerm, initialDistance, currentPage, category_id, minPrice, maxPrice, distance, userLocation, userCountry, type, sort, selectedSizes]);
 
   return (
  <div className="bg-white">
@@ -250,7 +250,7 @@ const Products = () => {
 
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-10">
             <p className="flex items-center">
-	  	<span className="text-gray-500 mr-6">{filteredProducts.total} Ads</span>
+	  	<span className="text-gray-500 mr-6">{filteredProducts?.data?.length} Ad[s]</span>
 	  	<span className="flex items-center">
 	                <MapPinIcon className="h-4 w-4 mr-1" aria-hidden="true" />
 	  		{storedCity}
@@ -288,14 +288,17 @@ const Products = () => {
         <option value="price_highest">Price: High to Low</option>
       </select>
 
+	  {listView === 'grid' ? 
               <button onClick={() => setListView('list')} type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
                 <span className="sr-only">View list</span>
-                <FunnelIcon className="h-5 w-5" aria-hidden="true" />
+                <ListBulletIcon className="h-5 w-5" aria-hidden="true" />
               </button>
+		  :
               <button onClick={() => setListView('grid')} type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
                 <span className="sr-only">View grid</span>
                 <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
               </button>
+	  }
               <button
                 type="button"
                 className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
@@ -443,6 +446,7 @@ const Products = () => {
 	{/*<Pagination />*/}
 
 	{/*Temp pagination*/}
+{filteredProducts && filteredProducts.to > 1 &&
       <div className="flex justify-center mt-4">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
@@ -474,6 +478,8 @@ const Products = () => {
           Next
         </button>
       </div>
+}
+
 
         </main>
       </div>
