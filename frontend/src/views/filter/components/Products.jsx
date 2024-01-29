@@ -40,6 +40,7 @@ const Products = () => {
 
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const [filteredProducts, setFilteredProducts] = useState([]);
   // State for filter form inputs
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -56,6 +57,9 @@ const Products = () => {
 	lng: storedLocation.lng
   });
   const [userCountry, setUserCountry] = useState(storedCountry);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
 
   const handleDistanceChange = (event) => {
     const newDistance = parseInt(event.target.value, 10);
@@ -65,7 +69,6 @@ const Products = () => {
   };
 
 
-  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -116,9 +119,9 @@ const Products = () => {
   const fetchFilteredProducts = async () => {
     try {
       setLoading(true);
-      // Customize the API endpoint and parameters based on your backend
       const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
         params: {
+	  page: currentPage,
           searchTerm,
           category_id,
           minPrice,
@@ -134,6 +137,7 @@ const Products = () => {
       });
 
       setFilteredProducts(response.data);
+      setLastPage(response.data.last_page);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching filtered products:', error);
@@ -141,11 +145,15 @@ const Products = () => {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };	
+
   useEffect(() => {
     fetchFilteredProducts();
 
 
-  }, [searchTerm, category_id, minPrice, maxPrice, distance, userLocation, userCountry, type, sort, selectedSizes]);
+  }, [searchTerm, currentPage, category_id, minPrice, maxPrice, distance, userLocation, userCountry, type, sort, selectedSizes]);
 
   return (
  <div className="bg-white">
@@ -205,10 +213,10 @@ const Products = () => {
           </Dialog>
         </Transition.Root>
 
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
 
 
-        <nav className="pt-8" aria-label="Breadcrumb">
+        <nav aria-label="Breadcrumb">
           <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 lg:max-w-7xl">
             {product.breadcrumbs.map((breadcrumb) => (
               <li key={breadcrumb.id}>
@@ -400,7 +408,7 @@ const Products = () => {
 
 {!loading && filteredProducts?.data?.length === 0 &&
 <div style={{"zIndex":"5", left:"0", right:"0", top:"0", bottom: "0"}} className="absolute flex justify-center items-center">
-	<p>Your filter returned no products</p>
+	<p>Your filter returned no products, you can try to widen your search reach</p>
 </div>
 }
 
@@ -435,17 +443,38 @@ const Products = () => {
 	{/*<Pagination />*/}
 
 	{/*Temp pagination*/}
-{filteredProducts && filteredProducts.last_page > 1 &&
-		<div className="py-4">
-			{filteredProducts.links.map((link, index) =>
-				<span className={`mx-3 cursor-pointer ${
-					link.active && "font-bold text-blue-900"
-				}`}>
-					{link.label}
-				</span>
-			)}
-		</div>
-}
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 mr-2 text-white rounded ${
+		currentPage === 1 ? 'bg-gray-300' : 'bg-blue-500'
+	  }`}
+        >
+          Previous
+        </button>
+        {[...Array(lastPage).keys()].map((page) => (
+          <button
+            key={page + 1}
+            onClick={() => handlePageChange(page + 1)}
+            className={`px-4 py-2 mr-2 ${
+              currentPage === page + 1 ? 'bg-blue-500 text-white' : 'bg-gray-300'
+            } rounded`}
+          >
+            {page + 1}
+          </button>
+        ))}
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === lastPage}
+          className={`px-4 py-2 text-white rounded ${
+		currentPage === lastPage ? 'bg-gray-300' : 'bg-blue-500'
+	  }`}
+        >
+          Next
+        </button>
+      </div>
+
         </main>
       </div>
 
