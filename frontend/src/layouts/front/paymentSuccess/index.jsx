@@ -3,13 +3,13 @@ import Header from "components/front/header/Header";
 import Footer from "components/front/footer/Footer";
 
 const PaymentSuccess = () => {
-    return (
-        <div>
-        	<Header />
-		<Success />
-		<Footer />
-	</div>
-    )
-}
+  return (
+    <div>
+      <Header />
+      <Success />
+      <Footer />
+    </div>
+  );
+};
 
 export default PaymentSuccess;

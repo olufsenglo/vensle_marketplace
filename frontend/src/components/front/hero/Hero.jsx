@@ -7,28 +7,6 @@ import slider1 from "assets/img/front/hero/slider1.jpg";
 import slider2 from "assets/img/front/hero/slider2.jpg";
 
 const Hero = () => {
-  const SampleNextArrow = (props) => {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={className}
-        style={{ ...style, display: "block", background: "red" }}
-        onClick={onClick}
-      />
-    );
-  };
-
-  const SamplePrevArrow = (props) => {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={className}
-        style={{ ...style, display: "block", background: "green" }}
-        onClick={onClick}
-      />
-    );
-  };
-
   const settings = {
     dots: true,
     infinite: true,

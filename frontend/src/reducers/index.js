@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import auth from "./auth";
 import message from "./message";
-//import cartReducer from "./cartReducer";
 import checkoutReducer from './checkoutReducer'; 
 import groceryReducer from './groceryReducer';
 

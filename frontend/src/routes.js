@@ -4,13 +4,8 @@ import React from "react";
 import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
-import DataTables from "views/admin/tables";
 import Products from "views/admin/products";
 import UploadProduct from "views/admin/uploadproduct";
-import RTLDefault from "views/rtl/default";
-
-// Auth Imports
-import SignIn from "views/auth/SignIn";
 
 // Icon Imports
 import {
@@ -18,7 +13,6 @@ import {
   MdOutlineShoppingCart,
   MdBarChart,
   MdPerson,
-  MdLock,
 } from "react-icons/md";
 
 const routes = [
@@ -44,34 +38,13 @@ const routes = [
     component: <NFTMarketplace />,
     secondary: true,
   },
-  // {
-  //   name: "Data Tables",
-  //   layout: "/admin",
-  //   icon: <MdBarChart className="h-6 w-6" />,
-  //   path: "data-tables",
-  //   component: <DataTables />,
-  // },
   {
     name: "Profile",
     layout: "/admin",
     path: "profile",
     icon: <MdPerson className="h-6 w-6" />,
     component: <Profile />,
-  },
-  // {
-  //   name: "Sign In",
-  //   layout: "/auth",
-  //   path: "sign-in",
-  //   icon: <MdLock className="h-6 w-6" />,
-  //   component: <SignIn />,
-  // },
-  //{
-  //  name: "Users",
-  //  layout: "/admin",
-  //  icon: <MdBarChart className="h-6 w-6" />,
-  //  path: "users",
-  //  component: <Users />,
-  //},  
+  },  
   {
     name: "Upload Product",
     layout: "/admin",
@@ -79,12 +52,5 @@ const routes = [
     path: "upload-product",
     component: <UploadProduct />,
   },  
-  // {
-  //   name: "RTL Admin",
-  //   layout: "/rtl",
-  //   path: "rtl",
-  //   icon: <MdHome className="h-6 w-6" />,
-  //   component: <RTLDefault />,
-  // },
 ];
 export default routes;

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
+const baseURL = "https://nominet.vensle.com/backend";
 const NotificationIcon = () => {
-  const baseURL = 'https://nominet.vensle.com/backend';
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const accessToken = useSelector((state) => state.auth.user.token);
 
@@ -12,47 +12,51 @@ const NotificationIcon = () => {
   const [userAlerts, setUserAlerts] = useState([]);
 
   useEffect(() => {
-    axios.get(`${baseURL}/api/v1/user-alerts/unread-count`, {
-              headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${accessToken}`,
-              },	
-    })
-      .then(response => setUnreadCount(response.data.unreadCount))
-      .catch(error => console.error('Error fetching unread count:', error));
+    axios
+      .get(`${baseURL}/api/v1/user-alerts/unread-count`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => setUnreadCount(response.data.unreadCount))
+      .catch((error) => console.error("Error fetching unread count:", error));
 
-    axios.get(`${baseURL}/api/v1/user-alerts/unread`, {
-              headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${accessToken}`,
-              },	
-    })
-      .then(response => setUserAlerts(response.data.userAlerts))
-      .catch(error => console.error('Error fetching unread alerts:', error));
+    axios
+      .get(`${baseURL}/api/v1/user-alerts/unread`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => setUserAlerts(response.data.userAlerts))
+      .catch((error) => console.error("Error fetching unread alerts:", error));
   }, []);
 
   const markAsRead = () => {
-    axios.put(
-	    `${baseURL}/api/v1/user-alerts/mark-as-read`,
-	    {},
-	    {
-              headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${accessToken}`,
-              },	
-    })
+    axios
+      .put(
+        `${baseURL}/api/v1/user-alerts/mark-as-read`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       .then(() => {
         setUnreadCount(0);
         setUserAlerts([]);
       })
-      .catch(error => console.error('Error marking alerts as read:', error));
+      .catch((error) => console.error("Error marking alerts as read:", error));
   };
 
   return (
     <div className="relative">
       <button
         onClick={() => setShowNotifications(!showNotifications)}
-        className="relative text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800"
+        className="relative text-gray-600 hover:text-gray-800 focus:text-gray-800 focus:outline-none"
       >
         <svg
           className="h-6 w-6"
@@ -75,20 +79,25 @@ const NotificationIcon = () => {
           ></path>
         </svg>
         {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white text-xs rounded-full px-2">
+          <span className="absolute top-0 right-0 -mt-1 -mr-1 rounded-full bg-red-500 px-2 text-xs text-white">
             {unreadCount}
           </span>
         )}
       </button>
 
       {showNotifications && (
-        <div className="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg overflow-hidden">
+        <div className="absolute right-0 mt-2 w-80 overflow-hidden rounded-lg border bg-white shadow-lg">
           <div className="p-4">
-            <h3 className="text-lg font-semibold mb-2">Notifications</h3>
+            <h3 className="mb-2 text-lg font-semibold">Notifications</h3>
             {userAlerts.length > 0 ? (
               <ul>
-                {userAlerts.map(alert => (
-                  <li key={alert.id} className={`mb-2 ${alert.read ? 'opacity-50' : 'font-bold'}`}>
+                {userAlerts.map((alert) => (
+                  <li
+                    key={alert.id}
+                    className={`mb-2 ${
+                      alert.read ? "opacity-50" : "font-bold"
+                    }`}
+                  >
                     {alert.title}: {alert.message}
                   </li>
                 ))}
@@ -97,8 +106,11 @@ const NotificationIcon = () => {
               <p className="text-gray-500">No new notifications.</p>
             )}
           </div>
-          <div className="p-2 bg-gray-100 text-center">
-            <button onClick={markAsRead} className="text-blue-500 hover:underline">
+          <div className="bg-gray-100 p-2 text-center">
+            <button
+              onClick={markAsRead}
+              className="text-blue-500 hover:underline"
+            >
               Mark all as read
             </button>
           </div>

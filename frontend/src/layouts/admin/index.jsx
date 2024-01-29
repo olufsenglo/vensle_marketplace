@@ -80,7 +80,11 @@ export default function Admin(props) {
               <Routes>
                 {getRoutes(routes)}
 
-          	<Route path="/edit-product" element={<EditProduct />} key="55" />
+                <Route
+                  path="/edit-product"
+                  element={<EditProduct />}
+                  key="55"
+                />
 
                 <Route
                   path="/"

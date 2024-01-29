@@ -5,13 +5,13 @@ const initialState = {
 
 const checkoutReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'START_CHECKOUT':
+    case "START_CHECKOUT":
       return {
         ...state,
         inProgress: true,
       };
 
-    case 'COMPLETE_CHECKOUT':
+    case "COMPLETE_CHECKOUT":
       return {
         ...state,
         inProgress: false,

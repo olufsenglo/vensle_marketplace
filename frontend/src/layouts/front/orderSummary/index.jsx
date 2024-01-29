@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
+const baseURL = "https://nominet.vensle.com/backend";
 
 const OrderSummary = () => {
-    const baseURL = 'https://nominet.vensle.com/backend';
-    const { orderId } = useParams();
+  const { orderId } = useParams();
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await axios.get(`${baseURL}/api/v1/user/orders/${orderId}`);
+        const response = await axios.get(
+          `${baseURL}/api/v1/user/orders/${orderId}`
+        );
         setOrder(response.data);
       } catch (error) {
-        console.error('Error fetching order:', error);
+        console.error("Error fetching order:", error);
       }
     };
 
@@ -24,10 +27,19 @@ const OrderSummary = () => {
     return <p>Loading...</p>;
   }
 
-  const totalAmount = order.products.reduce((total, product) => total + parseFloat(product.price), 0);
+  const totalAmount = order.products.reduce(
+    (total, product) => total + parseFloat(product.price),
+    0
+  );
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto' }}>
+    <div
+      style={{
+        fontFamily: "Arial, sans-serif",
+        maxWidth: "600px",
+        margin: "0 auto",
+      }}
+    >
       <h1>Order Summary</h1>
       <p>
         <strong>Order ID:</strong> {order.id}
@@ -39,7 +51,7 @@ const OrderSummary = () => {
         <strong>Stripe Session ID:</strong> {order.stripe_session_id}
       </p>
 
-      <h2>Ordered {order.products.length === 1 ? 'Product' : 'Products'}</h2>
+      <h2>Ordered {order.products.length === 1 ? "Product" : "Products"}</h2>
       <ul>
         {order.products.map((product) => (
           <li key={product.id}>
@@ -58,7 +70,7 @@ const OrderSummary = () => {
           <strong>Number of Products:</strong> {order.products.length}
         </p>
         <p>
-          <strong>Order Status:</strong> {order.status || 'Pending'}
+          <strong>Order Status:</strong> {order.status || "Pending"}
         </p>
       </div>
     </div>
