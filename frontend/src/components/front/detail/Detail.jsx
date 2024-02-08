@@ -25,19 +25,12 @@ import SimilarProduct from "./SimilarProduct";
 
 import seller from "assets/img/front/productDetail/seller.jpg";
 
-const breadProduct = {
-  name: "Basic Tee 6-Pack",
-  breadcrumbs: [
-    { id: 1, name: "Men", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-};
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
+//const baseURL = "https://nominet.vensle.com/backend";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -52,6 +45,7 @@ const ProductDetail = () => {
   const [imgIndex, setImgIndex] = useState(0);
   const [previewImage, setPreviewImage] = useState(null);
   const [showContact, setShowContact] = useState(false);
+  const [breadProd, setBreadProd] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const delim = "^%*#$";
@@ -86,7 +80,7 @@ const ProductDetail = () => {
       >
         <img
           src={thumbnail}
-          alt={productImage.name}
+          alt={product.name}
           class="w-full object-cover lg:h-20"
         />
       </a>
@@ -133,8 +127,14 @@ const ProductDetail = () => {
 
         setProduct(response.data.product);
         setSimilarProducts(response.data.similarProducts);
+	setBreadProd({
+  name: response.data.product.name,
+  breadcrumbs: [
+    { id: 1, name: response.data.product.category.name, href: "#" },
+  ],
+});
 
-        const defaultPath = getImagePath(response.data.product.name);
+        const defaultPath = getImagePath(response.data.product?.display_image?.name);
         setPreviewImage(defaultPath);
         setLoading(false);
       } catch (error) {
@@ -151,14 +151,18 @@ const ProductDetail = () => {
     <div className="bg-white">
       <Feedback open={open} setOpen={setOpen} productId={product?.id} />
       <Message open={messageOpen} setOpen={setMessageOpen} product={product} />
-
       <div style={{ minHeight: "75vh" }} className="relative pt-6">
         <nav aria-label="Breadcrumb">
           <ol
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            {breadProduct.breadcrumbs.map((breadcrumb) => (
+        {loading && (
+          <li>Loading...</li>
+        )}
+{!loading && breadProd && 
+	<>
+            {breadProd?.breadcrumbs.map((breadcrumb) => (
               <li key={breadcrumb.id}>
                 <div className="flex items-center">
                   <Link
@@ -186,9 +190,11 @@ const ProductDetail = () => {
                 aria-current="page"
                 className="font-medium text-gray-500 hover:text-gray-600"
               >
-                {breadProduct.name}
+                {breadProd.name}
               </Link>
             </li>
+	</>
+}		
           </ol>
         </nav>
 
@@ -197,7 +203,7 @@ const ProductDetail = () => {
             style={{ top: "30vh" }}
             className="absolute left-0 right-0 text-center"
           >
-            Loading
+            Loading...
           </p>
         )}
 
@@ -297,7 +303,7 @@ const ProductDetail = () => {
                     Condition
                   </h3>
                   <div className="mt-2 space-y-6">
-                    <p className="text-base text-gray-900">
+                    <p className="text-base text-gray-900 capitalize">
                       {product && product.condition}
                     </p>
                   </div>
@@ -358,8 +364,8 @@ const ProductDetail = () => {
                   {product.total_feedback > 1 && "s"})
                 </p>
               </div>
-              <p className="mt-3 text-lg font-bold tracking-tight text-gray-900">
-                ${product && product.price}
+              <p className="mt-3 text-2xl font-bold tracking-tight text-gray-900">
+		{`${product.currency} ${product.price}`}
               </p>
               {product && product.type == "grocery" && (
                 <button

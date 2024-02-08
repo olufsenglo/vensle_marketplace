@@ -63,13 +63,6 @@ const Header = () => {
   const storedCountry = localStorage.getItem("userCountry") || "Unknown";
   const storedCountryFlag = localStorage.getItem("countryFlag") || "";
 
-  const totalPrice = cartItems.reduce((total, product) => {
-    const productPrice = parseFloat(product.price);
-    return total + productPrice;
-  }, 0);
-
-  const formattedTotalPrice = totalPrice.toFixed(2);
-
   const [open, setOpen] = useState(false);
   const [loginRegisterOpen, setLoginRegisterOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -308,7 +301,6 @@ const Header = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    console.log(registerFormData);
     setLoading(true);
 
     if (registerFormData.password != registerFormData.password_confirmation)
@@ -326,7 +318,6 @@ const Header = () => {
       )
     )
       .then(() => {
-        console.log("Register success");
         setLoading(false);
         setRegisterError(false);
         setRegisterFormData({
@@ -356,7 +347,6 @@ const Header = () => {
     setLoading(true);
     setResetPasswordError("");
 
-    console.log(resetFormData);
 
     if (!resetToken) {
       try {
@@ -591,7 +581,7 @@ const Header = () => {
       </div>
 
       <div className="bg-white">
-        <div className="mx-auto max-w-2xl py-4 pt-4 md:py-8 lg:max-w-7xl lg:px-8">
+        <div className="mx-auto max-w-2xl py-4 pt-4 md:pt-2 md:pb-4 lg:py-8 lg:max-w-7xl lg:px-8">
           <div
             className="flex flex-col justify-between md:items-center lg:flex-row"
             style={{ gap: "1%" }}

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Card from "components/card";
 import axios from "axios";
 
+import uploadImage from "assets/img/dashboards/upload.png";
 import UploadPreview from "./components/UploadPreview";
 
 import currencySymbolMap from "currency-symbol-map";
@@ -32,7 +33,8 @@ const Tables = () => {
   const [error, setError] = useState(null);
   const [uploadPreview, setUploadPreview] = useState(false);
   const [mainImageIndex, setMainImageIndex] = useState(0);
-  const [loading, setLoading] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [loadingPreviews, setLoadingPreviews] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -127,6 +129,8 @@ const Tables = () => {
       images: newFiles,
     });
 
+    setLoadingPreviews(true);
+
     const previews = [];
     for (let i = 0; i < newFiles.length; i++) {
       const reader = new FileReader();
@@ -134,8 +138,14 @@ const Tables = () => {
         previews.push(event.target.result);
         if (previews.length === newFiles.length) {
           setImagePreviews(previews);
+	  setLoadingPreviews(false);
         }
       };
+      reader.onerror = () => {
+        // Handle error
+        setLoadingPreviews(false);
+        console.error('Error loading image preview');
+      };	    
       reader.readAsDataURL(newFiles[i]);
     }
   };
@@ -143,7 +153,7 @@ const Tables = () => {
   const renderImagePreviews = () => {
     return imagePreviews.map((preview, index) => (
       <>
-        <a href="#" className="group relative">
+        <div className="group relative">
           <div className="aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7 w-full overflow-hidden rounded-lg bg-gray-200">
             <img
               src={preview}
@@ -156,28 +166,28 @@ const Tables = () => {
           {!isMainPreview(index) ? (
             <h3
               style={containerStyle}
-              className="absolute bottom-0 left-0 right-0 rounded-lg pt-4 text-center text-sm text-white"
+              className="absolute cursor-pointer bottom-0 left-0 right-0 rounded-lg pt-4 text-sm text-white"
               onClick={(e) => handleSetMainImageIndex(e, index)}
             >
-              Set as Preview
+              <span className="block p-1 w-full text-center">Set as Preview</span>
             </h3>
           ) : (
             <h3
               style={containerStyle}
-              className="absolute bottom-0 left-0 right-0 rounded-lg pt-4 text-center text-sm text-white"
+              className="absolute bottom-0 left-0 right-0 cursor-pointer rounded-lg pt-4 text-center text-sm text-white"
             >
-              Display
+              <span className="block p-1 w-full text-center">Display</span>
             </h3>
           )}
           {!isMainPreview(index) && (
             <button
-              className="absolute top-0 right-0 cursor-pointer rounded-full bg-red-500 px-2 text-white"
+              className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-red-500 px-2 text-white"
               onClick={(e) => handleRemoveImage(e, index)}
             >
               x
             </button>
           )}
-        </a>
+        </div>
       </>
     ));
   };
@@ -370,22 +380,21 @@ const Tables = () => {
                 <label className="text-sm font-bold tracking-wide text-gray-500">
                   Attach Document
                 </label>
-                <div className="flex w-full items-center justify-center">
+                <div className="flex w-full relative items-center justify-center">
+		  {loadingPreviews && 
+			  <p className="bg-white flex justify-center items-center m-6 absolute top-0 bottom-0 left-0 right-0">Loading...</p>
+		  }
                   {imagePreviews?.length > 0 && (
                     <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-center sm:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 xl:gap-x-2">
                       {renderImagePreviews()}
                       <label
-                        className="flex cursor-pointer items-center justify-center rounded-lg border border-gray-100"
+                        className="flex min-h-[5rem] cursor-pointer items-center justify-center rounded-lg border border-gray-100"
                         htmlFor="images"
                       >
                         <div>+ Add more</div>
                       </label>
                     </div>
                   )}
-
-                  {/*<div className="flex flex-auto max-h-48 mx-auto -mt-10">
-      	{renderImagePreviews()}	
-</div>*/}
 
                   {imagePreviews?.length === 0 && (
                     <label
@@ -395,7 +404,7 @@ const Tables = () => {
                       <div className="flex h-full w-full flex-col items-center items-center justify-center text-center  ">
                         <img
                           className="has-mask h-36 object-center"
-                          src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg"
+                          src={uploadImage}
                           alt="freepik image"
                         />
 

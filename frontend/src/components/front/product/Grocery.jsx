@@ -11,8 +11,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const baseURL = "http://localhost:8000";
-export default function Grocery({ product, height, listView }) {
+const baseURL = "https://nominet.vensle.com/backend";
+
+export default function Grocery({ product, custom, height, listView }) {
   const displayImageId = product?.display_image?.id;
   if (product.images.length > 0 && displayImageId) {
     // Find the index of the display_image in the images array
@@ -43,6 +44,14 @@ export default function Grocery({ product, height, listView }) {
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  function formatPrice(price) {
+    return price.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
 
   const handleProductQuickView = (e, product) => {
     e.preventDefault();
@@ -84,10 +93,9 @@ export default function Grocery({ product, height, listView }) {
         >
           <div
             className={`relative flex h-full w-full cursor-pointer overflow-hidden rounded-xl ${
-              height ? `lg:h-[${height}rem]` : "lg:h-40"
-            }
-				${listView === "list" && " w-40"}`}
-          >
+	      custom === 'height' ? `lg:h-[${height}rem]` : "lg:h-40"}
+	      ${listView === "list" ? " w-40" : ""}`
+	    }>
             <img
               className="peer absolute top-0 right-0 h-full w-full object-cover group-hover:opacity-75"
               src={product.display_image && getImagePath(product.display_image)}
@@ -138,7 +146,7 @@ export default function Grocery({ product, height, listView }) {
                 ))}
               </div>
               <p className="mt-1 text-sm text-red-600">
-                {product.currency} {product.price}
+                {product.currency} {formatPrice(product.price)}
               </p>
             </div>
 
@@ -146,7 +154,7 @@ export default function Grocery({ product, height, listView }) {
               type="submit"
               onClick={(e) => handleAddToCart(e, product)}
               style={{ fontSize: "0.8rem" }}
-              className="bg-transparent hover:border-transparent rounded border border-red-500 py-1 px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+              className="bg-transparent hover:border-transparent rounded border border-red-500 p-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white"
             >
               ADD TO CART
             </button>

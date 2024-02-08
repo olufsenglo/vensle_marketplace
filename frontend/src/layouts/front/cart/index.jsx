@@ -13,8 +13,8 @@ import {
   increaseQuantity,
 } from "actions/actions";
 
+const baseURL = "https://nominet.vensle.com/backend";
 const Cart = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
   const navigate = useNavigate();
 
   const dispatch = useDispatch();

@@ -62,7 +62,6 @@ const Tables = () => {
             ...rest,
           })
         );
-        console.log(data.data);
         setProducts(data.data);
         setExtractedData(extractedData);
       } catch (error) {

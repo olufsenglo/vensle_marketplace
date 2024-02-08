@@ -21,7 +21,6 @@ export const addToCart = (item) => (dispatch, getState) => {
   }
 
   const authInfo = localStorage.getItem("user");
-  //if (getState()?.auth?.user?.token) {
   console.log("innfooautuza", authInfo?.user);
   if (authInfo?.user?.token) {
     const token = authInfo.user.token;

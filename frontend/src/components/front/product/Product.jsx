@@ -10,8 +10,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const baseURL = 'http://localhost:8000'
-const Product = ({ product, height, listView }) => {
+const baseURL = 'https://nominet.vensle.com/backend'
+const Product = ({ product, custom, height, listView }) => {
 
 
 const displayImageId = product?.display_image?.id;
@@ -38,6 +38,14 @@ product = {
 
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
+
+  function formatPrice(price) {
+    return price.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
 
   const handleProductQuickView = (e, product) => {
       e.preventDefault();
@@ -69,8 +77,8 @@ product = {
 		}`}
 	    >
 <div className={`aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 ${
-			height ? `lg:h-[${height}rem]` : "lg:h-40"}
-			${listView === 'list' && " w-40"
+			custom === 'height' ? `lg:h-[${height}rem]` : "lg:h-40"}
+			${listView === 'list' ? " w-40" : ""
 		}`}>
                 <img
 		  src={product.display_image && getImagePath(product.display_image.name)}
@@ -102,7 +110,7 @@ product = {
 			  <h3 className="text-sm text-red-600">
 			    <a href={product.href}>
 			      <span aria-hidden="true" className="absolute inset-0" />
-			        {product.currency} {product.price} 
+			        {product.currency} {formatPrice(product.price)}
 			    </a>
 			  </h3>
 			</div>

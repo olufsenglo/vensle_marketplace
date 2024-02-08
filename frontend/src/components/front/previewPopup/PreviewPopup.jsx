@@ -18,7 +18,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { SET_MESSAGE } from "actions/types";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
   const dispatch = useDispatch();
 
@@ -194,11 +194,13 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                               >
                                 <h3
                                   style={{ fontWeight: "500" }}
-                                  className="mb-5 text-2xl tracking-tight"
+                                  className="mb-5 text-2xl line-clamp-2 tracking-tight"
                                 >
                                   {selectedProduct.name}
                                 </h3>
-                                <div className="flex items-center">
+				<div className="flex items-center">
+                                {selectedProduct.total_feedback > 0 ? (
+				<>
                                   <div className="flex items-center">
                                     {[0, 1, 2, 3, 4].map((rating) => (
                                       <StarIcon
@@ -209,7 +211,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                     ))}
                                   </div>
 
-                                  <p className="text-sm leading-5">
+	  			<p className="text-sm leading-5">
                                     <span className="mx-1">
                                       {selectedProduct.ratings}
                                     </span>{" "}
@@ -222,6 +224,9 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                       "s"}
                                     )
                                   </p>
+				</>)
+	  			:
+	  			(<p className="text-sm leading-5">No Feedback</p>)}
                                 </div>
                                 <h4 className="mt-3 mb-5 text-xl">
                                   {selectedProduct.currency}{" "}
@@ -229,7 +234,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                 </h4>
                                 <h4 className="text-xl">Product Details</h4>
 
-                                <p className="mt-1 text-base leading-7">
+                                <p className="mt-1 line-clamp-7 text-base leading-7">
                                   {selectedProduct.description}
                                 </p>
 

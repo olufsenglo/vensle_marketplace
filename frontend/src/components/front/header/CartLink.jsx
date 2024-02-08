@@ -20,12 +20,16 @@ const CartLink = () => {
 
   const cartItems = useSelector((state) => state.cart.items);
 
-  const totalItems = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
 
-  const totalPrice = cartItems.reduce((total, product) => {
+	const validCartItems = cartItems.filter(item => item !== null);
+
+	const totalItems = validCartItems.reduce(
+	  (total, item) => total + (item.quantity ? item.quantity : 0),
+	  0
+	);
+
+
+  const totalPrice = validCartItems.reduce((total, product) => {
     const productPrice = parseFloat(product.price);
     return total + productPrice;
   }, 0);
@@ -54,7 +58,7 @@ const CartLink = () => {
   };
 
   const getCartDisplayImage = (product) => {
-    return product.display_image
+    return product?.display_image
       ? `${baseURL}/uploads/${product.display_image.name}`
       : "";
   };
@@ -146,14 +150,14 @@ const CartLink = () => {
 
                         <div className="mt-8">
                           <div className="flow-root">
-                            {cartItems.length === 0 ? (
+                            {validCartItems.length === 0 ? (
                               <p>Your cart is empty.</p>
                             ) : (
                               <ul
                                 role="list"
                                 className="-my-6 divide-y divide-gray-200"
                               >
-                                {cartItems.map((item) => (
+                                {validCartItems.map((item) => (
                                   <li key={item.id} className="flex py-6">
                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                       <img

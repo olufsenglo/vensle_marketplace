@@ -19,7 +19,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="relative bg-white pt-4 md:pt-8">
+    <div className="relative bg-white pt-4 lg:pt-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Slider {...settings}>
           <div>

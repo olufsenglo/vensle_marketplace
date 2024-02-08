@@ -92,9 +92,9 @@ const UserProfile = () => {
                 products.map((product) => (
                   <>
                     {product.type == "product" ? (
-                      <Product product={product} height="14" />
+                      <Product product={product} custom="height" height="14" />
                     ) : (
-                      <Grocery product={product} height="14" />
+                      <Grocery product={product} custom="height" height="14" />
                     )}
                   </>
                 ))}

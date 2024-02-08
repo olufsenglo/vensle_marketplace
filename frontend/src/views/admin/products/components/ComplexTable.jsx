@@ -44,7 +44,6 @@ const ComplexTable = (props) => {
 
   const handleProductQuickView = (e, product) => {
       e.preventDefault();
-	  console.log(product)
       setSelectedProduct(product)
       setOpen(true);
   }

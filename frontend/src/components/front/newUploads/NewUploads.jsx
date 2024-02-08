@@ -4,7 +4,7 @@ import axios from "axios";
 import Product from "components/front/product/Product";
 import Grocery from "components/front/product/Grocery";
 
-const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 const NewUploads = () => {
   const [products, setProducts] = useState(null);
   const [column, setColumn] = useState("created_at");

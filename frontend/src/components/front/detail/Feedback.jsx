@@ -10,10 +10,12 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const baseURL = "https://nominet.vensle.com/backend";
+//const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 export default function Feedback({ open, setOpen, productId }) {
   const accessToken = useSelector((state) => state.auth?.user?.token);
+  const user = useSelector((state) => state.auth?.user?.user);
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
 
   const [content, setContent] = useState("");
@@ -41,10 +43,31 @@ export default function Feedback({ open, setOpen, productId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    try {
+    const tempFeedbacks = feedbacks;
+      if(content) {
+	      setFeedbacks(
+		[ 
+			{
+				id: 6,
+				new: true,
+				content,
+				user_id: user.id,
+				product_id: productId,
+				rating,
+				parent: null,
+				parent_id: null,
+				user,
+			},
+			...feedbacks,
+		]
+	      )
+      }
+
+
+    /**
+     try {
       const headers = {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearerz ${accessToken}`,
       };
 
       const response = await axios.post(
@@ -57,20 +80,45 @@ export default function Feedback({ open, setOpen, productId }) {
         { headers }
       );
 
+
       setContent("");
       setRating(1);
       setShowFeedbackForm(false);
+
       fetchFeedback();
       setLoading(false);
     } catch (error) {
       console.error("Error submitting feedback:", error.message);
+      setFeedbacks(tempFeedbacks);
       setLoading(false);
-    }
+    }*/
+
   };
 
-  const handleSubmitReply = async (e, parentFeedbackId) => {
+  const handleSubmitReply = async (e, parentFeedback) => {
     e.preventDefault();
-    setReplyLoading(true);
+    //setReplyLoading(true);
+    const tempReplies = replies;
+    
+      if(replyContent) {
+	      setReplies(
+		[ 
+			{
+				id: 6,
+				new: true,
+				content: replyContent,
+				user_id: user.id,
+				product_id: productId,
+				parent: parentFeedback,
+				parent_id: parentFeedback.id,
+				user,
+			},
+			...replies,
+		]
+	      )
+      }
+
+    /**
     try {
       const headers = {
         Authorization: `Bearer ${accessToken}`,
@@ -81,12 +129,10 @@ export default function Feedback({ open, setOpen, productId }) {
           content: replyContent,
           rating,
           product_id: productId,
-          parent_id: parentFeedbackId,
+          parent_id: parentFeedback.id,
         },
         { headers }
       );
-
-      console.log("Feedback submitted:", response.data);
 
       setReplyContent("");
       setRating(1);
@@ -95,8 +141,9 @@ export default function Feedback({ open, setOpen, productId }) {
       setReplyLoading(false);
     } catch (error) {
       console.error("Error submitting feedback:", error.message);
+      setReplies(tempReplies);
       setReplyLoading(false);
-    }
+    }*/
   };
 
   const fetchFeedback = async () => {
@@ -159,6 +206,7 @@ export default function Feedback({ open, setOpen, productId }) {
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
 
+{console.log('reeedme', replies)}
                   <div className="w-full">
                     <p className="text-2xl text-gray-900">Feedbacks</p>
 
@@ -266,7 +314,7 @@ export default function Feedback({ open, setOpen, productId }) {
                                       ))}
                                     </div>
                                     <div className="ml-3">
-                                      {isAuthenticated &&
+                                      {isAuthenticated && !feedback?.new &&
                                         (!showReplyForm ||
                                           feedbackParentId !== feedback.id) && (
                                           <p
@@ -303,7 +351,7 @@ export default function Feedback({ open, setOpen, productId }) {
                                         <div className="mt-2">
                                           <button
                                             onClick={(e) =>
-                                              handleSubmitReply(e, feedback.id)
+                                              handleSubmitReply(e, feedback)
                                             }
                                             type="submit"
                                             disabled={replyLoading}
@@ -358,54 +406,6 @@ export default function Feedback({ open, setOpen, productId }) {
                         )}
                       </div>
 
-                      {/*
-      <ul>
-        {feedbackList.length > 0 ? feedbackList.map((feedback) => (
-          <li className="mt-6" key={feedback.id}>
-            <strong>User:</strong> {feedback.user.name} <br />
-            <strong>Rating:</strong> {feedback.rating} <br />
-            <strong>Content:</strong> {feedback.content} <br />
-
-	                {(!showReplyForm || feedbackParentId !== feedback.id) && <p onClick={() => handleShowReplyForm(feedback.id)} style={{marginTop: "-2rem"}} className="cursor-pointer text-right">Reply</p>}
-
-	  		{showReplyForm && feedbackParentId === feedback.id && <form >
-
-			  <div className="mt-2">
-			    <div className="mt-2.5">
-			      <textarea
-				name="message"
-				id="message"
-				rows={2}
-				value={replyContent}
-			        onChange={(e) => setReplyContent(e.target.value)}
-			        required
-				className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-			      />
-			    </div>
-			  </div>
-
-
-
-			<div className="mt-2">
-			  <button
-			    onClick={(e) => handleSubmitReply(e, feedback.id)}
-			    type="submit"
-			    className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-			  >
-			    Submit
-			  </button>
-			</div>
-
-                     </form>
-		}
-
-
-
-
-          </li>
-        )) : <p className="text-center mt-4">There are currently no feedbacks</p>}
-      </ul>
-      */}
                     </div>
                   </div>
                 </div>
