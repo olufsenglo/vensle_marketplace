@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\BusinessDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -25,12 +26,31 @@ class UserAuthController extends Controller
 		    $validated_data = $request->validate([
 			'name' => 'required|max:255',
 			'email' => 'required|email|unique:users',
-			'password' => 'required|confirmed'
+			'password' => 'required|confirmed',
+			'phone_number' => 'required',
+			'address' => 'required',
+			'business_name' => 'nullable|max:255',
 		    ]);
 
 		    $validated_data['password'] = bcrypt($request->password);
 
 		    $user = User::create($validated_data);
+
+            // Add business details for the user
+            $businessDetailsData = $request->only([
+                'business_name',
+                'business_email',
+                'phone',
+                'business_address',
+                'certificate',
+                'bank_name',
+                'account_number',
+                'profile_picture',
+            ]);
+
+            $user->businessDetails()->create($businessDetailsData);
+
+
 
 		    $token = $user->createToken('API Auth Token')->accessToken;
 
@@ -78,6 +98,7 @@ class UserAuthController extends Controller
         * @return \Illuminate\Http\JsonResponse
 	*/
 
+
 public function updateProfile(Request $request)
 {
     $request->validate([
@@ -85,8 +106,11 @@ public function updateProfile(Request $request)
         'email' => 'sometimes|email|unique:users,email,' . auth()->id(),
         'phone_number' => 'sometimes|string',
         'address' => 'sometimes|string',
-        'profile_picture' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+	'profile_picture' => $request->input('imageStatus') === 'new'
+            ? 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048'
+            : 'sometimes|string',
     ]);
+
 
     $user = auth()->user();
 
@@ -94,7 +118,9 @@ public function updateProfile(Request $request)
     $user->update($request->only(['name', 'email', 'phone_number', 'address']));
 
     // Handle profile picture update
-    if ($request->hasFile('profile_picture')) {
+    
+    
+    if ($request->imageStatus === 'new' && $request->hasFile('profile_picture')) {
         // Check if the user already has a profile picture
         if ($user->profile_picture) {
             // If a profile picture exists, delete the old image
@@ -111,6 +137,9 @@ public function updateProfile(Request $request)
         // Update user's profile picture
         $user->update(['profile_picture' => $imageName]);
     }
+
+
+    //TODO: call update once
 
     return response(['user' => $user, 'message' => 'Profile updated successfully'], 200);
 }

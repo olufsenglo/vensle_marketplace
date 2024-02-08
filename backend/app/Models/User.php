@@ -66,6 +66,15 @@ public function businessDetails()
     return $this->hasOne(BusinessDetails::class);
 }
 
+    public function feedback()
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
     /*
     public function notifications()
     {

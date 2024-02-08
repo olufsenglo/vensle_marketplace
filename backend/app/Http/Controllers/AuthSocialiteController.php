@@ -20,7 +20,7 @@ class AuthSocialiteController extends Controller
     {
         //return Socialite::driver('google')->redirect();
         return Socialite::driver('google')->stateless()->redirect();
-    }   
+    }
 
     /**
      * Obtain the user information from Google.
@@ -29,17 +29,14 @@ class AuthSocialiteController extends Controller
      */
     public function handleGoogleCallback()
     {
-        try {
+      try {
             $socialiteUser = Socialite::driver('google')->stateless()->user();
-            //$socialiteUser = Socialite::driver('google')->user();
+
             // Check if the user already exists in your database
             $user = User::where('email', $socialiteUser->email)->first();
-	    
-	    //$user = User::where('email', $socialiteUser->getEmail())->first();
-            //$user = User::where('provider_id', $socialiteUser->id))->first();
 
             if ($user) {
-                $token = $user->createToken('API Auth Token')->accessToken;
+                $token = $user->createToken('API Auth Token')->accessToke+n;
             } else {
                 // If the user doesn't exist, create a new user
                 $newUser = new User();
@@ -54,10 +51,11 @@ class AuthSocialiteController extends Controller
                 $token = $newUser->createToken('AppName')->accessToken;
             }
 
-            return response()->json(['token' => $token]);
+	                // Use $newUser if it was created, or $user if it already existed
+            $redirectUrl = 'http://localhost:3000/social-auth-redirect?token=' . $token . '&user=' . json_encode($user ?: $newUser);
+            return redirect($redirectUrl);
         } catch (\Exception $e) {
-	    return response()->json(['error' => $e->getMessage()], 500);
-            //return response()->json(['error' => 'Unable to login with Google. Please try again.'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }

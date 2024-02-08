@@ -16,6 +16,9 @@ use App\Http\Controllers\BusinessDetailsController;
 use App\Http\Controllers\AuthSocialiteController;
 use App\Http\Controllers\CustomPasswordResetController;
 use App\Http\Controllers\FacebookController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ReplyController;
 
 use Laravel\Socialite\Facades\Socialite;
 
@@ -34,13 +37,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+//TODO: use route group /v1
 Route::post('/v1/register', [UserAuthController::class, 'register']);
 Route::post('/v1/login', [UserAuthController::class, 'login']);
 Route::get('/v1/user/{userId}', [UserAuthController::class, 'getUserById']);
 
 
-route::get('/v1/auth/facebook', [FacebookController::class, 'facebookpage']);
-route::get('/v1/auth/facebook/callback', [FacebookController::class, 'facebookredirect']);
+Route::get('/v1/auth/facebook', [FacebookController::class, 'facebookpage']);
+Route::get('/v1/auth/facebook/callback', [FacebookController::class, 'facebookredirect']);
 
 Route::post('/v1/forgot-password', [CustomPasswordResetController::class, 'forgotPassword']);
 Route::post('/v1/reset-password', [CustomPasswordResetController::class, 'resetPassword']);
@@ -60,6 +65,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/v1/update-profile', 'App\Http\Controllers\UserAuthController@updateProfile');
     Route::post('/v1/update-password', 'App\Http\Controllers\UserAuthController@updatePassword');
     Route::post('/v1/update-profile-picture', 'App\Http\Controllers\UserAuthController@updateProfilePicture');
+    Route::get('/v1/cart', [CartController::class, 'index']);
     Route::post('/v1/merge-cart', 'App\Http\Controllers\CartController@mergeCart');
 });
 
@@ -83,19 +89,20 @@ Route::get('/v1/products/top-by-type', [ProductController::class, 'getTopProduct
 Route::get('/v1/products/top-by-column', [ProductController::class, 'getTopProductsByColumn']);
 
 
-
-
-
-
+Route::middleware('auth:api')->prefix('v1')->group(function () {
+    Route::get('/products/upload/total', [ProductController::class, 'getTotalUploadedProducts']);
+    Route::get('/products/request/total', [ProductController::class, 'getTotalRequests']);
+    Route::get('/orders/total', [OrderController::class, 'getTotalOrders']);
+});
 
 
 Route::get('v1/products', [ProductController::class, 'index']);
 Route::get('/v1/products/{id}', [ProductController::class, 'show']);
-    Route::put('/v1/products/{id}', [ProductController::class, 'update']);
+//Route::put('/v1/products/{id}', [ProductController::class, 'update']);
 
 Route::middleware('auth:api')->group(function () {
+    Route::post('/v1/products/{id}', [ProductController::class, 'update']);
     Route::post('/v1/products', [ProductController::class, 'store']);
-    //Route::put('/v1/products/{id}', [ProductController::class, 'update']);
 });
 
 /*
@@ -142,6 +149,32 @@ Route::get('/v1/auth/google/callback', [AuthSocialiteController::class, 'handleG
 
 Route::post('/v1/business-details', [BusinessDetailsController::class, 'store']);
 Route::get('/v1/business-details/{id}', [BusinessDetailsController::class, 'show']);
-Route::put('/v1/business-details/{id}', [BusinessDetailsController::class, 'update']);
+
+Route::middleware(['auth:api'])->group(function () {
+	Route::get('/v1/business-details', [BusinessDetailsController::class, 'getBusinessDetails']);
+	Route::post('/v1/business-details/update', [BusinessDetailsController::class, 'update']);
+});
+
 Route::delete('/v1/business-details/{id}', [BusinessDetailsController::class, 'destroy']);
 
+Route::get('/v1/feedback/{product_id}', [FeedbackController::class, 'index']);
+Route::middleware(['auth:api'])->group(function () {
+    Route::post('/v1/feedback', [FeedbackController::class, 'store']);
+});
+
+// Routes for messages
+Route::middleware('auth:api')->prefix('v1')->group(function () {
+    // Retrieve inbox and sent messages
+    Route::get('/messages/inbox', [MessageController::class, 'getInboxMessages']);
+    Route::get('/messages/sent', [MessageController::class, 'getSentMessages']);
+
+    //Message routes
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::get('/messages/{id}', [MessageController::class, 'show']);
+    Route::post('/messages', [MessageController::class, 'store']);
+    Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
+
+    // Routes for replies
+    Route::post('/messages/{messageId}/replies', [ReplyController::class, 'store']);
+    Route::delete('/messages/{messageId}/replies/{replyId}', [ReplyController::class, 'destroy']);
+});

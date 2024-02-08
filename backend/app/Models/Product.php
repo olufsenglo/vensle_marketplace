@@ -39,7 +39,7 @@ class Product extends Model
 	* @var array
 	*/
 	protected $fillable = [
-		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'key_specifications', 'status', 'ratings', 'quantity', 'sold', 'views', 'latitude', 'longitude', 'display_image_id', 'user_id',
+		'name', 'category_id', 'condition', 'price', 'address', 'phone_number', 'description', 'type', 'key_specifications', 'status', 'ratings', 'quantity', 'sold', 'views', 'latitude', 'longitude', 'display_image_id', 'city', 'currency', 'country', 'user_id',
 	];
 
 	/**
@@ -90,5 +90,33 @@ class Product extends Model
     	public function displayImage()
 	{
         	return $this->belongsTo(Image::class, 'display_image_id');
-    	}	
+	}
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    public function feedback()
+
+    {
+        return $this->hasMany(Feedback::class);
+    }
+	
+    /**
+     * Get the total number of feedback for this product.
+     *
+     * @return int
+     */
+    public function getTotalFeedbackAttribute()
+    {
+        return $this->feedback()->count();
+    }
+
+    /**
+     * Append the total feedback count to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['total_feedback'];	
 }

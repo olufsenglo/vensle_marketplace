@@ -61,16 +61,6 @@ class ProductController extends Controller
             );
         }
 
-	    /**
-            if ($userLat && $userLng && $distance) {
-                $filteredProducts = $products->filter(function ($product) use ($userLat, $userLng, $distance, $userCountry) {
-                    return $product->country === $userCountry &&
-                        $this->calculateDistance($userLat, $userLng, $product->latitude, $product->longitude) <= $distance;
-                });
-
-                $products = $filteredProducts->values(); // Reindex the array after filtering
-	    }
-	     */
 
             return response()->json($products);
         } catch (\Exception $e) {
@@ -115,7 +105,7 @@ class ProductController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string',
-                'condition' => 'required|in:new,used,n/a',
+                'condition' => 'required|in:new,used,na',
                 'price' => 'required|numeric',
                 'address' => 'required|string',
                 'phone_number' => 'required|string',
@@ -130,12 +120,14 @@ class ProductController extends Controller
                 'category_id' => 'required|exists:categories,id',
 		'latitude' => 'required|numeric',
 		'longitude' => 'required|numeric',
+                'currency' => 'required|string',
+                'city' => 'required|string',
+                'country' => 'required|string',
 		//'specification_ids' => 'required|array',
 		'images' => 'required',
 		'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 	    ]);
 
-		dd($validatedData);
 
 	$user = Auth::user();
         if (!$user) {
@@ -169,29 +161,6 @@ foreach ($request->images as $imageFile) {
 	}
 }
 
-/**
-foreach ($request->images as $imageFile) {
-    $extension = $imageFile->getClientOriginalExtension();
-    $imageName = Str::random(32) . "." . $extension;
-
-    $image = new Image([
-        'name' => $imageName,
-        'extension' => $extension,
-    ]);
-
-    // Upload the image to the "public/uploads" directory
-    $imagePath = $imageFile->storeAs('uploads', $imageName, 'public');
-
-    // Set the product_id for the image
-    $image->product_id = $product->id;
-
-    $product->images()->save($image);
-
-    if (!$foundProfileImage) {
-        $product->update(['display_image_id' => $imagePath]);
-        $foundProfileImage = true;
-    }
-}*/
 
 return response()->json($product, 201);
 
@@ -227,10 +196,10 @@ return response()->json($product, 201);
     public function show(string $id)
     {
         try {
-	    $product = Product::with('images')->findOrFail($id);
+	    $product = Product::with(['images', 'displayImage', 'category'])->findOrFail($id);
         } catch (\Exception $e) {
             Log::error('Error fetching product: ' . $e->getMessage());
-            return response()->json(['error' => 'Internal Server Error'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
 	}
         //} catch (ModelNotFoundException $e) {
             //return response()->json(['error' => 'Product not found.'], 404);
@@ -294,7 +263,7 @@ public function getUserProducts($userId)
 	    try {
 		$validatedData = $request->validate([
 		    'name' => 'sometimes|required|string',
-		    'condition' => 'sometimes|required|in:new,used,n/a',
+		    'condition' => 'sometimes|required|in:new,used,na',
 		    'price' => 'sometimes|required|numeric',
 		    'address' => 'sometimes|required|string',
 		    'phone_number' => 'sometimes|required|string',
@@ -307,36 +276,70 @@ public function getUserProducts($userId)
 		    'sold' => 'sometimes|nullable|integer|min:0',
 		    'views' => 'sometimes|nullable|integer|min:0',
 		    'category_id' => 'required|exists:categories,id',
+		    'display_image_id' => 'sometimes',
 		    'latitude' => 'sometimes|nullable',
 		    'longitude' => 'sometimes|nullable',
-		    'images' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',	
+		    'removedImages' => 'sometimes|array',
+		    'mainImageIndex' => 'sometimes',
+		'images' => 'sometimes',
+		'images.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 		]);
+
 
 
 		$product = Product::findOrFail($productId);
 
-		// Check if a new image is provided
-		if ($request->hasFile('images')) {
-		    // Handle file upload for the new image
-		    $extension = $request->file('images')->getClientOriginalExtension();
-		    $imageName = Str::random(32) . "." . $extension;
-		    $request->file('image')->move('uploads/', $imageName);
 
-		    // Delete the existing image if it exists
-		    if ($product->images()->exists()) {
-			$existingImage = $product->images->first();
-			Storage::delete('uploads/' . $existingImage->name);
-			$existingImage->delete();
-		    }
 
-		    // Create a new image record in the database
-		    $image = new Image([
-			'name' => $imageName,
-			'extension' => $extension,
-		    ]);
+    // Check if removedImages is not empty
+    if (!empty($validatedData['removedImages'])) {
+        foreach ($validatedData['removedImages'] as $removedImage) {
+            // Remove record from the images database
+            $imageToDelete = Image::where('name', $removedImage)->first();
 
-		    $product->images()->save($image);
+            if ($imageToDelete) {
+                $imageToDelete->delete();
+            }
+
+
+            // Delete from disk
+            $path = public_path('uploads/' . $removedImage);
+            if (file_exists($path)) {
+                unlink($path);
+            }
+
+        }
+    }
+
+
+    if ($request->hasFile('images')) {
+
+	$index = 0;
+	foreach ($request->images as $imageFile) {
+		$extension = $imageFile->getClientOriginalExtension();
+		$imageName =  Str::random(32).".".$extension;
+
+		$image = new Image([
+		    'name' => $imageName,
+		    'extension' => $extension,
+		]);
+
+		$imageFile->move('uploads/', $imageName);
+
+		// Set the product_id for the image
+		$image->product_id = $product->id;
+
+		$product->images()->save($image);
+
+		if (!isset($validatedData['display_image_id']) && isset($validatedData['mainImageIndex']) && $index == ($validatedData['mainImageIndex'])) {
+			$validatedData['display_image_id'] = $image->id;
 		}
+		$index++;
+
+	}
+
+     }
+
 
 		// Update other product details
 		$product->update($validatedData);
@@ -492,18 +495,21 @@ public function getProductsByUser()
             $request->validate([
                 'per_page' => 'sometimes|required|integer',
                 'type' => 'sometimes|string|nullable',
+                //'column' => 'sometimes|string|nullable',
             ]);
 
 	    $perPage = $request->input('per_page');
-	   // dd($perPage);
-            //$perPage = '2';
             $type = $request->input('type');
+            //$type = $request->input('column');
 
         $query = Product::query();
 
     if ($type !== null && $type !== '') {
         $query->where('type', $type);
     }
+    //if ($column !== null && $column !== '') {
+    //    $query->orderByDesc($column)
+    //}
 	    
 	    $filteredProducts = $query
     	    	    ->with(['images', 'displayImage', 'category'])
@@ -547,8 +553,8 @@ public function getProductsByUser()
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
             // Log the exception and return an error response
-            Log::error("Error fetching top products by $column: " . $e->getMessage());
-            return response()->json(['error' => 'Internal Server Error'], 500);
+            Log::error("Error fetching top products" . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -648,6 +654,20 @@ public function getProductsByUser()
         }    
     }
 
+    public function getTotalUploadedProducts()
+    {
+        $user = Auth::user();
+        $totalUploadedProducts = Product::where('user_id', $user->id)->count();
+        return response()->json(['totalUploadedProducts' => $totalUploadedProducts]);
+    }
+
+    public function getTotalRequests()
+    {
+        $user = Auth::user();
+        $totalRequests = Product::where('user_id', $user->id)->where('type', 'request')->count();
+        return response()->json(['totalRequests' => $totalRequests]);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -657,6 +677,7 @@ public function getProductsByUser()
     public function destroy(Product $product)
     {
 	try {
+	    //TODO: Check owner
             $product->delete();
             return response()->json(null, 204);
         } catch (\Exception $e) {

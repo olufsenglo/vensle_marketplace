@@ -9,7 +9,14 @@ use App\Models\Cart;
 class CartController extends Controller
 {
 
+    public function index()
+    {
+	$user = auth()->user();
+    	$cartItems = $user->carts()->with('product.displayImage')->get();
+    	$responseData = ['cart' => $cartItems->pluck('product')];
 
+    	return response()->json($responseData, 200);
+    }
 
     public function mergeCart(Request $request)
     {
@@ -28,7 +35,7 @@ class CartController extends Controller
             }
 
             // Extract product_id and quantity from the item
-            $product_id = $item['product_id'];
+            $product_id = $item['id'];
             $quantity = $item['quantity'];
 
             // Check if the item exists in the user's cart
@@ -37,8 +44,9 @@ class CartController extends Controller
                 ->first();
 
             if ($existingCartItem) {
+$new_quantity = $existingCartItem->quantity + $quantity;
                 // If the item exists, update the quantity
-                $existingCartItem->update(['quantity' => $quantity]);
+                $existingCartItem->update(['quantity' => $new_quantity]);
             } else {
                 // If the item doesn't exist, add it to the cart
                 Cart::create([
@@ -62,11 +70,11 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
-        $productId = $request->input('productId');
+        $productId = $request->input('id');
         $quantity = $request->input('quantity');
 
-        $user = auth()->user();
 
+        $user = auth()->user();
         $cartItem = $user->cart()->where('product_id', $productId)->first();
 
         if ($cartItem) {

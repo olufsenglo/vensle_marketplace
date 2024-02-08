@@ -56,4 +56,11 @@ class OrderController extends Controller
         }
     }
 
+    public function getTotalOrders()
+    {
+        $user = Auth::user();
+        $totalOrders = Order::where('user_id', $user->id)->count();
+        return response()->json(['totalOrders' => $totalOrders]);
+    }    
+
 }

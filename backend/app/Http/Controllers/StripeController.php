@@ -63,16 +63,17 @@ class StripeController extends Controller
             ]);
 
             //$userId = Auth::id();
-	    
+
             // Create an order record in the database
-            $order = Order::create([
+// TODO: order should be stored after payment
+                $order = Order::create([
                 'user_id' => 1,
                 //'user_id' => $userId,
-                'stripe_session_id' => 2139,	
+                'stripe_session_id' => 2139,
                 'stripe_session_id' => $session->id,
             ]);
 
-            $order->products()->attach($productIds);	    
+            $order->products()->attach($productIds);
 
             //return response()->json(['url' => 'www']);
             return response()->json(['url' => $session->url]);
@@ -81,41 +82,3 @@ class StripeController extends Controller
         }
     }
 }
-
-/**
-class StripeController extends Controller
-{
-	public function payment(Request $request)
-	{
-		$products = Product::whereIn('id', $request->product_ids)->get();
-		dd($products);
-		$lineItems = [];
-
-		foreach ($products as $product) {
-		    $priceInCents = $product->price * 100; // Convert price to cents
-		    $lineItems[] = [
-			'price_data' => [
-			    'currency' => 'usd',
-			    'unit_amount' => $priceInCents,
-			    'product_data' => [
-				'name' => $product->name,
-				'description' => $product->description,
-			    ],
-			],
-			'quantity' => 1,
-		    ];
-		}
-
-		Stripe::setApiKey(config('stripe.secret_key'));
-
-		$session = Session::create([
-		    'payment_method_types' => ['card', 'cashapp', 'us_bank_account'],
-		    'line_items' => $lineItems,
-		    'mode' => 'payment',
-		    'success_url' => 'http://localhost:3000/payment/success',
-		    'cancel_url' => 'http://localhost:3000/payment/cancel',
-		]);
-
-		return response()->json(['url' => $session->url]);
-	}
-}*/
