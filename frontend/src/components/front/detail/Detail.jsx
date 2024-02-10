@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
 
 import {
@@ -34,6 +35,7 @@ const baseURL = "http://localhost:8000";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { productId } = useParams();
 
@@ -139,7 +141,8 @@ const ProductDetail = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching product details:", error);
-        //TODO: if product not found redirect to 404
+        //TODO: navigate only if product not
+        navigate("/");
         setLoading(false);
       }
     };
