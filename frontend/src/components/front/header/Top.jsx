@@ -19,7 +19,7 @@ function classNames(...classes) {
 }
 
 const Top = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
+  const baseURL = "http://localhost:8000";
   const [distance, setDistance] = useState(20);
   const [userLocation, setUserLocation] = useState(null);
   const [userCountry, setUserCountry] = useState(null);

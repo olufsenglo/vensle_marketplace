@@ -102,6 +102,12 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
     );
   };
 
+function formatPrice(price) {
+  return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+    minimumFractionDigits: 2
+  });
+}	
+
   if (!selectedProduct) return <></>;
 
   return (
@@ -167,7 +173,8 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                 <ChevronRightIcon className="h-8 w-8" />
                               </span>
                             </div>
-                            <div class="hidden flex-wrap md:flex ">
+                            <div class="hidden flex-wrap md:flex">
+	  {console.log(selectedProduct)}
                               {selectedProduct.images[0] &&
                                 selectedProduct.images.map((image, index) => (
                                   <div className="w-[6.5rem] p-2 sm:w-[6.5rem]">
@@ -230,7 +237,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                 </div>
                                 <h4 className="mt-3 mb-5 text-xl">
                                   {selectedProduct.currency}{" "}
-                                  {selectedProduct.price}
+                                  {formatPrice(selectedProduct.price)}
                                 </h4>
                                 <h4 className="text-xl">Product Details</h4>
 

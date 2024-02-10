@@ -10,7 +10,6 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-//const baseURL = "https://nominet.vensle.com/backend";
 const baseURL = "http://localhost:8000";
 
 export default function Feedback({ open, setOpen, productId }) {
@@ -21,12 +20,12 @@ export default function Feedback({ open, setOpen, productId }) {
   const [content, setContent] = useState("");
   const [replyContent, setReplyContent] = useState("");
   const [rating, setRating] = useState(1);
-  const [feedbackList, setFeedbackList] = useState([]);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [feedbackParentId, setFeedbackParentId] = useState(false);
   const [loading, setLoading] = useState(false);
   const [replyLoading, setReplyLoading] = useState(false);
+  const [contentError, setContentError] = useState('');
 
   const [feedbacks, setFeedbacks] = useState([]);
   const [replies, setReplies] = useState([]);
@@ -43,31 +42,11 @@ export default function Feedback({ open, setOpen, productId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const tempFeedbacks = feedbacks;
-      if(content) {
-	      setFeedbacks(
-		[ 
-			{
-				id: 6,
-				new: true,
-				content,
-				user_id: user.id,
-				product_id: productId,
-				rating,
-				parent: null,
-				parent_id: null,
-				user,
-			},
-			...feedbacks,
-		]
-	      )
-      }
+    !content ? setContentError('Please enter a message') : setContentError('');
 
-
-    /**
      try {
       const headers = {
-        Authorization: `Bearerz ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       };
 
       const response = await axios.post(
@@ -84,14 +63,15 @@ export default function Feedback({ open, setOpen, productId }) {
       setContent("");
       setRating(1);
       setShowFeedbackForm(false);
-
-      fetchFeedback();
+console.log('renss',response.data)
+console.log('feeedddu', feedbacks)
+      setFeedbacks([ response.data, ...feedbacks ]);
       setLoading(false);
     } catch (error) {
       console.error("Error submitting feedback:", error.message);
-      setFeedbacks(tempFeedbacks);
+      //setFeedbacks(tempFeedbacks);
       setLoading(false);
-    }*/
+    }
 
   };
 
@@ -210,8 +190,8 @@ export default function Feedback({ open, setOpen, productId }) {
                   <div className="w-full">
                     <p className="text-2xl text-gray-900">Feedbacks</p>
 
-                    {!isAuthenticated && !showFeedbackForm && (
-                      <p>Got feedback? Login to create one.</p>
+                    {!isAuthenticated && (
+                      <p className="text-center py-4">Got feedback? Login to create one.</p>
                     )}
                     {isAuthenticated && !showFeedbackForm && (
                       <p
@@ -222,7 +202,7 @@ export default function Feedback({ open, setOpen, productId }) {
                       </p>
                     )}
 
-                    {showFeedbackForm && (
+                    {isAuthenticated && showFeedbackForm && (
                       <form className="mb-8" onSubmit={handleSubmit}>
                         <div className="mt-2">
                           <label
@@ -238,13 +218,13 @@ export default function Feedback({ open, setOpen, productId }) {
                               rows={2}
                               value={content}
                               onChange={(e) => setContent(e.target.value)}
-                              required
                               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                           </div>
                         </div>
+			    <p className="text-red-500 text-sm pt-1">{contentError}</p>
 
-                        <div className="mt-2 flex items-center">
+                        <div className="flex items-center">
                           {[1, 2, 3, 4, 5].map((eachRating) => (
                             <StarIcon
                               onClick={() => setRating(eachRating)}
@@ -253,14 +233,14 @@ export default function Feedback({ open, setOpen, productId }) {
                                 rating > eachRating - 1
                                   ? "text-orange-900"
                                   : "text-orange-200",
-                                "h-5 w-5 flex-shrink-0 cursor-pointer"
+                                "h-4 w-4 flex-shrink-0 cursor-pointer"
                               )}
                               aria-hidden="true"
                             />
                           ))}
                         </div>
 
-                        <div className="mt-2">
+                        <div className="mt-4">
                           <button
                             type="submit"
                             disabled={loading}

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 const Search = () => {
   const navigate = useNavigate();
   const location = useLocation();

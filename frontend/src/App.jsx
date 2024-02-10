@@ -9,7 +9,6 @@ import Facebook from "layouts/front/socialAuthRedirect/Facebook";
 import Filter from "layouts/front/filter";
 import Home from "layouts/front/home";
 import SocialRedirect from "layouts/front/socialAuthentication/SocialRedirect";
-import Detail from "layouts/front/detail";
 import ProductDetail from "layouts/front/productDetail";
 import GroceryDetail from "layouts/front/groceryDetail";
 import Cart from "layouts/front/cart";
@@ -100,15 +99,12 @@ const App = () => {
         <Route path="rtl/*" element={<RtlLayout />} />
         <Route path="filter/*" element={<Filter />} />
         <Route path="social-auth-redirect/*" element={<SocialRedirect />} />
-
-        <Route path="detail/*" element={<Detail />} />
         <Route path="/product-detail/:productId" element={<ProductDetail />} />
-
         <Route path="grocery-detail/*" element={<GroceryDetail />} />
         <Route path="user-profile/:userId/products" element={<UserProfile />} />
         <Route path="order-summary/*" element={<OrderSummary />} />
         <Route path="checkout/*" element={<Checkout />} />
-        <Route path="/payment/success*" element={<PaymentSuccess />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/cancel" element={<PaymentCancel />} />
         <Route path="cart/*" element={<Cart />} />
         <Route path="/" element={<Home />} />

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { StarIcon } from "@heroicons/react/20/solid";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 const UploadPreview = ({
   formData,
@@ -92,18 +92,8 @@ const UploadPreview = ({
                     {formData.name}
                   </h3>
                   <div className="flex items-center">
-                    <div className="flex items-center">
-                      {[0, 1, 2, 3, 4].map((rating) => (
-                        <StarIcon
-                          key={rating}
-                          className="mr-1 h-3 w-3 flex-shrink-0 text-orange-900"
-                          aria-hidden="true"
-                        />
-                      ))}
-                    </div>
-
                     <p className="text-sm leading-5 text-gray-600">
-                      <span className="text-gray-400">4.0</span> (16 Feedbacks)
+                      No Feedback
                     </p>
                   </div>
                   <h4 className="mt-3 mb-5 text-xl text-gray-600">
@@ -159,7 +149,7 @@ const UploadPreview = ({
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    Posted 11 hours ago
+                    Now
                   </p>
 
                   <div className="flex items-center">

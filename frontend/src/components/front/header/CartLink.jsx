@@ -14,11 +14,12 @@ import {
 
 import cart from "assets/img/front/cart.PNG";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 const CartLink = () => {
   const dispatch = useDispatch();
 
   const cartItems = useSelector((state) => state.cart.items);
+  const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
 
 
 	const validCartItems = cartItems.filter(item => item !== null);
@@ -34,12 +35,11 @@ const CartLink = () => {
     return total + productPrice;
   }, 0);
 
-  function formatPrice(totalPrice) {
-    return totalPrice.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  }
+function formatPrice(price) {
+  return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+    minimumFractionDigits: 2
+  });
+}	
 
   const formattedTotalPrice = formatPrice(totalPrice);
 
@@ -245,12 +245,21 @@ const CartLink = () => {
                           Shipping and taxes calculated at checkout.
                         </p>
                         <div className="mt-6">
-                          <Link
+	  	     {isAuthenticated ?
+	  		<Link
                             to="/cart"
                             className="border-transparent flex items-center justify-center rounded-md border bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                           >
                             Checkout
                           </Link>
+	  		:
+	  		<Link
+                            to="/"
+                            className="border-transparent flex items-center justify-center rounded-md border bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                          >
+                            Please Login to Checkout
+                          </Link>
+		     }
                         </div>
                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                           <p>

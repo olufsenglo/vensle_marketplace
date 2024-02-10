@@ -14,7 +14,7 @@ import TopCreatorTable from "./components/TableTopCreators";
 import NftCard from "components/card/NftCard";
 
 const Marketplace = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
+  const baseURL = "http://localhost:8000";
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);

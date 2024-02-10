@@ -4,7 +4,7 @@ import axios from "axios";
 import Grocery from "components/front/product/Grocery";
 import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000"
 export default function PopularGroceries() {
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);

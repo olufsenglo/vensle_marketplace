@@ -3,7 +3,7 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
   const defaultImagePath =
     selectedProduct && selectedProduct.display_image.name

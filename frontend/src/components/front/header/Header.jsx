@@ -51,7 +51,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -284,12 +284,6 @@ const Header = () => {
       type: "CLEAR_MESSAGE",
     });
     setActiveTab(3);
-  };
-
-  const getCartDisplayImage = (product) => {
-    return product.display_image
-      ? `${baseURL}0/uploads/${product.display_image.name}`
-      : "";
   };
 
   const getDisplayFromImagesArray = (product) => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { StarIcon } from "@heroicons/react/20/solid";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 const UploadPreview = ({
   formData,

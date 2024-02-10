@@ -78,7 +78,7 @@ export const login = (email, password) => (dispatch) => {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
       if (cart.length > 0) {
         axios.post(
-          "https://nominet.vensle.com/backend/api/v1/merge-cart",
+          "http://localhost:8000/api/v1/merge-cart",
           { cart },
           {
             headers: {
@@ -136,4 +136,9 @@ export const logout = () => (dispatch) => {
   dispatch({
     type: LOGOUT,
   });
+      dispatch({
+        type: SET_MESSAGE,
+        payload: { type: "success", message: "Logout sucessfull" },
+      });
+	
 };

@@ -31,7 +31,7 @@ const columnsData = [
 ];
 
 const Tables = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
+  const baseURL = "http://localhost:8000";
 
   const [products, setProducts] = useState([]);
   const [extractedData, setExtractedData] = useState([]);

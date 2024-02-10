@@ -12,7 +12,7 @@ import Grocery from "components/front/product/Grocery";
 
 import seller from "assets/img/front/productDetail/seller.jpg";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 const UserProfile = () => {
   const [products, setProducts] = useState([]);
   const { userId } = useParams();

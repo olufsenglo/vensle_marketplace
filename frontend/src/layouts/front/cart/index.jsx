@@ -13,12 +13,16 @@ import {
   increaseQuantity,
 } from "actions/actions";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 const Cart = () => {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
+
+  const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
+  const accessToken = useSelector((state) => state.auth?.user?.token);
+  const tempCartItems = useSelector((state) => state.cart.items);
+
+  const cartItems = tempCartItems.filter(item => item !== null);
 
   const hasItems = cartItems.length > 0;
   const [productIds] = useState(
@@ -26,6 +30,7 @@ const Cart = () => {
   );
   const [loading, setLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
   const [open, setOpen] = useState(false);
 
   const handleProductQuickView = (e, product) => {
@@ -39,12 +44,11 @@ const Cart = () => {
     return total + productPrice;
   }, 0);
 
-  function formatPrice(totalPrice) {
-    return totalPrice.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  }
+function formatPrice(price) {
+  return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+    minimumFractionDigits: 2
+  });
+}	
 
   const formattedTotalPrice = formatPrice(totalPrice);
 
@@ -70,18 +74,19 @@ const Cart = () => {
   const handleToken = async (token) => {
     try {
       setLoading(true);
+      setErrorMessage('');
       //if (cartItems.length === 0) {
       // Display a message to the user that the cart is empty
       //console.log('The cart is empty. Add items to the cart before checkout.');
       //return;
       //}
-      //TODO:move to after order has been made
+console.log(accessToken)
       const response = await axios.post(
         `${baseURL}/api/v1/payment`,
         { product_ids: productIds },
         {
           headers: {
-            "Content-Type": "application/json",
+	    Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -89,6 +94,7 @@ const Cart = () => {
       window.location.href = response.data.url; // Redirect to Stripe Checkout
     } catch (error) {
       console.error("Error initiating payment:", error.message);
+      setErrorMessage('Error Processing your payment, please try again');
       setLoading(false);
     }
   };
@@ -105,10 +111,13 @@ const Cart = () => {
         />
       )}
 
-      <div className="min-h-screen bg-gray-100 pt-10 pb-20">
+     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
+      <div className="min-h-[70vh] pt-10">
         <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
-        <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
-          <div className="rounded-lg bg-white p-6  md:w-2/3">
+      {errorMessage && <p className="text-red-500 mb-2">{errorMessage}</p>}
+
+        <div className="mx-auto justify-center lg:flex lg:space-x-6">
+          <div className="rounded-lg bg-white p-6 lg:w-2/3">
             <div className="flow-root">
               {cartItems.length === 0 ? (
                 <p>Your cart is empty.</p>
@@ -130,7 +139,7 @@ const Cart = () => {
 
                       <div className="relative flex flex-1 flex-col justify-between">
                         <div className="sm:col-gap-5 sm:grid sm:grid-cols-2">
-                          <div className="pr-8 sm:pr-5">
+                          <div onClick={(e) => handleProductQuickView(e, item)} className="pr-8 sm:pr-5 cursor-pointer">
                             <p className="text-base font-semibold text-gray-900">
                               {item.name}
                             </p>
@@ -140,8 +149,8 @@ const Cart = () => {
                           </div>
 
                           <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
-                            <p className="w-20 shrink-0 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
-                              $ {item.price * item.quantity}
+                            <p className="shrink-0 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
+                              $ {formatPrice(item.price * item.quantity)}
                             </p>
 
                             <div className="sm:order-1">
@@ -201,7 +210,7 @@ const Cart = () => {
             </div>
           </div>
 
-          <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
+          <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md lg:mt-0 lg:w-1/3">
             <div className="mb-2 flex justify-between">
               <p className="text-gray-700">Subtotal</p>
               <p className="text-gray-700">${formattedTotalPrice}</p>
@@ -227,18 +236,27 @@ const Cart = () => {
               billingAddress
               shippingAddress
             />*/}
+	   {isAuthenticated ?
             <button
               onClick={handleToken}
               disabled={loading}
               className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600"
             >
-              {loading ? "Loading ..." : "Check out"}
+              {loading ? "Loading ..." : "Checkout"}
             </button>
+	   :
+            <button
+              className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600"
+            >
+		   Please Login to checkout
+            </button>
+	   }
           </div>
         </div>
       </div>
-
+      </div>
       <Footer />
+
     </div>
   );
 };

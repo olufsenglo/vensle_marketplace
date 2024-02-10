@@ -33,6 +33,7 @@ const cartReducer = (state = initialState, action) => {
       };
 
     case INCREASE_QUANTITY:
+console.log(state.items)
       return {
         ...state,
         items: state.items.map((item) =>

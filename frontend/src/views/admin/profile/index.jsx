@@ -14,7 +14,7 @@ import Project from "./components/Project";
 import Storage from "./components/Storage";
 import Upload from "./components/Upload";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 const ProfileOverview = () => {
   const navigate = useNavigate();

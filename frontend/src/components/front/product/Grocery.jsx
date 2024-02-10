@@ -11,7 +11,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 export default function Grocery({ product, custom, height, listView }) {
   const displayImageId = product?.display_image?.id;
@@ -45,13 +45,12 @@ export default function Grocery({ product, custom, height, listView }) {
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  function formatPrice(price) {
-    return price.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  }
 
+function formatPrice(price) {
+  return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+    minimumFractionDigits: 2
+  });	
+}
 
   const handleProductQuickView = (e, product) => {
     e.preventDefault();
@@ -154,7 +153,7 @@ export default function Grocery({ product, custom, height, listView }) {
               type="submit"
               onClick={(e) => handleAddToCart(e, product)}
               style={{ fontSize: "0.8rem" }}
-              className="bg-transparent hover:border-transparent rounded border border-red-500 p-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+              className="bg-transparent hover:border-transparent rounded border border-red-500 h-[35px] px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white"
             >
               ADD TO CART
             </button>

@@ -9,7 +9,7 @@ import UploadPreview from "./components/UploadPreview";
 
 import currencySymbolMap from "currency-symbol-map";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 const Tables = () => {
   const navigate = useNavigate();
