@@ -13,7 +13,7 @@ function classNames(...classes) {
 
 const baseURL = "http://localhost:8000";
 
-export default function Grocery({ product, custom, height, listView }) {
+export default function Grocery({ product, wrapper, custom, listView, btnSize }) {
   const displayImageId = product?.display_image?.id;
   if (product.images.length > 0 && displayImageId) {
     // Find the index of the display_image in the images array
@@ -80,7 +80,7 @@ function formatPrice(price) {
       <div
         key={product.id}
         style={{ background: "#f4f4f4a3" }}
-        className={`group flex rounded-lg ${
+        className={`group h-full flex rounded-lg ${
           listView === "list" ? "flex-row" : "flex-col"
         }`}
       >
@@ -91,8 +91,8 @@ function formatPrice(price) {
           }`}
         >
           <div
-            className={`relative flex h-full w-full cursor-pointer overflow-hidden rounded-xl ${
-	      custom === 'height' ? `lg:h-[${height}rem]` : "lg:h-40"}
+            className={`relative flex h-full min-h-[6rem] w-full cursor-pointer overflow-hidden rounded-xl ${
+	      wrapper === 'slick' ? 'h-full' : (custom === 'height' ? `lg:h-[10rem]` : "lg:h-40")}
 	      ${listView === "list" ? " w-40" : ""}`
 	    }>
             <img
@@ -152,10 +152,11 @@ function formatPrice(price) {
             <button
               type="submit"
               onClick={(e) => handleAddToCart(e, product)}
-              style={{ fontSize: "0.8rem" }}
-              className="bg-transparent hover:border-transparent rounded border border-red-500 h-[35px] px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+              className={`bg-transparent h-[35px] text-[0.8rem] hover:border-transparent rounded border border-red-500 px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white uppercase ${
+		btnSize === 'sm' && "md:text-[0.6rem] md:h-auto"
+	      }`}
             >
-              ADD TO CART
+              Add to cart
             </button>
           </div>
         </div>

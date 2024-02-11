@@ -31,7 +31,6 @@ function classNames(...classes) {
 }
 
 const baseURL = "http://localhost:8000";
-//const baseURL = "http://localhost:8000";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -152,7 +151,6 @@ const ProductDetail = () => {
 
   return (
     <div className="bg-white">
-      <Feedback open={open} setOpen={setOpen} productId={product?.id} />
       <Message open={messageOpen} setOpen={setMessageOpen} product={product} />
       <div style={{ minHeight: "75vh" }} className="relative pt-6">
         <nav aria-label="Breadcrumb">
@@ -212,6 +210,8 @@ const ProductDetail = () => {
 
         {!loading && product && (
           <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-16">
+            <Feedback open={open} setOpen={setOpen} product={product} setProduct={setProduct} />
+		
             <div className="bg-white lg:col-span-3 lg:pr-8">
               <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl">
                 {product && product.name}

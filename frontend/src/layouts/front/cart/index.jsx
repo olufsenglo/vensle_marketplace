@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import PreviewPopup from "components/front/previewPopup/PreviewPopup";
 
 import Footer from "components/front/footer/Footer";
 import Header from "components/front/header/Header";
+import PreviewPopup from "components/front/previewPopup/PreviewPopup";
+import SimilarProduct from "components/front/detail/SimilarProduct";
 
 import {
   removeFromCart,
@@ -254,7 +255,11 @@ console.log(accessToken)
           </div>
         </div>
       </div>
+	
+	{cartItems && <SimilarProduct products={cartItems} />}
+
       </div>
+
       <Footer />
 
     </div>

@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
@@ -18,9 +18,12 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { SET_MESSAGE } from "actions/types";
 
+import MessageForm from "components/front/message/MessageForm";
+
 const baseURL = "http://localhost:8000";
 const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
 
   const [msgContent, setMsgContent] = useState("");
   const [previewImage, setPreviewImage] = useState("");
@@ -37,16 +40,6 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
     setPreviewImage(defaultImagePath);
   }, [selectedProduct]);
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    dispatch({
-      type: SET_MESSAGE,
-      payload: { type: "success", message: "Message sent!" },
-    });
-    setMsgContent("");
-    setLeftVisible(!isLeftVisible);
-  };
-
   const toggleVisibility = (e) => {
     e.preventDefault();
     setMsgContent("");
@@ -56,6 +49,14 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
   const handleShowNumber = (e) => {
     e.preventDefault();
     setShowNumber(!showNumber);
+  };
+
+  const handleUnAuthMessage = (e) => {
+    e.preventDefault();
+    dispatch({
+      type: SET_MESSAGE,
+      payload: { type: "success", message: "Please Login to send message" },
+    });    
   };
 
   const getImagePath = (name) => {
@@ -89,9 +90,8 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
       <a
         onClick={(e) => handleSetPreviewImage(e, image.name, index)}
         href="#"
-        className={`dark:border-transparent block overflow-hidden rounded-md border hover:border-red-600 dark:hover:border-red-600 ${
-          index == imgIndex ? "border-red-600" : "border-transparent"
-        }`}
+        className={`dark:border-transparent block overflow-hidden rounded-md border hover:border-red-600 dark:hover:border-red-600 ${index == imgIndex ? "border-red-600" : "border-transparent"
+          }`}
       >
         <img
           src={getImagePath(image.name)}
@@ -102,11 +102,11 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
     );
   };
 
-function formatPrice(price) {
-  return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
-    minimumFractionDigits: 2
-  });
-}	
+  function formatPrice(price) {
+    return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+      minimumFractionDigits: 2
+    });
+  }
 
   if (!selectedProduct) return <></>;
 
@@ -152,7 +152,7 @@ function formatPrice(price) {
                       <div className="mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
                         <div class="w-full px-4">
                           <div class="sticky top-0 z-50 overflow-hidden ">
-                            <div class="relative mb-4 py-2 lg:mb-6 lg:h-[28rem] lg:pl-[6rem] lg:pr-[6rem]">
+                            <div class="relative mb-4 py-2 lg:mb-6 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
                               <span
                                 className="absolute left-0 cursor-pointer"
                                 style={{ top: "50%" }}
@@ -174,7 +174,6 @@ function formatPrice(price) {
                               </span>
                             </div>
                             <div class="hidden flex-wrap md:flex">
-	  {console.log(selectedProduct)}
                               {selectedProduct.images[0] &&
                                 selectedProduct.images.map((image, index) => (
                                   <div className="w-[6.5rem] p-2 sm:w-[6.5rem]">
@@ -193,11 +192,10 @@ function formatPrice(price) {
                             >
                               <div
                                 id="left"
-                                className={`flex h-full w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${
-                                  isLeftVisible
+                                className={`flex h-full w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
                                     ? "translate-x-0"
                                     : "-translate-x-full"
-                                }`}
+                                  }`}
                               >
                                 <h3
                                   style={{ fontWeight: "500" }}
@@ -205,35 +203,35 @@ function formatPrice(price) {
                                 >
                                   {selectedProduct.name}
                                 </h3>
-				<div className="flex items-center">
-                                {selectedProduct.total_feedback > 0 ? (
-				<>
-                                  <div className="flex items-center">
-                                    {[0, 1, 2, 3, 4].map((rating) => (
-                                      <StarIcon
-                                        key={rating}
-                                        className="mr-1 h-3 w-3 flex-shrink-0 text-orange-900"
-                                        aria-hidden="true"
-                                      />
-                                    ))}
-                                  </div>
+                                <div className="flex items-center">
+                                  {selectedProduct.total_feedback > 0 ? (
+                                    <>
+                                      <div className="flex items-center">
+                                        {[0, 1, 2, 3, 4].map((rating) => (
+                                          <StarIcon
+                                            key={rating}
+                                            className="mr-1 h-3 w-3 flex-shrink-0 text-orange-900"
+                                            aria-hidden="true"
+                                          />
+                                        ))}
+                                      </div>
 
-	  			<p className="text-sm leading-5">
-                                    <span className="mx-1">
-                                      {selectedProduct.ratings}
-                                    </span>{" "}
-                                    (
-                                    {selectedProduct &&
-                                      selectedProduct.total_feedback}{" "}
-                                    Feedback
-                                    {selectedProduct &&
-                                      selectedProduct.total_feedback > 1 &&
-                                      "s"}
-                                    )
-                                  </p>
-				</>)
-	  			:
-	  			(<p className="text-sm leading-5">No Feedback</p>)}
+                                      <p className="text-sm leading-5">
+                                        <span className="mx-1">
+                                          {selectedProduct.ratings}
+                                        </span>{" "}
+                                        (
+                                        {selectedProduct &&
+                                          selectedProduct.total_feedback}{" "}
+                                        Feedback
+                                        {selectedProduct &&
+                                          selectedProduct.total_feedback > 1 &&
+                                          "s"}
+                                        )
+                                      </p>
+                                    </>)
+                                    :
+                                    (<p className="text-sm leading-5">No Feedback</p>)}
                                 </div>
                                 <h4 className="mt-3 mb-5 text-xl">
                                   {selectedProduct.currency}{" "}
@@ -279,7 +277,7 @@ function formatPrice(price) {
                                   </a>
                                   <a
                                     href="#"
-                                    onClick={toggleVisibility}
+                                    onClick={isAuthenticated ? toggleVisibility : handleUnAuthMessage}
                                     className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                                   >
                                     <ChatBubbleLeftRightIcon className="h-5 w-5" />
@@ -288,11 +286,10 @@ function formatPrice(price) {
                               </div>
                               <div
                                 id="right"
-                                className={`flex w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${
-                                  isLeftVisible
+                                className={`flex w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
                                     ? "translate-x-full"
                                     : "-translate-x-full"
-                                }`}
+                                  }`}
                               >
                                 <h4 className="mt-3 mb-5 text-xl">
                                   Send a message
@@ -305,32 +302,12 @@ function formatPrice(price) {
                                   Back
                                 </p>
 
-                                <form
-                                  onSubmit={handleSendMessage}
-                                  className="flex flex-1 flex-col"
-                                >
-                                  <div className="mt-2.5 flex-1">
-                                    <textarea
-                                      name="message"
-                                      id="message"
-                                      value={msgContent}
-                                      onChange={(e) =>
-                                        setMsgContent(e.target.value)
-                                      }
-                                      required
-                                      className="block h-full w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                  </div>
+                                <MessageForm
+                                  receiverId={selectedProduct.user_id}
+                                  type="sendMessageHomePage"
+                                  setLeftVisible={setLeftVisible}
+                                />
 
-                                  <div className="mt-3">
-                                    <button
-                                      type="submit"
-                                      className="block w-full rounded-md bg-red-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                                    >
-                                      SEND
-                                    </button>
-                                  </div>
-                                </form>
                               </div>
                             </div>
 

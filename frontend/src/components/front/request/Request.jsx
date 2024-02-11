@@ -60,26 +60,11 @@ export default function Request({ product }) {
             {product.name}
           </h1>
           <div className="mt-4">
-            <ul
-              role="list"
-              className="line-clamp-2 list-disc space-y-2 pl-4 text-sm"
-            >
-              <li
-                style={{ fontSize: "1rem", lineHeight: "1.5rem" }}
-                className=""
-              >
+	    <p
+            	className="line-clamp-2 font-medium text-gray-900"
+	    >
                 <span>{product.description}</span>
-              </li>
-              {product &&
-                product.key_specifications &&
-                product.key_specifications
-                  .split(delim)
-                  .map((specification, index) => (
-                    <li key={index} className="line-clamp-2 text-lg">
-                      <span className="">{specification.trim()}</span>
-                    </li>
-                  ))}
-            </ul>
+	    </p>
           </div>
 
           <div className="mt-6 flex flex-col lg:flex-row">

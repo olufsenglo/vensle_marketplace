@@ -160,7 +160,7 @@ const Navbar = (props) => {
           </span>
 
           <p
-            className="cursor-pointer rounded-full py-1 px-4 hover:bg-gray-200 dark:text-white"
+            className="cursor-pointer rounded-full py-1 px-4 hover:bg-gray-200 dark:text-white ease-in-out transition-all duration-300"
             onClick={() => setOpen(true)}
           >
             Upload
@@ -255,7 +255,7 @@ const Navbar = (props) => {
           <Dropdown
             button={
               <img
-                className="h-10 w-10 cursor-pointer rounded-full border border-4 border-white hover:border-gray-200"
+                className="h-10 w-10 cursor-pointer rounded-full border border-4 border-white hover:border-gray-200 ease-in-out transition-all duration-300"
                 src={
                   isSocialProfile
                     ? user.profile_picture

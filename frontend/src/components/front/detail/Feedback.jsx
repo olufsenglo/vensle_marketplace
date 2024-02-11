@@ -12,7 +12,7 @@ function classNames(...classes) {
 
 const baseURL = "http://localhost:8000";
 
-export default function Feedback({ open, setOpen, productId }) {
+export default function Feedback({ open, setOpen, product, setProduct }) {
   const accessToken = useSelector((state) => state.auth?.user?.token);
   const user = useSelector((state) => state.auth?.user?.user);
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
@@ -42,6 +42,7 @@ export default function Feedback({ open, setOpen, productId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     !content ? setContentError('Please enter a message') : setContentError('');
 
      try {
@@ -54,7 +55,7 @@ export default function Feedback({ open, setOpen, productId }) {
         {
           content,
           rating,
-          product_id: productId,
+          product_id: product.id,
         },
         { headers }
       );
@@ -63,13 +64,14 @@ export default function Feedback({ open, setOpen, productId }) {
       setContent("");
       setRating(1);
       setShowFeedbackForm(false);
-console.log('renss',response.data)
-console.log('feeedddu', feedbacks)
       setFeedbacks([ response.data, ...feedbacks ]);
+      
+      const tempProduct = product;
+      tempProduct.total_feedback = product.total_feedback + 1;
+      setProduct(tempProduct)
       setLoading(false);
     } catch (error) {
       console.error("Error submitting feedback:", error.message);
-      //setFeedbacks(tempFeedbacks);
       setLoading(false);
     }
 
@@ -77,28 +79,8 @@ console.log('feeedddu', feedbacks)
 
   const handleSubmitReply = async (e, parentFeedback) => {
     e.preventDefault();
-    //setReplyLoading(true);
-    const tempReplies = replies;
+    setReplyLoading(true);
     
-      if(replyContent) {
-	      setReplies(
-		[ 
-			{
-				id: 6,
-				new: true,
-				content: replyContent,
-				user_id: user.id,
-				product_id: productId,
-				parent: parentFeedback,
-				parent_id: parentFeedback.id,
-				user,
-			},
-			...replies,
-		]
-	      )
-      }
-
-    /**
     try {
       const headers = {
         Authorization: `Bearer ${accessToken}`,
@@ -108,7 +90,7 @@ console.log('feeedddu', feedbacks)
         {
           content: replyContent,
           rating,
-          product_id: productId,
+          product_id: product.id,
           parent_id: parentFeedback.id,
         },
         { headers }
@@ -117,19 +99,20 @@ console.log('feeedddu', feedbacks)
       setReplyContent("");
       setRating(1);
       setShowReplyForm(false);
-      fetchFeedback();
+
+      setReplies([ response.data, ...replies ]);
+
       setReplyLoading(false);
     } catch (error) {
       console.error("Error submitting feedback:", error.message);
-      setReplies(tempReplies);
       setReplyLoading(false);
-    }*/
+    }
   };
 
   const fetchFeedback = async () => {
     try {
       const response = await axios.get(
-        `${baseURL}/api/v1/feedback/${productId}`
+        `${baseURL}/api/v1/feedback/${product.id}`
       );
 
       // Separate feedbacks and replies
@@ -147,7 +130,7 @@ console.log('feeedddu', feedbacks)
 
   useEffect(() => {
     fetchFeedback();
-  }, [productId]);
+  }, [product.id]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -186,7 +169,6 @@ console.log('feeedddu', feedbacks)
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
 
-{console.log('reeedme', replies)}
                   <div className="w-full">
                     <p className="text-2xl text-gray-900">Feedbacks</p>
 
@@ -255,9 +237,8 @@ console.log('feeedddu', feedbacks)
                     <div>
                       <div>
                         {/* Display Feedbacks */}
-                        {loading && <p>Loading...</p>}
 
-                        {!loading && feedbacks.length > 0 ? (
+                        {feedbacks.length > 0 ? (
                           feedbacks.map((feedback) => (
                             <div className="mb-4" key={feedback.id}>
                               <div className="flex">
@@ -265,15 +246,15 @@ console.log('feeedddu', feedbacks)
                                   <img
                                     className="rounded-full"
                                     src={getImagePath(
-                                      feedback.user.profile_picture
+                                      feedback.user?.profile_picture
                                     )}
-                                    alt={feedback.user.name}
+                                    alt={feedback.user?.name}
                                   />
                                 </div>
                                 <div className="">
                                   <div className="mb-1 flex text-xs">
                                     <p className="mr-2 text-gray-800">
-                                      {feedback.user.name}
+                                      {feedback.user?.name}
                                     </p>
                                     <p>{feedback.created_at}</p>
                                   </div>
@@ -361,15 +342,15 @@ console.log('feeedddu', feedbacks)
                                       <img
                                         className="rounded-full"
                                         src={getImagePath(
-                                          reply.user.profile_picture
+                                          reply.user?.profile_picture
                                         )}
-                                        alt={reply.user.name}
+                                        alt={reply.user?.name}
                                       />
                                     </div>
                                     <div className="">
                                       <div className="flex text-xs">
                                         <p className="mr-2 text-gray-800">
-                                          {reply.user.name}
+                                          {reply.user?.name}
                                         </p>
                                         <p>{reply.created_at}</p>
                                       </div>

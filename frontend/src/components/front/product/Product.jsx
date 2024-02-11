@@ -11,30 +11,28 @@ function classNames(...classes) {
 }
 
 const baseURL = 'http://localhost:8000'
-const Product = ({ product, custom, height, listView }) => {
+const Product = ({ product, wrapper, custom, listView }) => {
+	const displayImageId = product?.display_image?.id;
+	if (product.images.length > 0 && displayImageId ) {
+	// Find the index of the display_image in the images array
+	const displayImageIndex = product.images.findIndex(img => img.id === displayImageId);
 
+	// Rearrange the images array if display_image is found
+	const rearrangedImages = displayImageIndex !== -1
+	  ? [
+	      product.images[displayImageIndex],
+	      ...product.images.slice(0, displayImageIndex),
+	      ...product.images.slice(displayImageIndex + 1),
+	    ]
+	  : product.images;
 
-const displayImageId = product?.display_image?.id;
-if (product.images.length > 0 && displayImageId ) {
-// Find the index of the display_image in the images array
-const displayImageIndex = product.images.findIndex(img => img.id === displayImageId);
+	// Update the product object with rearranged or unchanged images
+	product = {
+	  ...product,
+	  images: rearrangedImages,
+	};
 
-// Rearrange the images array if display_image is found
-const rearrangedImages = displayImageIndex !== -1
-  ? [
-      product.images[displayImageIndex],
-      ...product.images.slice(0, displayImageIndex),
-      ...product.images.slice(displayImageIndex + 1),
-    ]
-  : product.images;
-
-// Update the product object with rearranged or unchanged images
-product = {
-  ...product,
-  images: rearrangedImages,
-};
-
-}
+	}
 
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
@@ -53,7 +51,6 @@ function formatPrice(price) {
 
     const getDisplayImage = (product) => {
       const displayImage = product.images.find(image => image.id === product.display_image_id);
-      //Utilize getImagePath
       return displayImage ? `${baseURL}/uploads/${displayImage.name}` : '';
     };
 
@@ -70,12 +67,12 @@ function formatPrice(price) {
 		onClick={(e) => handleProductQuickView(e, product)}
 		key={product.id}
 		style={{"background": "#f4f4f4a3"}}
-		className={`group cursor-pointer relative rounded-md ${
-			listView === 'list' && "flex"
+		className={`group h-full flex cursor-pointer relative rounded-md ${
+			listView === 'list' ? "flex-row" : "flex-col"
 		}`}
 	    >
-<div className={`aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 ${
-			custom === 'height' ? `lg:h-[${height}rem]` : "lg:h-40"}
+<div className={`w-full h-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 ${
+			wrapper === 'slick' ? 'h-full' : (custom === 'height' ? `lg:h-[10rem]` : "lg:h-40")}
 			${listView === 'list' ? " w-40" : ""
 		}`}>
                 <img

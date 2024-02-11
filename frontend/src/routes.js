@@ -7,9 +7,7 @@ import Profile from "views/admin/profile";
 import Products from "views/admin/products";
 import UploadProduct from "views/admin/uploadproduct";
 import Messages from "views/admin/messages";
-import CreateMessage from "views/admin/messages/CreateMessage";
 import SentMessages from "views/admin/messages/SentMessages";
-import MessageThread from "views/admin/messages/MessageThread";
 
 // Icon Imports
 import {
@@ -43,13 +41,6 @@ const routes = [
     secondary: true,
   },
   {
-    name: "New Message",
-    layout: "/admin",
-    icon: <MdBarChart className="h-6 w-6" />,
-    path: "create-message",
-    component: <CreateMessage />,
-  },   
-  {
     name: "Inbox",
     layout: "/admin",
     path: "messages/inbox",
@@ -65,13 +56,6 @@ const routes = [
     component: <SentMessages />,
     secondary: true,
   },
-  {
-    name: "Thread",
-    layout: "/admin",
-    path: "messages/5",
-    icon: <MdPerson className="h-6 w-6" />,
-    component: <MessageThread />,
-  },  
   {
     name: "Profile",
     layout: "/admin",

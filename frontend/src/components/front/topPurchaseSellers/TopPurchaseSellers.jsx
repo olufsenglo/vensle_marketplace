@@ -1,6 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import TabTopRequests from "./TabTopRequests";
 import TabTopCategories from "./TabTopCategories";
@@ -20,6 +23,15 @@ function classNames(...classes) {
 const baseURL = "http://localhost:8000";
 
 const TopPurchaseSellers = () => {
+  const settings = {
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    pauseOnHover: true,
+  };
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
@@ -191,102 +203,23 @@ const TopPurchaseSellers = () => {
               Top Purchases
             </h2>
 
-            {products && products[0] && (
-              <div
-                onClick={(e) => handleProductQuickView(e, products[0])}
-                style={{ background: "#f4f4f4a3" }}
-                className="group relative mt-6 flex flex-1 flex-col rounded-md md:mt-10"
-              >
-                <div className="aspect-h-1 aspect-w-1 lg:aspect-none w-full flex-1 overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">
-                  {/*<div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75">*/}
-                  <img
-                    src={
-                      products[0] && products[0].display_image
-                        ? getImagePath(products[0].display_image.name)
-                        : ""
-                    }
-                    alt={products.name}
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  />
-                </div>
-                <div className="p-2">
-                  <h2
-                    className="line-clamp-2 text-lg font-medium text-gray-900"
-                    style={{ fontWeight: "500", fontSize: "1rem" }}
-                  >
-                    {products[0] && products[0].name}
-                  </h2>
+<div className="top-purchase__wrapper mt-6 relative h-full w-full flex-col md:mt-10 w-full">
 
-                  <div className="mt-1 flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
-                      <StarIcon
-                        key={rating}
-                        className={classNames(
-                          products[0].ratings > rating
-                            ? "text-orange-900"
-                            : "text-orange-200",
-                          "h-3 w-3 flex-shrink-0"
-                        )}
-                        aria-hidden="true"
-                      />
-                    ))}
-                  </div>
+	  <Slider {...settings}>
+	  	  {/*Temp solution*/}
+		  {!loading && products.length > 0 && (products[0].type == "grocery" ? 
+				  <Grocery wrapper="slick" product={products[0]} />
+				  :
+				  <Product wrapper="slick" product={products[0]} />
+		  )}
+		  {!loading && products.length > 0 && (products[1].type == "grocery" ? 
+				  <Grocery wrapper="slick" product={products[1]} />
+				  :
+				  <Product wrapper="slick" product={products[1]} />
+		  )}
+	  </Slider>
 
-                  <div className="mt-2 flex justify-between">
-                    <div>
-                      <h3 className="text-sm text-gray-700">
-                        <a onClick={(e) => handleModal(e, 11)} href="">
-                          <span
-                            aria-hidden="true"
-                            className="absolute inset-0"
-                          />
-                          {products[0] && products[0].currency}{" "}
-                          {products[0] && products[0].price}
-                        </a>
-                      </h3>
-                    </div>
-
-                    {products[0] && products[0].type == "grocery" ? (
-                      <button
-                        type="submit"
-                        onClick={() => handleAddToCart(products[0])}
-                        style={{ fontSize: "0.8rem" }}
-                        className="bg-transparent hover:border-transparent rounded border border-orange-500 py-1 px-2 font-semibold text-orange-500 hover:bg-orange-500 hover:text-white"
-                      >
-                        ADD TO CART
-                      </button>
-                    ) : (
-                      <p
-                        className="text-black-200 flex items-center text-xs font-medium text-gray-700"
-                        style={{ color: "#aaa" }}
-                      >
-                        <svg
-                          class="mr-1 h-3 w-3 text-gray-600"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-
-                        {products[0].city}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
+</div>	  
           </div>
 
           <div className="w-full bg-white">
@@ -345,13 +278,13 @@ const TopPurchaseSellers = () => {
               </div>
             </div>
 
-            <div className="mt-6 grid min-h-[15rem] grid-cols-3 gap-x-6 gap-y-8 sm:grid-cols-2 md:mt-10 lg:grid-cols-4 xl:gap-x-8">
+            <div className="topSellers__wrapper mt-6 grid min-h-[15rem] grid-cols-3 gap-x-6 gap-y-8 sm:grid-cols-2 md:mt-10 lg:grid-cols-4 xl:gap-x-8">
               {!loading &&
                 products.length > 0 &&
                 products.map((product) => (
 		      <>
 			{product.type == "grocery" ? (
-			  <Grocery product={product} />
+			  <Grocery product={product} btnSize="sm" />
 			) : (
 			  <Product product={product} />
 			)}

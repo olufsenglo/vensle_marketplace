@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import { StarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -159,12 +160,12 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 									</p>
 
 									<div className="flex items-center">
-										<a
-											href={`/admin/edit-product?id=${selectedProduct?.id}`}
+										<Link
+											to={`/admin/edit-product?id=${selectedProduct?.id}`}
 											className="mt-10 block w-full rounded-md bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 										>
 											Edit
-										</a>
+										</Link>
 
 									</div>
 								</div>

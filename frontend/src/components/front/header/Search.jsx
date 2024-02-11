@@ -215,17 +215,10 @@ const Search = () => {
       )}
 
       <button
-        className="hidden h-full text-white md:block"
-        style={{
-          background: "#ff5959",
-          paddingRight: "22px",
-          paddingLeft: "22px",
-          borderTopRightRadius: "4px",
-          borderBottomRightRadius: "4px",
-        }}
+        className="search__button relative pr-[22px] pl-[22px] hidden h-full text-white md:block"
         type="submit"
       >
-        SEARCH
+        <span className="relative" style={{zIndex:"1"}}>SEARCH</span>
       </button>
       <button
         className="block h-full px-3 text-white md:hidden md:px-[22px]"
