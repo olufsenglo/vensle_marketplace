@@ -6,6 +6,7 @@ import {
   DECREASE_QUANTITY,
   INCREASE_QUANTITY,
   FETCH_CART_ITEMS,
+  EMPTY_CART,
 } from "../types/actionTypes";
 import { SET_MESSAGE } from "./types";
 
@@ -20,10 +21,9 @@ export const addToCart = (item) => (dispatch, getState) => {
     dispatch({ type: ADD_TO_CART, payload: item });
   }
 
-  const authInfo = localStorage.getItem("user");
-  console.log("innfooautuza", authInfo?.user);
-  if (authInfo?.user?.token) {
-    const token = authInfo.user.token;
+  const authInfo = getState().auth.isLoggedIn
+  if (authInfo) {
+    const token = getState().auth.user.token;
     axios.post(
       "http://localhost:8000/api/v1/add-to-cart",
       { id: item.id, quantity: item.quantity },
@@ -82,4 +82,10 @@ export const fetchCartItems = () => (dispatch, getState) => {
   dispatch({ type: FETCH_CART_ITEMS, payload: cartItems });
 
   localStorage.setItem("cart", JSON.stringify(cartItems));
+};
+
+export const emptyCart = () => (dispatch, getState) => {
+  dispatch({ type: EMPTY_CART });
+
+  localStorage.removeItem("cart");
 };

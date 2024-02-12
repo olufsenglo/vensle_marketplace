@@ -149,13 +149,13 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 
                   <div className="w-full bg-white">
                     <div className="mx-auto max-w-7xl">
-                      <div className="mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
-                        <div class="w-full px-4">
-                          <div class="sticky top-0 z-50 overflow-hidden ">
-                            <div class="relative mb-4 py-2 lg:mb-6 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
+                      <div className="mx-auto rounded-3xl lg:mx-0 lg:flex lg:max-w-none">
+                        <div className="w-full">
+                          <div className="">
+                            <div className="relative mb-4 border rounded-2xl m-2 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
                               <span
-                                className="absolute left-0 cursor-pointer"
-                                style={{ top: "50%" }}
+	  			style={{borderTopLeftRadius: "1rem", borderBottomLeftRadius: "1rem"}}
+                                className="absolute top-0 bottom-0 left-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
                                 onClick={handlePreviousPreviewImage}
                               >
                                 <ChevronLeftIcon className="h-8 w-8" />
@@ -163,20 +163,20 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                               <img
                                 src={previewImage}
                                 alt=" /"
-                                className="w-full rounded-md object-cover lg:h-full "
+                                className="w-full object-cover lg:h-full "
                               />
                               <span
-                                className="absolute right-0 cursor-pointer"
-                                style={{ top: "50%" }}
+	  			style={{borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem"}}
+                                className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
                                 onClick={handleNextPreviewImage}
                               >
                                 <ChevronRightIcon className="h-8 w-8" />
                               </span>
                             </div>
-                            <div class="hidden flex-wrap md:flex">
+                            <div class="hidden flex-wrap md:flex gap-2 m-2 py-2">
                               {selectedProduct.images[0] &&
                                 selectedProduct.images.map((image, index) => (
-                                  <div className="w-[6.5rem] p-2 sm:w-[6.5rem]">
+                                  <div className="w-[6.5rem] sm:w-[6.5rem]">
                                     {handleShowSelectedImage(image, index)}
                                   </div>
                                 ))}
@@ -233,7 +233,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                     :
                                     (<p className="text-sm leading-5">No Feedback</p>)}
                                 </div>
-                                <h4 className="mt-3 mb-5 text-xl">
+                                <h4 className="mt-3 mb-5 text-xl text-red-600">
                                   {selectedProduct.currency}{" "}
                                   {formatPrice(selectedProduct.price)}
                                 </h4>

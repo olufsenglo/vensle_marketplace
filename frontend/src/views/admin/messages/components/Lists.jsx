@@ -85,7 +85,7 @@ const Lists = ({
 									</div>
 								)}
 								{message?.latest_reply ? (
-									<p className="border inline-block mt-1 rounded-full py-1 px-4"> <span style={{ fontSize: "11px", fontStyle: "italic" }}>Reply to:</span> {message.content}</p>
+									<p className="border border-gray-400 inline-block mt-1 rounded-full py-1 px-4"> <span style={{ fontSize: "11px", fontStyle: "italic" }}>Reply to:</span> {message.content}</p>
 
 								) : (
 									<div>

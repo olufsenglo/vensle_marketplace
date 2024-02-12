@@ -266,7 +266,7 @@ const TopPurchaseSellers = () => {
                 </button>
 
                 <button
-                  className={`px2 bg-transparent h-10 w-full items-center whitespace-nowrap border-b-2 text-center text-sm focus:outline-none md:w-auto ${
+                  className={`px-2 bg-transparent h-10 w-full items-center whitespace-nowrap border-b-2 text-center text-sm focus:outline-none md:w-auto ${
                     activeTab === 4
                       ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
                       : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"

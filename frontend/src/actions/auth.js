@@ -9,8 +9,10 @@ import {
   SET_MESSAGE,
 } from "./types";
 
+import { emptyCart } from "actions/actions"
 import AuthService from "services/auth.service";
-// import apiService from '../services/apiService';
+
+const API_URL = "http://localhost:8000/api/v1/";
 
 export const register =
   (
@@ -75,6 +77,8 @@ export const login = (email, password) => (dispatch) => {
       });
 
       //Merge cart TODO:put in await
+
+      //Merge cart items with cart items in database
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
       if (cart.length > 0) {
         axios.post(
@@ -88,6 +92,24 @@ export const login = (email, password) => (dispatch) => {
           }
         );
       }
+
+        // Fetch the cart items
+        axios
+          .get(`${API_URL}cart`, {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          })
+          .then((cartResponse) => {
+            if (cartResponse) {
+              const userCartItems = cartResponse.data;
+	      dispatch({ type: "REPLACE_CART", payload: userCartItems.cart });
+              localStorage.setItem("cart", JSON.stringify(userCartItems.cart));
+            }
+          })
+          .catch((error) => {
+            console.error("Cart fetch error:", error);
+          });
 
       dispatch({
         type: SET_MESSAGE,
@@ -130,15 +152,16 @@ export const updateUserProfile = (userData) => (dispatch, getState) => {
 //});
 
 export const logout = () => (dispatch) => {
-  localStorage.removeItem("cart");
-  AuthService.logout();
+   localStorage.removeItem("cart");
+   dispatch({ type: 'EMPTY_CART' });
+   AuthService.logout();
 
-  dispatch({
-    type: LOGOUT,
-  });
-      dispatch({
-        type: SET_MESSAGE,
-        payload: { type: "success", message: "Logout sucessfull" },
-      });
+   dispatch({
+     type: LOGOUT,
+   });
+   dispatch({
+      type: SET_MESSAGE,
+      payload: { type: "success", message: "Logout sucessfull" },
+   });
 	
 };

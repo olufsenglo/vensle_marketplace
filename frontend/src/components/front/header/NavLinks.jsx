@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+
 import NavCategories from "./NavCategories";
 
 const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
@@ -48,9 +50,9 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
           {categories ? (
             categories.map((category) => (
               <li className="hidden lg:block" key={category.id}>
-                <a href={`/filter?searchTerm=&category_id=${category.id}`}>
+                <Link to={`/filter?searchTerm=&category_id=${category.id}`}>
                   {category.name}
-                </a>
+                </Link>
               </li>
             ))
           ) : (

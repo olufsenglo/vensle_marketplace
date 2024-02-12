@@ -6,8 +6,10 @@ import Request from "components/front/request/Request";
 const baseURL = "http://localhost:8000";
 export default function TopRequests() {
   const [productRequests, setProductRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchProductRequests = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `${baseURL}/api/v1/products/top-by-type`,
@@ -20,8 +22,10 @@ export default function TopRequests() {
       );
 
       setProductRequests(response.data.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
+      setLoading(false);
     }
   };
 
@@ -38,17 +42,17 @@ export default function TopRequests() {
           Top Requests
         </h2>
 
-        <div className="relative grid min-h-[15rem] grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
-          {!productRequests.length && (
+        <div className="relative mt-10 grid min-h-[15rem] grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 xl:gap-x-8">
+          {loading ? (
             <div
               style={{ zIndex: "5" }}
-              className="absolute mb-12 flex h-full w-full justify-center pt-2 pb-12"
+              className="absolute mb-12 flex h-full w-full justify-center pt-12"
             >
               <p>Loading...</p>
             </div>
-          )}
-
-          {productRequests &&
+          )
+	 :
+          productRequests &&
             productRequests.map((product) => (
               <>
                 <Request product={product} />

@@ -32,22 +32,6 @@ const login = (email, password) => {
       if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data));
 
-        // Fetch the cart items
-        axios
-          .get(`${API_URL}cart`, {
-            headers: {
-              Authorization: `Bearer ${response.data.token}`,
-            },
-          })
-          .then((cartResponse) => {
-            if (cartResponse) {
-              const userCartItems = cartResponse.data;
-              localStorage.setItem("cart", JSON.stringify(userCartItems.cart));
-            }
-          })
-          .catch((error) => {
-            console.error("Cart fetch error:", error);
-          });
       }
 
       return response.data;
@@ -55,7 +39,6 @@ const login = (email, password) => {
 };
 
 const logout = () => {
-  localStorage.removeItem("cart");
   localStorage.removeItem("user");
 };
 

@@ -9,6 +9,7 @@ const NewUploads = () => {
   const [products, setProducts] = useState(null);
   const [column, setColumn] = useState("created_at");
   const [activeTab, setActiveTab] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const handleTabClick = (tabNumber, column) => {
     setActiveTab(tabNumber);
@@ -16,6 +17,7 @@ const NewUploads = () => {
   };
 
   const fetchProducts = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `${baseURL}/api/v1/products/top-by-column`,
@@ -29,8 +31,10 @@ const NewUploads = () => {
 
       const products = response.data.data;
       setProducts(products);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
+      setLoading(false);
     }
   };
 
@@ -44,41 +48,38 @@ const NewUploads = () => {
         style={{ minHeight: "30rem" }}
         className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8"
       >
-        {!products && (
+        {loading && (
           <div
             style={{
               zIndex: "5",
-              left: "0",
-              right: "0",
-              top: "4rem",
-              bottom: "0",
             }}
-            className="absolute flex items-center justify-center"
+            className="absolute pt-[10%] top-[4rem] inset-0 bg-white flex justify-center"
           >
             <p>Loading...</p>
           </div>
         )}
         <div className="flex overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
+	  
           <button
-            className={`bg-transparent inline-flex h-10 items-center whitespace-nowrap border-b-2 pr-4 text-left text-xl transition duration-300 focus:outline-none sm:text-base md:text-2xl ${
+            className={`bg-transparent inline-flex h-10 items-center whitespace-nowrap border-b-2 pr-4 text-left font-normal text-xl transition duration-300 focus:outline-none sm:text-base md:text-2xl uppercase ${
               activeTab === 1
                 ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
                 : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
             }`}
             onClick={() => handleTabClick(1, "created_at")}
           >
-            NEW UPLOADS
+            New Uploads
           </button>
 
           <button
-            className={`bg-transparent inline-flex h-10 items-center whitespace-nowrap border-b-2 px-4 text-center text-xl focus:outline-none sm:text-base md:text-2xl ${
+            className={`bg-transparent inline-flex h-10 items-center whitespace-nowrap border-b-2 px-4 text-center font-normal text-xl focus:outline-none sm:text-base md:text-2xl uppercase ${
               activeTab === 2
                 ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
                 : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
             }`}
             onClick={() => handleTabClick(2, "ratings")}
           >
-            BEST RATINGS
+            Best Ratings
           </button>
         </div>
 

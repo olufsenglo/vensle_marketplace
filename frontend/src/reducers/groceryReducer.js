@@ -3,6 +3,8 @@ import {
   REMOVE_FROM_CART,
   DECREASE_QUANTITY,
   INCREASE_QUANTITY,
+  REPLACE_CART,
+  EMPTY_CART,
 } from "../types/actionTypes";
 
 const initialState = {
@@ -33,7 +35,6 @@ const cartReducer = (state = initialState, action) => {
       };
 
     case INCREASE_QUANTITY:
-console.log(state.items)
       return {
         ...state,
         items: state.items.map((item) =>
@@ -42,6 +43,12 @@ console.log(state.items)
             : item
         ),
       };
+
+    case REPLACE_CART:
+      return { items: action.payload };
+
+    case EMPTY_CART:
+      return { items: [] };
 
     default:
       return state;

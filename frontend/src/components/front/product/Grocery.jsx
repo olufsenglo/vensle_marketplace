@@ -152,8 +152,8 @@ function formatPrice(price) {
             <button
               type="submit"
               onClick={(e) => handleAddToCart(e, product)}
-              className={`bg-transparent h-[35px] text-[0.8rem] hover:border-transparent rounded border border-red-500 px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white uppercase ${
-		btnSize === 'sm' && "md:text-[0.6rem] md:h-auto"
+              className={`bg-transparent h-8 text-[0.8rem] hover:border-transparent rounded border border-red-500 px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white uppercase ${
+		btnSize === 'sm' && "md:text-[0.6rem]"
 	      }`}
             >
               Add to cart

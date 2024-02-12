@@ -159,7 +159,7 @@ const Search = () => {
       <select
         value={selectedCategory}
         onChange={handleCategoryChange}
-        className="hidden h-full border border-r-0 p-2 lg:block"
+        className="hidden w-[7.5rem] h-full border border-r-0 p-2 lg:block"
       >
         <option value="">Everything</option>
         {categories &&

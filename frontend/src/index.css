@@ -84,6 +84,7 @@ input:checked.defaultCheckbox::before {
 .hero__wrapper .slick-prev:before, .hero__wrapper .slick-next:before {
     font-size: 36px!important;
     font-family: inherit!important;
+    opacity: 1!important;
 }
 
 .hero__wrapper .slick-dots {

@@ -482,10 +482,10 @@ const Products = () => {
                     <h2 className="sr-only">Products</h2>
 
                     <div
-                      className={`grid gap-y-10 ${
+                      className={`grid ${
                         listView === "grid"
-                          ? "grid-cols-3 gap-x-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4 "
-                          : "grid-cols-1"
+                          ? "grid-cols-3 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4 "
+                          : "grid-cols-1 gap-y-8"
                       }`}
                     >
                       {filteredProducts.data &&
