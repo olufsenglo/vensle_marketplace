@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('sender_id');
-            $table->unsignedBigInteger('receiver_id');
-	    $table->unsignedBigInteger('product_id')->nullable();
-            $table->text('content');	    
-	    $table->timestamps();
+        Schema::create(
+            'messages', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('sender_id');
+                $table->unsignedBigInteger('receiver_id');
+                $table->unsignedBigInteger('product_id')->nullable();
+                $table->text('content');
+                $table->timestamps();
 
-            $table->foreign('sender_id')->references('id')->on('users');
-            $table->foreign('receiver_id')->references('id')->on('users');
-	    $table->foreign('product_id')->references('id')->on('products')->nullable();
-        });
+                $table->foreign('sender_id')->references('id')->on('users');
+                $table->foreign('receiver_id')->references('id')->on('users');
+                $table->foreign('product_id')->references('id')->on('products')->nullable();
+            }
+        );
     }
 
     /**

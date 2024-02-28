@@ -15,14 +15,14 @@ class BusinessDetails extends Model
         'business_email',
         'phone',
         'business_address',
-	'certificate',
-	'bank_name',
-	'account_number',
-	'profile_picture',
+        'certificate',
+        'bank_name',
+        'account_number',
+        'profile_picture',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }    
+    }
 }

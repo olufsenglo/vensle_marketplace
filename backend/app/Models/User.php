@@ -22,10 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-	'address',
-	'phone_number',
-	'profile_picture',
-	'provider_id',
+        'address',
+        'phone_number',
+        'profile_picture',
+        'provider_id',
     ];
 
     /**
@@ -59,12 +59,12 @@ class User extends Authenticatable
     public function userAlerts()
     {
         return $this->hasMany(UserAlert::class);
-    }    
+    }
 
-public function businessDetails()
-{
-    return $this->hasOne(BusinessDetails::class);
-}
+    public function businessDetails()
+    {
+        return $this->hasOne(BusinessDetails::class);
+    }
 
     public function feedback()
     {
@@ -88,5 +88,5 @@ public function businessDetails()
         return $this->morphMany(DatabaseNotification::class, 'notifiable')
             ->orderBy('created_at', 'desc');
     }
-     */    
+     */
 }

@@ -19,21 +19,21 @@ class OrderController extends Controller
     {
         try {
             $user = Auth::user();
-	    $orders = Order::with('products')
-		    ->where('user_id', $user->id)
-		    ->get();
+            $orders = Order::with('products')
+                ->where('user_id', $user->id)
+                ->get();
 
             return response()->json($orders);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-    }	
+    }
 
 
     /**
      * Get details of a specific order by ID.
      *
-     * @param  int  $orderId
+     * @param  int $orderId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getOrderDetails($orderId)
@@ -42,13 +42,13 @@ class OrderController extends Controller
             $user = Auth::user();
 
             //$order = Order::with('products')->where('user_id', $user->id)->findOrFail($orderId);
-	    $order = Order::with('products')
-		    ->where('user_id', $user->id)
-		    ->find($orderId);
+            $order = Order::with('products')
+                ->where('user_id', $user->id)
+                ->find($orderId);
 
             if (!$order) {
                 return response()->json(['error' => 'Order not found'], 404);
-	    }
+            }
 
             return response()->json($order);
         } catch (\Exception $e) {
@@ -61,6 +61,6 @@ class OrderController extends Controller
         $user = Auth::user();
         $totalOrders = Order::where('user_id', $user->id)->count();
         return response()->json(['totalOrders' => $totalOrders]);
-    }    
+    }
 
 }

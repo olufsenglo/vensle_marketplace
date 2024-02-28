@@ -10,22 +10,23 @@ use App\Models\BusinessDetails;
 class BusinessDetailsController extends Controller
 {
 
-public function getBusinessDetails()
-{
-    try {
-        $user = auth()->user();
-        $businessDetails = $user->businessDetails;
+    public function getBusinessDetails()
+    {
+        try {
+            $user = auth()->user();
+            $businessDetails = $user->businessDetails;
 
-        return response()->json(['businessDetails' => $businessDetails]);	    
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
-    }	
-}
+            return response()->json(['businessDetails' => $businessDetails]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
     public function store(Request $request)
     {
         try {
-            $request->validate([
+            $request->validate(
+                [
                 'user_id' => 'required|exists:users,id',
                 'business_name' => 'required|string',
                 'business_email' => 'unique:business_details,business_email|nullable|email',
@@ -35,7 +36,8 @@ public function getBusinessDetails()
                 'account_number' => 'required|string',
                 'certificate' => 'nullable|string',
                 'profile_picture' => 'nullable|string',
-            ]);
+                ]
+            );
 
             $businessDetails = BusinessDetails::create($request->all());
 
@@ -61,13 +63,13 @@ public function getBusinessDetails()
     }
 
 
-/*
-public function update(Request $request)
-{
+    /*
+    public function update(Request $request)
+    {
     try {
         $user = auth()->user();
         $businessDetails = $user->businessDetails;
-	
+
         // Check if businessDetails exists, if not, create a new entry
         if (!$businessDetails) {
             $businessDetails = new BusinessDetails();
@@ -105,81 +107,83 @@ public function update(Request $request)
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }
-}
- */
-
-private function deleteFileIfExists($filePath)
-{
-    if ($filePath && file_exists(public_path($filePath))) {
-        unlink(public_path($filePath));
     }
-}
+    */
 
-private function uploadFile($file)
-{
-    $extension = $file->getClientOriginalExtension();
-    $imageName = Str::random(32) . "." . $extension;
-    $file->move('uploads/', $imageName);
+    private function deleteFileIfExists($filePath)
+    {
+        if ($filePath && file_exists(public_path($filePath))) {
+            unlink(public_path($filePath));
+        }
+    }
 
-    return 'uploads/' . $imageName;
-}
+    private function uploadFile($file)
+    {
+        $extension = $file->getClientOriginalExtension();
+        $imageName = Str::random(32) . "." . $extension;
+        $file->move('uploads/', $imageName);
 
-public function update(Request $request)
-{
-    try {
-        $user = auth()->user();
-        $businessDetails = $user->businessDetails;
+        return 'uploads/' . $imageName;
+    }
 
-        $request->validate([
-            'business_name' => 'nullable|required',
-            'business_email' => 'unique:business_details,business_email,' . $businessDetails->id . '|nullable|email',
-            'phone' => 'nullable|string',
-            'business_address' => 'nullable|string',
-            'bank_name' => 'nullable|string',
-            'account_number' => 'nullable|string',
-	    'cerfificate' => $request->input('certificate_status') === 'new'
+    public function update(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $businessDetails = $user->businessDetails;
+
+            $request->validate(
+                [
+                'business_name' => 'nullable|required',
+                'business_email' => 'unique:business_details,business_email,' . $businessDetails->id . '|nullable|email',
+                'phone' => 'nullable|string',
+                'business_address' => 'nullable|string',
+                'bank_name' => 'nullable|string',
+                'account_number' => 'nullable|string',
+                'cerfificate' => $request->input('certificate_status') === 'new'
                 ? 'nullable|mimes:jpeg,jpg,png,pdf,doc,docx'
                 : 'sometimes|string',
-	    'profile_picture' => $request->input('profile_picture_status') === 'new'
+                'profile_picture' => $request->input('profile_picture_status') === 'new'
                 ? 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048'
                 : 'sometimes|string',
-        ]);
+                ]
+            );
 
 
-        if ($request->profile_picture_status === 'new' && $request->hasFile('profile_picture')) {
-            // Delete existing profile picture if it exists
-            if ($businessDetails->profile_picture) {
-                File::delete(public_path('uploads/' . $businessDetails->profile_picture));
+            if ($request->profile_picture_status === 'new' && $request->hasFile('profile_picture')) {
+                // Delete existing profile picture if it exists
+                if ($businessDetails->profile_picture) {
+                    File::delete(public_path('uploads/' . $businessDetails->profile_picture));
+                }
+
+                $profilePicture = $request->file('profile_picture');
+                $profilePictureName = Str::random(32) . '.' . $profilePicture->getClientOriginalExtension();
+                $profilePicture->move(public_path('uploads/'), $profilePictureName);
+
+                $businessDetails->profile_picture = $profilePictureName;
             }
 
-            $profilePicture = $request->file('profile_picture');
-            $profilePictureName = Str::random(32) . '.' . $profilePicture->getClientOriginalExtension();
-            $profilePicture->move(public_path('uploads/'), $profilePictureName);
+            // Handle certificate
+            if ($request->certificate_status === 'new' && $request->hasFile('certificate')) {
+                // Delete existing certificate if it exists
+                if ($businessDetails->certificate) {
+                    File::delete(public_path('uploads/' . $businessDetails->certificate));
+                }
 
-            $businessDetails->profile_picture = $profilePictureName;
-        }
+                $certificate = $request->file('certificate');
+                $certificateName = Str::random(32) . '.' . $certificate->getClientOriginalExtension();
+                $certificate->move(public_path('uploads/'), $certificateName);
 
-        // Handle certificate
-        if ($request->certificate_status === 'new' && $request->hasFile('certificate')) {
-            // Delete existing certificate if it exists
-            if ($businessDetails->certificate) {
-                File::delete(public_path('uploads/' . $businessDetails->certificate));
+                $businessDetails->certificate = $certificateName;
             }
 
-            $certificate = $request->file('certificate');
-            $certificateName = Str::random(32) . '.' . $certificate->getClientOriginalExtension();
-            $certificate->move(public_path('uploads/'), $certificateName);
+            $businessDetails->update($request->except(['profile_picture', 'certificate']));
 
-            $businessDetails->certificate = $certificateName;
+            return response()->json(['message' => 'Business details updated successfully', 'data' => $businessDetails]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        $businessDetails->update($request->except(['profile_picture', 'certificate']));
-
-        return response()->json(['message' => 'Business details updated successfully', 'data' => $businessDetails]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
     }
-}
 
 
 

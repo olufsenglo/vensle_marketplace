@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Order;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
@@ -15,14 +16,15 @@ class StripeController extends Controller
     public function payment(Request $request)
     {
         try {
-//Validation
-            /*$validator = Validator::make($request->all(), [
+            $validator = Validator::make(
+                $request->all(), [
                 'product_ids' => 'required|array',
-            ]);
+                ]
+            );
 
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 400);
-            }*/
+            }
 
 
             $productIds = $request->product_ids;
@@ -52,31 +54,57 @@ class StripeController extends Controller
                 ];
             }
 
+            dd($lineItems);
+            /*
             Stripe::setApiKey(config('stripe.secret_key'));
 
             $session = Session::create([
                 'payment_method_types' => ['card', 'cashapp', 'us_bank_account'],
                 'line_items' => $lineItems,
                 'mode' => 'payment',
-                'success_url' => 'http://localhost:3000/payment/success',
-                'cancel_url' => 'http://localhost:3000/payment/cancel',
+                'success_url' => 'https://nominet.vensle.com/payment/success',
+                'cancel_url' => 'https://nominet.vensle.com/payment/cancel',
             ]);
+            */
+            $userId = Auth::id();
 
-            //$userId = Auth::id();
+            Order::where('user_id', $userId)->delete();
 
-            // Create an order record in the database
-// TODO: order should be stored after payment
-                $order = Order::create([
-                'user_id' => 1,
-                //'user_id' => $userId,
-                'stripe_session_id' => 2139,
-                'stripe_session_id' => $session->id,
-            ]);
+            //TODO: Store product snapshot, incase user updates product in a later date
+                $order = Order::create(
+                    [
+                    'user_id' => $userId,
+                    'stripe_session_id' => 1,
+                    //'stripe_session_id' => $session->id,
+                    'product_ids' => json_encode($productIds),
+                    ]
+                );
 
-            $order->products()->attach($productIds);
+            //return response()->json(['url' => $session->url]);
+            return response()->json(['url' => 'https://nominet.vensle.com/payment/success']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
-            //return response()->json(['url' => 'www']);
-            return response()->json(['url' => $session->url]);
+    public function paymentSuccessful(Request $request)
+    {
+        try {
+            $userId = Auth::id();
+
+            // Find the user's existing order
+            $order = Order::where('user_id', $userId)->firstOrFail();
+
+            // If an order exists, update its status to "completed"
+            $order->status = 'completed';
+            $order->save();
+
+            return response()->json(
+                [
+                'message' => 'Payment successful. Order status updated.',
+                'product_ids' => $order->product_ids
+                ]
+            );
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

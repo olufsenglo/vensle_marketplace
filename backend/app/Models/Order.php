@@ -12,6 +12,7 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'stripe_session_id',
+        'product_ids',
     ];
 
     /**
@@ -25,13 +26,10 @@ class Order extends Model
     }
 
     /**
-     * Get the products associated with the order.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Define a relationship to products based on product_ids array.
      */
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withTimestamps();
+        return Product::whereIn('id', json_decode($this->product_ids))->get();
     }
-
 }

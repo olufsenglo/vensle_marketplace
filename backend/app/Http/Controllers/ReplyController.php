@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reply;
+use App\Models\UserAlert;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,6 +33,14 @@ class ReplyController extends Controller
             'sender_id' => $user->id,
             'content' => $request->input('content'),
         ]);
+
+	// Send alert to user
+	UserAlert::create([
+	    'user_id' => $user->id,
+	    'title' => 'You hav a new message',
+	    'message' => $reply->content,
+	]);	
+
 
         return response()->json($reply, 201);
     }

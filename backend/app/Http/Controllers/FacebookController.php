@@ -24,18 +24,20 @@ class FacebookController extends Controller
 
             if ($finduser) {
                 $token = $finduser->createToken('API Auth Token')->accessToken;
-                $redirectUrl = 'http://localhost:3000/social-auth-redirect?token=' . $token . '&user=' . json_encode($finduser);
+                $redirectUrl = 'https://nominet.vensle.com/social-auth-redirect?token=' . $token . '&user=' . json_encode($finduser);
                 return redirect($redirectUrl);
             } else {
-                $newUser = User::updateOrCreate(['email' => $user->email], [
+                $newUser = User::updateOrCreate(
+                    ['email' => $user->email], [
                     'name' => $user->name,
                     'provider_id' => $user->id,
                     'profile_picture' => $user->avatar,
                     'password' => encrypt('123456dummy')
-                ]);
+                    ]
+                );
                 $token = $newUser->createToken('API Auth Token')->accessToken;
 
-                $redirectUrl = 'http://localhost:3000/social-auth-redirect?token=' . $token . '&user=' . json_encode($newUser);
+                $redirectUrl = 'https://nominet.vensle.com/social-auth-redirect?token=' . $token . '&user=' . json_encode($newUser);
                 return redirect($redirectUrl);
             }
         } catch (Exception $e) {

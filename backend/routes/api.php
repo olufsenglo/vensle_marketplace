@@ -33,9 +33,11 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->get(
+    '/user', function (Request $request) {
+        return $request->user();
+    }
+);
 
 
 //TODO: use route group /v1
@@ -51,23 +53,28 @@ Route::post('/v1/forgot-password', [CustomPasswordResetController::class, 'forgo
 Route::post('/v1/reset-password', [CustomPasswordResetController::class, 'resetPassword']);
 
 //Route::post('/v1/payment', 'App\Http\Controllers\StripeController@payment');
-Route::post('/v1/payment', [StripeController::class, 'payment']);
 //Route::post('/v1/orders', [Controller::class, 'payment']);
 // routes/api.php
 
-Route::middleware('auth:api')->group(function () {
-	Route::get('/v1/user/orders', [OrderController::class, 'getUserOrders']);
-	Route::get('/v1/user/orders/{orderId}', [OrderController::class, 'getOrderDetails']);
-});
+Route::middleware('auth:api')->group(
+    function () {
+        Route::get('/v1/user/orders', [OrderController::class, 'getUserOrders']);
+        Route::get('/v1/user/orders/{orderId}', [OrderController::class, 'getOrderDetails']);
+        Route::post('/v1/payment', [StripeController::class, 'payment']);
+        Route::get('/v1/payment-successful', [StripeController::class, 'paymentSuccessful']);
+    }
+);
 
 
-Route::middleware('auth:api')->group(function () {
-    Route::post('/v1/update-profile', 'App\Http\Controllers\UserAuthController@updateProfile');
-    Route::post('/v1/update-password', 'App\Http\Controllers\UserAuthController@updatePassword');
-    Route::post('/v1/update-profile-picture', 'App\Http\Controllers\UserAuthController@updateProfilePicture');
-    Route::get('/v1/cart', [CartController::class, 'index']);
-    Route::post('/v1/merge-cart', 'App\Http\Controllers\CartController@mergeCart');
-});
+Route::middleware('auth:api')->group(
+    function () {
+        Route::post('/v1/update-profile', 'App\Http\Controllers\UserAuthController@updateProfile');
+        Route::post('/v1/update-password', 'App\Http\Controllers\UserAuthController@updatePassword');
+        Route::post('/v1/update-profile-picture', 'App\Http\Controllers\UserAuthController@updateProfilePicture');
+        Route::get('/v1/cart', [CartController::class, 'index']);
+        Route::post('/v1/merge-cart', 'App\Http\Controllers\CartController@mergeCart');
+    }
+);
 
 //Route::get('/v1/products/filter', [FilterController::class, 'test']);
 
@@ -77,7 +84,7 @@ Route::get('/v1/products/filter', [ProductController::class, 'filter']);
 /**
  * Query Parameters:
  * - per_page: Number of items per page.
- * - e.g: http://localhost:8000/api/v1/products/top-by-sold?per_page=10
+ * - e.g: https://nominet.vensle.com/backend/api/v1/products/top-by-sold?per_page=10
  */
 Route::get('/v1/products/top-by-quantity', [ProductController::class, 'getTopProductsByQuantity']);
 Route::get('/v1/products/top-by-sold', [ProductController::class, 'getTopProductsBySold']);
@@ -89,21 +96,25 @@ Route::get('/v1/products/top-by-type', [ProductController::class, 'getTopProduct
 Route::get('/v1/products/top-by-column', [ProductController::class, 'getTopProductsByColumn']);
 
 
-Route::middleware('auth:api')->prefix('v1')->group(function () {
-    Route::get('/products/upload/total', [ProductController::class, 'getTotalUploadedProducts']);
-    Route::get('/products/request/total', [ProductController::class, 'getTotalRequests']);
-    Route::get('/orders/total', [OrderController::class, 'getTotalOrders']);
-});
+Route::middleware('auth:api')->prefix('v1')->group(
+    function () {
+        Route::get('/products/upload/total', [ProductController::class, 'getTotalUploadedProducts']);
+        Route::get('/products/request/total', [ProductController::class, 'getTotalRequests']);
+        Route::get('/orders/total', [OrderController::class, 'getTotalOrders']);
+    }
+);
 
 
 Route::get('v1/products', [ProductController::class, 'index']);
 Route::get('/v1/products/{id}', [ProductController::class, 'show']);
 //Route::put('/v1/products/{id}', [ProductController::class, 'update']);
 
-Route::middleware('auth:api')->group(function () {
-    Route::post('/v1/products/{id}', [ProductController::class, 'update']);
-    Route::post('/v1/products', [ProductController::class, 'store']);
-});
+Route::middleware('auth:api')->group(
+    function () {
+        Route::post('/v1/products/{id}', [ProductController::class, 'update']);
+        Route::post('/v1/products', [ProductController::class, 'store']);
+    }
+);
 
 /*
 Route::apiResource('v1/products', ProductController::class);
@@ -122,6 +133,7 @@ Route::get('/v1/categories', [ProductController::class, 'getAllCategories']);
 Route::apiResource('/v1/product-requests', ProductRequestController::class);
 // ]
 
+//TODO: protect route
 Route::post('v1/add-to-cart', [CartController::class, 'addToCart']);
 Route::post('v1/remove-from-cart', [CartController::class, 'removeFromCart']);
 Route::post('v1/update-cart', [CartController::class, 'updateCart']);
@@ -135,11 +147,13 @@ Route::post('v1/clear-cart', [CartController::class, 'clearCart']);
 
 
 
-Route::middleware('auth:api')->group(function () {
-    Route::get('/v1/user-alerts/unread', [UserAlertController::class, 'getUnreadAlerts']);
-    Route::put('/v1/user-alerts/mark-as-read', [UserAlertController::class, 'markAlertsAsRead']);
-    Route::get('/v1/user-alerts/unread-count', [UserAlertController::class, 'getUnreadAlertsCount']);
-});
+Route::middleware('auth:api')->group(
+    function () {
+        Route::get('/v1/user-alerts/unread', [UserAlertController::class, 'getUnreadAlerts']);
+        Route::put('/v1/user-alerts/mark-as-read', [UserAlertController::class, 'markAlertsAsRead']);
+        Route::get('/v1/user-alerts/unread-count', [UserAlertController::class, 'getUnreadAlertsCount']);
+    }
+);
 
 //Route::group(['prefix' => 'auth'], function () {});
 Route::get('/v1/auth/google', [AuthSocialiteController::class, 'redirectToGoogle']);
@@ -150,31 +164,42 @@ Route::get('/v1/auth/google/callback', [AuthSocialiteController::class, 'handleG
 Route::post('/v1/business-details', [BusinessDetailsController::class, 'store']);
 Route::get('/v1/business-details/{id}', [BusinessDetailsController::class, 'show']);
 
-Route::middleware(['auth:api'])->group(function () {
-	Route::get('/v1/business-details', [BusinessDetailsController::class, 'getBusinessDetails']);
-	Route::post('/v1/business-details/update', [BusinessDetailsController::class, 'update']);
-});
+Route::middleware(['auth:api'])->group(
+    function () {
+        Route::get('/v1/business-details', [BusinessDetailsController::class, 'getBusinessDetails']);
+        Route::post('/v1/business-details/update', [BusinessDetailsController::class, 'update']);
+    }
+);
 
 Route::delete('/v1/business-details/{id}', [BusinessDetailsController::class, 'destroy']);
 
 Route::get('/v1/feedback/{product_id}', [FeedbackController::class, 'index']);
-Route::middleware(['auth:api'])->group(function () {
-    Route::post('/v1/feedback', [FeedbackController::class, 'store']);
-});
+Route::middleware(['auth:api'])->group(
+    function () {
+        Route::post('/v1/feedback', [FeedbackController::class, 'store']);
+    }
+);
 
 // Routes for messages
-Route::middleware('auth:api')->prefix('v1')->group(function () {
-    // Retrieve inbox and sent messages
-    Route::get('/messages/inbox', [MessageController::class, 'getInboxMessages']);
-    Route::get('/messages/sent', [MessageController::class, 'getSentMessages']);
+Route::middleware('auth:api')->prefix('v1')->group(
+    function () {
+        /**
+         * Retrieve inbox and sent messages
+         * Query Parameters:
+         * - per_page: Number of items per page.
+         * - e.g: https://nominet.vensle.com/backend/api/v1/messages/inbox?per_page=10
+         */
+        Route::get('/messages/inbox', [MessageController::class, 'getInboxMessages']);
+        Route::get('/messages/sent', [MessageController::class, 'getSentMessages']);
 
-    //Message routes
-    Route::get('/messages', [MessageController::class, 'index']);
-    Route::get('/messages/{id}', [MessageController::class, 'show']);
-    Route::post('/messages', [MessageController::class, 'store']);
-    Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
+        //Message routes
+        Route::get('/messages', [MessageController::class, 'index']);
+        Route::get('/messages/{id}', [MessageController::class, 'show']);
+        Route::post('/messages', [MessageController::class, 'store']);
+        Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
 
-    // Routes for replies
-    Route::post('/messages/{messageId}/replies', [ReplyController::class, 'store']);
-    Route::delete('/messages/{messageId}/replies/{replyId}', [ReplyController::class, 'destroy']);
-});
+        // Routes for replies
+        Route::post('/messages/{messageId}/replies', [ReplyController::class, 'store']);
+        Route::delete('/messages/{messageId}/replies/{replyId}', [ReplyController::class, 'destroy']);
+    }
+);

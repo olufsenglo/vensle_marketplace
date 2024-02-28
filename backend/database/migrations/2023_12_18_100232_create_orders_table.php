@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->string('stripe_session_id')->nullable();	    
-            $table->timestamps();
-        });
+        Schema::create(
+            'orders', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained();
+                $table->string('stripe_session_id')->nullable();
+                $table->json('product_ids');
+                $table->string('status')->default('pending');
+                $table->timestamps();
+            }
+        );
     }
 
     /**
