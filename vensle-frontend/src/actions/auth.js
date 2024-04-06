@@ -1,164 +1,169 @@
+import axios from "axios";
+
 import {
-    REGISTER_SUCCESS,
-    REGISTER_FAIL,
-    LOGIN_SUCCESS,
-    LOGIN_FAIL,
-    LOGOUT,
-    SET_MESSAGE,
-  } from "./types";
+  REGISTER_SUCCESS,
+  REGISTER_FAIL,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  LOGOUT,
+  SET_MESSAGE,
+} from "./types";
 
-  import AuthService from "services/auth.service";
-  // import apiService from '../services/apiService'; 
+import { emptyCart } from "actions/actions"
+import AuthService from "services/auth.service";
 
-  export const register = (name, email, password, password_confirmation) => (dispatch) => {
-    return AuthService.register(name, email, password, password_confirmation).then(
+const API_URL = "https://nominet.vensle.com/backend/api/v1/";
+//const API_URL = "https://nominet.vensle.com/backend/api/v1/";
+
+export const register =
+  (
+    name,
+    business_name,
+    email,
+    phone_number,
+    address,
+    password,
+    password_confirmation
+  ) =>
+  (dispatch) => {
+    return AuthService.register(
+      name,
+      business_name,
+      email,
+      phone_number,
+      address,
+      password,
+      password_confirmation
+    ).then(
       (response) => {
         dispatch({
           type: REGISTER_SUCCESS,
         });
-  
+
         dispatch({
           type: SET_MESSAGE,
-          payload: response.data.message,
+          payload: {
+            type: "success",
+            message: "Registration successfull, you can now login",
+          },
         });
-  
+
         return Promise.resolve();
       },
       (error) => {
-         const message =
-         (error.response.data &&
-           error.response &&
-           error.response.data.message) ||
-           error.message ||
-           error.toString();
-
-        //const message = error.response.data.errors;
-//const errorMessages = Object.values(error.response.data).flat();
-//payload: errorMessages.join(", "), // Concatenate error messages into a string
-	      console.log('msgszzzz',message)
+        const message = error.response.data.errors
+          ? error.response.data.errors
+          : { dispatchError: error.response.data.message };
 
         dispatch({
           type: REGISTER_FAIL,
         });
-  
+
         dispatch({
           type: SET_MESSAGE,
-          payload: message,
+          payload: { type: "error", message },
         });
-  
+
         return Promise.reject();
       }
     );
   };
 
+export const login = (email, password) => (dispatch) => {
+  return AuthService.login(email, password).then(
+    (data) => {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: { user: data },
+      });
 
+      //Merge cart TODO:put in await
 
-  // export const login = (email, password) => async (dispatch) => {
-  //   try {
-  //     const mergedCart = [];
-  //     // Retrieve unauthenticated cart from localStorage
-  //     const unauthenticatedCart = JSON.parse(localStorage.getItem('unauthenticatedCart')) || [];
-  
-  //     const userData = await AuthService.login(email, password);
-  
-  //     // Merge the carts after successful login
-  //     if (unauthenticatedCart.length > 0) {
-  //       mergedCart = await apiService.mergeCarts(unauthenticatedCart);
-  //       // update cart
-  //       //localStorage.removeItem('unauthenticatedCart');
-  //       //localStorage.setItem('cart', JSON.stringify(updatedIncreaseState))
-  //       dispatch({
-  //         type: 'ADD_TO_CART',
-  //         payload: mergedCart,
-  //       });
-  //     }
-  
-  //     dispatch({
-  //       type: LOGIN_SUCCESS,
-  //       payload: {
-  //         user: userData,
-  //         cart: mergedCart,
-  //       },
-  //     });
-  
-  
-  //     return Promise.resolve();
-  //   } catch (error) {
-  //     const message =
-  //       (error.response && error.response.data && error.response.data.message) ||
-  //       error.message ||
-//       B
-  //       error.toString();
-  
-  //     dispatch({
-  //       type: LOGIN_FAIL,
-  //     });
-  
-  //     dispatch({
-  //       type: SET_MESSAGE,
-  //       payload: message,
-  //     });
-  
-  //     return Promise.reject();
-  //   }
-  // };  
-
-
-
-// if (unauthenticatedCart.length > 0) {
-      // const mergedCart = await apiService.mergeCarts(userData.id, unauthenticatedCart);
-// cart: []
-
-  export const login = (email, password) => (dispatch) => {
-    return AuthService.login(email, password).then(
-      (data) => {
-        dispatch({
-          type: LOGIN_SUCCESS,
-          payload: { user: data },
-        });
-  
-        return Promise.resolve();
-      },
-      (error) => {
-        const message =
-          (error.response.data &&
-            error.response &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-        dispatch({
-          type: LOGIN_FAIL,
-        });
-  
-        dispatch({
-          type: SET_MESSAGE,
-          payload: message,
-        });
-  
-        return Promise.reject();
+      //Merge cart items with cart items in database
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      if (cart.length > 0) {
+        axios.post(
+          `${API_URL}merge-cart`,
+          { cart },
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${data.token}`,
+            },
+          }
+        );
       }
-    );
-  };
 
+        // Fetch the cart items
+        axios
+          .get(`${API_URL}cart`, {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          })
+          .then((cartResponse) => {
+		  console.log("cartrr",cartResponse)
+            if (cartResponse) {
+              const userCartItems = cartResponse.data;
+	      dispatch({ type: "REPLACE_CART", payload: userCartItems.cart });
+              localStorage.setItem("cart", JSON.stringify(userCartItems.cart));
+            }
+          })
+          .catch((error) => {
+            console.error("Cart fetch error:", error);
+          });
+
+      dispatch({
+        type: SET_MESSAGE,
+        payload: { type: "success", message: "Login sucessfull" },
+      });
+
+      return Promise.resolve();
+    },
+    (error) => {
+      const message = error.response?.data?.errors
+        ? error.response?.data?.errors
+        : { dispatchError: error.response?.data?.message };
+
+      dispatch({
+        type: LOGIN_FAIL,
+      });
+
+      dispatch({
+        type: SET_MESSAGE,
+        payload: { type: "error", message },
+      });
+
+      return Promise.reject();
+    }
+  );
+};
 
 export const updateUserProfile = (userData) => (dispatch, getState) => {
-    dispatch({
-  	type: 'UPDATE_USER_PROFILE',
-  	payload: userData,
-    })
-	
-  localStorage.setItem('user', JSON.stringify(getState().auth.user));
-}
+  dispatch({
+    type: "UPDATE_USER_PROFILE",
+    payload: userData,
+  });
+
+  localStorage.setItem("user", JSON.stringify(getState().auth.user));
+};
 
 //export const updateUserProfile = (userData) => ({
-  //type: 'UPDATE_USER_PROFILE',
-  //payload: userData,
+//type: 'UPDATE_USER_PROFILE',
+//payload: userData,
 //});
-  
+
 export const logout = () => (dispatch) => {
-    AuthService.logout();
-  
-    dispatch({
-      type: LOGOUT,
-    });
-  };
+   localStorage.removeItem("cart");
+   dispatch({ type: 'EMPTY_CART' });
+   AuthService.logout();
+
+   dispatch({
+     type: LOGOUT,
+   });
+   dispatch({
+      type: SET_MESSAGE,
+      payload: { type: "success", message: "Logout sucessfull" },
+   });
+	
+};

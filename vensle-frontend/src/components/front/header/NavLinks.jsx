@@ -1,46 +1,75 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { Link, useLocation } from "react-router-dom";
+
 import NavCategories from "./NavCategories";
 
-const NavLinks = () => {
-  const [categories, setCategories] = useState('');
+const baseURL = "https://nominet.vensle.com/backend";
+const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const categoryId = queryParams.get("category_id") || "";
+
+  const [categories, setCategories] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/categories');
+        const response = await fetch(`${baseURL}/api/v1/categories`);
         const data = await response.json();
         setCategories(data.categories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
     fetchCategories();
   }, []);
 
-	
+  return (
+    <div
+      className="relative text-white"
+      style={{ "background-color": "black" }}
+    >
+      <div className="mx-auto max-w-2xl px-4 py-[1px] sm:px-6 lg:max-w-7xl lg:px-8">
+        <ul
+          style={{ gap: "1%" }}
+          className="flex items-center justify-between lg:justify-start min-h-[40px]"
+        >
+          <li className="mr-6">
+            <NavCategories />
+          </li>
 
-    return (
-        <div className="text-white" style={{ "background-color":"black" }}>
-            <div className="mx-auto max-w-2xl px-4 py-2 sm:px-6 sm:py-1 lg:max-w-7xl lg:px-8">
-                <ul style={{gap:"2%"}} className="flex py-2">
-                    <li className="mr-6">
-	    		<NavCategories />
-	      	    </li>
-	    		
+          <li className="flex items-center text-xs lg:hidden">
+            {storedCountryFlag && (
+              <img
+                className="mr-2 h-4 w-4 rounded-full"
+                src={storedCountryFlag}
+                alt="country flg"
+              />
+            )}
+            {handleGetUserCountry()}
+          </li>
 
-                {categories ? categories.map((category) => (
-                  <li className="hidden lg:block" key={category.id}>
-			<a href={`/filter?searchTerm=&category_id=${category.id}`}>
-                    	    {category.name}
-			</a>
-		  </li>
-                )) : <li>Loading . . .</li> }
-                </ul>
-            </div>
-        </div>
-    )
-}
+          {categories ? (
+            categories.map((category) => (
+              <li
+		key={category.id}
+	    	className={`hidden rounded-sm transition-all duration-300 ease-in-out lg:block py-2 px-2 hover:bg-gray-400/50 
+		    ${categoryId == category.id && "bg-gray-400/50"}`}
+	      >
+                <Link to={`/filter?searchTerm=&category_id=${category.id}`}>
+                  {category.name}
+                </Link>
+              </li>
+            ))
+          ) : (
+            <li className="hidden lg:block">Loading . . .</li>
+          )}
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 export default NavLinks;

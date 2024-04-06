@@ -38,7 +38,7 @@ const Footer = () => {
           <li>
             <a
               target="blank"
-              href="https://blog.horizon-ui.com/"
+              href="#"
               className="text-base font-medium text-gray-600 hover:text-gray-600"
             >
               Blog

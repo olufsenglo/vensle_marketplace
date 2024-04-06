@@ -10,7 +10,7 @@ import img8 from "assets/img/front/categories/img8.JPG";
 const products = [
     {
       id: 1,
-      name: 'Computing',
+      name: 'Computings',
       href: '/filter?searchTerm=&category_id=15',
       imageSrc: img8,
       imageAlt: "Front of men's Basic Tee in black.",

@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+
 import Nft2 from "assets/img/nfts/Nft2.png";
 import Nft1 from "assets/img/nfts/Nft1.png";
 import Nft3 from "assets/img/nfts/Nft3.png";
@@ -8,57 +11,13 @@ import Nft6 from "assets/img/nfts/Nft6.png";
 import Card from "components/card";
 
 const HistoryCard = ({ products }) => {
+  const baseURL = 'https://nominet.vensle.com/backend';
 
-  const HistoryData = [
-    {
-      image: Nft1,
-      title: "Colorful Heaven",
-      owner: "Mark Benjamin",
-      price: 0.4,
-      time: "30s",
-    },
-    {
-      image: Nft2,
-      title: "Abstract Colors",
-      owner: "Esthera Jackson",
-      price: 2.4,
-      time: "50m",
-    },
-    {
-      image: Nft3,
-      title: "ETH AI Brain",
-      owner: "Nick Wilson",
-      price: 0.3,
-      time: "20s",
-    },
-    {
-      image: Nft4,
-      title: "Swipe Circles",
-      owner: " Peter Will",
-      price: 0.4,
-      time: "4h",
-    },
-    {
-      image: Nft5,
-      title: "Mesh Gradients",
-      owner: "Will Smith",
-      price: 0.4,
-      time: "30s",
-    },
-    {
-      image: Nft6,
-      title: "3D Cubes Art",
-      owner: " Manny Gates",
-      price: 0.4,
-      time: "2m",
-    },
-  ];
 
-    const getDisplayImage = (image) => {
+  const getDisplayImage = (image) => {
       const name = image ? image.name : "";
-      return `http://127.0.0.1:8000/uploads/${name}`;
-    };
-
+      return `${baseURL}/uploads/${name}`;
+  };
 
   return (
     <Card extra={"mt-3 !z-5 overflow-hidden"}>
@@ -74,42 +33,44 @@ const HistoryCard = ({ products }) => {
 
       {/* History CardData */}
 
-      {products && products.map((data, index) => (
-        <div className="flex h-full w-full items-start justify-between bg-white px-3 py-[20px] hover:shadow-2xl dark:!bg-navy-800 dark:shadow-none dark:hover:!bg-navy-700">
+      {products.length > 0 ? products.map((data, index) => (
+        <Link to={`/admin/order-items/${data.id}`} className="flex h-full w-full items-start justify-between bg-white px-3 py-[20px] rounded-md hover:bg-gray-200 dark:!bg-navy-800 dark:shadow-none dark:hover:!bg-navy-700">
           <div className="flex items-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center">
-              {/*data.display_image*/}
+            <div className="flex relative h-16 w-16 mr-4 items-center justify-center">
 
               <img
-                className="h-full w-full rounded-xl"
-                src={getDisplayImage(data.display_image)}
-                alt={data.name}
+                className="h-full w-full relative z-[5] bg-white border border-gray-400 object-cover rounded-xl"
+                src={getDisplayImage(data.items[0].product.display_image)}
+                alt={data.items[0].name}
               />
+              {data.items.length > 1 && <img
+                className="h-full w-full object-cover absolute right-[-10px] w-[55px] h-[55px] bg-white border border-gray-300 rounded-lg"
+                src={getDisplayImage(data.items[1].product.display_image)}
+                alt={data.items[1].name}
+              />}
             </div>
             <div className="flex flex-col">
               <h5 className="text-base font-bold text-navy-700 dark:text-white">
                 {" "}
-                {data.name}
+	        {data.items.length > 1 ? `${data.items[0].name}, ${data.items[0].name.slice(0,3)}...` : data.items[0].name}
               </h5>
               <p className="mt-1 text-sm font-normal text-gray-600">
                 {" "}
-                {data.owner}{" "}
+	        {data.items[0].currency}{data.total_price}{" "}
               </p>
             </div>
           </div>
 
           <div className="mt-1 flex items-center justify-center text-navy-700 dark:text-white">
-            <div className="ml-1 flex items-center text-sm font-bold text-navy-700 dark:text-white">
-              <p>$</p>
-              {data.price} <p className="ml-1"></p>
+            <div className="ml-1 flex items-center text-xs text-navy-700 dark:text-white">
+              <p className="bg-green-300 px-3 py-1 rounded-full">{data.status}</p>
             </div>
-            <div className="ml-2 flex items-center text-sm font-normal text-gray-600 dark:text-white">
-              <p>1 day</p>
-              <p className="ml-1">ago</p>
+            <div className="ml-4 flex items-center text-sm font-normal text-gray-600 dark:text-white">
+              <p>{moment(data.created_at).fromNow()}</p>
             </div>
           </div>
-        </div>
-      ))}
+        </Link>
+      )) : <p className="text-center py-8">You have no orders</p>}
     </Card>
   );
 };

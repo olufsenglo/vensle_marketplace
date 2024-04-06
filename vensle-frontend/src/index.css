@@ -28,36 +28,141 @@ input:checked.defaultCheckbox::before {
 	opacity: 1;
 }
 
-.slick-prev {
+.line-clamp-1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-7 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 7;
+}
+
+.search__button {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;	
+    border: 1px solid #ff595973;
+    border-left: none;    
+}
+
+.search__button::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    background: #ff5959;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;    
+    z-index:0;
+}
+
+.hero__wrapper .slick-prev {
     left: 38px!important;
 }
 
-.slick-next {
+.hero__wrapper .slick-next {
     right: 38px!important;
 }
 
-.slick-prev, .slick-next {
-    z-index: 999!important;
+.hero__wrapper .slick-prev, .hero__wrapper .slick-next {
+    z-index: 99!important;
 }
 
-.slick-prev:before, .slick-next:before {
+.hero__wrapper .slick-prev:before, .hero__wrapper .slick-next:before {
     font-size: 36px!important;
+    font-family: inherit!important;
+    opacity: 1!important;
 }
 
-.slick-dots {
-	bottom: 10px!important;
+.hero__wrapper .slick-dots {
+	bottom: 20px!important;
 }
 
-.slick-dots li button {
+.hero__wrapper .slick-dots li, .hero__wrapper .slick-dots li button {
+    height: 5px!important;
+    width: 48px!important;
+}
+
+.hero__wrapper .slick-dots li button {
     background: white!important;
-}
-
-.slick-dots li button {
+    padding: 0!important;
     border-radius: 5px!important;
 }
 
-.slick-dots li button:before {
+.hero__wrapper .slick-dots li button:before {
+    content: ''!important;
+    height: 5px!important;
+    line-height: 5px!important;	
+    width: 48px!important;
+    background: red!important;
+    opacity: 0!important;	
     font-size: 10px!important;	
     border: 1px solid white!important;
     border-radius: 5px!important;
+}
+
+.hero__wrapper .slick-dots li.slick-active button:before {
+    opacity: 1!important;
+}
+
+/*Top purchase slick*/
+.top-purchase__wrapper .slick-prev, .top-purchase__wrapper .slick-next {
+	background: black;
+	top: -3.5rem;
+	left: auto;
+}
+
+.top-purchase__wrapper .slick-prev {
+	right: 2rem;
+}
+.top-purchase__wrapper .slick-next {
+	right: 0rem;
+}
+
+.top-purchase__wrapper .slick-prev:hover, .top-purchase__wrapper .slick-prev:focus, .top-purchase__wrapper .slick-next:hover, .top-purchase__wrapper .slick-next:focus {
+    color: transparent;
+    outline: none;
+    background: black!important;
+}
+
+.top-purchase__wrapper .slick-slider,
+.top-purchase__wrapper .slick-list,
+.top-purchase__wrapper .slick-track,
+.top-purchase__wrapper .slick-slide,
+.top-purchase__wrapper .slick-slide > div:first-child {
+	height: 100%
+}
+
+.top-purchase__wrapper .slick-arrow {
+    border-radius: 50%!important;
+    display: flex!important;
+    align-items: center!important;
+    justify-content: center!important;
+    }
+.top-purchase__wrapper .slick-arrow:before {
+    font-size: 28px!important;
+    margin-top: 4px!important;
+    opacity: 1!important;
+}
+
+@media screen and (min-width: 992px) and (max-width: 1245px) {
+	.topSellers__wrapper {
+		grid-template-columns: repeat(3, minmax(0, 1fr))!important;
+	}
+	.topPurchases__wrapper {
+		height: 37.5rem!important
+	}
 }

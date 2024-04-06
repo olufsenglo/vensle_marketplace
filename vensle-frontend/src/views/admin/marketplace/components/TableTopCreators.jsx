@@ -84,17 +84,23 @@ function TopCreatorTable(props) {
                           </p>
                         </div>
                       );
-                    } else if (cell.column.Header === "Artworks") {
+                    } else if (cell.column.Header === "Status") {
                       data = (
                         <p className="text-md font-medium text-gray-600 dark:text-white">
                           {cell.value}
                         </p>
                       );
-                    } else if (cell.column.Header === "Rating") {
+                    } else if (cell.column.Header === "Progress") {
                       data = (
                         <div class="mx-2 flex font-bold">
                           <Progress width="w-16" value={cell.value} />
                         </div>
+                      );
+                    } else if (cell.column.Header === "Date") {
+                      data = (
+                        <p className="text-md font-medium text-gray-600 dark:text-white">
+                          {cell.value}
+                        </p>
                       );
                     }
                     return (

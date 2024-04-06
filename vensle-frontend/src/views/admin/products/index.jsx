@@ -1,22 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import moment from "moment";
 
-import {
-  columnsDataComplex,
-} from "./variables/columnsData";
-import tableDataComplex from "./variables/tableDataComplex.json";
 import ComplexTable from "./components/ComplexTable";
-
-
-const content = [
-  {
-    "name": "Marketname",
-    "category": "Fashion",
-    "price": "261",
-    "condition": "old",
-    "status": "Approved",
-    "date": "24.Jan.2021",
-  },
-]
 
 const columnsData = [
   {
@@ -45,48 +30,64 @@ const columnsData = [
   },
 ];
 
+//const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "https://nominet.vensle.com/backend";
 const Tables = () => {
   const [products, setProducts] = useState([]);
   const [extractedData, setExtractedData] = useState([]);
 
+  function formatPrice(price) {
+    return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+      minimumFractionDigits: 2
+    });
+  }	
 
   useEffect(() => {
-    // Function to fetch products
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/products');
+        const response = await fetch(`${baseURL}/api/v1/products`);
         const data = await response.json();
-	const extractedData = data.data.map(({ id, name, category, condition, price, status, created_at, ...rest }) => ({
-	  id,
-	  name,
-	  category: category.name,
-	  condition,
-	  price,
-	  status,
-	  created_at,
-          ...rest
-	}));
-	console.log(extractedData);
-	setProducts(data.data);
-	setExtractedData(extractedData);
+        const extractedData = data.data.map(
+          ({
+            id,
+            name,
+            category,
+            condition,
+            price,
+            status,
+            created_at,
+            ...rest
+          }) => ({
+            id,
+            name,
+            category: category.name,
+            condition,
+            price: formatPrice(price),
+            status,
+            created_at: moment(created_at).fromNow(),
+            ...rest,
+          })
+        );
+        setProducts(data.data);
+        setExtractedData(extractedData);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       }
     };
 
-    // Call the fetch function
     fetchProducts();
-  }, []);	
+  }, []);
 
   return (
     <div>
-      <div className="mt-5 grid h-full grid-cols-1 gap-5">
-        {extractedData && (<ComplexTable
-          columnsData={columnsData}
-          tableData={extractedData}
-		usePagination={true}
-        />)}
-
+      <div className="mt-5 min-h-[25rem] grid h-full grid-cols-1 gap-5">
+        {extractedData && (
+          <ComplexTable
+            columnsData={columnsData}
+            tableData={extractedData}
+            usePagination={true}
+          />
+        )}
       </div>
     </div>
   );

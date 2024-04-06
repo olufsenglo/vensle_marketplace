@@ -16,7 +16,6 @@ import PreviewPopup from "./PreviewPopup";
 
 const ComplexTable = (props) => {
   const { columnsData, tableData } = props;
-
   const [open, setOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -45,7 +44,6 @@ const ComplexTable = (props) => {
 
   const handleProductQuickView = (e, product) => {
       e.preventDefault();
-	  console.log(product)
       setSelectedProduct(product)
       setOpen(true);
   }
@@ -53,17 +51,17 @@ const ComplexTable = (props) => {
   return (
  <>
 	  
-    <Card extra={"w-full h-full p-4 sm:overflow-x-auto"}>
+    <Card extra={"w-full min-h-[80vh] h-full p-4 sm:overflow-x-auto"}>
 
   {selectedProduct && open && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 	  
-      <div class="relative flex items-center justify-between">
-        <div class="text-xl font-bold text-navy-700 dark:text-white">
+      <div className="relative flex items-center justify-between">
+        <div className="text-xl font-bold text-navy-700 dark:text-white">
           Products
         </div>
         <CardMenu />
       </div>
-      <div class="mt-8 h-full overflow-x-scroll xl:overflow-hidden">
+      <div className="mt-8 h-full overflow-x-scroll xl:overflow-hidden">
         <table {...getTableProps()} className="w-full">
           <thead>
             {headerGroups.map((headerGroup, index) => (
@@ -83,11 +81,15 @@ const ComplexTable = (props) => {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, index) => {
+            {tableData.length === 0 
+	    ?
+	    <tr className="text-center absolute py-8 inset-0 top-[12rem]">Loading...</tr>
+	    :
+	    page.map((row, index) => {
               prepareRow(row);
               return (
                 <tr 
-      		      style={{cursor:"pointer"}}
+		      className="cursor-pointer hover:bg-gray-200"
 		      onClick={(e) => handleProductQuickView(e, row.original)}
 		      {...row.getRowProps()} 
 		      key={index}
@@ -96,7 +98,7 @@ const ComplexTable = (props) => {
                     let data = "";
                     if (cell.column.Header === "NAME") {
                       data = (
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        <p className="text-sm pl-1 line-clamp-1 font-bold text-navy-700 dark:text-white">
                           {cell.value}
                         </p>
                       );

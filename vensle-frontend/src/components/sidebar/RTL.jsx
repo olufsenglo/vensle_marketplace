@@ -22,7 +22,7 @@ const Sidebar = ({ open, onClose }) => {
 
       <div className={`mx-[56px] mt-[50px] flex items-center`}>
         <div className="mt-1 h-2.5 font-poppins text-[26px] font-bold uppercase text-navy-700 ms-1 dark:text-white">
-          Horizon <span class="font-medium">FREE</span>
+          Vensle <span class="font-medium">FREE</span>
         </div>
       </div>
       <div class="mt-[58px] mb-7 h-px bg-gray-300 dark:bg-white/30" />
@@ -32,7 +32,7 @@ const Sidebar = ({ open, onClose }) => {
         <Links routes={routes} />
       </ul>
 
-      {/* Free Horizon Card */}
+      {/* Free Vensle Card */}
       <div className="flex justify-center">
         <SidebarCard />
       </div>

@@ -1,11 +1,23 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/api/v1/";
+//const API_URL = "https://nominet.vensle.com/backend/api/v1/";
+const API_URL = "https://nominet.vensle.com/backend/api/v1/";
 
-const register = (name, email, password, password_confirmation) => {
+const register = (
+  name,
+  business_name,
+  email,
+  phone_number,
+  address,
+  password,
+  password_confirmation
+) => {
   return axios.post(API_URL + "register", {
     name,
+    business_name,
     email,
+    phone_number,
+    address,
     password,
     password_confirmation,
   });
@@ -18,13 +30,9 @@ const login = (email, password) => {
       password,
     })
     .then((response) => {
-      // console.log(response);
       if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data));
       }
-
-      
-
 
       return response.data;
     });
