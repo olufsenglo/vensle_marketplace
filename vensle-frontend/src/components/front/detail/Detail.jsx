@@ -30,7 +30,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -441,7 +441,7 @@ const ProductDetail = () => {
           </div>
         )}
       </div>
-
+	  {console.log(similarProducts)}
       {product && <SimilarProduct products={similarProducts} />}
     </div>
   );

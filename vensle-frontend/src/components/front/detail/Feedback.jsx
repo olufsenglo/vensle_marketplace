@@ -226,6 +226,16 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
 
                         <div className="mt-1 flex justify-between items-center">
 
+{/*
+<div class="flex flex-row-reverse justify-center p-10">
+  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">1</i>
+  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">2</i>
+  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">3</i> 
+  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">4</i> 
+  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">5</i> 
+</div> 
+*/}
+
 				<div className="flex items-center">
 				  {[1, 2, 3, 4, 5].map((eachRating) => (
 				    <StarIcon
