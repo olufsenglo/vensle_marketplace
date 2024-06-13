@@ -384,10 +384,9 @@ const ProfileOverview = () => {
 
   return (
     <div className="flex w-full flex-col gap-5">
-      {console.log("buzzzBetezz", businessDetails)}
-      <div class="flex justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
+      <div className="flex justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
         <button
-          class={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 pr-4 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${
+          className={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 pr-4 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${
             activeTab === 1
               ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
               : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
@@ -398,7 +397,7 @@ const ProfileOverview = () => {
         </button>
 
         <button
-          class={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 px-4 text-center text-2xl focus:outline-none sm:text-base ${
+          className={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 px-4 text-center text-2xl focus:outline-none sm:text-base ${
             activeTab === 2
               ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
               : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
@@ -454,7 +453,6 @@ const ProfileOverview = () => {
                   {profileMessage && (
                     <p style={{ color: "green" }}>{profileMessage}</p>
                   )}
-                  {console.log("rrre", profileError)}
                   <div class="mt-11 flex flex-col space-y-4">
                     <div>
                       <label

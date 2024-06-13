@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import NavCategories from "./NavCategories";
 
 const baseURL = "https://nominet.vensle.com/backend";
+
 const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -34,7 +34,7 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
       <div className="mx-auto max-w-2xl px-4 py-[1px] sm:px-6 lg:max-w-7xl lg:px-8">
         <ul
           style={{ gap: "1%" }}
-          className="flex items-center justify-between lg:justify-start min-h-[40px]"
+          className="flex min-h-[40px] items-center justify-between lg:justify-start"
         >
           <li className="mr-6">
             <NavCategories />
@@ -54,10 +54,12 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
           {categories ? (
             categories.map((category) => (
               <li
-		key={category.id}
-	    	className={`hidden rounded-sm transition-all duration-300 ease-in-out lg:block py-2 px-2 hover:bg-gray-400/50 
-		    ${categoryId == category.id && "bg-gray-400/50"}`}
-	      >
+                key={category.id}
+                className={`
+                hidden rounded-sm py-2 px-2 transition-all duration-300 ease-in-out hover:bg-gray-400/50 lg:block 
+		            ${categoryId === category.id && "bg-gray-400/50"}`
+                }
+              >
                 <Link to={`/filter?searchTerm=&category_id=${category.id}`}>
                   {category.name}
                 </Link>

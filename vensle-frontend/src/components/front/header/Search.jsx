@@ -34,8 +34,7 @@ const Search = () => {
       const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
         params: { searchTerm: value, category_id: selectedCategory, distance },
       });
-
-      const fetchedSuggestions = response.data.data; // Use the 'data' property
+      const fetchedSuggestions = response.data.data;
       setSuggestions(fetchedSuggestions);
       setSelectedSuggestionIndex(-1);
     } catch (error) {
@@ -45,12 +44,8 @@ const Search = () => {
 
   const handleSelectSuggestion = (selectedSuggestion) => {
     setSearchTerm(selectedSuggestion.name);
-
     const encodedSearchTerm = encodeURIComponent(selectedSuggestion.name);
-    navigate(
-      `/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}`
-    );
-
+    navigate(`/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}`);
     setSuggestions([]);
   };
 
@@ -74,8 +69,7 @@ const Search = () => {
   };
 
   const handleOutsideClick = (e) => {
-    const isClickInsideInput =
-      inputRef.current && inputRef.current.contains(e.target);
+    const isClickInsideInput = inputRef.current && inputRef.current.contains(e.target);
     const isClickInsideSuggestions = e.target.closest(".suggestions-list");
 
     if (!isClickInsideInput && !isClickInsideSuggestions) {
@@ -93,13 +87,9 @@ const Search = () => {
 
   const handleSearchButtonClick = (e) => {
     e.preventDefault();
-
     const encodedSearchTerm = encodeURIComponent(searchTerm);
-
     //TODO:  distance
-    navigate(
-      `/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}&distance=20`
-    );
+    navigate(`/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}&distance=20`);
   };
 
   useEffect(() => {
@@ -171,16 +161,15 @@ const Search = () => {
       </select>
       {searchTerm && suggestions.length > 0 && (
         <ul
-          style={{ top: "2.8rem", width: "100%" }}
-          className="suggestions-list absolute right-0 left-0 z-10 mt-1 w-64 border bg-white"
+          style={{ top: "2.8rem" }}
+          className="suggestions-list absolute w-full right-0 left-0 z-10 mt-1 w-64 border bg-white"
         >
           {suggestions.map((suggestion, index) => (
             <li
               key={index}
               onClick={() => handleSelectSuggestion(suggestion)}
-              className={`cursor-pointer p-2 md:p-4 ${
-                selectedSuggestionIndex === index ? "bg-gray-200" : ""
-              } hover:bg-gray-200`}
+              className={`cursor-pointer p-2 md:p-4 ${selectedSuggestionIndex === index ? "bg-gray-200" : ""
+                } hover:bg-gray-200`}
             >
               {suggestion.name}
             </li>
@@ -218,7 +207,7 @@ const Search = () => {
         className="search__button relative pr-[22px] pl-[22px] hidden h-full text-white md:block"
         type="submit"
       >
-        <span className="relative" style={{zIndex:"1"}}>SEARCH</span>
+        <span className="relative" style={{ zIndex: "1" }}>SEARCH</span>
       </button>
       <button
         className="block h-full px-3 text-white md:hidden md:px-[22px]"

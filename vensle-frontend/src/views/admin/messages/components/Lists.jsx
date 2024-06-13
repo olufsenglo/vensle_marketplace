@@ -7,8 +7,8 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import Card from "components/card";
 import Message from "components/front/message/Message";
 
-const baseURL = "https://nominet.vensle.com/backend";
-
+const baseURL = "http://localhost:8000";
+//const baseURL = "https://nominet.vensle.com/backend";
 const Lists = ({
 	messages,
 	fetchSentMessages,

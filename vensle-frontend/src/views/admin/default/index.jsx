@@ -40,8 +40,9 @@ const tableColumnsTopCreators = [
   //  },
 ];
 
+const baseURL = "http://localhost:8000/api/v1";
+const newBaseURL = "http://localhost:8000";
 const Dashboard = () => {
-  const baseURL = "https://nominet.vensle.com/backend";
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
   const accessToken = useSelector((state) => state.auth?.user?.token);
@@ -65,15 +66,15 @@ const Dashboard = () => {
   }, [isAuthenticated, accessToken]);
 
   const getImagePath = (name) => {
-    return `${baseURL}/uploads/${name}`;
+    return `${newBaseURL}/uploads/${name}`;
   };
 
   useEffect(() => {
     const fetchLatestMessages = async () => {
-	    setErrorMessage('')
+	setErrorMessage('')
         setLoading(true);
       try {
-	const response = await axios.get('https://nominet.vensle.com/backend/api/v1/messages/inbox?per_page=4', {
+	const response = await axios.get(`${baseURL}/messages/inbox?per_page=4`, {
 	  headers: {
   	     Authorization: `Bearer ${accessToken}`
 	     }
@@ -160,23 +161,39 @@ const Dashboard = () => {
     <div>
       {/* Card widget */}
 
-      <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
+      <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-12 lg:grid-cols-12 2xl:grid-cols-12 3xl:grid-cols-12">
       	{/* TODO: Get currency */}
-        <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={"For sale uploads"}
-          subtitle={`£${totalProducts}`}
-        />
-        <Widget
-          icon={<IoDocuments className="h-6 w-6" />}
-          title={"Request uploads"}
-          subtitle={`£${totalRequests}`}
-        />
-        <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={"Orders Recieved"}
-          subtitle={`${totalOrders}`}
-        />
+	<div className="col-span-7 grid grid-cols-3 gap-3">
+		<Widget
+		  icon={<MdBarChart className="h-7 w-7" />}
+		  title={"For sale uploads"}
+		  subtitle={`£${totalProducts}`}
+		/>
+		<Widget
+		  icon={<IoDocuments className="h-6 w-6" />}
+		  title={"Request uploads"}
+		  subtitle={`£${totalRequests}`}
+		/>
+		<Widget
+		  icon={<MdBarChart className="h-7 w-7" />}
+		  title={"Orders Recieved"}
+		  subtitle={`${totalOrders}`}
+		/>
+	</div>
+	<div className="col-span-5 bg-pink-100">
+	       <div className="flex space-between">
+	          <div>
+	  	     <p>Upgrade <span>Grocery</span></p>
+	  	     <p className="text-gray-300">Upload Business Details</p>
+	         </div>
+	  	 <div className="rounded-full">
+	  	     <div className="rounded-full flex justify-center font-bold items-center m-3 h-[3rem] w-[3rem] bg-white">
+	   	     	50%
+	  	     </div>
+	     	 </div>
+	       </div>
+		
+	</div>
       </div>
 
       {/* Charts */}
@@ -196,11 +213,11 @@ const Dashboard = () => {
 	  	   {!loading && latestMessages.length == 0 && <p>There are no recent messages</p>}
 		   {!loading && latestMessages.length > 0 && latestMessages.map((message)=>
 			<div key={message.id} className="flex">
-				{message.product?.display_image && 
+				{message.sender?.profile_picture && 
 				(<div className="w-5 h-full mr-2 w-12 h-12 rounded-full border border-4">
 				    <img
-				      src={getImagePath(message.product.display_image.name)}
-				      alt={message.product.display_image.name}
+				      src={getImagePath(message.sender.profile_picture)}
+				      alt={message.sender.profile_picture}
 				      className="rounded-full"
 				     />
 				</div>)}
