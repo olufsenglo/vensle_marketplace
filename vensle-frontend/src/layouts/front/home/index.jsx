@@ -1,5 +1,7 @@
 import Header from "components/front/header/Header";
 import Hero from "components/front/hero/Hero";
+import ShopByCategories from "components/front/shopByCategories/ShopByCategories";
+import TopPurchases from "components/front/topPurchases/TopPurchases";
 import DeliverBanner from "components/front/deliverBanner/DeliverBanner";
 import NewUploads from "components/front/newUploads/NewUploads";
 import PopularGroceries from "components/front/popularGroceries/PopularGroceries";
@@ -16,7 +18,8 @@ const Home = () => {
     <div className="min-h-full">
       <Header />
       <Hero />
-
+      <ShopByCategories />
+      <TopPurchases />
       <TopPurchaseSellers />
       <DeliverBanner />
       <NewUploads />

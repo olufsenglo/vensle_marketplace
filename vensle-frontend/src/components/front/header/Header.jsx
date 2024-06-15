@@ -486,6 +486,7 @@ const Header = () => {
                   </Link>
                 </li>
               ) : (
+	       <>
                 <li
                   onClick={(e) => handleUploadClick(e)}
                   className="mr-6 hidden cursor-pointer text-red-500 lg:flex"
@@ -493,8 +494,6 @@ const Header = () => {
                 >
                   Upload Your Product
                 </li>
-              )}
-              {!isAuthenticated && (
                 <li
                   onClick={(e) => handleRegisterDriverClick(e)}
                   className="hidden cursor-pointer text-red-500 lg:block"
@@ -502,6 +501,7 @@ const Header = () => {
                 >
                   Register as a Driver
                 </li>
+	       </>
               )}
             </ul>
             <ul className="flex justify-between">
