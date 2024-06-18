@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 const baseURL = "https://nominet.vensle.com/backend";
-const Search = () => {
+const Search = ({ position='sticky' }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -136,7 +136,7 @@ const Search = () => {
       className="relative mt-4 mb-0 flex h-10 w-full items-center px-6 md:h-[51px] md:px-0 lg:mt-0 lg:w-auto lg:flex-1 lg:px-[2%]"
       onSubmit={handleSearchButtonClick}
     >
-      <select
+     {/*<select
         style={{ fontSize: "14px" }}
         className="hidden h-full border pl-1 lg:block"
         value={distance}
@@ -145,7 +145,22 @@ const Search = () => {
         <option value={10}>10 km</option>
         <option value={20}>20 km</option>
         <option value={30}>30 km</option>
-      </select>
+      </select>*/}
+      {position === 'relative' && 
+	      <select
+		value={selectedCategory}
+		onChange={handleCategoryChange}
+		className="hidden w-[7.5rem] h-full border border-r-0 p-2 lg:block"
+	      >
+		<option value="">Everything</option>
+		{categories &&
+		  categories.map((category) => (
+		    <option key={category.id} value={category.id}>
+		      {category.name}
+		    </option>
+		  ))}
+	      </select>
+      }
 
       <input
         className="h-full flex-1 border border-r-0 pl-[20px] lg:border-l-0"
@@ -156,19 +171,6 @@ const Search = () => {
         placeholder="Search products, brands and categories"
         ref={inputRef}
       />
-      <select
-        value={selectedCategory}
-        onChange={handleCategoryChange}
-        className="hidden w-[7.5rem] h-full border border-r-0 p-2 lg:block"
-      >
-        <option value="">Everything</option>
-        {categories &&
-          categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-      </select>
       {searchTerm && suggestions.length > 0 && (
         <ul
           style={{ top: "2.8rem", width: "100%" }}
@@ -214,19 +216,23 @@ const Search = () => {
         </ul>
       )}
 
-      <button
-        className="search__button relative pr-[22px] pl-[22px] hidden h-full text-white md:block"
-        type="submit"
-      >
-        <span className="relative" style={{zIndex:"1"}}>SEARCH</span>
-      </button>
-      <button
-        className="block h-full px-3 text-white md:hidden md:px-[22px]"
-        style={{ background: "#ff5959" }}
-        type="submit"
-      >
-        <MagnifyingGlassIcon className="h-5 w-5" />
-      </button>
+      {position === 'relative' && 
+          <>
+	      <button
+		className="search__button relative pr-[22px] pl-[22px] hidden h-full text-white md:block"
+		type="submit"
+	      >
+		<span className="relative" style={{zIndex:"1"}}>SEARCH</span>
+	      </button>
+	      <button
+		className="block h-full px-3 text-white md:hidden md:px-[22px]"
+		style={{ background: "#ff5959" }}
+		type="submit"
+	      >
+		<MagnifyingGlassIcon className="h-5 w-5" />
+	      </button>
+	  </>
+      }
     </form>
   );
 };

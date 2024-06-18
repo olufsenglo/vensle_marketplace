@@ -8,6 +8,7 @@ import {
   CursorArrowRaysIcon,
   FingerPrintIcon,
   SquaresPlusIcon,
+  Bars3Icon,
 } from '@heroicons/react/24/outline'
 
 const solutions = [
@@ -25,8 +26,8 @@ const callsToAction = [
 export default function NavCategories() {
   return (
     <Popover className="relative">
-      <Popover.Button className="inline-flex items-center gap-x-1 mt-[2px] leading-6 text-white">
-        <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+      <Popover.Button className="inline-flex items-center gap-x-1 mt-[2px] leading-6">
+        <Bars3Icon className="h-5 w-5" aria-hidden="true" />
         <span>All Categories</span>
       </Popover.Button>
 
