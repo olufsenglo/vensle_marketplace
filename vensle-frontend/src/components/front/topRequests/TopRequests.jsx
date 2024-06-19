@@ -3,16 +3,14 @@ import axios from "axios";
 
 import Request from "components/front/request/Request";
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 export default function TopRequests() {
   const [productRequests, setProductRequests] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const fetchProductRequests = async () => {
     try {
       setLoading(true);
-      setError('');
       const response = await axios.get(
         `${baseURL}/api/v1/products/top-by-type`,
         {
@@ -27,7 +25,6 @@ export default function TopRequests() {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
-      setError('Error fetching products');
       setLoading(false);
     }
   };
@@ -39,14 +36,14 @@ export default function TopRequests() {
     <div style={{ minHeight: "30rem" }} className="relative bg-white">
       {loading && (
         <div
-          style={{ zIndex: "5" }}
-          className="absolute inset-0 flex items-center justify-center"
+          style={{ zIndex: "5", left: "0", right: "0", top: "0", bottom: "0" }}
+          className="absolute flex items-center justify-center"
         >
           <p>Loading...</p>
         </div>
       )}
 
-      {!loading && !error && productRequests.length == 0 && (
+      {!loading && productRequests.length == 0 && (
         <div
           style={{ zIndex: "5", left: "0", right: "0", top: "0", bottom: "0" }}
           className="absolute flex items-center justify-center"

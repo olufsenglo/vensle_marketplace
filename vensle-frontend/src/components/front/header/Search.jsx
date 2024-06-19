@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 const baseURL = "https://nominet.vensle.com/backend";
-const Search = () => {
+const Search = ({ position='sticky' }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -34,7 +34,8 @@ const Search = () => {
       const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
         params: { searchTerm: value, category_id: selectedCategory, distance },
       });
-      const fetchedSuggestions = response.data.data;
+
+      const fetchedSuggestions = response.data.data; // Use the 'data' property
       setSuggestions(fetchedSuggestions);
       setSelectedSuggestionIndex(-1);
     } catch (error) {
@@ -44,8 +45,12 @@ const Search = () => {
 
   const handleSelectSuggestion = (selectedSuggestion) => {
     setSearchTerm(selectedSuggestion.name);
+
     const encodedSearchTerm = encodeURIComponent(selectedSuggestion.name);
-    navigate(`/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}`);
+    navigate(
+      `/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}`
+    );
+
     setSuggestions([]);
   };
 
@@ -69,7 +74,8 @@ const Search = () => {
   };
 
   const handleOutsideClick = (e) => {
-    const isClickInsideInput = inputRef.current && inputRef.current.contains(e.target);
+    const isClickInsideInput =
+      inputRef.current && inputRef.current.contains(e.target);
     const isClickInsideSuggestions = e.target.closest(".suggestions-list");
 
     if (!isClickInsideInput && !isClickInsideSuggestions) {
@@ -87,9 +93,13 @@ const Search = () => {
 
   const handleSearchButtonClick = (e) => {
     e.preventDefault();
+
     const encodedSearchTerm = encodeURIComponent(searchTerm);
+
     //TODO:  distance
-    navigate(`/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}&distance=20`);
+    navigate(
+      `/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}&distance=20`
+    );
   };
 
   useEffect(() => {
@@ -123,10 +133,12 @@ const Search = () => {
   return (
     <form
       style={{ zIndex: "1" }}
-      className="relative mt-4 mb-0 flex h-10 w-full items-center px-6 md:h-[51px] md:px-0 lg:mt-0 lg:w-auto lg:flex-1 lg:px-[2%]"
+      className={`relative mt-4 mb-0 flex h-10 w-full items-center md:h-[51px] md:px-0 lg:mt-0 lg:w-auto lg:flex-1 ${
+      	position === 'relative' && "px-6 lg:px-[2%]"
+      }`}
       onSubmit={handleSearchButtonClick}
     >
-      <select
+     {/*<select
         style={{ fontSize: "14px" }}
         className="hidden h-full border pl-1 lg:block"
         value={distance}
@@ -135,10 +147,27 @@ const Search = () => {
         <option value={10}>10 km</option>
         <option value={20}>20 km</option>
         <option value={30}>30 km</option>
-      </select>
+      </select>*/}
+      {position === 'relative' && 
+	      <select
+		value={selectedCategory}
+		onChange={handleCategoryChange}
+		className="hidden w-[7.5rem] h-full border border-r-0 p-2 lg:block"
+	      >
+		<option value="">Everything</option>
+		{categories &&
+		  categories.map((category) => (
+		    <option key={category.id} value={category.id}>
+		      {category.name}
+		    </option>
+		  ))}
+	      </select>
+      }
 
       <input
-        className="h-full flex-1 border border-r-0 pl-[20px] lg:border-l-0"
+        className={`h-full flex-1 border ${
+	    position === 'relative' ? "border-r-0 lg:border-l-0  pl-[20px]" : "pl-4"
+	}`}
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
@@ -146,30 +175,18 @@ const Search = () => {
         placeholder="Search products, brands and categories"
         ref={inputRef}
       />
-      <select
-        value={selectedCategory}
-        onChange={handleCategoryChange}
-        className="hidden w-[7.5rem] h-full border border-r-0 p-2 lg:block"
-      >
-        <option value="">Everything</option>
-        {categories &&
-          categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-      </select>
       {searchTerm && suggestions.length > 0 && (
         <ul
-          style={{ top: "2.8rem" }}
-          className="suggestions-list absolute w-full right-0 left-0 z-10 mt-1 w-64 border bg-white"
+          style={{ top: "2.8rem", width: "100%" }}
+          className="suggestions-list absolute right-0 left-0 z-10 mt-1 w-64 border bg-white"
         >
           {suggestions.map((suggestion, index) => (
             <li
               key={index}
               onClick={() => handleSelectSuggestion(suggestion)}
-              className={`cursor-pointer p-2 md:p-4 ${selectedSuggestionIndex === index ? "bg-gray-200" : ""
-                } hover:bg-gray-200`}
+              className={`cursor-pointer p-2 md:p-4 ${
+                selectedSuggestionIndex === index ? "bg-gray-200" : ""
+              } hover:bg-gray-200`}
             >
               {suggestion.name}
             </li>
@@ -203,19 +220,23 @@ const Search = () => {
         </ul>
       )}
 
-      <button
-        className="search__button relative pr-[22px] pl-[22px] hidden h-full text-white md:block"
-        type="submit"
-      >
-        <span className="relative" style={{ zIndex: "1" }}>SEARCH</span>
-      </button>
-      <button
-        className="block h-full px-3 text-white md:hidden md:px-[22px]"
-        style={{ background: "#ff5959" }}
-        type="submit"
-      >
-        <MagnifyingGlassIcon className="h-5 w-5" />
-      </button>
+      {position === 'relative' && 
+          <>
+	      <button
+		className="search__button relative pr-[22px] pl-[22px] hidden h-full text-white md:block"
+		type="submit"
+	      >
+		<span className="relative" style={{zIndex:"1"}}>SEARCH</span>
+	      </button>
+	      <button
+		className="block h-full px-3 text-white md:hidden md:px-[22px]"
+		style={{ background: "#ff5959" }}
+		type="submit"
+	      >
+		<MagnifyingGlassIcon className="h-5 w-5" />
+	      </button>
+	  </>
+      }
     </form>
   );
 };

@@ -136,6 +136,9 @@ module.exports = {
     },
     colors: () => ({
       white: "#ffffff",
+      black: "#000000",
+      primaryColor: "#ff5959",
+      secondaryColor: "#ea0606",
       lightPrimary: "#F4F7FE",
       blueSecondary: "#4318FF",
       brandLinear: "#868CFF",

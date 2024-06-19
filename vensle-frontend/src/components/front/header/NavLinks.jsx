@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
+import {
+  HeartIcon,
+} from '@heroicons/react/24/outline'
 
 import NavCategories from "./NavCategories";
 
-const baseURL = "https://nominet.vensle.com/backend";
-
+const baseURL = "http://nominet.vensle.com/backend";
 const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -28,13 +31,12 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
 
   return (
     <div
-      className="relative text-white"
-      style={{ "background-color": "black" }}
+      className="relative bg-white pb-4 border-b border-b-gray-200/50 border-b-4"
     >
-      <div className="mx-auto max-w-2xl px-4 py-[1px] sm:px-6 lg:max-w-7xl lg:px-8">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <ul
           style={{ gap: "1%" }}
-          className="flex min-h-[40px] items-center justify-between lg:justify-start"
+          className="flex items-center justify-between lg:justify-start min-h-[40px]"
         >
           <li className="mr-6">
             <NavCategories />
@@ -50,17 +52,20 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
             )}
             {handleGetUserCountry()}
           </li>
+              <li className="hidden hover:underline font-medium lg:flex border-r cursor-pointer border-r-black border-l border-l-black items-center rounded-sm px-2">
+		    <HeartIcon className="h-5 w-5 mr-1" />
+	  	    <p>Saved</p>
+              </li>
 
           {categories ? (
             categories.map((category) => (
               <li
-                key={category.id}
-                className={`
-                hidden rounded-sm py-2 px-2 transition-all duration-300 ease-in-out hover:bg-gray-400/50 lg:block 
-		            ${categoryId === category.id && "bg-gray-400/50"}`
-                }
-              >
-                <Link to={`/filter?searchTerm=&category_id=${category.id}`}>
+		key={category.id}
+	    	className={`hidden font-medium hover:underline rounded-sm lg:block ${
+			categoryId == category.id && "bg-gray-400/50"
+		}`}
+	      >
+                <Link className="px-2" to={`/filter?searchTerm=&category_id=${category.id}`}>
                   {category.name}
                 </Link>
               </li>

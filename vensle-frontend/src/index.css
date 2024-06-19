@@ -158,6 +158,29 @@ input:checked.defaultCheckbox::before {
     opacity: 1!important;
 }
 
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 @media screen and (min-width: 992px) and (max-width: 1245px) {
 	.topSellers__wrapper {
 		grid-template-columns: repeat(3, minmax(0, 1fr))!important;

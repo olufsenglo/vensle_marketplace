@@ -148,7 +148,7 @@ const TopPurchaseSellers = () => {
       <div className="flex items-center justify-center gap-2 pt-10 md:gap-5">
         <button
           className={`rounded py-1 px-4 text-xs transition duration-300 md:px-10 md:text-sm lg:py-2 ${
-            activePill === 1 ? "bg-gray-900 text-white" : "bg-gray-200"
+            activePill === 1 ? "bg-gray-900 text-white hover:bg-gray-800" : "bg-gray-200 hover:bg-gray-300"
           }`}
           onClick={() => handlePillClick(1, 1, "")}
         >
@@ -156,7 +156,7 @@ const TopPurchaseSellers = () => {
         </button>
         <button
           className={`rounded py-1 px-4 text-sm transition duration-300 md:px-10 lg:py-2 ${
-            activePill === 2 ? "bg-gray-900 text-white" : "bg-gray-200"
+            activePill === 2 ? "bg-gray-900 text-white hover:bg-gray-800" : "bg-gray-200 hover:bg-gray-300"
           }`}
           onClick={() => handlePillClick(2, 3, "request")}
         >
@@ -164,7 +164,7 @@ const TopPurchaseSellers = () => {
         </button>
         <button
           className={`rounded py-1 px-4 text-sm transition duration-300 md:px-10 lg:py-2 ${
-            activePill === 3 ? "bg-gray-900 text-white" : "bg-gray-200"
+            activePill === 3 ? "bg-gray-900 text-white hover:bg-gray-800" : "bg-gray-200 hover:bg-gray-300"
           }`}
           onClick={() => handlePillClick(3, 4, "grocery")}
         >
