@@ -33,8 +33,8 @@ import {
 import { SET_MESSAGE } from "actions/types";
 
 import Top from "./Top";
-import NavLinks from "./NavLinks";
 import CartLink from "./CartLink";
+import NavLinks from "./NavLinks";
 import TopMenu from "./TopMenu";
 import ProductTypeMenu from "./ProductTypeMenu";
 import SignInRegisterLinks from "./SignInRegisterLinks";
@@ -90,6 +90,7 @@ const Header = ({
   const [registerError, setRegisterError] = useState("");
 
   const [activeTab, setActiveTab] = useState(1);
+  const [showNavbar, setShowNavbar] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -466,6 +467,21 @@ const Header = ({
   // if (isLoggedIn) {
   //   navigate('/admin/products');
   // }
+  
+  const handleScroll= () => {
+      if (window.scrollY >= 239) {
+          setShowNavbar(true);
+      } else if (window.scrollY <= 550) {
+          setShowNavbar(false);
+      }
+  }
+
+  /*useEffect(() => {
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+        window.removeEventListener('scroll', handleScroll)
+    }
+  }, []);*/
 
   useEffect(() => {
     dispatch(fetchCartItems());
@@ -482,7 +498,11 @@ const Header = ({
 	  handleGetUserCountry={handleGetUserCountry}
       />
 
-      <ProductTypeMenu position={'relative'} activePill={activePill} setActivePill={setActivePill} />
+      <div>
+         <div className="mx-auto max-w-2xl px-4 py-2 sm:px-1 lg:max-w-7xl lg:px-8">
+      	    <ProductTypeMenu position={'relative'} activePill={activePill} setActivePill={setActivePill} />
+	 </div>
+      </div>
 
       <div className="bg-white">
         <div className="mx-auto max-w-2xl py-4 pt-4 md:pt-2 md:pb-4 lg:pt-6 lg:pb-4 lg:max-w-7xl lg:px-8">
@@ -494,9 +514,6 @@ const Header = ({
             </Link>
             <Search position={'relative'} />
 
-            <div
-              className="absolute right-0 left-0 mr-auto ml-auto flex max-w-2xl text-[0.9rem] items-center justify-end px-6 md:px-0 lg:relative lg:max-w-none lg:justify-start"
-            >
 	      <SignInRegisterLinks
 		    user={user}
 		    handleTopNavClick={handleTopNavClick}
@@ -504,32 +521,24 @@ const Header = ({
 		    handleSignInClick={handleSignInClick}
 	    	    handleRegisterClick={handleRegisterClick}
 	      />
-              <CartLink />
-            </div>
           </div>
         </div>
       </div>
-
-      <div className="bg-white">
-        <div className="flex mx-auto max-w-2xl py-4 pt-4 md:pt-2 md:pb-4 lg:pt-6 lg:pb-4 lg:max-w-7xl lg:px-8">
+      {showNavbar && <div className="bg-white top-0 fixed z-10 w-full border-b border-b-gray-200/50 border-b-4">
+         <div className="flex mx-auto max-w-2xl py-4 pt-4 md:pt-2 md:pb-4 lg:pt-6 lg:pb-4 lg:max-w-7xl lg:px-8">
 	    <Search />
-      	    <ProductTypeMenu activePill={activePill} setActivePill={setActivePill} />
-            <div
-              className="absolute right-0 left-0 mr-auto ml-auto flex max-w-2xl text-[0.9rem] items-center justify-end px-6 md:px-0 lg:relative lg:max-w-none lg:justify-start"
-            >
-	      <SignInRegisterLinks
+	    <div className="flex ml-[4%] gap-8">
+      	        <ProductTypeMenu activePill={activePill} setActivePill={setActivePill} />
+	        <SignInRegisterLinks
 		    user={user}
 		    handleTopNavClick={handleTopNavClick}
 		    isAuthenticated={isAuthenticated}
 		    handleSignInClick={handleSignInClick}
 	    	    handleRegisterClick={handleRegisterClick}
-	      />
-              <CartLink />
-            </div>
-        </div>
-      </div>
-
-
+	        />
+	    </div>
+         </div>
+      </div>}
 
       <NavLinks
         storedCountryFlag={storedCountryFlag}

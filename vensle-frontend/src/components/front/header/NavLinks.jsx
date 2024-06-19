@@ -52,7 +52,7 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
             )}
             {handleGetUserCountry()}
           </li>
-              <li className="hidden hover:underline lg:flex border-r cursor-pointer border-r-black border-l border-l-black items-center rounded-sm px-2">
+              <li className="hidden hover:underline font-medium lg:flex border-r cursor-pointer border-r-black border-l border-l-black items-center rounded-sm px-2">
 		    <HeartIcon className="h-5 w-5 mr-1" />
 	  	    <p>Saved</p>
               </li>
@@ -61,7 +61,7 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
             categories.map((category) => (
               <li
 		key={category.id}
-	    	className={`hidden hover:underline rounded-sm lg:block ${
+	    	className={`hidden font-medium hover:underline rounded-sm lg:block ${
 			categoryId == category.id && "bg-gray-400/50"
 		}`}
 	      >

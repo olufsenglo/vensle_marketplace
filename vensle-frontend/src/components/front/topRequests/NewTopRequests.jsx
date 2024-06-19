@@ -9,32 +9,32 @@ import 'swiper/css/navigation';
 // import required modules
 import { Navigation } from 'swiper/modules';
 
-import SingleProduct from "components/front/singleProduct/SingleProduct"
+import Request from "components/front/product/Request"
 import SectionTitle from "components/front/sectionTitle/SectionTitle"
 
-const TopPurchases = () => {
+const NewTopRequests = () => {
     return (
       <div className="relative bg-white">
          <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8">
-	      <SectionTitle>Top Purchases</SectionTitle>
+	      <SectionTitle>Top Requests</SectionTitle>
 	      <Swiper
-		  slidesPerView={3}
-		  spaceBetween={45}
+		  slidesPerView={2}
+		  spaceBetween={80}
 		  navigation={true}
 		  modules={[Navigation]}
 		  className="mySwiper mt-6"
 	      >
 		<SwiperSlide>
-	   	    <SingleProduct numberOfProducts={3} />
+	  	    <Request />
 		</SwiperSlide>
 		<SwiperSlide>
-	   	    <SingleProduct numberOfProducts={3} type="grocery" />
+	  	    <Request />
 		</SwiperSlide>
 		<SwiperSlide>
-	   	    <SingleProduct numberOfProducts={3} />
+	  	    <Request />
 		</SwiperSlide>
 		<SwiperSlide>
-	   	    <SingleProduct numberOfProducts={3} />
+	  	    <Request />
 		</SwiperSlide>
 	      </Swiper>
 	</div>
@@ -42,4 +42,4 @@ const TopPurchases = () => {
     )
 }
 
-export default TopPurchases;
+export default NewTopRequests;

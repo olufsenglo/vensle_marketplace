@@ -133,7 +133,9 @@ const Search = ({ position='sticky' }) => {
   return (
     <form
       style={{ zIndex: "1" }}
-      className="relative mt-4 mb-0 flex h-10 w-full items-center px-6 md:h-[51px] md:px-0 lg:mt-0 lg:w-auto lg:flex-1 lg:px-[2%]"
+      className={`relative mt-4 mb-0 flex h-10 w-full items-center md:h-[51px] md:px-0 lg:mt-0 lg:w-auto lg:flex-1 ${
+      	position === 'relative' && "px-6 lg:px-[2%]"
+      }`}
       onSubmit={handleSearchButtonClick}
     >
      {/*<select
@@ -163,7 +165,9 @@ const Search = ({ position='sticky' }) => {
       }
 
       <input
-        className="h-full flex-1 border border-r-0 pl-[20px] lg:border-l-0"
+        className={`h-full flex-1 border ${
+	    position === 'relative' ? "border-r-0 lg:border-l-0  pl-[20px]" : "pl-4"
+	}`}
         type="text"
         value={searchTerm}
         onChange={handleInputChange}

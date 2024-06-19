@@ -1,6 +1,13 @@
 import React, { useRef, useState } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+// import required modules
+import { Navigation } from 'swiper/modules';
+
+import SectionTitle from "components/front/sectionTitle/SectionTitle"
 
 import cat1 from "assets/img/front/shop-by-category/cat1.png";
 import cat2 from "assets/img/front/shop-by-category/cat2.png";
@@ -13,22 +20,11 @@ import ball from "assets/img/front/shop-by-category/ball-1.png";
 import ball2 from "assets/img/front/shop-by-category/ball-2.png";
 import ball3 from "assets/img/front/shop-by-category/ball-3.webp";
 
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-
-// import required modules
-import { Navigation } from 'swiper/modules';
-
 export default function ShopByCategories() {
   return (
       <div className="relative bg-white">
          <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8">
-	  <h2
-              className="block pb-1 border-b-2 border-red-500 text-center text-xl font-normal uppercase tracking-tight text-gray-900 md:inline md:text-left md:text-2xl"
-          >
-            Shop by categories
-        </h2>
+	    <SectionTitle>Shop by Categories</SectionTitle>
 	    <div className="mt-10 overflow-hidden">
 	      <Swiper
 		  slidesPerView={8}
