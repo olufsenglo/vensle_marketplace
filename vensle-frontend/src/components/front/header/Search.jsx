@@ -14,6 +14,7 @@ const Search = ({ position='sticky' }) => {
     queryParams.get("searchTerm") || ""
   );
   const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [selectedCategory, setSelectedCategory] = useState("");
   const inputRef = useRef(null);
@@ -29,8 +30,10 @@ const Search = ({ position='sticky' }) => {
   const handleInputChange = async (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-
+    setLoading(false);
     try {
+      setLoading(true);
+      //TODO: add distance
       const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
         params: { searchTerm: value, category_id: selectedCategory, distance },
       });
@@ -38,8 +41,10 @@ const Search = ({ position='sticky' }) => {
       const fetchedSuggestions = response.data.data; // Use the 'data' property
       setSuggestions(fetchedSuggestions);
       setSelectedSuggestionIndex(-1);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
+      setLoading(false);
     }
   };
 
@@ -175,10 +180,22 @@ const Search = ({ position='sticky' }) => {
         placeholder="Search products, brands and categories"
         ref={inputRef}
       />
+      {loading && 
+        <ul
+          style={{ width: "100%" }}
+          className="w-full top-[2.8rem] suggestions-list absolute right-0 left-0 z-10 mt-1 w-64 border bg-white"
+        >
+            <li
+              className="p-2 md:p-4"
+            >
+              Loading...
+            </li>
+        </ul>
+      }
       {searchTerm && suggestions.length > 0 && (
         <ul
-          style={{ top: "2.8rem", width: "100%" }}
-          className="suggestions-list absolute right-0 left-0 z-10 mt-1 w-64 border bg-white"
+          style={{ width: "100%" }}
+          className="w-full top-[2.8rem] suggestions-list absolute right-0 left-0 z-10 mt-1 w-64 border bg-white"
         >
           {suggestions.map((suggestion, index) => (
             <li

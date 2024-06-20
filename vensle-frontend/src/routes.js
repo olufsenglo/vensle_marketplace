@@ -3,6 +3,7 @@ import React from "react";
 // Admin Imports
 import MainDashboard from "views/admin/default";
 import AdminDashboard from "views/admin/admindashboard";
+import UserDashboard from "views/admin/userdashboard";
 import Orders from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import Products from "views/admin/products";
@@ -38,7 +39,7 @@ const routes = [
     layout: "/admin",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
-    component: <MainDashboard />,
+    component: <UserDashboard />,
   },
   {
     name: "Admin Dashboard",

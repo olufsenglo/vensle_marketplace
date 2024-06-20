@@ -58,8 +58,8 @@ const columnsData = [
 	)
     }
 
-const baseURL = "http://localhost:8000";
-//const baseURL = "https://nominet.vensle.com/backend";
+//const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 
 const Tables = () => {
   const columns = useMemo(() => columnsData, []);

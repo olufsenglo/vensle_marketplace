@@ -4,6 +4,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      gridTemplateColumns: {
+        '13': 'repeat(13, minmax(0, 1fr))',
+      },
       width: {
         "1p": "1%",
         "2p": "2%",
@@ -138,6 +141,8 @@ module.exports = {
       white: "#ffffff",
       black: "#000000",
       primaryColor: "#ff5959",
+      secondaryColor: "#ea0606",
+      uDashSecondary: "#fcecec",
       secondaryColor: "#ea0606",
       lightPrimary: "#F4F7FE",
       blueSecondary: "#4318FF",

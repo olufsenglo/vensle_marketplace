@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Navbar from "components/navbar";
 import Sidebar from "components/sidebar";
-import Footer from "components/footer/Footer";
 import routes from "routes.js";
 import EditProduct from "views/admin/editproduct";
 import OrderItems from "views/admin/orderitems";
@@ -98,9 +97,6 @@ export default function Admin(props) {
                   element={<Navigate to="/admin/default" replace />}
                 />
               </Routes>
-            </div>
-            <div className="p-3">
-              <Footer />
             </div>
           </div>
         </main>

@@ -52,7 +52,7 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
             )}
             {handleGetUserCountry()}
           </li>
-              <li className="hidden hover:underline font-medium lg:flex border-r cursor-pointer border-r-black border-l border-l-black items-center rounded-sm px-2">
+              <li className="hidden hover:underline font-medium px-4 lg:flex border-r cursor-pointer border-r-black border-l border-l-black items-center">
 		    <HeartIcon className="h-5 w-5 mr-1" />
 	  	    <p>Saved</p>
               </li>
