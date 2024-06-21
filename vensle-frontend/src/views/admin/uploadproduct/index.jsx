@@ -719,7 +719,7 @@ const Tables = () => {
                 </p>
                 <button
                   onClick={handleUploadPreview}
-                  className="linear mt-8 w-full rounded-xl bg-red-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-red-600 active:bg-red-700 dark:bg-red-400 dark:text-white dark:hover:bg-red-300 dark:active:bg-red-200"
+                  className="linear mt-8 w-full rounded-xl bg-[#ff5959] py-[12px] text-base font-medium text-white transition duration-200 hover:bg-red-500 active:bg-red-600 dark:bg-red-400 dark:text-white dark:hover:bg-red-300 dark:active:bg-red-200"
                 >
                   PREVIEW & SUBMIT
                 </button>

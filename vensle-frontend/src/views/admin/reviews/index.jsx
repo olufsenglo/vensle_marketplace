@@ -11,66 +11,65 @@ function classNames(...classes) {
 }
 
 const columnsData = [
-         {
-           Header: "Name",
-           accessor: "user.name"
-         },
-         {
-           Header: "Email",
-           accessor: "user.email"
-         },
-         {
-           Header: "Feedback",
-           accessor: "content"
-         },
-         {
-           Header: "Rating",
-           accessor: "rating",
-           Cell: ( props ) => {
- 	    	return <RatingRow props={props} / >
-  	   }
-         },
-         {
-           Header: "Date",
-           accessor: "created_at"
-         },
-         {
-           Header: ".",
-         },
+  {
+    Header: "Name",
+    accessor: "user.name",
+    Cell: (props) => {
+      return <NameRow props={props} />
+    }
+  },
+  {
+    Header: "Email",
+    accessor: "user.email"
+  },
+  {
+    Header: "Feedback",
+    accessor: "content"
+  },
+  {
+    Header: "Rating",
+    accessor: "rating",
+    Cell: (props) => {
+      return <RatingRow props={props} />
+    }
+  },
+  {
+    Header: "Date",
+    accessor: "created_at"
+  },
+  {
+    Header: ".",
+  },
 ]
 
-    const StatusRow = ({props}) => {
-	return (
-<span className={`text-xs py-1 px-3 rounded-xl ${props.row.original.status == 'Active' ?
-		'bg-green-300/50 text-green-900' : 'bg-red-300 text-red-900'}`
-		}>
-		{props.row.original.status}
-</span>
-	)
-    }
+const NameRow = ({ props }) => {
+  return (
+    <span className="capitalize">{props.row.original.user.name}</span>
+  )
+}
 
-    const RatingRow = ({props}) => {
-	return (
-	     <span className=''>
-		<div className="flex items-center">
-		     {[0, 1, 2, 3, 4].map((rating) => (
-			  <StarIcon
-			    key={rating}
-                    	    className={classNames(
-                      	   	props.row.original.rating > rating ? 'text-orange-900' : 'text-orange-200',
-                      	    	'h-[0.9rem] w-[0.9rem] mr-1 flex-shrink-0'
-                    	    )}
-			    aria-hidden="true"
-			  />
-		      ))}
-		</div>
-</span>
-	)
-    }
+const RatingRow = ({ props }) => {
+  return (
+    <span className=''>
+      <div className="flex items-center">
+        {[0, 1, 2, 3, 4].map((rating) => (
+          <StarIcon
+            key={rating}
+            className={classNames(
+              props.row.original.rating > rating ? 'text-orange-900' : 'text-orange-200',
+              'h-[0.9rem] w-[0.9rem] mr-1 flex-shrink-0'
+            )}
+            aria-hidden="true"
+          />
+        ))}
+      </div>
+    </span>
+  )
+}
 
 
-const baseURL = "http://localhost:8000";
-//const baseURL = "https://nominet.vensle.com/backend";
+//const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 
 const Tables = () => {
   const columns = useMemo(() => columnsData, []);
@@ -112,15 +111,15 @@ const Tables = () => {
    axios("http://api.tvmaze.com/search/shows?q=girls")
      .then((res) => {
        setData([{
-	       score:1,
-	       show: {
-		       name: 'test',
-		       type: 'guess',
-		       language: 'chinese',
-		       officialSite: 'www.me.com',
-		       rating: {average: 5},
-		       status: "Closed"
-	       }
+         score:1,
+         show: {
+           name: 'test',
+           type: 'guess',
+           language: 'chinese',
+           officialSite: 'www.me.com',
+           rating: {average: 5},
+           status: "Closed"
+         }
        }, ...res.data, ...res.data,]);
      })
      .catch((err) => console.log(err))	  
@@ -130,7 +129,7 @@ const Tables = () => {
   return (
     <div>
       <div className="mt-5 min-h-[25rem] grid h-full grid-cols-1 gap-5">
-	<Table columns={columns} data={data} />
+        <Table columns={columns} data={data} />
       </div>
     </div>
   );

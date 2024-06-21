@@ -11,66 +11,64 @@ function classNames(...classes) {
 }
 
 const columnsData = [
-         {
-           Header: "Vendor",
-           accessor: "user.name",
-           Cell: ( props ) => {
-                return <UserNameRow props={props} / >
-           }
-         },
-         {
-           Header: "Order Id",
-           accessor: "id"
-         },
-         {
-           Header: "Product Name",
-           accessor: "name"
-         },
-         {
-           Header: "Price",
-           accessor: "price"
-         },
-         {
-           Header: "Location",
-           accessor: "city",
-         },
-         {
-           Header: "Category",
-           accessor: "category.name",
-         },
-         {
-           Header: "Date",
-           accessor: "created_at",
-         },
-         {
-           Header: "Status",
-           accessor: "status",
-           Cell: ( props ) => {
- 	    	return <StatusRow props={props} / >
-  	   }
-         },
+  {
+    Header: "Vendor",
+    accessor: "user.name",
+    Cell: (props) => {
+      return <UserNameRow props={props} />
+    }
+  },
+  {
+    Header: "Order Id",
+    accessor: "id"
+  },
+  {
+    Header: "Product Name",
+    accessor: "name"
+  },
+  {
+    Header: "Price",
+    accessor: "price"
+  },
+  {
+    Header: "Location",
+    accessor: "city",
+  },
+  {
+    Header: "Category",
+    accessor: "category.name",
+  },
+  {
+    Header: "Date",
+    accessor: "created_at",
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+    Cell: (props) => {
+      return <StatusRow props={props} />
+    }
+  },
 ]
 
-    const UserNameRow = ({props}) => {
-	return (
-		<span className="capitalize">{props.row.original.user.name}</span>
-	)
-    }
+const UserNameRow = ({ props }) => {
+  return (
+    <span className="capitalize">{props.row.original.user.name}</span>
+  )
+}
 
-    const StatusRow = ({props}) => {
-	return (
-			<span className={`inline-flex font-300 items-center text-xs py-[6px] px-[13px] rounded-[13px] ${
-				    props.row.original.status == 'Active' ?
-				      'bg-[#ddffcd] text-[#007f00]' : 'bg-[#ffd3d3] text-[#f90000]'
-			}`}>
-				<div className={`rounded-full w-[6px] h-[6px] mr-2 ${
-				    props.row.original.status == 'Active' ?
-				      'bg-[#007f00]' : 'bg-[#f90000]'
-				}`}></div>
-				{props.row.original.status}
-			</span>
-	)
-    }
+const StatusRow = ({ props }) => {
+  return (
+    <span className={`inline-flex font-300 items-center text-xs py-[6px] px-[13px] rounded-[13px] ${props.row.original.status == 'Active' ?
+        'bg-[#ddffcd] text-[#007f00]' : 'bg-[#ffd3d3] text-[#f90000]'
+      }`}>
+      <div className={`rounded-full w-[6px] h-[6px] mr-2 ${props.row.original.status == 'Active' ?
+          'bg-[#007f00]' : 'bg-[#f90000]'
+        }`}></div>
+      {props.row.original.status}
+    </span>
+  )
+}
 
 //const baseURL = "http://localhost:8000";
 const baseURL = "https://nominet.vensle.com/backend";
@@ -92,7 +90,7 @@ const Tables = () => {
     return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
       minimumFractionDigits: 2
     });
-  }	
+  }
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -127,42 +125,39 @@ const Tables = () => {
   return (
     <div>
       <div className="mt-5 min-h-[25rem] relative h-full">
-	  <div className="mb-6 pt-6 flex overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
-		<button
-		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-[3px] px-16 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${
-		    activeTab === 1
-		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
-		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
-		  }`}
-		  onClick={() => handleTabClick(1)}
-		>
-		  Uploads
-		</button>
+        <div className="mb-6 pt-6 flex overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
+          <button
+            className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-[3px] px-16 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${activeTab === 1
+                ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
+                : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+              }`}
+            onClick={() => handleTabClick(1)}
+          >
+            Uploads
+          </button>
 
-		<button
-		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${
-		    activeTab === 2
-		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
-		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
-		  }`}
-		  onClick={() => handleTabClick(2)}
-		>
-		  Orders
-		</button>
+          <button
+            className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${activeTab === 2
+                ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
+                : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+              }`}
+            onClick={() => handleTabClick(2)}
+          >
+            Orders
+          </button>
 
-		<button
-		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${
-		    activeTab === 3
-		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
-		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
-		  }`}
-		  onClick={() => handleTabClick(3)}
-		>
-		  Groceries
-		</button>
-         </div>
+          <button
+            className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${activeTab === 3
+                ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
+                : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+              }`}
+            onClick={() => handleTabClick(3)}
+          >
+            Groceries
+          </button>
+        </div>
 
-	 <Table columns={columns} data={data} />
+        <Table columns={columns} data={data} />
       </div>
     </div>
   );
