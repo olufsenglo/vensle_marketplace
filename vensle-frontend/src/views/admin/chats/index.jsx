@@ -159,18 +159,20 @@ const Chats = () => {
   return (
       <div className="grid h-full absolute inset-0 grid-cols-1">
 	  <div className="flex">
-	        <div className="w-full pt-[8.5rem] pl-2 pr-4 bg-[#fbf8ff] md:w-[40%]">
-		   <Table
-	  	      columns={columns}
-	  	      data={data}
-	   	      user={user}
-	  	      setSelectedMsgId={setSelectedMsgId}
-	  	      handleGetUserMessage={handleGetUserMessage}
-	  	   />
+	        <div className="w-full pt-[103px] bg-[#fbf8ff] md:w-[40%]">
+	           <div className="pt-[9px] border-t border-t-4 border-[#eeeeee]">
+		       <Table
+	  	          columns={columns}
+	  	          data={data}
+	   	          user={user}
+	  	          setSelectedMsgId={setSelectedMsgId}
+	  	          handleGetUserMessage={handleGetUserMessage}
+	  	       />
+	  	   </div>
 	  	</div>
-	  	<div className="absolute pt-[8.5rem] md:relative md:w-[60%] flex flex-col w-full bg-white top-0 h-full">
+	  	<div className="absolute pt-[103px] md:relative md:w-[60%] flex flex-col w-full bg-white top-0 h-full">
 	  	  {userMessages.length > 0 && (
-		    <div style={{borderBottom: "1px solid #eee"}} className="flex p-2 h-[3.7rem] items-center">
+		    <div style={{borderBottom: "1px solid #eee"}} className="flex p-2 h-[3.7rem] items-center border-b border-t border-t-4 border-[#eeeeee]">
 		      {loadingUserMessages ? <p>Loading...</p> : <>
 	  		<div>
 	  		   <img
@@ -221,7 +223,7 @@ const Chats = () => {
 				)
 			    )}
 	  	    </div>
-		    <form onSubmit={handleSubmitMessage} className="flex p-3 gap-3 bg-blue-300/50">
+		    <form onSubmit={handleSubmitMessage} className="flex p-3 gap-3 bg-[#dde1ff]">
 			<button className="py-3 px-3 bg-white rounded-md">
                     	    <ChatBubbleLeftRightIcon className="h-5 w-5" aria-hidden="true" />
 			</button>
