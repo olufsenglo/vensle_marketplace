@@ -2,60 +2,25 @@ import { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-import {
-  Dialog,
-  RadioGroup,
-  Transition,
-  Disclosure,
-  Menu,
-} from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/20/solid";
-import {
-  ArrowLeftIcon,
-  ChevronDownIcon,
-  FunnelIcon,
-  MinusIcon,
-  PlusIcon,
-  Squares2X2Icon,
-} from "@heroicons/react/20/solid";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, register, logout } from "actions/auth";
+import { register, logout } from "actions/auth";
 import {
-  removeFromCart,
-  decreaseQuantity,
-  increaseQuantity,
   fetchCartItems,
 } from "actions/actions";
 
 import { SET_MESSAGE } from "actions/types";
 
-import Top from "./Top";
-import CartLink from "./CartLink";
 import NavLinks from "./NavLinks";
 import TopMenu from "./TopMenu";
 import ProductTypeMenu from "./ProductTypeMenu";
 import SignInRegisterLinks from "./SignInRegisterLinks";
 import SignInRegisterModal from "./SignInRegisterModal";
-import AuthUserDropDownMenu from "./AuthUserDropDownMenu";
 
 import logo from "assets/img/front/logo.PNG";
-import person from "assets/img/front/person.PNG";
-import cart from "assets/img/front/cart.PNG";
 import Search from "./Search";
 
-const sortOptions = [
-  { name: "Profile", href: "/admin/profile", current: false },
-  { name: "Upload a product", href: "/admin/upload-product", current: false },
-  { name: "Dashboard", href: "/admin/default", current: false },
-  { name: "Logout", href: "#", current: false },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const baseURL = "https://nominet.vensle.com/backend";
 
@@ -68,23 +33,17 @@ const Header = ({
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const user = useSelector((state) => state.auth.user?.user);
-  const cartItems = useSelector((state) => state.cart.items);
   const storedCountry = localStorage.getItem("userCountry") || "Unknown";
   const storedCountryFlag = localStorage.getItem("countryFlag") || "";
 
-  const [open, setOpen] = useState(false);
-  const [loginRegisterOpen, setLoginRegisterOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [resetToken, setResetToken] = useState("");
   const [resetLink, setResetLink] = useState("");
-  const [resetTokenError, setResetTokenError] = useState("");
 
   const [redirect, setRedirect] = useState("");
   const [driverRegister, setDriverRegister] = useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [facebookLoading, setFacebookLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [resetPasswordError, setResetPasswordError] = useState("");
   const [registerError, setRegisterError] = useState("");
@@ -172,234 +131,6 @@ const Header = ({
     setLoginOpen(true);
   };
 
-  const handleShowLoginForm = (e) => {
-    e.preventDefault();
-    //TODO: put reset loading, formdata and error in helper function
-    setLoading(false);
-    setResetPasswordError("");
-    setRegisterError("");
-
-    setFormData({
-      email: "",
-      password: "",
-    });
-
-    setRegisterFormData({
-      name: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
-    });
-
-    setResetFormData({
-      email: "",
-      new_password: "",
-      new_password_confirmation: "",
-    });
-
-    dispatch({
-      type: "CLEAR_MESSAGE",
-    });
-
-    setActiveTab(1);
-  };
-
-  const handleShowRegisterForm = (e) => {
-    e.preventDefault();
-    //TODO: put reset loading, formdata and error in helper function
-    setLoading(false);
-    setLoginError(false);
-    setResetPasswordError("");
-    setRegisterError("");
-
-    setFormData({
-      email: "",
-      password: "",
-    });
-
-    setRegisterFormData({
-      name: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
-    });
-
-    setResetFormData({
-      email: "",
-      new_password: "",
-      new_password_confirmation: "",
-    });
-
-    dispatch({
-      type: "CLEAR_MESSAGE",
-    });
-
-    setActiveTab(2);
-  };
-
-  const handleShowResetForm = (e) => {
-    e.preventDefault();
-    //TODO: put reset loading, formdata and error in helper function
-    setLoading(false);
-    setLoginError(false);
-    setRegisterError("");
-
-    setRegisterFormData({
-      name: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
-    });
-
-    setResetFormData({
-      email: "",
-      new_password: "",
-      new_password_confirmation: "",
-    });
-
-    dispatch({
-      type: "CLEAR_MESSAGE",
-    });
-    setActiveTab(3);
-  };
-
-  const getDisplayFromImagesArray = (product) => {
-    const displayImage = product.images.find(
-      (image) => image.id === product.display_image_id
-    );
-    return displayImage ? `${baseURL}/uploads/${displayImage.name}` : "";
-  };
-
-  const handleRegister = (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    if (registerFormData.password != registerFormData.password_confirmation)
-      setRegisterError("Passwords do not match");
-
-    dispatch(
-      register(
-        registerFormData.name,
-        registerFormData.business_name,
-        registerFormData.email,
-        registerFormData.phone_number,
-        registerFormData.address,
-        registerFormData.password,
-        registerFormData.password_confirmation
-      )
-    )
-      .then(() => {
-        setLoading(false);
-        setRegisterError(false);
-        setRegisterFormData({
-          name: "",
-          email: "",
-          password: "",
-          password_confirmation: "",
-        });
-
-        setActiveTab(1);
-      })
-      .catch((error) => {
-        console.log("error", error);
-        setRegisterError("email already taken");
-        setLoading(false);
-      });
-  };
-
-  const handleForgotLinkClick = (resetLink) => {
-    setResetToken(resetLink);
-    setSuccessMessage("");
-  };
-
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
-
-    setLoading(true);
-    setResetPasswordError("");
-
-
-    if (!resetToken) {
-      try {
-        const forgotData = { email: forgotFormData.forgot_email };
-        const response = await axios.post(
-          `${baseURL}/api/v1/forgot-password`,
-          forgotData
-        );
-        setResetLink(response.data.token);
-        setSuccessMessage(response.data.message);
-        setResetPasswordError("");
-        setLoading(false);
-      } catch (error) {
-        if (error.response) {
-          if (error.response.data.error) {
-            setResetPasswordError(error.response.data.error);
-          } else if (error.response.data.errors) {
-            const errorMessages = Object.values(
-              error.response.data.errors
-            ).flat();
-            setResetPasswordError(errorMessages);
-          } else {
-            setResetPasswordError("An unexpected error occurred.");
-          }
-        }
-        setLoading(false);
-      }
-    } else {
-      try {
-        const resetData = {
-          email: forgotFormData.forgot_email,
-          token: resetToken,
-          password: resetFormData.new_password,
-          password_confirmation: resetFormData.new_password_confirmation,
-        };
-
-        const response = await axios.post(
-          `${baseURL}/api/v1/reset-password`,
-          resetData
-        );
-        setSuccessMessage("");
-        setResetPasswordError("");
-        setLoading(false);
-        setResetToken("");
-        setResetLink("");
-
-        handleTabClick(1);
-        dispatch({
-          type: SET_MESSAGE,
-          payload: {
-            type: "success",
-            message: "Password reset successfull you can now login with your new password"
-          },
-        });
-      } catch (error) {
-        if (error.response) {
-          if (error.response.data.error) {
-            setResetPasswordError(error.response.data.error);
-          } else if (error.response.data.errors) {
-            const errorMessages = Object.values(
-              error.response.data.errors
-            ).flat();
-            setResetPasswordError(errorMessages);
-          } else {
-            setResetPasswordError("An unexpected error occurred.");
-          }
-        }
-        setLoading(false);
-      }
-
-      /*
-       if (resetFormData.email == '')
-         setResetPasswordError("Email cannot be empty");
-
-      if (resetFormData.new_password != resetFormData.new_password_confirmation)
-       {
-       setResetPasswordError("Passwords do not match");
-       }
-       */
-    }
-  };
-
   // if (isLoggedIn) {
   //   navigate('/admin/products');
   // }
@@ -416,12 +147,12 @@ const Header = ({
     boxShadow: '0 0px 7px -2px #bababa'
   };
 
-  // useEffect(() => {
-  //   window.addEventListener('scroll', handleScroll)
-  //   return () => {
-  //       window.removeEventListener('scroll', handleScroll)
-  //   }
-  // }, []);
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+        window.removeEventListener('scroll', handleScroll)
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(fetchCartItems());
