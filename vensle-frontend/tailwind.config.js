@@ -143,7 +143,7 @@ module.exports = {
       primaryColor: "#ff5959",
       secondaryColor: "#ea0606",
       uDashSecondary: "#fcecec",
-      secondaryColor: "#ea0606",
+      ADashPrimary: "#0b1539",
       lightPrimary: "#F4F7FE",
       blueSecondary: "#4318FF",
       brandLinear: "#868CFF",

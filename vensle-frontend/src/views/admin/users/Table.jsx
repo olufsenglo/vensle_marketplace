@@ -65,10 +65,10 @@ const Table = ({ columns, data }) => {
 
 	    <input
 		type="text"
-	 	className="px-3 w-[45%] rounded-md py-2 mb-6"
+	 	className="px-3 w-[30%] bg-[#ebebfb] absolute top-[9px] border border-gray-600 right-0 rounded-md py-2 pl-6 pr-2 mb-6"
 		value={globalFilter}
 		onChange={(e) => setGlobalFilter(e.target.value)}
-	 	placeholder = "Search..."
+	 	placeholder = "Search"
 	    />
 	 
             <table
@@ -78,11 +78,11 @@ const Table = ({ columns, data }) => {
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr
-			    className="p-2 text-sm text-blue-900 bg-blue-500/50" 
+			    className="p-2 text-sm text-[#4e5b92] bg-[#dde1ff]" 
 			    {...headerGroup.getHeaderGroupProps()}
 			>
                             {headerGroup.headers.map((column) => (
-                                <th className="py-2 text-left" {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                <th className="py-4 text-[15px] text-left" {...column.getHeaderProps(column.getSortByToggleProps())}>
                                     {column.render('Header')}
 				     <span>
                                         {column.isSorted
@@ -96,12 +96,13 @@ const Table = ({ columns, data }) => {
                         </tr>
                     ))}
                 </thead>
-                <tbody {...getTableBodyProps()}>
-                    {page.map((row) => {
+                <tbody className="relative" {...getTableBodyProps()}>
+	 	    {/*improve condition*/}
+                    {page[0]?.original?.email ? page.map((row) => {
                         prepareRow(row);
                         return (
                             <tr
-				className="even:bg-gray-100 odd:bg-white"
+				className="even:bg-[#fbf8ff] odd:bg-white"
 				{...row.getRowProps()}
 			    >
                                 {row.cells.map((cell) => {
@@ -110,18 +111,20 @@ const Table = ({ columns, data }) => {
 					  onClick={() => handleUserQuickView(row.original)}
 					  className="py-3 cursor-pointer" {...cell.getCellProps()}
 					 >
-					    {console.log(row.original)}
                                             {cell.render('Cell')}
                                         </td>
                                     );
                                 })}
                             </tr>
                         );
-                    })}
+                    }) : 
+		    <div className="top-0 w-full">
+			   Loading
+		    </div>}
                 </tbody>
             </table>
-	    <div className="text-center mt-4">
-	      <span className="mr-4">
+            {page[0]?.original?.email && <div className="text-center mt-8">
+	      <span className="mr-6">
 	 	Page{' '}
 	 	<strong>
 	 	   {pageIndex + 1} of {pageOptions.length}
@@ -156,11 +159,11 @@ const Table = ({ columns, data }) => {
 			{'>>'}
 		      </button>
 	      </span>
-	      <span className="ml-4">
+	      <span className="ml-5">
 	 	Go to page: {' '}
 	 	<input
 	 	    type='number'
-	 	    className="w-10 ml-2 py-1 px-2 border-gray-300 rounded-sm"
+	 	    className="w-10 ml-3 py-1 px-2 border-gray-300 rounded-sm"
 	 	    defaultValue={pageIndex + 1}
 	 	    onChange={e => {
 			const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0
@@ -168,18 +171,7 @@ const Table = ({ columns, data }) => {
 		    }}
 	 	/>
 	      </span>
-	    </div>
-	    <pre>
-	 	<code>
-	 	  {JSON.stringify(
-		     {
-			selectedFlatRows: selectedFlatRows.map((row) => row.original),
-		     },
-		     null,
-		     2
-		  )}
-	 	</code>
-	    </pre>
+	    </div>}
          </div>
  )
 }

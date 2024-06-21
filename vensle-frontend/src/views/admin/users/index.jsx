@@ -13,7 +13,10 @@ function classNames(...classes) {
 const columnsData = [
          {
            Header: "Name",
-           accessor: "name"
+           accessor: "name",
+           Cell: ( props ) => {
+ 	    	return <NameRow props={props} / >
+  	   }
          },
          {
            Header: "Email",
@@ -43,13 +46,24 @@ const columnsData = [
          },
 ]
 
+    const NameRow = ({props}) => {
+	return (
+		<span className="capitalize">{props.row.original.name}</span>
+	)
+    }
+
     const StatusRow = ({props}) => {
 	return (
-<span className={`text-xs py-1 px-3 rounded-xl ${props.row.original.status == 'Active' ?
-		'bg-green-300/50 text-green-900' : 'bg-red-300 text-red-900'}`
-		}>
-		{props.row.original.status}
-</span>
+			<span className={`inline-flex font-300 items-center text-xs py-[6px] px-[13px] rounded-[13px] ${
+				    props.row.original.status == 'Active' ?
+				      'bg-[#ddffcd] text-[#007f00]' : 'bg-[#ffd3d3] text-[#f90000]'
+			}`}>
+				<div className={`rounded-full w-[6px] h-[6px] mr-2 ${
+				    props.row.original.status == 'Active' ?
+				      'bg-[#007f00]' : 'bg-[#f90000]'
+				}`}></div>
+				{props.row.original.status}
+			</span>
 	)
     }
 
@@ -109,12 +123,12 @@ const Users = () => {
 
   return (
     <div>
-      <div className="mt-5 min-h-[25rem] h-full">
-	  <div className="mb-6 flex overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
+      <div className="mt-5 min-h-[25rem] relative h-full">
+	  <div className="mb-6 pt-6 flex overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
 		<button
-		  className={`bg-transparent -mb-px inline-flex h-6 items-center justify-center whitespace-nowrap border-b-2 px-16 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${
+		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-[3px] px-16 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${
 		    activeTab === 1
-		      ? "border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-300"
+		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
 		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
 		  }`}
 		  onClick={() => handleTabClick(1)}
@@ -123,9 +137,9 @@ const Users = () => {
 		</button>
 
 		<button
-		  className={`bg-transparent -mb-px inline-flex h-6 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${
+		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${
 		    activeTab === 2
-		      ? "border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-300"
+		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
 		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
 		  }`}
 		  onClick={() => handleTabClick(2)}
@@ -134,9 +148,9 @@ const Users = () => {
 		</button>
 
 		<button
-		  className={`bg-transparent -mb-px inline-flex h-6 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${
+		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${
 		    activeTab === 3
-		      ? "border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-300"
+		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
 		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
 		  }`}
 		  onClick={() => handleTabClick(3)}
@@ -145,7 +159,7 @@ const Users = () => {
 		</button>
          </div>
 
-	<Table columns={columns} data={data} />
+	 <Table columns={columns} data={data} />
       </div>
     </div>
   );

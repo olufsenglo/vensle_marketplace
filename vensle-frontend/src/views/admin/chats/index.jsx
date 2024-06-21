@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { StarIcon } from '@heroicons/react/20/solid'
 import axios from "axios";
 import moment from "moment";
+import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+
+import noMsg from "assets/img/front/chat/no_msg.png";
 
 import Table from './Table'
 
@@ -39,8 +42,6 @@ const columnsData = [
 		    "receiver"
 	    	    : "sender"
 
-	//console.log('orig', props.row.original)
-	//console.log('uza', recipient)
 	return (
 	    <span className="flex items-center">
 		<img
@@ -76,8 +77,8 @@ const columnsData = [
     return `${baseURL}/uploads/${name}`;
   };
 
-const baseURL = "http://localhost:8000";
-//const baseURL = "https://nominet.vensle.com/backend";
+//const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 
 const Chats = () => {
   const columns = useMemo(() => columnsData, []);
@@ -91,7 +92,7 @@ const Chats = () => {
   const [loadingUserMessages, setLoadingUserMessages] = useState(false);
   const [message, setMessage] = useState('');
   const [userMessages, setUserMessages] = useState([]);
-  const [selectedMsgId, setSelectedMsgId] = useState([]);
+  const [selectedMsgId, setSelectedMsgId] = useState('');
   const [msgRecipient, setMsgRecipient] = useState('');
   const handleSubmitMessage = async (e) => {
       e.preventDefault();
@@ -156,18 +157,18 @@ const Chats = () => {
   }, [userMessages]);
 
   return (
-    <div>
-      <div className="mt-5 min-h-[25rem] grid h-full grid-cols-1">
-	  {console.log('recipe',msgRecipient)}
-	  <div className="flex relative h-[82vh]">
-		<Table
-	  	   columns={columns}
-	  	   data={data}
-	   	   user={user}
-	  	   setSelectedMsgId={setSelectedMsgId}
-	  	   handleGetUserMessage={handleGetUserMessage}
-	  	/>
-	  	<div className="absolute flex flex-col w-full bg-white top-0 h-full md:relative md:w-2/3">
+      <div className="grid h-full absolute inset-0 grid-cols-1">
+	  <div className="flex">
+	        <div className="w-full pt-[8.5rem] pl-2 pr-4 bg-[#fbf8ff] md:w-[40%]">
+		   <Table
+	  	      columns={columns}
+	  	      data={data}
+	   	      user={user}
+	  	      setSelectedMsgId={setSelectedMsgId}
+	  	      handleGetUserMessage={handleGetUserMessage}
+	  	   />
+	  	</div>
+	  	<div className="absolute pt-[8.5rem] md:relative md:w-[60%] flex flex-col w-full bg-white top-0 h-full">
 	  	  {userMessages.length > 0 && (
 		    <div style={{borderBottom: "1px solid #eee"}} className="flex p-2 h-[3.7rem] items-center">
 		      {loadingUserMessages ? <p>Loading...</p> : <>
@@ -188,7 +189,9 @@ const Chats = () => {
 	  		</div>
 		      </>}
 	  	    </div>)}
-		    <div className="p-3 flex-1 overflow-auto">
+		    <div className={`p-3 flex-1 overflow-auto ${
+			!loadingUserMessages && userMessages.length === 0 && "flex justify-center items-center"
+		    }`}>
 			    {loadingUserMessages ? (
 				<p>Loading</p>
 			    ) : (
@@ -211,11 +214,17 @@ const Chats = () => {
 					</span>
 				    ))
 				) : (
-				    <p>No messages</p>
+				    <div className="flex flex-col justify-center items-center">
+					<img src={noMsg} className="w-[15rem]" alt="No message" />
+					<p className="text-gray-600 mt-6">Messages will appear here</p>
+				    </div>
 				)
 			    )}
 	  	    </div>
-	  	    <form onSubmit={handleSubmitMessage} className="flex p-3 gap-3 bg-blue-300/50">
+		    <form onSubmit={handleSubmitMessage} className="flex p-3 gap-3 bg-blue-300/50">
+			<button className="py-3 px-3 bg-white rounded-md">
+                    	    <ChatBubbleLeftRightIcon className="h-5 w-5" aria-hidden="true" />
+			</button>
 	     		<input
 	  		   className="flex-1 rounded-md p-3"
 	  		   type="text"
@@ -224,7 +233,7 @@ const Chats = () => {
 	  		   onChange={(e) => setMessage(e.target.value)}
 	   		/>
 	  		<input
-	  		   className="py-3 px-5 rounded-md bg-blue-800/50 text-white cursor-pointer"
+	  		   className="py-3 px-5 rounded-md bg-[#4e5b92] hover:bg-ADashPrimary text-white cursor-pointer"
 	  		   type="submit"
 	  		   value={`${loading ? 'loading...' : 'Send'}`}
 	  		/>
@@ -232,7 +241,6 @@ const Chats = () => {
 	  	</div>
 	  </div>
       </div>
-    </div>
   );
 };
 

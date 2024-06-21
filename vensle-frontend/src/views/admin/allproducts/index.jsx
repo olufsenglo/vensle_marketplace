@@ -13,7 +13,10 @@ function classNames(...classes) {
 const columnsData = [
          {
            Header: "Vendor",
-           accessor: "user.name"
+           accessor: "user.name",
+           Cell: ( props ) => {
+                return <UserNameRow props={props} / >
+           }
          },
          {
            Header: "Order Id",
@@ -48,13 +51,24 @@ const columnsData = [
          },
 ]
 
+    const UserNameRow = ({props}) => {
+	return (
+		<span className="capitalize">{props.row.original.user.name}</span>
+	)
+    }
+
     const StatusRow = ({props}) => {
 	return (
-<span className={`text-xs py-1 px-3 rounded-xl ${props.row.original.status == 'Active' ?
-		'bg-green-300/50 text-green-900' : 'bg-red-300 text-red-900'}`
-		}>
-		{props.row.original.status}
-</span>
+			<span className={`inline-flex font-300 items-center text-xs py-[6px] px-[13px] rounded-[13px] ${
+				    props.row.original.status == 'Active' ?
+				      'bg-[#ddffcd] text-[#007f00]' : 'bg-[#ffd3d3] text-[#f90000]'
+			}`}>
+				<div className={`rounded-full w-[6px] h-[6px] mr-2 ${
+				    props.row.original.status == 'Active' ?
+				      'bg-[#007f00]' : 'bg-[#f90000]'
+				}`}></div>
+				{props.row.original.status}
+			</span>
 	)
     }
 
@@ -68,6 +82,11 @@ const Tables = () => {
 
   const [products, setProducts] = useState([]);
   const [data, setData] = useState([]);
+  const [activeTab, setActiveTab] = useState(1);
+
+  const handleTabClick = (tabNumber) => {
+    setActiveTab(tabNumber);
+  };
 
   function formatPrice(price) {
     return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
@@ -105,29 +124,45 @@ const Tables = () => {
     fetchUsers();
   }, [accessToken]);
 
-  /*useEffect(() => {
-   axios("http://api.tvmaze.com/search/shows?q=girls")
-     .then((res) => {
-       setData([{
-	       score:1,
-	       show: {
-		       name: 'test',
-		       type: 'guess',
-		       language: 'chinese',
-		       officialSite: 'www.me.com',
-		       rating: {average: 5},
-		       status: "Closed"
-	       }
-       }, ...res.data, ...res.data,]);
-     })
-     .catch((err) => console.log(err))	  
-  }, []);*/
-
-
   return (
     <div>
-      <div className="mt-5 min-h-[25rem] grid h-full grid-cols-1 gap-5">
-	<Table columns={columns} data={data} />
+      <div className="mt-5 min-h-[25rem] relative h-full">
+	  <div className="mb-6 pt-6 flex overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
+		<button
+		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-[3px] px-16 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${
+		    activeTab === 1
+		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
+		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+		  }`}
+		  onClick={() => handleTabClick(1)}
+		>
+		  Uploads
+		</button>
+
+		<button
+		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${
+		    activeTab === 2
+		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
+		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+		  }`}
+		  onClick={() => handleTabClick(2)}
+		>
+		  Orders
+		</button>
+
+		<button
+		  className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-center text-2xl focus:outline-none sm:text-base ${
+		    activeTab === 3
+		      ? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
+		      : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+		  }`}
+		  onClick={() => handleTabClick(3)}
+		>
+		  Groceries
+		</button>
+         </div>
+
+	 <Table columns={columns} data={data} />
       </div>
     </div>
   );

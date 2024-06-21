@@ -31,7 +31,7 @@ const Table = ({ columns, data, handleGetUserMessage, user }) => {
  const { globalFilter, pageIndex } = state;
  
  return (
-	 <div className="w-full md:w-1/3" style={{borderRight: "1px solid #ddd"}}>
+	 <>
 	    <input
 		type="text"
 	 	className="px-3 w-[97%] rounded-md py-2 mb-6"
@@ -72,7 +72,7 @@ const Table = ({ columns, data, handleGetUserMessage, user }) => {
 	 	    {/*<tr><td>Loading...</td></tr>*/}
                 </tbody>
             </table>
-         </div>
+         </>
  )
 }
 

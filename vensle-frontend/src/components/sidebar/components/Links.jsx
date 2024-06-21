@@ -24,33 +24,34 @@ export function SidebarLinks(props) {
       ) {
         return (
           <Link key={index} to={route.layout + "/" + route.path}>
-            <div className="relative mb-3 flex hover:cursor-pointer">
+            <div
+		className={`relative mb-3 mr-2 rounded-sm flex hover:cursor-pointer ${
+                  activeRoute(route.path) === true && "bg-[#475077]"
+	        }`}
+	    >
               <li
-                className="my-[3px] flex cursor-pointer items-center px-8"
+                className="my-[8px] px-[1.3rem] flex cursor-pointer items-center"
                 key={index}
               >
                 <span
                   className={`${
                     activeRoute(route.path) === true
-                      ? "font-bold text-brand-500 dark:text-white"
-                      : "font-medium text-gray-600"
+                      ? "text-white dark:text-white"
+                      : "text-[#bcc4f2]"
                   }`}
                 >
                   {route.icon ? route.icon : <DashIcon />}{" "}
                 </span>
                 <p
-                  className={`leading-1 ml-4 flex ${
+                  className={`text-[14px] font-light ml-3 flex ${
                     activeRoute(route.path) === true
-                      ? "font-bold text-navy-700 dark:text-white"
-                      : "font-medium text-gray-600"
+                      ? "text-white dark:text-white"
+                      : "text-[#bcc4f2]"
                   }`}
                 >
                   {route.name}
                 </p>
               </li>
-              {activeRoute(route.path) ? (
-                <div class="absolute right-0 top-px h-9 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
-              ) : null}
             </div>
           </Link>
         );

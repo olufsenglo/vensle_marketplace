@@ -65,7 +65,7 @@ const Table = ({ columns, data }) => {
 	 
 	    <input
 		type="text"
-	 	className="px-3 w-[45%] rounded-md py-2 mb-6"
+	 	className="px-3 w-[30%] bg-[#ebebfb] absolute top-[9px] border border-gray-600 right-0 rounded-md py-2 pl-6 pr-2 mb-6"
 		value={globalFilter}
 		onChange={(e) => setGlobalFilter(e.target.value)}
 	 	placeholder = "Search..."
@@ -78,11 +78,11 @@ const Table = ({ columns, data }) => {
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr
-			    className="p-2 text-sm text-blue-900 bg-blue-500/50" 
+			    className="p-2 text-sm text-[#4e5b92] bg-[#dde1ff]" 
 			    {...headerGroup.getHeaderGroupProps()}
 			>
                             {headerGroup.headers.map((column) => (
-                                <th className="py-2 text-left" {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                <th className="py-4 text-[15px] text-left" {...column.getHeaderProps(column.getSortByToggleProps())}>
                                     {column.render('Header')}
 				     <span>
                                         {column.isSorted
@@ -96,8 +96,9 @@ const Table = ({ columns, data }) => {
                         </tr>
                     ))}
                 </thead>
-                <tbody {...getTableBodyProps()}>
-                    {page.map((row) => {
+                <tbody className="relative" {...getTableBodyProps()}>
+                    {/*improve condition*/}
+                    {page[0]?.original?.name ? page.map((row) => {
                         prepareRow(row);
                         return (
                             <tr
@@ -117,10 +118,13 @@ const Table = ({ columns, data }) => {
                                 })}
                             </tr>
                         );
-                    })}
+                    }) :
+		    <div className="top-0 w-full">
+                           Loading
+                    </div>}
                 </tbody>
             </table>
-	    <div className="text-center mt-4">
+	    {page[0]?.original?.name && <div className="text-center mt-4">
 	      <span className="mr-4">
 	 	Page{' '}
 	 	<strong>
@@ -168,18 +172,7 @@ const Table = ({ columns, data }) => {
 		    }}
 	 	/>
 	      </span>
-	    </div>
-	    <pre>
-	 	<code>
-	 	  {JSON.stringify(
-		     {
-			selectedFlatRows: selectedFlatRows.map((row) => row.original),
-		     },
-		     null,
-		     2
-		  )}
-	 	</code>
-	    </pre>
+	    </div>}
          </div>
  )
 }
