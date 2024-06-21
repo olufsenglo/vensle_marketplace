@@ -124,7 +124,7 @@ const Table = ({ columns, data }) => {
                     </div>}
                 </tbody>
             </table>
-	    {page[0]?.original?.name && <div className="text-center mt-4">
+	    {page[0]?.original?.name && <div className="text-center mt-8">
 	      <span className="mr-4">
 	 	Page{' '}
 	 	<strong>

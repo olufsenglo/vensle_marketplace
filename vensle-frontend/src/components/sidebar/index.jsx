@@ -20,7 +20,7 @@ const Sidebar = ({ open, onClose }) => {
         <HiX />
       </span>
 
-      <div className={`mx-[26px] mt-[50px] flex items-center`}>
+      <div className={`ml-[26px] mr-[50px] mt-[50px] flex items-center`}>
         <Link to='/' className="mt-1 ml-1 h-2.5 font-poppins text-[26px] font-medium uppercase text-[#bcc4f2] dark:text-white">
           VENSLE <span className="font-light">MARKET</span>
         </Link>
