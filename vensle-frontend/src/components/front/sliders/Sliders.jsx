@@ -13,16 +13,16 @@ import RequestSlider from './RequestSlider';
 import GrocerySlider from './GrocerySlider';
 
 const Sliders = ({
-    activePill,
-    setActivePill
+  activePill,
+  setActivePill
 }) => {
   return (
-    <div className="relative bg-white">
+    <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8">
-		{activePill === 1 && <PickupSlider />}
-	  	{activePill === 2 && <PickupSlider />}
-		{activePill === 3 && <RequestSlider />}
-	  	{activePill === 4 && <GrocerySlider />}
+        {activePill === 1 && <PickupSlider />}
+        {activePill === 2 && <PickupSlider />}
+        {activePill === 3 && <RequestSlider />}
+        {activePill === 4 && <GrocerySlider />}
       </div>
     </div>
   );

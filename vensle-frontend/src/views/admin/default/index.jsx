@@ -71,14 +71,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchLatestMessages = async () => {
-	setErrorMessage('')
-        setLoading(true);
+      setErrorMessage('')
+      setLoading(true);
       try {
-	const response = await axios.get(`${baseURL}/messages/inbox?per_page=4`, {
-	  headers: {
-  	     Authorization: `Bearer ${accessToken}`
-	     }
-	 })
+        const response = await axios.get(`${baseURL}/messages/inbox?per_page=4`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        })
         const data = response.data;
         setLatestMessages(response.data.data);
         setLoading(false);
@@ -91,7 +91,7 @@ const Dashboard = () => {
 
     fetchLatestMessages();
   }, []);
-	
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -162,82 +162,82 @@ const Dashboard = () => {
       {/* Card widget */}
 
       <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-12 lg:grid-cols-12 2xl:grid-cols-12 3xl:grid-cols-12">
-      	{/* TODO: Get currency */}
-	<div className="col-span-7 grid grid-cols-3 gap-3">
-		<Widget
-		  icon={<MdBarChart className="h-7 w-7" />}
-		  title={"For sale uploads"}
-		  subtitle={`£${totalProducts}`}
-		/>
-		<Widget
-		  icon={<IoDocuments className="h-6 w-6" />}
-		  title={"Request uploads"}
-		  subtitle={`£${totalRequests}`}
-		/>
-		<Widget
-		  icon={<MdBarChart className="h-7 w-7" />}
-		  title={"Orders Recieved"}
-		  subtitle={`${totalOrders}`}
-		/>
-	</div>
-	<div className="col-span-5 bg-pink-100">
-	       <div className="flex space-between">
-	          <div>
-	  	     <p>Upgrade <span>Grocery</span></p>
-	  	     <p className="text-gray-300">Upload Business Details</p>
-	         </div>
-	  	 <div className="rounded-full">
-	  	     <div className="rounded-full flex justify-center font-bold items-center m-3 h-[3rem] w-[3rem] bg-white">
-	   	     	50%
-	  	     </div>
-	     	 </div>
-	       </div>
-		
-	</div>
+        {/* TODO: Get currency */}
+        <div className="col-span-7 grid grid-cols-3 gap-3">
+          <Widget
+            icon={<MdBarChart className="h-7 w-7" />}
+            title={"For sale uploads"}
+            subtitle={`£${totalProducts}`}
+          />
+          <Widget
+            icon={<IoDocuments className="h-6 w-6" />}
+            title={"Request uploads"}
+            subtitle={`£${totalRequests}`}
+          />
+          <Widget
+            icon={<MdBarChart className="h-7 w-7" />}
+            title={"Orders Recieved"}
+            subtitle={`${totalOrders}`}
+          />
+        </div>
+        <div className="col-span-5 bg-pink-100">
+          <div className="flex space-between">
+            <div>
+              <p>Upgrade <span>Grocery</span></p>
+              <p className="text-gray-300">Upload Business Details</p>
+            </div>
+            <div className="rounded-full">
+              <div className="rounded-full flex justify-center font-bold items-center m-3 h-[3rem] w-[3rem] bg-white">
+                50%
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       {/* Charts */}
 
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
-      	  <div className="grid grid-cols-1 col-span-1 md:col-span-2 gap-5">
-        	<WeeklyRevenue />
-	  </div>
-	  <Card extra={"w-full p-4 h-full"}>
-	      <div className="rounded-t-3xl p-3">
-		<div className="text-lg font-bold text-navy-700 dark:text-white">
-		  Recent Messages
-		</div>
-	      </div>
-		<div className="flex-1 flex flex-col gap-3">
-	  	   {loading && <p>Loading...</p>}
-	  	   {!loading && latestMessages.length == 0 && <p>There are no recent messages</p>}
-		   {!loading && latestMessages.length > 0 && latestMessages.map((message)=>
-			<div key={message.id} className="flex">
-				{message.sender?.profile_picture && 
-				(<div className="w-5 h-full mr-2 w-12 h-12 rounded-full border border-4">
-				    <img
-				      src={getImagePath(message.sender.profile_picture)}
-				      alt={message.sender.profile_picture}
-				      className="rounded-full"
-				     />
-				</div>)}
-				<div>
-					<h4 className="font-medium line-clamp-1">
-			   			{message.sender.name}
-			   		</h4>
-					<p className="text-gray-600 text-xs line-clamp-1">{moment(message.created_at).fromNow()}</p>
-					<p className="text-sm line-clamp-1">{message.content}</p>
-				</div>
-			</div>
-		    )}
-		</div>
+        <div className="grid grid-cols-1 col-span-1 md:col-span-2 gap-5">
+          <WeeklyRevenue />
+        </div>
+        <Card extra={"w-full p-4 h-full"}>
+          <div className="rounded-t-3xl p-3">
+            <div className="text-lg font-bold text-navy-700 dark:text-white">
+              Recent Messages
+            </div>
+          </div>
+          <div className="flex-1 flex flex-col gap-3">
+            {loading && <p>Loading...</p>}
+            {!loading && latestMessages.length == 0 && <p>There are no recent messages</p>}
+            {!loading && latestMessages.length > 0 && latestMessages.map((message) =>
+              <div key={message.id} className="flex">
+                {message.sender?.profile_picture &&
+                  (<div className="w-5 h-full mr-2 w-12 h-12 rounded-full border border-4">
+                    <img
+                      src={getImagePath(message.sender.profile_picture)}
+                      alt={message.sender.profile_picture}
+                      className="rounded-full"
+                    />
+                  </div>)}
+                <div>
+                  <h4 className="font-medium line-clamp-1">
+                    {message.sender.name}
+                  </h4>
+                  <p className="text-gray-600 text-xs line-clamp-1">{moment(message.created_at).fromNow()}</p>
+                  <p className="text-sm line-clamp-1">{message.content}</p>
+                </div>
+              </div>
+            )}
+          </div>
 
-		<div className="mt-8">
-		    <Link to="/admin/messages/inbox" className="linear rounded-[20px] bg-lightPrimary px-4 py-2 text-base font-medium text-brand-500 transition duration-200 hover:bg-gray-100 active:bg-gray-200 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:active:bg-white/20">
-		  	See all
-		    </Link>
-	  	</div>
-	  </Card>
+          <div className="mt-8">
+            <Link to="/admin/messages/inbox" className="linear rounded-[20px] bg-lightPrimary px-4 py-2 text-base font-medium text-brand-500 transition duration-200 hover:bg-gray-100 active:bg-gray-200 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:active:bg-white/20">
+              See all
+            </Link>
+          </div>
+        </Card>
       </div>
 
       <div className="mt-5 grid grid-cols-1 gap-5">

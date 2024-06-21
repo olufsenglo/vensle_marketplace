@@ -1,7 +1,5 @@
-import { useEffect } from "react"
 import {
   MapPinIcon,
-  ClockIcon,
   TruckIcon,
 } from "@heroicons/react/20/solid";
 import {
@@ -10,7 +8,7 @@ import {
 
 import two from "assets/img/front/temp/2.jpg"
 
-const SingleProduct = ({ numberOfProducts, type }) => {
+const SingleProduct = ({ numberOfProducts, type, image=two }) => {
 
 	let titleClassName = ""
 	let priceClassName = ""
@@ -44,7 +42,7 @@ const SingleProduct = ({ numberOfProducts, type }) => {
 		    <HeartIcon className="h-6 w-6" />
 		</div>
 		<img
-	    	    src={two}
+	    	    src={image}
 	    	    className={`!max-h-[9rem] w-full rounded object-cover ${imageClassName}`}
 	    	    alt="product"
 	      	/>

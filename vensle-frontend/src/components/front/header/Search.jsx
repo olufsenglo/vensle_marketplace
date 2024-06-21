@@ -150,7 +150,7 @@ const Search = ({ position = 'sticky' }) => {
 
   return (
     <form
-      style={{ zIndex: "1" }}
+      style={{ zIndex: "2" }}
       className={`relative mt-4 mb-0 flex h-10 w-full items-center md:h-[51px] md:px-0 lg:mt-0 lg:w-auto lg:flex-1 ${position === 'relative' && "mx-6 lg:mx-[2%]"
         }`}
       onSubmit={handleSearchButtonClick}

@@ -13,16 +13,16 @@ import sliderImg2 from 'assets/img/front/slider/2.png';
 import { Navigation } from 'swiper/modules';
 
 const PickupSlider = () => {
-  return (
-          <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
-		<SwiperSlide>
-		    <img src={sliderImg1} alt="slider" />
-		</SwiperSlide>
-		<SwiperSlide>
-		    <img src={sliderImg2} alt="slider" />
-		</SwiperSlide>
-	  </Swiper>
-  );
+	return (
+		<Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+			<SwiperSlide>
+				<img src={sliderImg1} alt="slider" />
+			</SwiperSlide>
+			<SwiperSlide>
+				<img src={sliderImg2} alt="slider" />
+			</SwiperSlide>
+		</Swiper>
+	);
 }
 
 export default PickupSlider

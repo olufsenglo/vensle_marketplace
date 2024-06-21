@@ -4,6 +4,7 @@ import Header from "components/front/header/Header";
 import Sliders from "components/front/sliders/Sliders";
 import Hero from "components/front/hero/Hero";
 import ShopByCategories from "components/front/shopByCategories/ShopByCategories";
+import ShopByGroceryCategories from "components/front/shopByGroceryCategories/ShopByGroceryCategories";
 import TopPurchases from "components/front/topPurchases/TopPurchases";
 import MostPopular from "components/front/mostPopular/MostPopular";
 import TopSellers from "components/front/topSellers/TopSellers";
@@ -41,7 +42,7 @@ const Home = () => {
       {/*<PopularGroceries />*/}
       {/*<StoreBanner />*/}
       {/*<TopRequests />*/}
-      <ShopByCategories />
+      {activePill === 4 ? <ShopByGroceryCategories /> : <ShopByCategories />}
       {activePill === 4 && <BestSellers />}
       {activePill === 1 &&<TopPurchases />}
       <TopSellers />

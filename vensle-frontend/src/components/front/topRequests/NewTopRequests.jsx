@@ -11,6 +11,9 @@ import { Navigation } from 'swiper/modules';
 
 import Request from "components/front/product/Request"
 import SectionTitle from "components/front/sectionTitle/SectionTitle"
+import img1 from "assets/img/front/all/front_007.png"
+import img2 from "assets/img/front/all/front_008.png"
+import img3 from "assets/img/front/all/front_069.png"
 
 const NewTopRequests = () => {
     return (
@@ -25,16 +28,16 @@ const NewTopRequests = () => {
 		  className="mySwiper mt-6"
 	      >
 		<SwiperSlide>
-	  	    <Request />
+	  	    <Request image={img3}  />
 		</SwiperSlide>
 		<SwiperSlide>
-	  	    <Request />
+	  	    <Request image={img1} />
 		</SwiperSlide>
 		<SwiperSlide>
-	  	    <Request />
+	  	    <Request image={img2}  />
 		</SwiperSlide>
 		<SwiperSlide>
-	  	    <Request />
+	  	    <Request  />
 		</SwiperSlide>
 	      </Swiper>
 	</div>

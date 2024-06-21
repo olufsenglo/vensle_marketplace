@@ -31,7 +31,7 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
 
   return (
     <div
-      className="relative bg-white pb-4 border-b border-b-gray-200/50 border-b-4"
+      className="relative bg-white pb-4 border-b border-b-gray-200/50"
     >
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <ul

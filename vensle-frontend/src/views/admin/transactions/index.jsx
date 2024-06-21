@@ -45,10 +45,54 @@ const productSales = [
   },
   {
     name: 'Mar',
+    product1: 1000,
+    product2: 2290
+  },
+  {
+    name: 'Apr',
+    product1: 2360,
+    product2: 880
+  },
+  {
+    name: 'May',
+    product1: 600,
+    product2: 3360
+  },
+  {
+    name: 'Jun',
+    product1: 2300,
+    product2: 2290
+  },
+  {
+    name: 'Jul',
+    product1: 4190,
+    product2: 2090
+  },
+  {
+    name: 'Aug',
     product1: 2000,
+    product2: 2090
+  },
+  {
+    name: 'Sep',
+    product1: 1990,
+    product2: 2690
+  },
+  {
+    name: 'Oct',
+    product1: 2410,
+    product2: 2290
+  },
+  {
+    name: 'Nov',
+    product1: 2900,
+    product2: 2290
+  },
+  {
+    name: 'Dec',
+    product1: 1980,
     product2: 2290
   }
-
 ]
 
 const columnsData = (setOpen, setSelectedTransaction) => [
@@ -105,8 +149,8 @@ const StatusRow = ({ props }) => {
         'bg-orange-300 text-orange-900'}`
     }>
       <div className={`rounded-full w-[6px] h-[6px] mr-2 ${props.row.original.status == 'paid' ? 'bg-[#007f00]' :
-          props.row.original.status == 'declined' ? 'bg-[#f90000]' :
-            'bg-orange-900'
+        props.row.original.status == 'declined' ? 'bg-[#f90000]' :
+          'bg-orange-900'
         }`}></div>
       {props.row.original.status}
     </span>
@@ -207,10 +251,12 @@ const Transactions = () => {
 
   return (
     <div>
-      <div className="bg-blue-100/50 rounded-lg py-8 px-16 mb-6 mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
-        <AdminAnalytic />
-        <AdminAnalytic />
-        <AdminAnalytic />
+      <div className="bg-[#f5eeff] rounded-lg">
+        <div style={{columnGap: "5%"}} className="py-[2.5rem] px-[9%] mb-6 mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
+          <AdminAnalytic />
+          <AdminAnalytic />
+          <AdminAnalytic last={true} />
+        </div>
       </div>
       <div className="py-8">
         <h3>Sales Volume</h3>
@@ -223,13 +269,13 @@ const Transactions = () => {
               <Tooltip />
               <Legend />
               <Area
-                stroke="#2563eb"
-                fill="#3b82f6"
+                stroke="#06164b"
+                fill="#37436f"
                 dataKey="product1"
               />
               <Area
-                stroke="#7c3aed"
-                fill="#8b5cf6"
+                stroke="#ff5959"
+                fill="#fb8c8e"
                 dataKey="product2"
               />
             </AreaChart>

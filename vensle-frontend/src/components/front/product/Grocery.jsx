@@ -25,10 +25,10 @@ export default function Grocery({ product, wrapper, lineClamp = 1, custom, listV
     const rearrangedImages =
       displayImageIndex !== -1
         ? [
-            product.images[displayImageIndex],
-            ...product.images.slice(0, displayImageIndex),
-            ...product.images.slice(displayImageIndex + 1),
-          ]
+          product.images[displayImageIndex],
+          ...product.images.slice(0, displayImageIndex),
+          ...product.images.slice(displayImageIndex + 1),
+        ]
         : product.images;
 
     // Update the product object with rearranged or unchanged images
@@ -46,11 +46,11 @@ export default function Grocery({ product, wrapper, lineClamp = 1, custom, listV
   const [selectedProduct, setSelectedProduct] = useState(null);
 
 
-function formatPrice(price) {
-  return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
-    minimumFractionDigits: 2
-  });	
-}
+  function formatPrice(price) {
+    return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+      minimumFractionDigits: 2
+    });
+  }
 
   const handleProductQuickView = (e, product) => {
     e.preventDefault();
@@ -80,29 +80,26 @@ function formatPrice(price) {
       <div
         key={product.id}
         style={{ background: "#f4f4f4a3" }}
-        className={`group h-full flex rounded-lg ${
-          listView === "list" ? "flex-row" : "flex-col"
-        }`}
+        className={`group h-full flex rounded-lg ${listView === "list" ? "flex-row" : "flex-col"
+          }`}
       >
         <div
           onClick={(e) => handleProductQuickView(e, product)}
-          className={`aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7 overflow-hidden rounded-lg bg-gray-200 ${
-            listView === "list" ? "" : "w-full flex-1"
-          }`}
+          className={`aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7 bg-white overflow-hidden rounded-lg border border-[#c8c8c8] ${listView === "list" ? "" : "w-full flex-1"
+            }`}
         >
           <div
-            className={`relative flex h-full min-h-[6rem] w-full cursor-pointer overflow-hidden rounded-xl ${
-	      wrapper === 'slick' ? 'h-full' : (custom === 'height' ? `lg:h-[10rem]` : "lg:h-40")}
+            className={`relative flex h-full min-h-[6rem] w-full cursor-pointer overflow-hidden rounded-xl ${wrapper === 'slick' ? 'h-full' : (custom === 'height' ? `lg:h-[10rem]` : "lg:h-40")}
 	      ${listView === "list" ? " w-40" : ""}`
-	    }>
+            }>
             <img
-              className="peer absolute top-0 right-0 h-full w-full object-cover group-hover:opacity-75"
+              className="peer absolute top-0 right-0 h-full w-full object-contain group-hover:opacity-75"
               src={product.display_image && getImagePath(product.display_image)}
               alt={product.name}
             />
             {product.images && product.images[1] ? (
               <img
-                className="peer absolute top-0 -right-96 h-full w-full object-cover transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0"
+                className="peer absolute top-0 -right-96 h-full w-full object-contain transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0"
                 src={getImagePath(product.images[1])}
                 alt="product image"
               />
@@ -113,23 +110,20 @@ function formatPrice(price) {
         </div>
 
         <div
-          className={`p-2 ${
-            listView === "list" && "flex flex-1 flex-col items-start px-4 py-2"
-          }`}
+          className={`p-2 ${listView === "list" && "flex flex-1 flex-col items-start px-4 py-2"
+            }`}
         >
           <h2
-            className={`text-lg font-medium text-gray-900 line-clamp-${lineClamp} ${
-		lineClamp > 1 && "text-base mt-2 leading-5 min-h-[3rem]"
-	    }`}
+            className={`text-lg font-medium text-gray-900 line-clamp-${lineClamp} ${lineClamp > 1 && "text-base mt-2 leading-5 min-h-[3rem]"
+              }`}
             style={{ fontWeight: "500", fontSize: "0.95rem" }}
           >
             {product.name}
           </h2>
 
           <div
-            className={`mb-1 flex flex-col justify-between ${
-              listView === "list" ? "flex-1" : "md:flex-row "
-            }`}
+            className={`mb-1 flex flex-col justify-between ${listView === "list" ? "flex-1" : "md:flex-row "
+              }`}
           >
             <div className="flex flex-col justify-between">
               <div className="flex items-center">
@@ -154,9 +148,8 @@ function formatPrice(price) {
             <button
               type="submit"
               onClick={(e) => handleAddToCart(e, product)}
-              className={`bg-transparent h-8 text-[0.8rem] hover:border-transparent rounded border border-red-500 px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white uppercase ${
-		btnSize === 'sm' && "md:text-[0.6rem]"
-	      }`}
+              className={`bg-transparent h-8 text-[0.8rem] hover:border-transparent rounded border border-red-500 px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white uppercase ${btnSize === 'sm' && "md:text-[0.6rem]"
+                }`}
             >
               Add to cart
             </button>

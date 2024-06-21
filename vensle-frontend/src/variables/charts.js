@@ -152,17 +152,17 @@ export const barChartDataWeeklyRevenue = [
   {
     name: "PRODUCT A",
     data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
-    color: "#6AD2Fa",
+    color: "#ff5959",
   },
   {
     name: "PRODUCT B",
     data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
-    color: "#4318FF",
+    color: "#ff5959",
   },
   {
     name: "PRODUCT C",
     data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
-    color: "#EFF4FB",
+    color: "#06164b",
   },
 ];
 
@@ -189,7 +189,7 @@ export const barChartOptionsWeeklyRevenue = {
     },
   },
   xaxis: {
-    categories: ["17", "18", "19", "20", "21", "22", "23", "24", "25"],
+    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     show: false,
     labels: {
       show: true,

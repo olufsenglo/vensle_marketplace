@@ -60,8 +60,8 @@ function classNames(...classes) {
 const baseURL = "https://nominet.vensle.com/backend";
 
 const Header = ({
-    activePill,
-    setActivePill
+  activePill,
+  setActivePill
 }) => {
   const navigate = useNavigate();
 
@@ -148,38 +148,6 @@ const Header = ({
     if (storedCountry == "UK") return <>United Kingdom</>;
     else if (storedCountry == "US") return <>United States</>;
     else if (storedCountry == "NG") return <>Nigeria</>;
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleRegisterInputChange = (e) => {
-    const { name, value } = e.target;
-    setRegisterFormData({
-      ...registerFormData,
-      [name]: value,
-    });
-  };
-
-  const handleResetInputChange = (e) => {
-    const { name, value } = e.target;
-    setResetFormData({
-      ...resetFormData,
-      [name]: value,
-    });
-  };
-
-  const handleForgotInputChange = (e) => {
-    const { name, value } = e.target;
-    setForgotFormData({
-      ...forgotFormData,
-      [name]: value,
-    });
   };
 
   const handleUploadClick = (e) => {
@@ -397,13 +365,13 @@ const Header = ({
         setResetLink("");
 
         handleTabClick(1);
-      dispatch({
-        type: SET_MESSAGE,
-        payload: { 
-		type: "success", 
-		message: "Password reset successfull you can now login with your new password" 
-	},
-      });
+        dispatch({
+          type: SET_MESSAGE,
+          payload: {
+            type: "success",
+            message: "Password reset successfull you can now login with your new password"
+          },
+        });
       } catch (error) {
         if (error.response) {
           if (error.response.data.error) {
@@ -432,76 +400,48 @@ const Header = ({
     }
   };
 
-  const handleFacebookLogin = async (e) => {
-    setFacebookLoading(true);
-    window.location.href = `${baseURL}/api/v1/auth/facebook`;
-  };
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    //if (loginError == '')
-    dispatch(login(formData.email, formData.password))
-      .then(() => {
-        if (redirect) {
-          navigate("/admin/upload-product?redirect=modal");
-        } else {
-          navigate("/admin/default");
-        }
-
-        //window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoginError(true);
-        setLoading(false);
-      });
-  };
-
-  const handleGoogleLogin = async (e) => {
-    e.preventDefault();
-    setGoogleLoading(true);
-    window.location.href = `${baseURL}/api/v1/auth/google`;
-  };
-
   // if (isLoggedIn) {
   //   navigate('/admin/products');
   // }
-  
-  const handleScroll= () => {
-      if (window.scrollY >= 239) {
-          setShowNavbar(true);
-      } else if (window.scrollY <= 550) {
-          setShowNavbar(false);
-      }
+
+  const handleScroll = () => {
+    if (window.scrollY >= 239) {
+      setShowNavbar(true);
+    } else if (window.scrollY <= 550) {
+      setShowNavbar(false);
+    }
   }
 
-  /*useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-        window.removeEventListener('scroll', handleScroll)
-    }
-  }, []);*/
+  const headerWrapperStyle = {
+    boxShadow: '0 0px 7px -2px #bababa'
+  };
+
+  // useEffect(() => {
+  //   window.addEventListener('scroll', handleScroll)
+  //   return () => {
+  //       window.removeEventListener('scroll', handleScroll)
+  //   }
+  // }, []);
 
   useEffect(() => {
     dispatch(fetchCartItems());
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="relative" style={headerWrapperStyle}>
       <TopMenu
-	  isAuthenticated = {isAuthenticated}
-	  handleUploadClick = {handleUploadClick}
-	  handleRegisterDriverClick = {handleRegisterDriverClick}
-	  handleTopNavClick = {handleTopNavClick}
-          storedCountryFlag={storedCountryFlag}
-	  handleGetUserCountry={handleGetUserCountry}
+        isAuthenticated={isAuthenticated}
+        handleUploadClick={handleUploadClick}
+        handleRegisterDriverClick={handleRegisterDriverClick}
+        handleTopNavClick={handleTopNavClick}
+        storedCountryFlag={storedCountryFlag}
+        handleGetUserCountry={handleGetUserCountry}
       />
 
       <div>
-         <div className="mx-auto max-w-2xl px-4 py-2 sm:px-1 lg:max-w-7xl lg:px-8">
-      	    <ProductTypeMenu position={'relative'} activePill={activePill} setActivePill={setActivePill} />
-	 </div>
+        <div className="mx-auto max-w-2xl px-4 py-2 sm:px-1 lg:max-w-7xl lg:px-8">
+          <ProductTypeMenu position={'relative'} activePill={activePill} setActivePill={setActivePill} />
+        </div>
       </div>
 
       <div className="bg-white">
@@ -514,30 +454,30 @@ const Header = ({
             </Link>
             <Search position={'relative'} />
 
-	      <SignInRegisterLinks
-		    user={user}
-		    handleTopNavClick={handleTopNavClick}
-		    isAuthenticated={isAuthenticated}
-		    handleSignInClick={handleSignInClick}
-	    	    handleRegisterClick={handleRegisterClick}
-	      />
+            <SignInRegisterLinks
+              user={user}
+              handleTopNavClick={handleTopNavClick}
+              isAuthenticated={isAuthenticated}
+              handleSignInClick={handleSignInClick}
+              handleRegisterClick={handleRegisterClick}
+            />
           </div>
         </div>
       </div>
-      {showNavbar && <div className="bg-white top-0 fixed z-10 w-full border-b border-b-gray-200/50 border-b-4">
-         <div className="flex mx-auto max-w-2xl py-4 pt-4 md:pt-2 md:pb-4 lg:pt-6 lg:pb-4 lg:max-w-7xl lg:px-8">
-	    <Search />
-	    <div className="flex ml-[4%] gap-8">
-      	        <ProductTypeMenu activePill={activePill} setActivePill={setActivePill} />
-	        <SignInRegisterLinks
-		    user={user}
-		    handleTopNavClick={handleTopNavClick}
-		    isAuthenticated={isAuthenticated}
-		    handleSignInClick={handleSignInClick}
-	    	    handleRegisterClick={handleRegisterClick}
-	        />
-	    </div>
-         </div>
+      {showNavbar && <div style={headerWrapperStyle} className="bg-white top-0 fixed z-10 w-full border-b border-b-gray-200/50">
+        <div className="flex mx-auto max-w-2xl py-4 pt-4 md:pt-2 md:pb-4 lg:pt-6 lg:pb-4 lg:max-w-7xl lg:px-8">
+          <Search />
+          <div className="flex ml-[4%] gap-8">
+            <ProductTypeMenu activePill={activePill} setActivePill={setActivePill} />
+            <SignInRegisterLinks
+              user={user}
+              handleTopNavClick={handleTopNavClick}
+              isAuthenticated={isAuthenticated}
+              handleSignInClick={handleSignInClick}
+              handleRegisterClick={handleRegisterClick}
+            />
+          </div>
+        </div>
       </div>}
 
       <NavLinks
@@ -546,10 +486,10 @@ const Header = ({
       />
 
       <SignInRegisterModal
-	  setLoginOpen={setLoginOpen}
-	  loginOpen={loginOpen}
-	  setActiveTab={setActiveTab}
-	  activeTab={activeTab}
+        setLoginOpen={setLoginOpen}
+        loginOpen={loginOpen}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
       />
 
     </div>
