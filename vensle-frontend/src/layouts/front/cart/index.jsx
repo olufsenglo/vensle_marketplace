@@ -17,7 +17,6 @@ import {
 } from "actions/actions";
 
 const baseURL = "https://nominet.vensle.com/backend";
-//const baseURL = "https://nominet.vensle.com/backend";
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

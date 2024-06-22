@@ -3,7 +3,7 @@ import axios from "axios";
 
 import Request from "components/front/request/Request";
 
-const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 export default function TopRequests() {
   const [productRequests, setProductRequests] = useState([]);
   const [loading, setLoading] = useState(false);

@@ -150,7 +150,7 @@ const Header = ({
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
     return () => {
-        window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', handleScroll)
     }
   }, []);
 
@@ -195,21 +195,20 @@ const Header = ({
           </div>
         </div>
       </div>
-      {showNavbar && <div style={headerWrapperStyle} className="bg-white top-0 fixed z-10 w-full border-b border-b-gray-200/50">
-        <div className="flex mx-auto max-w-2xl py-4 pt-4 md:pt-2 md:pb-4 lg:pt-6 lg:pb-4 lg:max-w-7xl lg:px-8">
-          <Search />
-          <div className="flex ml-[4%] gap-8">
-            <ProductTypeMenu activePill={activePill} setActivePill={setActivePill} />
-            <SignInRegisterLinks
-              user={user}
-              handleTopNavClick={handleTopNavClick}
-              isAuthenticated={isAuthenticated}
-              handleSignInClick={handleSignInClick}
-              handleRegisterClick={handleRegisterClick}
-            />
-          </div>
+      <div style={headerWrapperStyle} className={`bg-white flex transition-all duration-300 mx-auto fixed z-10 w-full max-w-2xl pb-2 pt-2 md:pt-2 md:pb-4 lg:pt-2 lg:pb-2 lg:max-w-7xl lg:px-8 ${showNavbar ? 'top-0' : 'top-[-68px]'
+        }`}>
+        <Search />
+        <div className="flex ml-[4%] gap-8">
+          <ProductTypeMenu activePill={activePill} setActivePill={setActivePill} />
+          <SignInRegisterLinks
+            user={user}
+            handleTopNavClick={handleTopNavClick}
+            isAuthenticated={isAuthenticated}
+            handleSignInClick={handleSignInClick}
+            handleRegisterClick={handleRegisterClick}
+          />
         </div>
-      </div>}
+      </div>
 
       <NavLinks
         storedCountryFlag={storedCountryFlag}

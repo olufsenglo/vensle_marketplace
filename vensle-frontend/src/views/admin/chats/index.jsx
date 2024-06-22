@@ -77,7 +77,6 @@ const getImagePath = (name) => {
 	return `${baseURL}/uploads/${name}`;
 };
 
-//const baseURL = "http://localhost:8000";
 const baseURL = "https://nominet.vensle.com/backend";
 
 const Chats = () => {

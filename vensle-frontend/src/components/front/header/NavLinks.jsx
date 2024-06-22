@@ -7,7 +7,7 @@ import {
 
 import NavCategories from "./NavCategories";
 
-const baseURL = "http://nominet.vensle.com/backend";
+const baseURL = "https://nominet.vensle.com/backend";
 const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);

@@ -20,7 +20,6 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-//const baseURL = "https://nominet.vensle.com/backend";
 const baseURL = "https://nominet.vensle.com/backend";
 
 const TopPurchaseSellers = () => {

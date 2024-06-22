@@ -30,7 +30,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();

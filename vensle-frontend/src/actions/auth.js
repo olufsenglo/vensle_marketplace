@@ -13,7 +13,6 @@ import { emptyCart } from "actions/actions"
 import AuthService from "services/auth.service";
 
 const API_URL = "https://nominet.vensle.com/backend/api/v1/";
-//const API_URL = "https://nominet.vensle.com/backend/api/v1/";
 
 export const register =
   (

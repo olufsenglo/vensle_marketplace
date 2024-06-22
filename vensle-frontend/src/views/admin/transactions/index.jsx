@@ -177,7 +177,6 @@ const DeleteRow = ({ props, setOpen, setSelectedTransaction }) => {
 }
 
 
-//const baseURL = "http://localhost:8000";
 const baseURL = "https://nominet.vensle.com/backend";
 
 const Transactions = () => {

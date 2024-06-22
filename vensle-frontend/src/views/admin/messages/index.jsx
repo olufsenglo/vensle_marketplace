@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux';
 
 import Lists from "./components/Lists";
 
-//const baseURL = "https://nominet.vensle.com/backend";
-const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 const Messages = () => {
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);

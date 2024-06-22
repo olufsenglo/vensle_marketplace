@@ -40,8 +40,8 @@ const tableColumnsTopCreators = [
   //  },
 ];
 
-const baseURL = "http://localhost:8000/api/v1";
-const newBaseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend/api/v1";
+const newBaseURL = "https://nominet.vensle.com/backend";
 const Dashboard = () => {
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
