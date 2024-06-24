@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import required modules
+import { Navigation } from 'swiper/modules';
 
 import {
   ChevronLeftIcon,
@@ -9,10 +14,13 @@ import {
   MapPinIcon,
   ChatBubbleBottomCenterTextIcon,
 } from "@heroicons/react/20/solid";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import Slider from "react-slick";
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 import Feedback from "./Feedback";
 import Message from "./Message";
@@ -20,7 +28,6 @@ import Message from "./Message";
 import { addToCart } from "actions/actions";
 
 import { StarIcon } from "@heroicons/react/20/solid";
-import { RadioGroup } from "@headlessui/react";
 
 import SimilarProduct from "./SimilarProduct";
 
@@ -40,7 +47,6 @@ const ProductDetail = () => {
 
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState(null);
-  const [selectedImagePath, setSelectedImagePath] = useState(null);
   const [open, setOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const [imgIndex, setImgIndex] = useState(0);
@@ -50,13 +56,6 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(false);
 
   const delim = "^%*#$";
-
-  const settings = {
-    infinite: false,
-    speed: 500,
-    slidesToShow: 6,
-    slidesToScroll: 1,
-  };
 
   const handleAddToCart = (product) => {
     dispatch(addToCart({ ...product, quantity: 1 }));
@@ -81,7 +80,7 @@ const ProductDetail = () => {
         <img
           src={thumbnail}
           alt={product.name}
-          class="w-full object-cover lg:h-20"
+          class="!object-contain lg:!h-20  lg:!w-20"
         />
       </a>
     );
@@ -116,7 +115,9 @@ const ProductDetail = () => {
   const getImagePath = (name) => {
     return `${baseURL}/uploads/${name}`;
   };
-
+  
+  //TODO: Scroll to top
+  
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -130,7 +131,16 @@ const ProductDetail = () => {
         setBreadProd({
           name: response.data.product.name,
           breadcrumbs: [
-            { id: 1, name: response.data.product.category.name, href: "#" },
+            {
+              id: 1,
+              name: response.data.product.category.name,
+              href: "#"
+            },
+            {
+              id: 2,
+              name: response.data.product.subcategory.name,
+              href: "#"
+            },
           ],
         });
 
@@ -228,7 +238,7 @@ const ProductDetail = () => {
                     <img
                       src={previewImage}
                       alt={product && product.name}
-                      className="w-full object-cover lg:h-full"
+                      className="w-full object-contain lg:h-full"
                     />
                     <span
                       className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
@@ -238,14 +248,23 @@ const ProductDetail = () => {
                     </span>
                   </div>
 
-                  <Slider {...settings}>
+                  <Swiper
+                    slidesPerView={8}
+                    spaceBetween={1}
+                    navigation={true}
+                    modules={[Navigation]}
+                    className="mySwiper mt-6"
+                  >
                     {product &&
                       product.images.map((productImage, index) => (
-                        <div className="p-2">
-                          {handleShowSelectedImage(productImage, index)}
-                        </div>
+                        <SwiperSlide>
+                          <div className="p-2">
+                            {handleShowSelectedImage(productImage, index)}
+                          </div>
+                        </SwiperSlide>
                       ))}
-                  </Slider>
+                  </Swiper>
+
                 </div>
               </div>
 
@@ -383,21 +402,21 @@ const ProductDetail = () => {
                   className="mt-4 flex items-center"
                 >
                   <img
-		     src={product.user?.business_details?.profile_picture ?
-			     getImagePath(product.user.business_details.profile_picture) :
-		     	     seller 
-		     	 }
-		     className="w-[80px] h-[80px] object-cover rounded-full border-2 border-gray-200"
-		     alt="seller"
-		  />
+                    src={product.user?.business_details?.profile_picture ?
+                      getImagePath(product.user.business_details.profile_picture) :
+                      seller
+                    }
+                    className="w-[80px] h-[80px] object-cover rounded-full border-2 border-gray-200"
+                    alt="seller"
+                  />
                   <div className="ml-4">
                     <h3 className="text-lg tracking-tight text-gray-900 sm:text-lg">
-		      {product.user?.business_details?.business_name &&
-			product.user.business_details.business_name 
-		      }
+                      {product.user?.business_details?.business_name &&
+                        product.user.business_details.business_name
+                      }
                     </h3>
                     <h4 className="text-lg tracking-tight text-gray-400 sm:text-lg">
-		      {product.user.name}
+                      {product.user.name}
                     </h4>
                   </div>
                 </Link>
@@ -441,7 +460,6 @@ const ProductDetail = () => {
           </div>
         )}
       </div>
-	  {console.log(similarProducts)}
       {product && <SimilarProduct products={similarProducts} />}
     </div>
   );

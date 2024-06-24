@@ -7,6 +7,7 @@ import {
   ArrowLeftIcon,
   StarIcon,
 } from "@heroicons/react/20/solid";
+import { MdModeEditOutline } from "react-icons/md";
 
 const baseURL = "https://nominet.vensle.com/backend";
 
@@ -46,7 +47,7 @@ const OrderItems = () => {
   return (
     <div className="mt-5">
       <div className="flex items-center w-full mb-5">
-        <Link to="/admin/orders">
+        <Link to="/admin/user-orders">
           <ArrowLeftIcon className="h-6 w-6 mr-2" />
         </Link>
         <h1 className="text-2xl font-medium">Order_1234</h1>
@@ -156,9 +157,11 @@ const OrderItems = () => {
         <div className="mt-5 col-span-4">
           <Card extra={"w-full p-4 h-full"}>
             <div className="mb-6">
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <p className="font-medium text-lg">Customer Information</p>
-                <span className="font-bold">/</span>
+                <span className="flex justify-center items-center font-bold cursor-pointer block h-8 w-8 rounded-full bg-white hover:bg-gray-200 transition-all ease-in-out duration-300">
+                  <MdModeEditOutline />
+                </span>
               </div>
               <form className="mt-4">
                 <div>

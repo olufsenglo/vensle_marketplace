@@ -58,10 +58,8 @@ const baseURL = "https://nominet.vensle.com/backend";
 
 const Dashboard = () => {
 	const columns = useMemo(() => columnsData, []);
-	const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
 	const accessToken = useSelector((state) => state?.auth?.user?.token);
 
-	const [products, setProducts] = useState([]);
 	const [data, setData] = useState([]);
 
 	function formatPrice(price) {
@@ -183,7 +181,7 @@ const Dashboard = () => {
 			</div>
 			<div className="mt-7 grid grid-cols-1 pl-4">
 				<h3 className="text-xl font-medium mb-6">Recent Uploads</h3>
-				<div className="bg-white pl-8">
+				<div className="bg-white pl-2">
 					<Table columns={columns} data={data} />
 				</div>
 			</div>

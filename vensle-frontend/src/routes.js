@@ -10,6 +10,7 @@ import Products from "views/admin/products";
 import Users from "views/admin/users";
 import Chats from "views/admin/chats";
 import AllProducts from "views/admin/allproducts";
+import UserOrders from "views/admin/userOrders";
 import Transactions from "views/admin/transactions";
 import Reviews from "views/admin/reviews";
 import UploadProduct from "views/admin/uploadproduct";
@@ -62,6 +63,14 @@ const routes = [
     path: "allproducts",
     icon: <MdFileCopy className="h-6 w-6" />,
     component: <AllProducts />,
+    secondary: true,
+  },  
+  {
+    name: "User Orders",
+    layout: "/admin",
+    path: "user-orders",
+    icon: <MdFileCopy className="h-6 w-6" />,
+    component: <UserOrders />,
     secondary: true,
   },
   {

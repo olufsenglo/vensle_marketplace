@@ -20,7 +20,6 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
 
   const [content, setContent] = useState("");
   const [replyContent, setReplyContent] = useState("");
-  const [rating, setRating] = useState(1);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [feedbackParentId, setFeedbackParentId] = useState(false);
@@ -28,6 +27,19 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
   const [replyLoading, setReplyLoading] = useState(false);
   const [contentError, setContentError] = useState('');
   const [replyContentError, setReplyContentError] = useState('');
+
+  // TODO: default should be 0, handle when rating is 0 (nothing should happen on the server side)
+  const [rating, setRating] = useState(1);
+  const [hoverRating, setHoverRating] = useState(0);
+  const handleStarHover = (hoveredRating) => {
+    setHoverRating(hoveredRating);
+  };
+
+  const handleStarClick = (clickedRating) => {
+    setRating(clickedRating);
+  };
+
+
 
   const [feedbacks, setFeedbacks] = useState([]);
   const [replies, setReplies] = useState([]);
@@ -43,91 +55,91 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
   };
 
   const handleCloseFeedbackForm = (e) => {
-     e.preventDefault();
-     setContent("");
-     setContentError("");
-     setLoading(false);
-     setShowFeedbackForm(false);
+    e.preventDefault();
+    setContent("");
+    setContentError("");
+    setLoading(false);
+    setShowFeedbackForm(false);
   }
 
   const handleCloseReplyForm = (e) => {
-     e.preventDefault();
-     setReplyContent("");
-     setReplyContentError("");
-     setReplyLoading(false);
-     setShowReplyForm(false);
+    e.preventDefault();
+    setReplyContent("");
+    setReplyContentError("");
+    setReplyLoading(false);
+    setShowReplyForm(false);
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     !content ? setContentError('Please enter feedback') : setContentError('');
 
-     if (content) {
-    	setLoading(true);
-	     try {
-	      const headers = {
-		Authorization: `Bearer ${accessToken}`,
-	      };
+    if (content) {
+      setLoading(true);
+      try {
+        const headers = {
+          Authorization: `Bearer ${accessToken}`,
+        };
 
-	      const response = await axios.post(
-		`${baseURL}/api/v1/feedback`,
-		{
-		  content,
-		  rating,
-		  product_id: product.id,
-		},
-		{ headers }
-	      );
+        const response = await axios.post(
+          `${baseURL}/api/v1/feedback`,
+          {
+            content,
+            rating,
+            product_id: product.id,
+          },
+          { headers }
+        );
 
 
-	      setContent("");
-	      setRating(1);
-	      setShowFeedbackForm(false);
-	      setFeedbacks([ response.data, ...feedbacks ]);
-	      
-	      const tempProduct = product;
-	      tempProduct.total_feedback = product.total_feedback + 1;
-	      setProduct(tempProduct)
-	      setLoading(false);
-	    } catch (error) {
-	      console.error("Error submitting feedback:", error.message);
-	      setLoading(false);
-	    }
-     }
+        setContent("");
+        setRating(1);
+        setShowFeedbackForm(false);
+        setFeedbacks([response.data, ...feedbacks]);
+
+        const tempProduct = product;
+        tempProduct.total_feedback = product.total_feedback + 1;
+        setProduct(tempProduct)
+        setLoading(false);
+      } catch (error) {
+        console.error("Error submitting feedback:", error.message);
+        setLoading(false);
+      }
+    }
   };
 
   const handleSubmitReply = async (e, parentFeedback) => {
     e.preventDefault();
     !replyContent ? setReplyContentError('Please enter reply') : setReplyContentError('');
-    
+
     if (replyContent) {
-    	setReplyLoading(true);
-	    try {
-	      const headers = {
-		Authorization: `Bearer ${accessToken}`,
-	      };
-	      const response = await axios.post(
-		`${baseURL}/api/v1/feedback`,
-		{
-		  content: replyContent,
-		  rating,
-		  product_id: product.id,
-		  parent_id: parentFeedback.id,
-		},
-		{ headers }
-	      );
+      setReplyLoading(true);
+      try {
+        const headers = {
+          Authorization: `Bearer ${accessToken}`,
+        };
+        const response = await axios.post(
+          `${baseURL}/api/v1/feedback`,
+          {
+            content: replyContent,
+            rating,
+            product_id: product.id,
+            parent_id: parentFeedback.id,
+          },
+          { headers }
+        );
 
-	      setReplyContent("");
-	      setRating(1);
-	      setShowReplyForm(false);
+        setReplyContent("");
+        setRating(1);
+        setShowReplyForm(false);
 
-	      setReplies([ response.data, ...replies ]);
+        setReplies([response.data, ...replies]);
 
-	      setReplyLoading(false);
-	    } catch (error) {
-	      console.error("Error submitting feedback:", error.message);
-	      setReplyLoading(false);
-	    }
+        setReplyLoading(false);
+      } catch (error) {
+        console.error("Error submitting feedback:", error.message);
+        setReplyLoading(false);
+      }
     }
   };
 
@@ -214,57 +226,90 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
                               name="message"
                               id="message"
                               rows={2}
-			      placeholder="Add a feedback..."
+                              placeholder="Add a feedback..."
                               value={content}
                               onChange={(e) => setContent(e.target.value)}
                               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                             />
                           </div>
                         </div>
-			    <p className="text-red-500 text-sm pt-1">{contentError}</p>
+                        <p className="text-red-500 text-sm pt-1">{contentError}</p>
 
 
                         <div className="mt-1 flex justify-between items-center">
 
-{/*
-<div class="flex flex-row-reverse justify-center p-10">
-  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">1</i>
-  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">2</i>
-  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">3</i> 
-  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">4</i> 
-  <i class="bg-yellow-100 peer peer-hover:bg-yellow-500 hover:bg-yellow-500 w-12 h-12 mx-2">5</i> 
-</div> 
-*/}
+                          {/*
 
-				<div className="flex items-center">
-				  {[1, 2, 3, 4, 5].map((eachRating) => (
-				    <StarIcon
-				      onClick={() => setRating(eachRating)}
-				      key={eachRating}
-				      className={classNames(
-					rating > eachRating - 1
-					  ? "text-orange-900"
-					  : "text-orange-200",
-					"h-4 w-4 flex-shrink-0 cursor-pointer"
-				      )}
-				      aria-hidden="true"
-				    />
-				  ))}
-				</div>
-			    <div className="flex">
-				<button
-			    	   onClick={handleCloseFeedbackForm}
-			      	   className="rounded-md mr-2 px-3 py-2.5 text-center text-sm text-red-600 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-			            Cancel
-			        </button>
-				  <button
-				    type="submit"
-				    disabled={loading}
-				    className="rounded-md bg-red-600 px-3 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-				  >
-				    {loading ? "Loading..." : "Submit"}
-				  </button>
-			    </div>
+                          <div className="flex items-center">
+                            {[1, 2, 3, 4, 5].map((eachRating) => (
+                              <StarIcon
+                                onClick={() => setRating(eachRating)}
+                                key={eachRating}
+                                className={classNames(
+                                  rating > eachRating - 1
+                                    ? "text-orange-900"
+                                    : "text-orange-200",
+                                  "h-4 w-4 flex-shrink-0 cursor-pointer"
+                                )}
+                                aria-hidden="true"
+                              />
+                            ))}
+                          </div>
+*/}
+                          <div className="flex items-center">
+                            {[1, 2, 3, 4, 5].map((eachRating) => (
+                              <StarIcon
+                                key={eachRating}
+                                className={classNames(
+                                  rating >= eachRating || hoverRating >= eachRating
+                                    ? 'text-yellow-500'
+                                    : 'text-gray-300',
+                                  'h-4 w-4 cursor-pointer transition-colors duration-200'
+                                )}
+                                onMouseEnter={() => handleStarHover(eachRating)}
+                                onMouseLeave={() => handleStarHover(0)}
+                                onClick={() => handleStarClick(eachRating)}
+                                aria-hidden="true"
+                              />
+                            ))}
+                          </div>
+
+
+
+                          <div className="flex">
+                            <button
+                              onClick={handleCloseFeedbackForm}
+                              className="rounded-md mr-2 px-3 py-2.5 text-center text-sm text-red-600 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                              Cancel
+                            </button>
+                            <button
+                              type="submit"
+                              disabled={loading}
+                              className="flex relative items-center justify-center w-[7rem] rounded-md bg-red-600 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                            >
+                              {loading && <svg
+                                class="animate-spin absolute left-[0.5rem] h-4 w-4 mr-2"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  class="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  stroke-width="4"
+                                ></circle>
+                                <path
+                                  class="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                              </svg>}
+                              Submit
+                            </button>
+                          </div>
                         </div>
                       </form>
                     )}
@@ -279,7 +324,7 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
                               <div className="flex w-full">
                                 <div className="mr-4 h-10 w-10">
                                   <img
-                                    className="rounded-full"
+                                    className="rounded-full object-cover h-full w-full"
                                     src={getImagePath(
                                       feedback.user?.profile_picture
                                     )}
@@ -335,7 +380,7 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
                                               id="message"
                                               rows={2}
                                               value={replyContent}
-					      placeholder="Add a reply..."
+                                              placeholder="Add a reply..."
                                               onChange={(e) =>
                                                 setReplyContent(e.target.value)
                                               }
@@ -344,15 +389,15 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
                                             />
                                           </div>
                                         </div>
-			                <p className="text-red-500 text-sm mt-1">{replyContentError}</p>
+                                        <p className="text-red-500 text-sm mt-1">{replyContentError}</p>
 
                                         <div className="mt-2 flex justify-end">
-					   <button
-					      onClick={handleCloseReplyForm}
-					      className="rounded-md mr-2 px-3 py-2.5 text-center text-sm text-red-600 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-					   >
-					        Cancel
-					  </button>
+                                          <button
+                                            onClick={handleCloseReplyForm}
+                                            className="rounded-md mr-2 px-3 py-2.5 text-center text-sm text-red-600 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                          >
+                                            Cancel
+                                          </button>
                                           <button
                                             onClick={(e) =>
                                               handleSubmitReply(e, feedback)
@@ -395,7 +440,7 @@ export default function Feedback({ open, setOpen, product, setProduct }) {
                                         <p className="mr-2 text-sm font-medium">
                                           {reply.user?.name}
                                         </p>
-                                    	<p className="text-xs text-gray-900">{moment(reply.created_at).format("Do MMM YYYY")}</p>
+                                        <p className="text-xs text-gray-900">{moment(reply.created_at).format("Do MMM YYYY")}</p>
                                       </div>
                                       <p className="mt-1">{reply.content}</p>
                                     </div>

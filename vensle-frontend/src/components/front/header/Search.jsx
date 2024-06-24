@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import MyComponent from "./MyComponent";
 
 const baseURL = "https://nominet.vensle.com/backend";
 const Search = ({ position = 'sticky' }) => {
@@ -34,7 +35,7 @@ const Search = ({ position = 'sticky' }) => {
     setLoading(false);
     try {
       setLoading(true);
-      //TODO: add distance
+      //TODO: temp distance
       const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
         params: { searchTerm: value, category_id: selectedCategory, distance },
       });
@@ -212,7 +213,7 @@ const Search = ({ position = 'sticky' }) => {
             <option value={30}>30 km</option>
           </select>
           <div className="bg-gray-200 mt-4 w-full h-[15rem] flex justify-center items-center">
-            Google map
+            <MyComponent />
           </div>
           <div className="flex justify-end">
             <button className="bg-gray-400 mt-4 py-[0.5rem] px-12 rounded-md text-white uppercase">
