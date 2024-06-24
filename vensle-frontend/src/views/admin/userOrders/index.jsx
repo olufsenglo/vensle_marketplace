@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { StarIcon } from '@heroicons/react/20/solid'
 import axios from "axios";
+import moment from "moment";
 
 import Table from './Table'
-
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ')
-}
 
 const columnsData = [
 	{
@@ -27,32 +23,43 @@ const columnsData = [
 		Header: "Payment Status",
 		accessor: "paid",
 		Cell: (props) => {
-			return <StatusRow props={props} />
+			return <PaymentRow props={props} />
 		}
 	},
 	{
 		Header: "Shipping Status",
 		accessor: "status",
 		Cell: (props) => {
-			return <StatusRow props={props} />
+			return <ShippingRow props={props} />
 		}
-	},	
+	},
 	{
 		Header: "Price",
 		accessor: "total_price",
 	},
 ]
 
-const StatusRow = ({ props }) => {
+const PaymentRow = ({ props }) => {
 	return (
-		<span className={`text-xs py-1 px-4 rounded-sm ${props.row.original.status == 'Active' ?
+		<span className={`text-xs py-1 px-4 rounded-sm ${props.row.original.paid === '1' ?
 			'bg-green-200/70 text-green-900' : 'bg-red-300 text-red-900'}`
+		}>
+			{props.row.original.paid === '1' ? "Paid" : "Pending"}
+		</span>
+	)
+}
+
+const ShippingRow = ({ props }) => {
+	return (
+		<span className={`text-xs py-1 px-4 rounded-sm 
+			${props.row.original.status === 'Completed' ? 'bg-green-200/70 text-green-900' :
+				(props.row.original.status === 'Ongoing' ? 'bg-orange-300 text-orange-900' : 'bg-red-300 text-red-900')
+			}`
 		}>
 			{props.row.original.status}
 		</span>
 	)
 }
-
 
 const baseURL = "https://nominet.vensle.com/backend";
 
@@ -84,7 +91,18 @@ const UserOrders = () => {
 						Authorization: `Bearer ${accessToken}`,
 					},
 				});
-				setOrders(response.data);
+
+				const extractedData = response.data.map(
+					({
+						created_at,
+						...rest
+					}) => ({
+						created_at: moment(created_at).fromNow(),
+						...rest,
+					})
+				);
+				setOrders(extractedData);
+
 			} catch (error) {
 				console.error("Error fetching orders:", error);
 			}

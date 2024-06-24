@@ -66,8 +66,8 @@ const Cart = () => {
   });
 
 
-  useEffect(() => {
-  }, [user]);
+  // useEffect(() => {
+  // }, [user]);
 
   useEffect(() => {
     if (!isAuthenticated) {

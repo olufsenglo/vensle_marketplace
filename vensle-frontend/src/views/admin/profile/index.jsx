@@ -386,31 +386,37 @@ const ProfileOverview = () => {
     <div className="flex w-full flex-col gap-5">
       <div className="flex justify-center overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
         <button
-          className={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 pr-4 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${
-            activeTab === 1
-              ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
-              : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
-          }`}
+          className={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 pr-4 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${activeTab === 1
+            ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
+            : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+            }`}
           onClick={() => handleTabClick(1)}
         >
           Account
         </button>
-
         <button
-          className={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 px-4 text-center text-2xl focus:outline-none sm:text-base ${
-            activeTab === 2
-              ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
-              : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
-          }`}
+          className={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 px-4 text-center text-2xl focus:outline-none sm:text-base ${activeTab === 2
+            ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
+            : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+            }`}
           onClick={() => handleTabClick(2)}
         >
           Business
+        </button>
+        <button
+          className={`bg-transparent -mb-px inline-flex h-10 w-full items-center justify-center whitespace-nowrap border-b-2 px-4 text-center text-2xl focus:outline-none sm:text-base ${activeTab === 3
+            ? "border-red-500 text-red-600 dark:border-red-400 dark:text-red-300"
+            : "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
+            }`}
+          onClick={() => handleTabClick(3)}
+        >
+          Notifications
         </button>
       </div>
 
       {activeTab === 1 && (
         <>
-          <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
+          <div className="w-full mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
             <div className="relative col-span-6 lg:!mb-0">
               {profileError && profileError?.profile_picture && (
                 <div
@@ -467,11 +473,10 @@ const ProfileOverview = () => {
                         value={userProfile.name}
                         onChange={userProfileChange}
                         name="name"
-                        className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${
-                          profileError && profileError?.name
-                            ? "bg-red-50"
-                            : "bg-gray-50"
-                        }`}
+                        className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${profileError && profileError?.name
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       />
                       {profileError &&
                         profileError?.name &&
@@ -499,11 +504,10 @@ const ProfileOverview = () => {
                         name="email"
                         value={userProfile.email}
                         onChange={userProfileChange}
-                        className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${
-                          profileError && profileError?.email
-                            ? "bg-red-50"
-                            : "bg-gray-50"
-                        }`}
+                        className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${profileError && profileError?.email
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       />
 
                       {profileError &&
@@ -532,11 +536,10 @@ const ProfileOverview = () => {
                         name="phone_number"
                         value={userProfile.phone_number}
                         onChange={userProfileChange}
-                        className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${
-                          profileError && profileError?.phone_number
-                            ? "bg-red-50"
-                            : "bg-gray-50"
-                        }`}
+                        className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${profileError && profileError?.phone_number
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       />
 
                       {profileError &&
@@ -564,11 +567,10 @@ const ProfileOverview = () => {
                         name="address"
                         value={userProfile.address}
                         onChange={userProfileChange}
-                        className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${
-                          profileError && profileError?.address
-                            ? "bg-red-50"
-                            : "bg-gray-50"
-                        }`}
+                        className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${profileError && profileError?.address
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       />
 
                       {profileError &&
@@ -628,11 +630,10 @@ const ProfileOverview = () => {
                           name="old_password"
                           value={passwordData.old_password}
                           onChange={passwordDataChange}
-                          className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${
-                            passwordError && passwordError?.old_password
-                              ? "bg-red-50"
-                              : "bg-gray-50"
-                          }`}
+                          className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${passwordError && passwordError?.old_password
+                            ? "bg-red-50"
+                            : "bg-gray-50"
+                            }`}
                         />
                         {passwordError &&
                           passwordError?.old_password &&
@@ -660,11 +661,10 @@ const ProfileOverview = () => {
                           name="new_password"
                           value={passwordData.new_password}
                           onChange={passwordDataChange}
-                          className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${
-                            passwordError && passwordError?.new_password
-                              ? "bg-red-50"
-                              : "bg-gray-50"
-                          }`}
+                          className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${passwordError && passwordError?.new_password
+                            ? "bg-red-50"
+                            : "bg-gray-50"
+                            }`}
                         />
                         {passwordError &&
                           passwordError?.new_password &&
@@ -691,12 +691,11 @@ const ProfileOverview = () => {
                           name="new_password_confirmation"
                           value={passwordData.new_password_confirmation}
                           onChange={passwordDataChange}
-                          className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${
-                            passwordError &&
+                          className={`mt-2 block w-full rounded border-gray-300 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${passwordError &&
                             passwordError?.new_password_confirmation
-                              ? "bg-red-50"
-                              : "bg-gray-50"
-                          }`}
+                            ? "bg-red-50"
+                            : "bg-gray-50"
+                            }`}
                         />
                         {passwordError &&
                           passwordError?.new_password_confirmation &&
@@ -727,27 +726,12 @@ const ProfileOverview = () => {
               </Card>
             </div>
           </div>
-
-          <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-12">
-            <div className="col-span-5 lg:col-span-12 lg:mb-0 3xl:!col-span-3">
-              <Notification />
-            </div>
-          </div>
-
-          <div className="grid h-full grid-cols-1 gap-5 lg:!grid-cols-12">
-            <div className="col-span-5 lg:col-span-6 lg:mb-0 3xl:col-span-4">
-              <Project />
-            </div>
-            <div className="col-span-5 lg:col-span-6 lg:mb-0 3xl:col-span-5">
-              <General />
-            </div>
-          </div>
         </>
       )}
       {activeTab === 2 && (
         <form
           onSubmit={handleBusinessDetailsSubmit}
-          className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12"
+          className="w-full mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12"
         >
           <div className="col-span-6 lg:!mb-0">
             <Card extra={"w-full p-4 h-full"}>
@@ -942,6 +926,12 @@ const ProfileOverview = () => {
           </div>
         </form>
       )}
+      {activeTab === 3 && (
+        <div className="w-full mt-3 h-fit h-full">
+            <Notification />
+        </div>
+      )}
+
     </div>
   );
 };

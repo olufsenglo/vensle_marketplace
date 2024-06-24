@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { StarIcon } from '@heroicons/react/20/solid'
 import axios from "axios";
 import moment from "moment";
-import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+import { PaperClipIcon } from "@heroicons/react/24/outline";
 
 import noMsg from "assets/img/front/chat/no_msg.png";
 
@@ -171,7 +171,7 @@ const Chats = () => {
 				</div>
 				<div className="absolute pt-[103px] md:relative md:w-[60%] flex flex-col w-full bg-white top-0 h-full">
 					{userMessages.length > 0 && (
-						<div style={{ borderBottom: "1px solid #eee" }} className="flex p-2 h-[3.7rem] items-center border-b border-t border-t-4 border-[#eeeeee]">
+						<div style={{ borderBottom: "1px solid #eee" }} className="flex p-2 h-[3.7rem] items-center border-b">
 							{loadingUserMessages ? <p>Loading...</p> : <>
 								<div>
 									<img
@@ -190,7 +190,7 @@ const Chats = () => {
 								</div>
 							</>}
 						</div>)}
-					<div className={`p-3 flex-1 overflow-auto ${!loadingUserMessages && userMessages.length === 0 && "flex justify-center items-center"
+					<div className={`p-3 flex-1 border-t border-t-4 border-[#eeeeee] overflow-auto ${!loadingUserMessages && userMessages.length === 0 && "flex justify-center items-center"
 						}`}>
 						{loadingUserMessages ? (
 							<p>Loading</p>
@@ -222,8 +222,8 @@ const Chats = () => {
 						)}
 					</div>
 					<form onSubmit={handleSubmitMessage} className="flex p-3 gap-3 bg-[#dde1ff]">
-						<button className="py-3 px-3 bg-white rounded-md">
-							<ChatBubbleLeftRightIcon className="h-5 w-5" aria-hidden="true" />
+						<button onClick={(e) => e.preventDefault()} className="py-3 px-3 bg-white rounded-md">
+							<PaperClipIcon className="h-5 w-5" aria-hidden="true" />
 						</button>
 						<input
 							className="flex-1 rounded-md p-3"

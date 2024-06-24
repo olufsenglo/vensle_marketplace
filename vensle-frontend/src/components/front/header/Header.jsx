@@ -195,7 +195,7 @@ const Header = ({
           </div>
         </div>
       </div>
-      <div style={headerWrapperStyle} className={`bg-white flex transition-all duration-300 mx-auto fixed z-10 w-full max-w-2xl pb-2 pt-2 md:pt-2 md:pb-4 lg:pt-2 lg:pb-2 lg:max-w-7xl lg:px-8 ${showNavbar ? 'top-0' : 'top-[-68px]'
+      <div style={headerWrapperStyle} className={`bg-white flex transition-all duration-300 mx-auto fixed z-10 w-full left-0 right-0 max-w-2xl pb-2 pt-2 md:pt-2 md:pb-4 lg:pt-2 lg:pb-2 lg:max-w-7xl lg:px-8 ${showNavbar ? 'top-0' : 'top-[-100%]'
         }`}>
         <Search />
         <div className="flex ml-[4%] gap-8">

@@ -22,9 +22,23 @@ const TopPurchases = () => {
 			<div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8">
 				<SectionTitle>Top Purchases</SectionTitle>
 				<Swiper
-					slidesPerView={3}
-					spaceBetween={45}
+					slidesPerView={2}
+					spaceBetween={15}
 					navigation={true}
+					breakpoints={{
+						640: {
+							slidesPerView: 2,
+							spaceBetween: 15,
+						},
+						768: {
+							slidesPerView: 2,
+							spaceBetween: 25,
+						},
+						1024: {
+							slidesPerView: 3,
+							spaceBetween: 45,
+						},
+					}}					
 					modules={[Navigation]}
 					className="mySwiper mt-6"
 				>

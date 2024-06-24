@@ -122,7 +122,7 @@ const Users = () => {
 			<div className="mt-5 min-h-[25rem] relative h-full">
 				<div className="mb-6 pt-6 flex overflow-x-auto overflow-y-hidden whitespace-nowrap border-b border-gray-200 dark:border-gray-700">
 					<button
-						className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-[3px] px-16 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${activeTab === 1
+						className={`bg-transparent -mb-px inline-flex h-8 items-center justify-center whitespace-nowrap border-b-2 px-16 text-left text-2xl transition duration-300 focus:outline-none sm:text-base ${activeTab === 1
 							? "border-ADashPrimary text-ADashPrimary dark:border-blue-400 dark:text-blue-300"
 							: "border-transparent cursor-base text-gray-700 hover:border-gray-400 dark:text-white"
 							}`}
