@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, CreditCardIcon } from "@heroicons/react/24/outline";
 
 import Footer from "components/front/footer/Footer";
 import Header from "components/front/header/Header";
@@ -27,6 +27,7 @@ const Cart = () => {
 
   const tempCartItems = useSelector((state) => state.cart.items);
   const cartItems = tempCartItems.filter(item => item !== null);
+  console.log('idems', cartItems)
 
   const hasItems = cartItems.length > 0;
 
@@ -48,8 +49,10 @@ const Cart = () => {
   //setOrderItems(newOrderItems);
 
   const [loading, setLoading] = useState(false);
+  const [cartSuggestItemsLoading, setCartSuggestItemsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [cartSuggestItems, setCartSuggestItems] = useState([]);
   const [currentTab, setCurrentTab] = useState('cart');
   const [validatedTab, setValidatedTab] = useState('');
   const [checkoutBtnVal, setCheckoutBtnVal] = useState('Proceed to Checkout');
@@ -65,6 +68,28 @@ const Cart = () => {
     address: "",
   });
 
+  const fetchCartSuggestItemsData = async () => {
+    setCartSuggestItemsLoading(true);
+    try {
+      const response = await axios.get(
+        `${baseURL}/api/v1/cart`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+      );
+      setCartSuggestItems(response.data.similarProducts);
+      setCartSuggestItemsLoading(false);
+    } catch (error) {
+      console.error("Error fetching saved products:", error);
+    } finally {
+      setCartSuggestItemsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartSuggestItemsData();
+  }, [isAuthenticated, accessToken, user]);
 
   // useEffect(() => {
   // }, [user]);
@@ -81,6 +106,8 @@ const Cart = () => {
       });
     }
   }, [isAuthenticated, accessToken, user]);
+
+
 
   const handleProductQuickView = (e, product) => {
     e.preventDefault();
@@ -102,7 +129,6 @@ const Cart = () => {
   const formattedTotalPrice = formatPrice(totalPrice);
 
   const getCartDisplayImage = (product) => {
-    console.log(product);
     return product.display_image
       ? `${baseURL}/uploads/${product.display_image.name}`
       : "";
@@ -259,7 +285,7 @@ const Cart = () => {
         setErrorMessage('');
 
         const orderItems = hasItems
-          ? cartItems.map((item) => ({ "product_id": item.id, quantity: item.quantity }))
+          ? cartItems.map((item) => ({ "product_id": item.product.id, quantity: item.product.quantity }))
           : [];
 
         const response = await axios.post(
@@ -280,9 +306,6 @@ const Cart = () => {
       }
     }
   };
-
-
-
 
   return (
     <div>
@@ -310,9 +333,8 @@ const Cart = () => {
               <ul className="relative flex w-full items-center justify-between space-x-2 sm:space-x-4">
                 <li
                   onClick={() => handleSetTab('cart')}
-                  className={`flex items-center space-x-3 text-left sm:space-x-4 
-			    ${(validatedTab === 'cart' || validatedTab === 'checkout') && "cursor-pointer"}
-			`}
+                  className={`flex items-center space-x-3 text-left sm:space-x-4 ${(validatedTab === 'cart' || validatedTab === 'checkout') && "cursor-pointer"}
+                  `}
                 >
                   {currentTab == 'cart'
                     ?
@@ -489,88 +511,90 @@ const Cart = () => {
                     <p>Your cart is empty.</p>
                   ) : (
                     <ul>
-                      {cartItems.map((item) => (
-                        <li
-                          key={item.id}
-                          className="flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
-                        >
-                          <div className="shrink-0">
-                            <img
-                              onClick={(e) => handleProductQuickView(e, item)}
-                              className="h-24 w-24 max-w-full cursor-pointer rounded-lg object-cover"
-                              src={getCartDisplayImage(item)}
-                              alt={item.name}
-                            />
-                          </div>
+                      {cartItems.map((item) => {
+                        return (
+                          <li
+                            key={item.id}
+                            className="flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
+                          >
+                            <div className="shrink-0">
+                              <img
+                                onClick={(e) => handleProductQuickView(e, item)}
+                                className="h-24 w-24 max-w-full cursor-pointer rounded-lg object-cover"
+                                src={getCartDisplayImage(item)}
+                                alt={item.name}
+                              />
+                            </div>
 
-                          <div className="relative flex flex-1 flex-col justify-between">
-                            <div className="sm:col-gap-5 sm:grid sm:grid-cols-2">
-                              <div onClick={(e) => handleProductQuickView(e, item)} className="pr-8 sm:pr-5 cursor-pointer">
-                                <p className="text-base font-semibold text-gray-900">
-                                  {item.name}
-                                </p>
-                                <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">
-                                  Qty {item.quantity}
-                                </p>
-                              </div>
+                            <div className="relative flex flex-1 flex-col justify-between">
+                              <div className="sm:col-gap-5 sm:grid sm:grid-cols-2">
+                                <div onClick={(e) => handleProductQuickView(e, item)} className="pr-8 sm:pr-5 cursor-pointer">
+                                  <p className="text-base font-semibold text-gray-900">
+                                    {item.name}
+                                  </p>
+                                  <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">
+                                    Qty {item.quantity}
+                                  </p>
+                                </div>
 
-                              <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
-                                <p className="shrink-0 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
-                                  $ {formatPrice(item.price * item.quantity)}
-                                </p>
+                                <div className="mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end">
+                                  <p className="shrink-0 text-base font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right">
+                                    $ {formatPrice(item.price * item.quantity)}
+                                  </p>
 
-                                <div className="sm:order-1">
-                                  <div className="mx-auto flex h-8 items-stretch text-gray-600">
-                                    <button
-                                      onClick={() =>
-                                        handleDecreaseQuantity(item.id)
-                                      }
-                                      className="hover:bg-black flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:text-white"
-                                    >
-                                      -
-                                    </button>
-                                    <div className="flex w-full items-center justify-center bg-gray-100 px-4 text-xs uppercase transition">
-                                      {item.quantity}
+                                  <div className="sm:order-1">
+                                    <div className="mx-auto flex h-8 items-stretch text-gray-600">
+                                      <button
+                                        onClick={() =>
+                                          handleDecreaseQuantity(item.id)
+                                        }
+                                        className="hover:bg-black flex items-center justify-center rounded-l-md bg-gray-200 px-4 transition hover:text-white"
+                                      >
+                                        -
+                                      </button>
+                                      <div className="flex w-full items-center justify-center bg-gray-100 px-4 text-xs uppercase transition">
+                                        {item.quantity}
+                                      </div>
+                                      <button
+                                        onClick={() =>
+                                          handleIncreaseQuantity(item.id)
+                                        }
+                                        className="hover:bg-black flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:text-white"
+                                      >
+                                        +
+                                      </button>
                                     </div>
-                                    <button
-                                      onClick={() =>
-                                        handleIncreaseQuantity(item.id)
-                                      }
-                                      className="hover:bg-black flex items-center justify-center rounded-r-md bg-gray-200 px-4 transition hover:text-white"
-                                    >
-                                      +
-                                    </button>
                                   </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <div className="absolute top-0 right-0 flex sm:bottom-0 sm:top-auto">
-                              <button
-                                onClick={() => handleRemoveFromCart(item.id)}
-                                type="button"
-                                className="flex rounded p-2 text-center text-gray-500 transition-all duration-200 ease-in-out hover:text-gray-900 focus:shadow"
-                              >
-                                <svg
-                                  className="h-5 w-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
+                              <div className="absolute top-0 right-0 flex sm:bottom-0 sm:top-auto">
+                                <button
+                                  onClick={() => handleRemoveFromCart(item.id)}
+                                  type="button"
+                                  className="flex rounded p-2 text-center text-gray-500 transition-all duration-200 ease-in-out hover:text-gray-900 focus:shadow"
                                 >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"
-                                    className=""
-                                  ></path>
-                                </svg>
-                              </button>
+                                  <svg
+                                    className="h-5 w-5"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12"
+                                      className=""
+                                    ></path>
+                                  </svg>
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        </li>
-                      ))}
+                          </li>
+                        )
+                      })}
                     </ul>
                   )}
                 </div>
@@ -591,8 +615,8 @@ const Cart = () => {
                       onChange={userProfileChange}
                       name="name"
                       className={`mt-1 block w-full rounded ring-1 ring-gray-300 border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-blue-500 ${errors.name
-                          ? "bg-red-50"
-                          : "bg-gray-50"
+                        ? "bg-red-50"
+                        : "bg-gray-50"
                         }`}
                     />
                     {errors.name &&
@@ -619,8 +643,8 @@ const Cart = () => {
                       value={userProfile.email}
                       onChange={userProfileChange}
                       className={`mt-1 block w-full rounded ring-1 ring-gray-300 border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-blue-500 ${errors.email
-                          ? "bg-red-50"
-                          : "bg-gray-50"
+                        ? "bg-red-50"
+                        : "bg-gray-50"
                         }`}
                     />
 
@@ -647,8 +671,8 @@ const Cart = () => {
                       value={userProfile.phone_number}
                       onChange={userProfileChange}
                       className={`mt-1 block w-full rounded ring-1 ring-gray-300 border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-blue-500 ${errors.phone_number
-                          ? "bg-red-50"
-                          : "bg-gray-50"
+                        ? "bg-red-50"
+                        : "bg-gray-50"
                         }`}
                     />
 
@@ -677,8 +701,8 @@ const Cart = () => {
                       value={userProfile.address}
                       onChange={userProfileChange}
                       className={`mt-1 block w-full rounded ring-1 ring-gray-300 border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-blue-500 ${errors.address
-                          ? "bg-red-50"
-                          : "bg-gray-50"
+                        ? "bg-red-50"
+                        : "bg-gray-50"
                         }`}
                     />
 
@@ -738,14 +762,10 @@ const Cart = () => {
                     />
                     <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white peer-checked:border-gray-700"></span>
                     <label
-                      className="flex cursor-pointer select-none rounded-lg border border-gray-300 p-4 peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50"
+                      className="flex items-center cursor-pointer select-none rounded-lg border border-gray-300 p-4 peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50"
                       htmlFor="radio_2"
                     >
-                      <img
-                        className="w-14 object-contain"
-                        src="/images/oG8xsl3xsOkwkMsrLGKM4.png"
-                        alt=""
-                      />
+                      <CreditCardIcon className="w-6 h-6 mr-4 ml-4 flex" />
                       <div className="ml-5">
                         <span className="mt-2 font-semibold">Stripe payment</span>
                         <p className="text-slate-500 text-sm leading-6">
@@ -814,8 +834,10 @@ const Cart = () => {
             </div>
           </div>
         </div>
-
-        {cartItems && <SimilarProduct products={cartItems} />}
+        {cartSuggestItemsLoading && <p>Loading...</p>}
+        {currentTab === 'cart' && setCartSuggestItems.length > 0 &&
+          <SimilarProduct products={cartSuggestItems} />
+        }
 
       </div>
 

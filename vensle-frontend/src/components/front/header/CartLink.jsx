@@ -9,15 +9,15 @@ const CartLink = () => {
 
   const [open, setOpen] = useState(false);
 
-  const validCartItems = cartItems.filter(item => item !== null);
+	const validCartItems = cartItems.filter(item => item && item && item.price);
 
   const totalItems = validCartItems.reduce(
     (total, item) => total + (item.quantity ? item.quantity : 0),
     0
   );
 
-  const totalPrice = validCartItems.reduce((total, product) => {
-    const productPrice = parseFloat(product.price);
+  const totalPrice = validCartItems.reduce((total, item) => {
+    const productPrice = parseFloat(item.price);
     return total + productPrice;
   }, 0);
 

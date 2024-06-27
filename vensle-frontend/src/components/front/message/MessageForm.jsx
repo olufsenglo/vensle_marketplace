@@ -5,17 +5,18 @@ import { useNavigate } from "react-router-dom";
 
 import { SET_MESSAGE } from "actions/types";
 
+const BASE_URL = "https://nominet.vensle.com/backend"
 const MessageForm = ({
 	type,
 	receiverId,
 	setOpen,
-	messageId='',
-	productId='',
+	messageId = '',
+	productId = '',
 	setMessageId,
 	setLeftVisible,
-	redirect=false,
-	refetchMessages=false,
-	setViewMessage=false,
+	redirect = false,
+	refetchMessages = false,
+	setViewMessage = false,
 }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -26,15 +27,18 @@ const MessageForm = ({
 	const [errorMessage, setErrorMessage] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	const handleFillMessage = (message) => {
+		setContent(message)
+	}
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		setErrorMessage('');
 		setContentError("");
 		setLoading(true);
-	
+
 		if (content) {
 			const endpoint = type === "reply" ?
-				`https://nominet.vensle.com/backend/api/v1/messages/${messageId}/replies` : 'https://nominet.vensle.com/backend/api/v1/messages';
+				`${BASE_URL}/api/v1/messages/${messageId}/replies` : `${BASE_URL}/api/v1/messages`;
 
 			const data = type === "reply" ? { content: content } : { receiver_id: receiverId, product_id: productId, content: content };
 
@@ -66,7 +70,7 @@ const MessageForm = ({
 					if (redirect) {
 						navigate(redirect);
 					}
-					
+
 				})
 				.catch(error => {
 					setErrorMessage(`Failed to ${messageId ? 'send reply' : 'send message'}. Please try again.`);
@@ -86,6 +90,18 @@ const MessageForm = ({
 			{errorMessage && <p className="text-red-500">{errorMessage}</p>}
 			<form onSubmit={handleSubmit} className="flex flex-1 flex-col">
 				<div className="mt-2.5 flex-1 flex flex-col">
+					<div class="flex flex-wrap gap-2 text-xs mb-3">
+						<span onClick={() => handleFillMessage("How is it")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1
+					">How is it
+						</span>
+						<span onClick={() => handleFillMessage("I like this")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">
+							I like this
+						</span>
+						<span onClick={() => handleFillMessage("How are you doing")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">How are you doing
+						</span>
+						<span onClick={() => handleFillMessage("Do you still have this product")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">Do you still have this product
+						</span>
+					</div>
 					<textarea
 						id="content"
 						value={content}
@@ -99,7 +115,7 @@ const MessageForm = ({
 					<button
 						type="submit"
 						disabled={loading}
-						className={`block w-full rounded-md px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 ${loading ? "bg-red-400" : "bg-red-600"
+						className={`block w-full rounded-md px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor ${loading ? "bg-red-400" : "bg-primaryColor"
 							}`}
 					>
 						{loading ? 'Loading' : (messageId ? 'Send Reply' : 'Send Message')}

@@ -1,8 +1,12 @@
 import React, { Fragment, useState, useEffect } from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
-
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import required modules
+import { Navigation } from 'swiper/modules';
 import {
   StarIcon,
   ArrowLeftIcon,
@@ -13,19 +17,29 @@ import {
   ChevronRightIcon,
   ChatBubbleLeftRightIcon,
 } from "@heroicons/react/20/solid";
-import { Dialog, RadioGroup, Transition } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 import { SET_MESSAGE } from "actions/types";
 
 import MessageForm from "components/front/message/MessageForm";
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
 const baseURL = "https://nominet.vensle.com/backend";
-const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
+const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }) => {
   const dispatch = useDispatch();
+  const accessToken = useSelector((state) => state.auth?.user?.token);
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
 
   const [msgContent, setMsgContent] = useState("");
+  const [viewIncrease, setViewIncrease] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [imgIndex, setImgIndex] = useState(0);
   const [showNumber, setShowNumber] = useState(false);
@@ -46,9 +60,29 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
     setLeftVisible(!isLeftVisible);
   };
 
-  const handleShowNumber = (e) => {
+  const handleIncreaseView = async (id) => {
+    try {
+      //TODO: change to post request
+      const response = await axios.get(
+        `${baseURL}/api/v1/products/${id}/increase-views`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+      );
+    } catch (error) {
+      console.error("Error increasing product view", error);
+    }
+  };
+
+
+  const handleShowNumber = (e, id) => {
     e.preventDefault();
     setShowNumber(!showNumber);
+    if (!viewIncrease) {
+      handleIncreaseView(id)
+    }
+    setViewIncrease(true)
   };
 
   const handleUnAuthMessage = (e) => {
@@ -56,7 +90,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
     dispatch({
       type: SET_MESSAGE,
       payload: { type: "success", message: "Please Login to send message" },
-    });    
+    });
   };
 
   const getImagePath = (name) => {
@@ -90,13 +124,13 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
       <a
         onClick={(e) => handleSetPreviewImage(e, image.name, index)}
         href="#"
-        className={`dark:border-transparent block overflow-hidden rounded-md border hover:border-red-600 dark:hover:border-red-600 ${index == imgIndex ? "border-red-600" : "border-transparent"
+        className={`dark:border-transparent block overflow-hidden rounded-md border hover:border-primaryColor dark:hover:border-primaryColor ${index == imgIndex ? "border-primaryColor" : "border-transparent"
           }`}
       >
         <img
           src={getImagePath(image.name)}
           alt="Preview"
-          class="w-full rounded-md object-cover lg:h-[5.5rem] "
+          className="!object-contain lg:!h-16 lg:!w-20"
         />
       </a>
     );
@@ -144,7 +178,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                     onClick={() => setOpen(false)}
                   >
                     <span className="sr-only">Close</span>
-                    <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                    <XMarkIcon className="h-8 w-8 rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300" aria-hidden="true" />
                   </button>
 
                   <div className="w-full bg-white">
@@ -154,7 +188,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                           <div className="">
                             <div className="relative mb-4 border rounded-2xl m-2 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
                               <span
-	  			style={{borderTopLeftRadius: "1rem", borderBottomLeftRadius: "1rem"}}
+                                style={{ borderTopLeftRadius: "1rem", borderBottomLeftRadius: "1rem" }}
                                 className="absolute top-0 bottom-0 left-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
                                 onClick={handlePreviousPreviewImage}
                               >
@@ -163,24 +197,34 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                               <img
                                 src={previewImage}
                                 alt=" /"
-                                className="w-full object-cover lg:h-full "
+                                className="w-full object-contain lg:h-full"
                               />
                               <span
-	  			style={{borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem"}}
+                                style={{ borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem" }}
                                 className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
                                 onClick={handleNextPreviewImage}
                               >
                                 <ChevronRightIcon className="h-8 w-8" />
                               </span>
                             </div>
-                            <div class="hidden flex-wrap md:flex gap-2 m-2 py-2">
-                              {selectedProduct.images[0] &&
-                                selectedProduct.images.map((image, index) => (
-                                  <div className="w-[6.5rem] sm:w-[6.5rem]">
-                                    {handleShowSelectedImage(image, index)}
-                                  </div>
-                                ))}
-                            </div>
+
+
+                              <Swiper
+                                slidesPerView={8}
+                                spaceBetween={1}
+                                navigation={true}
+                                modules={[Navigation]}
+                                className="mySwiper mt-6"
+                              >
+                                {selectedProduct.images[0] &&
+                                  selectedProduct.images.map((image, index) => (
+                                    <SwiperSlide>
+                                      <div className="p-2">
+                                        {handleShowSelectedImage(image, index)}
+                                      </div>
+                                    </SwiperSlide>
+                                  ))}
+                              </Swiper>
                           </div>
                         </div>
 
@@ -193,8 +237,8 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                               <div
                                 id="left"
                                 className={`flex h-full w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
-                                    ? "translate-x-0"
-                                    : "-translate-x-full"
+                                  ? "translate-x-0"
+                                  : "-translate-x-full"
                                   }`}
                               >
                                 <h3
@@ -210,7 +254,10 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                         {[0, 1, 2, 3, 4].map((rating) => (
                                           <StarIcon
                                             key={rating}
-                                            className="mr-1 h-3 w-3 flex-shrink-0 text-orange-900"
+                                            className={classNames(
+                                              selectedProduct.ratings > rating ? 'text-orange-900' : 'text-orange-200',
+                                              'mr-1 h-3 w-3 flex-shrink-0'
+                                            )}
                                             aria-hidden="true"
                                           />
                                         ))}
@@ -218,7 +265,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 
                                       <p className="text-sm leading-5">
                                         <span className="mx-1">
-                                          {selectedProduct.ratings}
+                                          {selectedProduct.ratings.toFixed(1)}
                                         </span>{" "}
                                         (
                                         {selectedProduct &&
@@ -233,7 +280,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                     :
                                     (<p className="text-sm leading-5">No Feedback</p>)}
                                 </div>
-                                <h4 className="mt-3 mb-5 text-xl text-red-600">
+                                <h4 className="mt-3 mb-5 text-xl text-primaryColor">
                                   {selectedProduct.currency}{" "}
                                   {formatPrice(selectedProduct.price)}
                                 </h4>
@@ -255,40 +302,42 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
                                   )}
                                 </p>
 
-                                <div className="mt-4 flex flex-1 items-end">
+{children}
+                                {from === "front" && <div className="mt-4 relative flex flex-1 items-end">
                                   <Link
                                     to={`/product-detail/${selectedProduct.id}`}
-	  			    onClick={() => setOpen(false)}
-                                    className="block w-full rounded-md bg-red-600 px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                                    onClick={() => setOpen(false)}
+                                    className="block w-full rounded-md bg-primaryColor px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
                                   >
                                     MORE DETAILS
                                   </Link>
-
+                                  {showNumber && <div className="absolute left-0 text-right right-0 bottom-[55px]">
+                                    <span className="border border-gray-400 py-1 px-2 rounded-md bg-white">
+                                      {showNumber && selectedProduct.phone_number}
+                                    </span>
+                                  </div>}
                                   <a
                                     href="#"
-                                    onClick={handleShowNumber}
-                                    className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                                    onClick={(e) => handleShowNumber(e, selectedProduct.id)}
+                                    className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
                                   >
-                                    {showNumber ? (
-                                      selectedProduct.phone_number
-                                    ) : (
-                                      <PhoneIcon className="h-5 w-5" />
-                                    )}
+                                    <PhoneIcon className="h-5 w-5" />
                                   </a>
                                   <a
                                     href="#"
                                     onClick={isAuthenticated ? toggleVisibility : handleUnAuthMessage}
-                                    className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                                    className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
                                   >
                                     <ChatBubbleLeftRightIcon className="h-5 w-5" />
                                   </a>
-                                </div>
+                                </div>}
+
                               </div>
                               <div
                                 id="right"
                                 className={`flex w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
-                                    ? "translate-x-full"
-                                    : "-translate-x-full"
+                                  ? "translate-x-full"
+                                  : "-translate-x-full"
                                   }`}
                               >
                                 <h4 className="mt-3 mb-5 text-xl">
@@ -304,7 +353,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen }) => {
 
                                 <MessageForm
                                   receiverId={selectedProduct.user_id}
-	  			  productId={selectedProduct.id}
+                                  productId={selectedProduct.id}
                                   type="sendMessageHomePage"
                                   setLeftVisible={setLeftVisible}
                                 />

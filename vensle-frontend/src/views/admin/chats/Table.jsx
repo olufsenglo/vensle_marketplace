@@ -8,7 +8,7 @@ import {
 	useGlobalFilter
 } from "react-table";
 
-const Table = ({ columns, data, handleGetUserMessage, user }) => {
+const Table = ({ columns, data, handleGetUserMessage, user, loading }) => {
 
 	const {
 		getTableProps,
@@ -48,6 +48,7 @@ const Table = ({ columns, data, handleGetUserMessage, user }) => {
 				{...getTableProps()}
 			>
 				<tbody {...getTableBodyProps()}>
+					{loading && <tr className="pl-2">Loading...</tr>}
 					{rows.map((row) => {
 						prepareRow(row);
 						return (
@@ -56,7 +57,6 @@ const Table = ({ columns, data, handleGetUserMessage, user }) => {
 								{...row.getRowProps()}
 							>
 								{row.cells.map((cell) => {
-									console.log('last msg', cell.row.original.last_message)
 									const userId = user.id == cell.row.original.last_message.sender.id
 										? cell.row.original.last_message.receiver.id
 										: row.original.last_message.sender.id

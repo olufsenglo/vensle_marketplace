@@ -16,9 +16,6 @@ import {
 } from "react-icons/io";
 import { logout } from "actions/auth";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const baseURL = "https://nominet.vensle.com/backend";
 
@@ -53,14 +50,14 @@ const Navbar = (props) => {
     return name;
   };
 
-	const handleUploadRedirect = (url) => {
-		setOpen(false);
-		navigate(url);
-	}
+  const handleUploadRedirect = (url) => {
+    setOpen(false);
+    navigate(url);
+  }
 
   useEffect(() => {
     if (paramRedirect == "modal") setOpen(true);
-  });
+  }, []);
 
   /**-Notification-**/
   const markAsRead = () => {
@@ -141,7 +138,7 @@ const Navbar = (props) => {
           </p>
         </div>
 
-        <div className="relative mt-[3px] flex h-[61px] w-[405px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-navy-800 dark:shadow-none md:w-[415px] md:flex-grow-0 md:gap-1 xl:w-[415px] xl:gap-2">
+        <div className="relative mt-[3px] flex h-[61px] w-[405px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-navy-800 dark:shadow-none md:w-[415px] md:flex-grow-0 md:gap-1 xl:w-[490px] xl:gap-2">
           <div className="flex h-full items-center rounded-full bg-lightPrimary text-navy-700 dark:bg-navy-900 dark:text-white xl:w-[225px]">
             <p className="pl-3 pr-2 text-xl">
               <FiSearch className="h-4 w-4 text-gray-400 dark:text-white" />
@@ -160,7 +157,7 @@ const Navbar = (props) => {
           </span>
 
           <p
-            className="cursor-pointer rounded-full py-1 px-4 hover:bg-gray-200 dark:text-white ease-in-out transition-all duration-300"
+            className="cursor-pointer uppercase border border-primaryColor text-primaryColor rounded-[4px] py-1 px-6 hover:bg-primaryColor hover:text-white dark:text-white ease-in-out transition-all duration-300"
             onClick={() => setOpen(true)}
           >
             Upload
@@ -329,7 +326,7 @@ const Navbar = (props) => {
                 leaveTo="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
               >
                 <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-2xl md:px-4 lg:max-w-4xl">
-                  <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+                  <div className="relative rounded-lg flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
                     <button
                       type="button"
                       className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
@@ -345,112 +342,112 @@ const Navbar = (props) => {
                           What would you like to upload?
                         </h3>
                         <div class="grid grid-cols-1 gap-12 text-center sm:grid-cols-2 md:grid-cols-3 lg:gap-y-16">
-                            <div className="cursor-pointer" onClick={() =>handleUploadRedirect("/admin/upload-product")}>
-                              <div class="relative mx-auto flex items-center justify-center">
-                                <svg
-                                  class="text-purple-100"
-                                  width="66"
-                                  height="68"
-                                  viewBox="0 0 66 68"
-                                  fill="currentColor"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z" />
-                                </svg>
-                                <svg
-                                  class="absolute h-9 w-9 text-purple-600"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="1.5"
-                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                                  />
-                                </svg>
-                              </div>
-                              <h3 class="text-black mt-8 text-lg font-semibold">
-                                Regular Products
-                              </h3>
-                              <p class="mt-4 text-base text-gray-600">
-                                Amet minim mollit non deserunt ullamco est sit
-                                aliqua dolor do amet sint
-                              </p>
+                          <div className="cursor-pointer" onClick={() => handleUploadRedirect("/admin/upload-product")}>
+                            <div class="relative mx-auto flex items-center justify-center">
+                              <svg
+                                class="text-purple-100"
+                                width="66"
+                                height="68"
+                                viewBox="0 0 66 68"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z" />
+                              </svg>
+                              <svg
+                                class="absolute h-9 w-9 text-purple-600"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1.5"
+                                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                                />
+                              </svg>
                             </div>
+                            <h3 class="text-black mt-8 text-lg font-semibold">
+                              Regular Products
+                            </h3>
+                            <p class="mt-4 text-base text-gray-600">
+                              Amet minim mollit non deserunt ullamco est sit
+                              aliqua dolor do amet sint
+                            </p>
+                          </div>
 
-                            <div className="cursor-pointer" onClick={() =>handleUploadRedirect("/admin/upload-product?type=request")}>
-                              <div class="relative mx-auto flex items-center justify-center">
-                                <svg
-                                  class="text-orange-100"
-                                  width="62"
-                                  height="64"
-                                  viewBox="0 0 62 64"
-                                  fill="currentColor"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M62 13.001C62 33.4355 53.9345 64.001 33.5 64.001C13.0655 64.001 0 50.435 0 30.0005C0 9.56596 2.56546 4.00021 23 4.00021C43.4345 4.00021 62 -7.43358 62 13.001Z" />
-                                </svg>
-                                <svg
-                                  class="absolute h-9 w-9 text-orange-600"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="1.5"
-                                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                                  />
-                                </svg>
-                              </div>
-                              <h3 class="text-black mt-8 text-lg font-semibold">
-                                Request a Product
-                              </h3>
-                              <p class="mt-4 text-base text-gray-600">
-                                Amet minim mollit non deserunt ullamco est sit
-                                aliqua dolor do amet sint.
-                              </p>
+                          <div className="cursor-pointer" onClick={() => handleUploadRedirect("/admin/upload-product?type=request")}>
+                            <div class="relative mx-auto flex items-center justify-center">
+                              <svg
+                                class="text-orange-100"
+                                width="62"
+                                height="64"
+                                viewBox="0 0 62 64"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M62 13.001C62 33.4355 53.9345 64.001 33.5 64.001C13.0655 64.001 0 50.435 0 30.0005C0 9.56596 2.56546 4.00021 23 4.00021C43.4345 4.00021 62 -7.43358 62 13.001Z" />
+                              </svg>
+                              <svg
+                                class="absolute h-9 w-9 text-orange-600"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1.5"
+                                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                                />
+                              </svg>
                             </div>
+                            <h3 class="text-black mt-8 text-lg font-semibold">
+                              Request a Product
+                            </h3>
+                            <p class="mt-4 text-base text-gray-600">
+                              Amet minim mollit non deserunt ullamco est sit
+                              aliqua dolor do amet sint.
+                            </p>
+                          </div>
 
-                            <div className="cursor-pointer" onClick={() =>handleUploadRedirect("/admin/upload-product?type=grocery")}>
-                              <div class="relative mx-auto flex items-center justify-center">
-                                <svg
-                                  class="text-green-100"
-                                  width="66"
-                                  height="68"
-                                  viewBox="0 0 66 68"
-                                  fill="currentColor"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z" />
-                                </svg>
-                                <svg
-                                  class="absolute h-9 w-9 text-green-600"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="1.5"
-                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                                  />
-                                </svg>
-                              </div>
-                              <h3 class="text-black mt-8 text-lg font-semibold">
-                                Groceries
-                              </h3>
-                              <p class="mt-4 text-base text-gray-600">
-                                Amet minim mollit non deserunt ullamco est sit
-                                aliqua dolor do amet sint.
-                              </p>
+                          <div className="cursor-pointer" onClick={() => handleUploadRedirect("/admin/upload-product?type=grocery")}>
+                            <div class="relative mx-auto flex items-center justify-center">
+                              <svg
+                                class="text-green-100"
+                                width="66"
+                                height="68"
+                                viewBox="0 0 66 68"
+                                fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M65.5 30C65.5 50.4345 46.4345 68 26 68C5.56546 68 0 50.4345 0 30C0 9.56546 12.5655 0 33 0C53.4345 0 65.5 9.56546 65.5 30Z" />
+                              </svg>
+                              <svg
+                                class="absolute h-9 w-9 text-green-600"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1.5"
+                                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                                />
+                              </svg>
+                            </div>
+                            <h3 class="text-black mt-8 text-lg font-semibold">
+                              Groceries
+                            </h3>
+                            <p class="mt-4 text-base text-gray-600">
+                              Amet minim mollit non deserunt ullamco est sit
+                              aliqua dolor do amet sint.
+                            </p>
                           </div>
                         </div>
                       </div>

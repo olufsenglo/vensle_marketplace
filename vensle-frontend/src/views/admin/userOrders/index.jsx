@@ -9,7 +9,7 @@ import Table from './Table'
 const columnsData = [
 	{
 		Header: "Order Id",
-		accessor: "id",
+		accessor: "order_number",
 	},
 	{
 		Header: "Created",
@@ -69,7 +69,6 @@ const UserOrders = () => {
 	const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
 	const accessToken = useSelector((state) => state?.auth?.user?.token);
 
-	const [data, setData] = useState([]);
 	const [activeTab, setActiveTab] = useState(1);
 	const [orders, setOrders] = useState([]);
 
@@ -110,24 +109,6 @@ const UserOrders = () => {
 
 		fetchOrders();
 	}, []);
-
-	useEffect(() => {
-		const fetchUsers = async () => {
-			try {
-				const response = await axios.get(`${baseURL}/api/v1/users`, {
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				});
-
-				setData(response.data);
-			} catch (error) {
-				console.error("Error fetching users:", error);
-			}
-		};
-
-		fetchUsers();
-	}, [accessToken]);
 
 	return (
 		<div className="bg-white">

@@ -4,7 +4,7 @@ import { useTable, useRowSelect, usePagination, useSortBy, useFilters, useGlobal
 import PreviewPopup from "components/previewPopup/PreviewPopup";
 import { Checkbox } from './Checkbox';
 
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, loading }) => {
 	const [open, setOpen] = useState(false)
 	const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -20,7 +20,6 @@ const Table = ({ columns, data }) => {
 		pageOptions,
 		gotoPage,
 		pageCount,
-		selectedFlatRows,
 		prepareRow,
 		state,
 		setGlobalFilter,
@@ -62,7 +61,6 @@ const Table = ({ columns, data }) => {
 
 	return (
 		<div>
-
 			{selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
 			<input
@@ -74,9 +72,14 @@ const Table = ({ columns, data }) => {
 			/>
 
 			<table
-				className="w-full rounded-md overflow-hidden"
+				className="w-full relative rounded-md overflow-hidden"
 				{...getTableProps()}
 			>
+				{loading &&
+					<div className="absolute bg-white/50 top-0 flex inset-0 items-center justify-center z-[1] w-full">
+						Loading
+					</div>
+				}
 				<thead>
 					{headerGroups.map((headerGroup) => (
 						<tr
@@ -99,8 +102,7 @@ const Table = ({ columns, data }) => {
 					))}
 				</thead>
 				<tbody className="relative" {...getTableBodyProps()}>
-					{/*improve condition*/}
-					{page[0]?.original?.name ? page.map((row) => {
+					{page.map((row) => {
 						prepareRow(row);
 						return (
 							<tr
@@ -113,17 +115,13 @@ const Table = ({ columns, data }) => {
 											onClick={() => handleProductQuickView(row.original)}
 											className="py-3 cursor-pointer pr-4" {...cell.getCellProps()}
 										>
-											{console.log('row boat', row.original)}
 											{cell.render('Cell')}
 										</td>
 									);
 								})}
 							</tr>
 						);
-					}) :
-						<div className="top-0 w-full">
-							Loading
-						</div>}
+					})}
 				</tbody>
 			</table>
 			{page[0]?.original?.name && <div className="text-center mt-8">

@@ -8,15 +8,16 @@ import { StarIcon } from "@heroicons/react/20/solid";
 
 import { SET_MESSAGE } from "actions/types";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function Message({ open, setOpen, productId }) {
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state?.auth?.user?.token);
 
   const [messageContent, setMessageContent] = useState("");
+
+	const handleFillMessage = (message) => {
+		setMessageContent(message)
+	}
 
   const handleSubmitMessage = (e) => {
     e.preventDefault();
@@ -57,8 +58,8 @@ export default function Message({ open, setOpen, productId }) {
               leaveFrom="opacity-100 translate-y-0 md:scale-100"
               leaveTo="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
             >
-              <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-2xl md:px-4 lg:max-w-4xl">
-                <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+              <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-xl md:px-4 lg:max-w-2xl">
+                <div className="relative rounded-lg flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
                   <button
                     type="button"
                     className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
@@ -74,6 +75,18 @@ export default function Message({ open, setOpen, productId }) {
                     <form onSubmit={(e) => handleSubmitMessage(e)}>
                       <div className="mt-2">
                         <div className="mt-2.5">
+                          <div class="flex flex-wrap gap-2 text-xs mb-3">
+                            <span onClick={() => handleFillMessage("How is it")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1
+					">How is it
+                            </span>
+                            <span onClick={() => handleFillMessage("I like this")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">
+                              I like this
+                            </span>
+                            <span onClick={() => handleFillMessage("How are you doing")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">How are you doing
+                            </span>
+                            <span onClick={() => handleFillMessage("Do you still have this product")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">Do you still have this product
+                            </span>
+                          </div>
                           <textarea
                             name="message"
                             id="message"
@@ -89,7 +102,7 @@ export default function Message({ open, setOpen, productId }) {
                       <div className="mt-4">
                         <button
                           type="submit"
-                          className="block w-full rounded-md bg-red-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                          className="block w-full rounded-md bg-primaryColor px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
                         >
                           Submit
                         </button>

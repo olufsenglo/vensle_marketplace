@@ -27,10 +27,24 @@ export default function ShopByCategories() {
 	    <SectionTitle>Shop by Categories</SectionTitle>
 	    <div className="mt-10 overflow-hidden">
 	      <Swiper
-		  slidesPerView={8}
+		  slidesPerView={4}
 		  spaceBetween={10}
 		  navigation={true}
 		  modules={[Navigation]}
+		  breakpoints={{
+			640: {
+				slidesPerView: 4,
+				spaceBetween: 4,
+			},
+			768: {
+				slidesPerView: 5,
+				spaceBetween: 6,
+			},
+			1024: {
+				slidesPerView: 8,
+				spaceBetween: 10,
+			},
+		}}
 		  className="mySwiper !w-[106%]"
 	      >
 		<SwiperSlide>

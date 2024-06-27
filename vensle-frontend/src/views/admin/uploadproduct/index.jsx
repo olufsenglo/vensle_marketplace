@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Card from "components/card";
 import axios from "axios";
 
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import currencySymbolMap from "currency-symbol-map";
 
 import uploadImage from "assets/img/dashboards/upload.png";
@@ -16,8 +16,6 @@ const baseURL = "https://nominet.vensle.com/backend";
 const Tables = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const paramProductType = queryParams.get("type");
 
   const storedLocation = JSON.parse(localStorage.getItem("userLocation")) || {
     lat: 0,
@@ -33,10 +31,13 @@ const Tables = () => {
   const [categories, setCategories] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
+  const [jsValidateErrors, setJsValidateErrors] = useState({});
   const [uploadPreview, setUploadPreview] = useState(false);
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingPreviews, setLoadingPreviews] = useState(false);
+  const [urlProductType, setUrlProductType] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,7 +54,7 @@ const Tables = () => {
     sold: 1,
     views: 1,
     status: "Active",
-    images: null,
+    images: [],
     single_specifications: "",
     latitude: storedLocation.lat,
     longitude: storedLocation.lng,
@@ -84,7 +85,72 @@ const Tables = () => {
       ...formData,
       [name]: value,
     });
+
+    validateField(name, value);
   };
+
+  const validateField = (fieldName, value) => {
+    let errorMessage = "";
+
+    switch (fieldName) {
+      case "name":
+      case "price":
+      case "location":
+      case "phone_number":
+      case "address":
+      case "condition":
+        if (!value.trim()) {
+          errorMessage = `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace('_', ' ')} is required`;
+        }
+        break;
+      case "images":
+        // Validate if images are required and check if there are any uploaded
+        if (value.length === 0) {
+          errorMessage = "Images are required";
+        } else {
+          // Validate each file (size, type, etc.) if needed
+          const allowedTypes = ['image/jpeg', 'image/png'];
+          const maxSize = 5 * 1024 * 1024; // 5MB
+
+          for (let i = 0; i < value.length; i++) {
+            const file = value[i];
+
+            // Check file type
+            if (!allowedTypes.includes(file.type)) {
+              errorMessage = "Only JPEG and PNG image files are allowed";
+              break;
+            }
+
+            // Check file size
+            if (file.size > maxSize) {
+              errorMessage = "File size exceeds 5MB limit";
+              break;
+            }
+          }
+
+          // Additional checks: Limit number of images
+          if (value.length > 5) { // Example: Limit to 5 images
+            errorMessage = "Maximum of 5 images allowed";
+          }
+        }
+      case "category_id":
+        if (!value) {
+          errorMessage = "Category is required";
+        }
+        break;
+      default:
+        break;
+
+    }
+
+    setJsValidateErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldName]: errorMessage
+    }));
+
+    return errorMessage;
+  };
+
 
   const delim = "^%*#$";
 
@@ -119,76 +185,159 @@ const Tables = () => {
     });
   };
 
+
+  
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-
+  
+    // Combine existing files with newly selected files
     const existingFiles = formData.images ? [...formData.images] : [];
-
     const newFiles = [...existingFiles, ...files];
-
-    setFormData({
-      ...formData,
-      images: newFiles,
-    });
-
-    setLoadingPreviews(true);
-
+  
+    // Validate each file individually
+    const newErrors = {};
     const previews = [];
+    let loadedCount = 0;
+  
     for (let i = 0; i < newFiles.length; i++) {
+      const file = newFiles[i];
+  
+      // Validate the file
+      const errorMessage = validateFile(file);
+      if (errorMessage) {
+        newErrors[name] = errorMessage;
+        continue; // Skip processing invalid file
+      }
+  
+      // Read and store image previews
       const reader = new FileReader();
       reader.onload = (event) => {
         previews.push(event.target.result);
-        if (previews.length === newFiles.length) {
+        loadedCount++;
+        // Set image previews and clear loading state when all previews are loaded
+        if (loadedCount === newFiles.length) {
           setImagePreviews(previews);
-	  setLoadingPreviews(false);
+          setLoadingPreviews(false);
         }
       };
       reader.onerror = () => {
-        // Handle error
         setLoadingPreviews(false);
         console.error('Error loading image preview');
-      };	    
-      reader.readAsDataURL(newFiles[i]);
+      };
+      reader.readAsDataURL(file);
+    }
+  
+    // Update errors state with validation results
+    setJsValidateErrors({
+      ...jsValidateErrors,
+      [name]: newErrors[name] || null, // Set or clear error message
+    });
+  
+    // Update formData only with valid files
+    if (Object.keys(newErrors).length === 0) {
+      setFormData({
+        ...formData,
+        images: newFiles,
+      });
     }
   };
+  
+  // Function to validate each file
+  const validateFile = (file) => {
+    const allowedTypes = ['image/jpeg', 'image/png'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+  
+    // Check file type
+    if (!allowedTypes.includes(file.type)) {
+      return "Only JPEG and PNG image files are allowed";
+    }
+  
+    // Check file size
+    if (file.size > maxSize) {
+      return "File size exceeds 5MB limit";
+    }
+  
+    // Add more validations if needed
+    return ""; // No error
+  };
+  
+
+
+  // const handleFileChange = (e) => {
+  //   const { name, files } = e.target;
+
+  //   const existingFiles = formData.images ? [...formData.images] : [];
+  //   const newFiles = [...existingFiles, ...files];
+
+  //   setFormData({
+  //     ...formData,
+  //     images: newFiles,
+  //   });
+
+  //   setLoadingPreviews(true);
+
+  //   const previews = [];
+  //   for (let i = 0; i < newFiles.length; i++) {
+  //     const reader = new FileReader();
+  //     reader.onload = (event) => {
+  //       previews.push(event.target.result);
+  //       if (previews.length === newFiles.length) {
+  //         setImagePreviews(previews);
+  //         setLoadingPreviews(false);
+  //       }
+  //     };
+  //     reader.onerror = () => {
+  //       // Handle error
+  //       setLoadingPreviews(false);
+  //       console.error('Error loading image preview');
+  //     };
+  //     reader.readAsDataURL(newFiles[i]);
+  //   }
+
+  //   const errorMessage = validateField(name, newFiles); // Pass newFiles array for validation
+  //   setJsValidateErrors(prevErrors => ({
+  //     ...prevErrors,
+  //     [name]: errorMessage
+  //   }));
+  // };
 
   const renderImagePreviews = () => {
     return imagePreviews.map((preview, index) => (
       <>
+        {console.log('errr us', jsValidateErrors)}
         <div className="group relative">
-          <div className="aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7 w-full overflow-hidden rounded-lg bg-gray-200">
+          <div className="relative aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7 w-full overflow-hidden rounded-lg bg-gray-200">
             <img
               src={preview}
               alt={`Preview ${index}`}
-              className={`h-full w-full rounded-lg object-cover object-center group-hover:opacity-75 ${
-                index === mainImageIndex ? "border-2 border-green-500" : ""
-              }`}
+              className={`h-full w-full rounded-lg object-cover object-center group-hover:opacity-75 ${index === mainImageIndex ? "border-2 border-green-500" : ""
+                }`}
             />
+            {!isMainPreview(index) ? (
+              <h3
+                style={containerStyle}
+                className="absolute z-[2] cursor-pointer bottom-0 left-0 right-0 rounded-lg pt-4 text-sm text-white"
+                onClick={(e) => handleSetMainImageIndex(e, index)}
+              >
+                <span className="block p-1 w-full text-center">Set as Display</span>
+              </h3>
+            ) : (
+              <h3
+                style={containerStyle}
+                className="absolute bottom-0 left-0 right-0 cursor-pointer rounded-lg pt-4 text-center text-sm text-white"
+              >
+                <span className="block p-1 w-full text-center">Display</span>
+              </h3>
+            )}
           </div>
-          {!isMainPreview(index) ? (
-            <h3
-              style={containerStyle}
-              className="absolute cursor-pointer bottom-0 left-0 right-0 rounded-lg pt-4 text-sm text-white"
-              onClick={(e) => handleSetMainImageIndex(e, index)}
-            >
-              <span className="block p-1 w-full text-center">Set as Preview</span>
-            </h3>
-          ) : (
-            <h3
-              style={containerStyle}
-              className="absolute bottom-0 left-0 right-0 cursor-pointer rounded-lg pt-4 text-center text-sm text-white"
-            >
-              <span className="block p-1 w-full text-center">Display</span>
-            </h3>
-          )}
-          {!isMainPreview(index) && (
-            <button
-              className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-red-500 px-2 text-white"
-              onClick={(e) => handleRemoveImage(e, index)}
-            >
-              x
-            </button>
-          )}
+          {/* {!isMainPreview(index) && ()} */}
+          <button
+            className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-red-500 hover:bg-red-600 text-white"
+            onClick={(e) => handleRemoveImage(e, index)}
+          >
+            <XMarkIcon className="h-6 w-6 p-[3px]" aria-hidden="true" />
+          </button>
+
         </div>
       </>
     ));
@@ -219,11 +368,27 @@ const Tables = () => {
 
   const handleUploadPreview = (e) => {
     e.preventDefault();
-    if (formData.images == null) {
-      setError("Please upload an image");
-    } else {
+
+    // Validate all fields before submitting
+    const newErrors = {};
+    Object.keys(formData).forEach(fieldName => {
+      const value = formData[fieldName];
+      const errorMessage = validateField(fieldName, value);
+      if (errorMessage) {
+        newErrors[fieldName] = errorMessage;
+      }
+    });
+
+
+    // Update errors state
+    setJsValidateErrors(newErrors);
+
+    // If there are no errors, proceed to preview
+    if (Object.keys(newErrors).length === 0) {
       setUploadPreview(true);
       setError(null);
+    } else {
+      console.log("Form has validation errors. Please fix them.");
     }
   };
 
@@ -275,7 +440,68 @@ const Tables = () => {
     }
   };
 
+
+
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setDragging(false);
+  };
+
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    const combinedFiles = [...formData.images, ...droppedFiles];
+
+    setFormData({
+      ...formData,
+      images: combinedFiles,
+    });
+
+    setLoadingPreviews(true);
+
+    const previews = [];
+    for (let i = 0; i < combinedFiles.length; i++) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        previews.push(event.target.result);
+        if (previews.length === combinedFiles.length) {
+          setImagePreviews(previews);
+          setLoadingPreviews(false);
+        }
+      };
+      reader.onerror = () => {
+        // Handle error
+        setLoadingPreviews(false);
+        console.error('Error loading image preview');
+      };
+      reader.readAsDataURL(combinedFiles[i]);
+    }
+  };
+
+
+
+
   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const paramProductType = queryParams.get("type");
+    setUrlProductType(paramProductType)
+    if (paramProductType) {
+      console.log("Product type:", paramProductType);
+    }
     if (paramProductType === "grocery") {
       setFormData({
         ...formData,
@@ -304,7 +530,7 @@ const Tables = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [location.search]);
 
   useEffect(() => {
     const getUserCountry = () => {
@@ -375,20 +601,27 @@ const Tables = () => {
           <div className="col-span-12 lg:!mb-0">
             <Card extra={"w-full p-4 h-full"}>
               <div className="grid grid-cols-1 space-y-2">
-                <label className="text-sm font-bold tracking-wide text-gray-500">
-                  Attach Document
-                </label>
-                <div className="flex w-full relative items-center justify-center">
-		  {loadingPreviews && 
-			  <p className="bg-white flex justify-center items-center m-6 absolute top-0 bottom-0 left-0 right-0">Loading...</p>
-		  }
+                <div
+                  className={`flex w-full relative items-center justify-center border-2 border-dashed  rounded-lg p-4 ${dragging ? 'bg-gray-200' : ''}  ${jsValidateErrors.images
+                    ? "border-red-200"
+                    : "border-gray-400"
+                    }`}
+                  onDragOver={handleDragOver}
+                  onDragEnter={handleDragEnter}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  {loadingPreviews &&
+                    <p className="bg-white flex justify-center items-center m-6 absolute top-0 bottom-0 left-0 right-0">Loading...</p>
+                  }
                   {imagePreviews?.length > 0 && (
                     <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-center sm:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 xl:gap-x-2">
                       {renderImagePreviews()}
                       <label
-                        className="flex min-h-[5rem] cursor-pointer items-center justify-center rounded-lg border border-gray-100"
+                        className="flex flex-col items-center justify-center min-h-[5rem] cursor-pointer items-center justify-center rounded-lg border border-gray-100"
                         htmlFor="images"
                       >
+                        <ArrowUpTrayIcon className="w-6 h-6 mb-2" />
                         <div>+ Add more</div>
                       </label>
                     </div>
@@ -397,9 +630,9 @@ const Tables = () => {
                   {imagePreviews?.length === 0 && (
                     <label
                       htmlFor="images"
-                      className="group flex h-60 w-full flex-col rounded-lg border-4 border-dashed p-10 text-center"
+                      className="group flex h-60 w-full flex-col rounded-lg text-center"
                     >
-                      <div className="flex h-full w-full flex-col items-center items-center justify-center text-center  ">
+                      <div className="flex cursor-pointer h-full w-full flex-col items-center items-center justify-center text-center  ">
                         <img
                           className="has-mask h-36 object-center"
                           src={uploadImage}
@@ -407,15 +640,15 @@ const Tables = () => {
                         />
 
                         <p className="pointer-none text-gray-500 ">
-                          Select files from your computer
+                          Drag and drop images or click to select
                         </p>
                       </div>
                     </label>
                   )}
                 </div>
               </div>
-              <p className="text-sm text-gray-300">
-                <span>File type: jpg,png,types of images</span>
+              <p className="text-sm mt-2 text-gray-300">
+                <span>File type: jpg, jepg, png, gif or svg </span>
               </p>
               <input
                 id="images"
@@ -425,6 +658,14 @@ const Tables = () => {
                 onChange={handleFileChange}
                 className="hidden"
               />
+              {jsValidateErrors.images &&
+                <p
+                  style={{ color: "red", fontSize: "13px" }}
+                  className="mt-1"
+                >
+                  {jsValidateErrors.images}
+                </p>
+              }
             </Card>
           </div>
 
@@ -439,7 +680,7 @@ const Tables = () => {
                       htmlFor="name"
                       className="text-xs font-semibold text-gray-500"
                     >
-                      Product Name
+                      Product Name*
                     </label>
                     <div className="mt-2">
                       <input
@@ -450,8 +691,19 @@ const Tables = () => {
                         autoComplete="product-name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className={`mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.name
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       />
+                      {jsValidateErrors.name &&
+                        <p
+                          style={{ color: "red", fontSize: "13px" }}
+                          className="mt-1"
+                        >
+                          {jsValidateErrors.name}
+                        </p>
+                      }
                     </div>
                   </div>
 
@@ -460,7 +712,7 @@ const Tables = () => {
                       htmlFor="category_id"
                       className="text-xs font-semibold text-gray-500"
                     >
-                      Product Category
+                      Product Category*
                     </label>
                     <div className="mt-2">
                       <select
@@ -469,7 +721,10 @@ const Tables = () => {
                         autoComplete="category"
                         value={formData.category_id}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm text-gray-500 placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className={`mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm text-gray-500 placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.category_id
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       >
                         <option value="">Select Category</option>
                         {categories &&
@@ -479,6 +734,14 @@ const Tables = () => {
                             </option>
                           ))}
                       </select>
+                      {jsValidateErrors.category_id &&
+                        <p
+                          style={{ color: "red", fontSize: "13px" }}
+                          className="mt-1"
+                        >
+                          {jsValidateErrors.category_id}
+                        </p>
+                      }
                     </div>
                   </div>
 
@@ -536,6 +799,14 @@ const Tables = () => {
                         </label>
                       </div>
                     </div>
+                      {jsValidateErrors.condition &&
+                        <p
+                          style={{ color: "red", fontSize: "13px" }}
+                          className="mt-1"
+                        >
+                          {jsValidateErrors.condition}
+                        </p>
+                      }
                   </fieldset>
 
                   <div className="col-span-full mt-2">
@@ -552,16 +823,19 @@ const Tables = () => {
                         name="price"
                         id="price"
                         placeholder={
-                          paramProductType == "request"
+                          urlProductType == "request"
                             ? "Min price"
                             : "Add Price"
                         }
                         autoComplete="price"
                         value={formData.price}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className={`mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.price
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       />
-                      {paramProductType == "request" && (
+                      {urlProductType == "request" && (
                         <input
                           type="text"
                           name="max_price"
@@ -573,6 +847,14 @@ const Tables = () => {
                         />
                       )}
                     </div>
+                    {jsValidateErrors.price &&
+                      <p
+                        style={{ color: "red", fontSize: "13px" }}
+                        className="mt-1"
+                      >
+                        {jsValidateErrors.price}
+                      </p>
+                    }
                   </div>
 
                   <div className="col-span-full mt-2">
@@ -591,8 +873,19 @@ const Tables = () => {
                         autoComplete="street-address"
                         value={formData.address}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className={`mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.address
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       />
+                      {jsValidateErrors.address &&
+                        <p
+                          style={{ color: "red", fontSize: "13px" }}
+                          className="mt-1"
+                        >
+                          {jsValidateErrors.address}
+                        </p>
+                      }
                     </div>
                     <div className="mt-2 flex items-center gap-x-3">
                       <input
@@ -627,8 +920,19 @@ const Tables = () => {
                         autoComplete="phone-number"
                         value={formData.phone_number}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className={`mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.phone_number
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                          }`}
                       />
+                      {jsValidateErrors.phone_number &&
+                        <p
+                          style={{ color: "red", fontSize: "13px" }}
+                          className="mt-1"
+                        >
+                          {jsValidateErrors.phone_number}
+                        </p>
+                      }
                     </div>
                     <div className="mt-2 flex items-center gap-x-3">
                       <input
@@ -676,7 +980,7 @@ const Tables = () => {
                 </p>
               </div>
 
-              <div className="col-span-full mt-2">
+              <div className="flex flex-col flex-1 col-span-full mt-2">
                 <label
                   htmlFor="name"
                   className="text-xs font-semibold text-gray-500"
@@ -707,7 +1011,7 @@ const Tables = () => {
                               className="ml-2 text-red-500 absolute"
                               onClick={() => handleRemoveSpecification(index)}
                             >
-                    	      <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                              <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                             </button>
                           </li>
                         ))}
@@ -717,12 +1021,14 @@ const Tables = () => {
                 <p className="mt-3 text-sm leading-6 text-gray-600">
                   Hit enter to add each specification
                 </p>
-                <button
-                  onClick={handleUploadPreview}
-                  className="linear mt-8 w-full rounded-xl bg-[#ff5959] py-[12px] text-base font-medium text-white transition duration-200 hover:bg-red-500 active:bg-red-600 dark:bg-red-400 dark:text-white dark:hover:bg-red-300 dark:active:bg-red-200"
-                >
-                  PREVIEW & SUBMIT
-                </button>
+                <div className="flex-1 flex items-end">
+                  <button
+                    onClick={handleUploadPreview}
+                    className="linear mt-8 w-full rounded-xl bg-[#ff5959] py-[12px] text-base font-medium text-white transition duration-200 hover:bg-red-500 active:bg-red-600 dark:bg-red-400 dark:text-white dark:hover:bg-red-300 dark:active:bg-red-200"
+                  >
+                    PREVIEW & SUBMIT
+                  </button>
+                </div>
               </div>
             </Card>
           </div>

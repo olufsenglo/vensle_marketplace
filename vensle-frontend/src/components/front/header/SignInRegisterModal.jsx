@@ -1,59 +1,24 @@
 import { Fragment, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
 import {
   Dialog,
-  RadioGroup,
   Transition,
-  Disclosure,
-  Menu,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/20/solid";
 import {
   ArrowLeftIcon,
-  ChevronDownIcon,
-  FunnelIcon,
-  MinusIcon,
-  PlusIcon,
-  Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, register, logout } from "actions/auth";
 import {
-  removeFromCart,
-  decreaseQuantity,
-  increaseQuantity,
   fetchCartItems,
 } from "actions/actions";
 
 import { SET_MESSAGE } from "actions/types";
 
-import Top from "./Top";
-import NavLinks from "./NavLinks";
-import CartLink from "./CartLink";
-import TopMenu from "./TopMenu";
-import ProductTypeMenu from "./ProductTypeMenu";
-import AuthUserDropDownMenu from "./AuthUserDropDownMenu";
-
-import logo from "assets/img/front/logo.PNG";
-import person from "assets/img/front/person.PNG";
-import cart from "assets/img/front/cart.PNG";
-import Search from "./Search";
-
-const sortOptions = [
-  { name: "Profile", href: "/admin/profile", current: false },
-  { name: "Upload a product", href: "/admin/upload-product", current: false },
-  { name: "Dashboard", href: "/admin/default", current: false },
-  { name: "Logout", href: "#", current: false },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const baseURL = "https://nominet.vensle.com/backend";
 
@@ -62,24 +27,18 @@ const SignInRegisterModal = ({
     loginOpen,
     setActiveTab,
     activeTab,
+	driverRegister,
+	setDriverRegister,
 }) => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
-  const user = useSelector((state) => state.auth.user?.user);
-  const cartItems = useSelector((state) => state.cart.items);
   const storedCountry = localStorage.getItem("userCountry") || "Unknown";
-  const storedCountryFlag = localStorage.getItem("countryFlag") || "";
 
-  const [open, setOpen] = useState(false);
-  const [loginRegisterOpen, setLoginRegisterOpen] = useState(false);
   const [resetToken, setResetToken] = useState("");
   const [resetLink, setResetLink] = useState("");
-  const [resetTokenError, setResetTokenError] = useState("");
 
   const [redirect, setRedirect] = useState("");
-  const [driverRegister, setDriverRegister] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);
@@ -90,7 +49,6 @@ const SignInRegisterModal = ({
 
   const [successMessage, setSuccessMessage] = useState("");
 
-  const { isLoggedIn } = useSelector((state) => state.auth);
   const { message } = useSelector((state) => state.message);
   const [formData, setFormData] = useState({
     email: "",

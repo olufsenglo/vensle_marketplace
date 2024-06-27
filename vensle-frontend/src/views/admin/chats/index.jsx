@@ -88,6 +88,7 @@ const Chats = () => {
 	const [products, setProducts] = useState([]);
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [lastChatLoading, setLastChatLoading] = useState(false);
 	const [loadingUserMessages, setLoadingUserMessages] = useState(false);
 	const [message, setMessage] = useState('');
 	const [userMessages, setUserMessages] = useState([]);
@@ -139,16 +140,19 @@ const Chats = () => {
 	}
 
 	useEffect(() => {
+		setLastChatLoading(true)
 		const fetchUsers = async () => {
 			try {
-				const response = await axios.get(`${baseURL}/api/v1/last-chat`, {
+				const response = await axios.get(`${baseURL}/api/v1/user/chats/last-chat`, {
 					headers: {
 						Authorization: `Bearer ${accessToken}`,
 					},
 				});
 				setData(response.data.chats);
+				setLastChatLoading(false)
 			} catch (error) {
 				console.error("Error fetching users:", error);
+				setLastChatLoading(false)
 			}
 		};
 
@@ -164,12 +168,13 @@ const Chats = () => {
 							columns={columns}
 							data={data}
 							user={user}
+							loading={lastChatLoading}
 							setSelectedMsgId={setSelectedMsgId}
 							handleGetUserMessage={handleGetUserMessage}
 						/>
 					</div>
 				</div>
-				<div className="absolute pt-[103px] md:relative md:w-[60%] flex flex-col w-full bg-white top-0 h-full">
+				<div className="absolute pt-[103px] md:relative md:w-[60%] flex flex-col w-full h-[100vh] bg-white top-0 h-full">
 					{userMessages.length > 0 && (
 						<div style={{ borderBottom: "1px solid #eee" }} className="flex p-2 h-[3.7rem] items-center border-b">
 							{loadingUserMessages ? <p>Loading...</p> : <>

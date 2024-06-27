@@ -9,6 +9,7 @@ import Facebook from "layouts/front/socialAuthRedirect/Facebook";
 import Filter from "layouts/front/filter";
 import Home from "layouts/front/home";
 import SocialRedirect from "layouts/front/socialAuthentication/SocialRedirect";
+import SavedItems from "layouts/front/savedItems";
 import ProductDetail from "layouts/front/productDetail";
 import GroceryDetail from "layouts/front/groceryDetail";
 import Cart from "layouts/front/cart";
@@ -101,6 +102,7 @@ const App = () => {
         <Route path="social-auth-redirect/*" element={<SocialRedirect />} />
         <Route path="/product-detail/:productId" element={<ProductDetail />} />
         <Route path="grocery-detail/*" element={<GroceryDetail />} />
+        <Route path="saved-items/*" element={<SavedItems />} />
         <Route path="user-profile/:userId/products" element={<UserProfile />} />
         <Route path="order-summary/*" element={<OrderSummary />} />
         <Route path="checkout/*" element={<Checkout />} />

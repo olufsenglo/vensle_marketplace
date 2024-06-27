@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTable, useRowSelect, usePagination, useSortBy, useFilters, useGlobalFilter } from "react-table";
 
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, loading, handleProductQuickView }) => {
+
 	const {
 		getTableProps,
 		getTableBodyProps,
@@ -37,10 +38,10 @@ const Table = ({ columns, data }) => {
 		<div>
 			<input
 				type="text"
-				className="px-3 w-[45%] bg-[#ebebfb] border border-gray-600 rounded-md py-2 mb-6"
+				className="px-3 w-[30%] bg-[#ebebfb] absolute top-[25px] border border-gray-600 right-0 rounded-md py-2 pl-6 pr-2 mb-6"
 				value={globalFilter}
 				onChange={(e) => setGlobalFilter(e.target.value)}
-				placeholder="Search..."
+				placeholder="Search"
 			/>
 
 			<table
@@ -48,14 +49,19 @@ const Table = ({ columns, data }) => {
 				className="w-full rounded-md overflow-hidden"
 				{...getTableProps()}
 			>
+				{loading &&
+					<div className="absolute bg-white/50 top-0 flex inset-0 items-center justify-center z-[1] w-full">
+						Loading
+					</div>
+				}
 				<thead>
 					{headerGroups.map((headerGroup) => (
 						<tr
-							className="p-2 text-sm text-[#4e5b92] bg-[#dde1ff]"
+							className="bg-white border-b border-b-gray-200"
 							{...headerGroup.getHeaderGroupProps()}
 						>
 							{headerGroup.headers.map((column) => (
-								<th className="py-4 text-[15px] text-left" {...column.getHeaderProps(column.getSortByToggleProps())}>
+								<th className="py-3 text-[17px] font-medium text-left" {...column.getHeaderProps(column.getSortByToggleProps())}>
 									{column.render('Header')}
 									<span>
 										{column.isSorted
@@ -69,18 +75,21 @@ const Table = ({ columns, data }) => {
 						</tr>
 					))}
 				</thead>
-				<tbody {...getTableBodyProps()}>
-					{page[0]?.original?.id ? page.map((row) => {
+				<tbody className="relative" {...getTableBodyProps()}>
+					{/*improve condition*/}
+					{page.map((row) => {
 						prepareRow(row);
 						return (
 							<tr
-								className="even:bg-[#fbf8ff] odd:bg-white"
+								className="hover:bg-gray-100"
 								{...row.getRowProps()}
 							>
 								{row.cells.map((cell) => {
 									return (
 										<td
-											className="py-3" {...cell.getCellProps()}
+											className="py-2 cursor-pointer text-[14px]" {...cell.getCellProps()}
+											onClick={(e) => handleProductQuickView(e, cell.row.original)}
+
 										>
 											{cell.render('Cell')}
 										</td>
@@ -88,14 +97,11 @@ const Table = ({ columns, data }) => {
 								})}
 							</tr>
 						);
-					}) :
-						<div className="top-0 w-full">
-							Loading
-						</div>}
+					})}
 				</tbody>
 			</table>
 			{page[0]?.original?.id && <div className="text-center mt-8">
-				<span className="mr-4">
+				<span className="mr-6">
 					Page{' '}
 					<strong>
 						{pageIndex + 1} of {pageOptions.length}
@@ -134,7 +140,7 @@ const Table = ({ columns, data }) => {
 					Go to page: {' '}
 					<input
 						type='number'
-						className="w-10 ml-2 py-1 px-2 border-gray-300 rounded-sm"
+						className="w-10 ml-3 py-1 px-2 border-gray-300 rounded-sm"
 						defaultValue={pageIndex + 1}
 						onChange={e => {
 							const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0

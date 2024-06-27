@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
-import { addToCart } from "actions/actions";
-
 import { StarIcon } from "@heroicons/react/20/solid";
-
 import PreviewPopup from "components/front/previewPopup/PreviewPopup";
+import { HeartIcon } from "@heroicons/react/24/outline";
+import { SET_MESSAGE } from "actions/types";
+
+import { addToCart } from "actions/actions";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -14,6 +16,8 @@ function classNames(...classes) {
 const baseURL = "https://nominet.vensle.com/backend";
 
 export default function Grocery({ product, wrapper, lineClamp = 1, custom, listView, btnSize }) {
+  const accessToken = useSelector((state) => state?.auth?.user?.token);
+
   const displayImageId = product?.display_image?.id;
   if (product.images?.length > 0 && displayImageId) {
     // Find the index of the display_image in the images array
@@ -63,6 +67,31 @@ export default function Grocery({ product, wrapper, lineClamp = 1, custom, listV
     dispatch(addToCart({ ...product, quantity: 1 }));
   };
 
+
+
+  const handleSaveItem = async (productId) => {
+    //TODO: should be after api call, improve for instant feedback
+    dispatch({
+      type: SET_MESSAGE,
+      payload: { type: "success", message: "Item Saved successfully" },
+    });
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/v1/saved-products`,
+        {product_id: productId},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+    } catch (error) {
+      console.error("Error saving product", error);
+    };
+  }
+
   const getImagePath = (product) => {
     return `${baseURL}/uploads/${product.name}`;
   };
@@ -80,9 +109,12 @@ export default function Grocery({ product, wrapper, lineClamp = 1, custom, listV
       <div
         key={product.id}
         style={{ background: "#f4f4f4a3" }}
-        className={`group h-full flex rounded-lg ${listView === "list" ? "flex-row" : "flex-col"
+        className={`group relative h-full flex rounded-lg ${listView === "list" ? "flex-row" : "flex-col"
           }`}
       >
+        <div className="absolute transition-all duration-300 z-[8] cursor-pointer bg-gray-100 hover:bg-gray-300 right-3 flex justify-center items-center rounded-full top-2">
+          <HeartIcon onClick={() => handleSaveItem(product.id)} className="p-1 h-8 w-8" />
+        </div>
         <div
           onClick={(e) => handleProductQuickView(e, product)}
           className={`aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7 bg-white overflow-hidden rounded-lg border border-[#c8c8c8] ${listView === "list" ? "" : "w-full flex-1"
@@ -90,7 +122,7 @@ export default function Grocery({ product, wrapper, lineClamp = 1, custom, listV
         >
           <div
             className={`relative flex h-full min-h-[6rem] w-full cursor-pointer overflow-hidden rounded-xl ${wrapper === 'slick' ? 'h-full' : (custom === 'height' ? `lg:h-[10rem]` : "lg:h-40")}
-	      ${listView === "list" ? " w-40" : ""}`
+	            ${listView === "list" ? " w-40" : ""}`
             }>
             <img
               className="peer absolute top-0 right-0 h-full w-full object-contain group-hover:opacity-75"

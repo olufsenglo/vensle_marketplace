@@ -9,7 +9,6 @@ import {
   SET_MESSAGE,
 } from "./types";
 
-import { emptyCart } from "actions/actions"
 import AuthService from "services/auth.service";
 
 const API_URL = "https://nominet.vensle.com/backend/api/v1/";
@@ -24,49 +23,49 @@ export const register =
     password,
     password_confirmation
   ) =>
-  (dispatch) => {
-    return AuthService.register(
-      name,
-      business_name,
-      email,
-      phone_number,
-      address,
-      password,
-      password_confirmation
-    ).then(
-      (response) => {
-        dispatch({
-          type: REGISTER_SUCCESS,
-        });
+    (dispatch) => {
+      return AuthService.register(
+        name,
+        business_name,
+        email,
+        phone_number,
+        address,
+        password,
+        password_confirmation
+      ).then(
+        (response) => {
+          dispatch({
+            type: REGISTER_SUCCESS,
+          });
 
-        dispatch({
-          type: SET_MESSAGE,
-          payload: {
-            type: "success",
-            message: "Registration successfull, you can now login",
-          },
-        });
+          dispatch({
+            type: SET_MESSAGE,
+            payload: {
+              type: "success",
+              message: "Registration successfull, you can now login",
+            },
+          });
 
-        return Promise.resolve();
-      },
-      (error) => {
-        const message = error.response.data.errors
-          ? error.response.data.errors
-          : { dispatchError: error.response.data.message };
+          return Promise.resolve();
+        },
+        (error) => {
+          const message = error.response.data.errors
+            ? error.response.data.errors
+            : { dispatchError: error.response.data.message };
 
-        dispatch({
-          type: REGISTER_FAIL,
-        });
+          dispatch({
+            type: REGISTER_FAIL,
+          });
 
-        dispatch({
-          type: SET_MESSAGE,
-          payload: { type: "error", message },
-        });
+          dispatch({
+            type: SET_MESSAGE,
+            payload: { type: "error", message },
+          });
 
-        return Promise.reject();
-      }
-    );
-  };
+          return Promise.reject();
+        }
+      );
+    };
 
 export const login = (email, password) => (dispatch) => {
   return AuthService.login(email, password).then(
@@ -77,7 +76,6 @@ export const login = (email, password) => (dispatch) => {
       });
 
       //Merge cart TODO:put in await
-
       //Merge cart items with cart items in database
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
       if (cart.length > 0) {
@@ -93,24 +91,25 @@ export const login = (email, password) => (dispatch) => {
         );
       }
 
-        // Fetch the cart items
-        axios
-          .get(`${API_URL}cart`, {
-            headers: {
-              Authorization: `Bearer ${data.token}`,
-            },
-          })
-          .then((cartResponse) => {
-		  console.log("cartrr",cartResponse)
-            if (cartResponse) {
-              const userCartItems = cartResponse.data;
-	      dispatch({ type: "REPLACE_CART", payload: userCartItems.cart });
-              localStorage.setItem("cart", JSON.stringify(userCartItems.cart));
-            }
-          })
-          .catch((error) => {
-            console.error("Cart fetch error:", error);
-          });
+      // TODO:no need for this since merge cart api returns cart items
+      // Fetch the cart items
+      axios
+        .get(`${API_URL}cart`, {
+          headers: {
+            Authorization: `Bearer ${data.token}`,
+          },
+        })
+        .then((cartResponse) => {
+          console.log("cartrr", cartResponse.data.cart)
+          if (cartResponse) {
+            const userCartItems = cartResponse.data.cart;
+            dispatch({ type: "REPLACE_CART", payload: userCartItems });
+            localStorage.setItem("cart", JSON.stringify(userCartItems));
+          }
+        })
+        .catch((error) => {
+          console.error("Cart fetch error:", error);
+        });
 
       dispatch({
         type: SET_MESSAGE,
@@ -153,16 +152,16 @@ export const updateUserProfile = (userData) => (dispatch, getState) => {
 //});
 
 export const logout = () => (dispatch) => {
-   localStorage.removeItem("cart");
-   dispatch({ type: 'EMPTY_CART' });
-   AuthService.logout();
+  localStorage.removeItem("cart");
+  dispatch({ type: 'EMPTY_CART' });
+  AuthService.logout();
 
-   dispatch({
-     type: LOGOUT,
-   });
-   dispatch({
-      type: SET_MESSAGE,
-      payload: { type: "success", message: "Logout sucessfull" },
-   });
-	
+  dispatch({
+    type: LOGOUT,
+  });
+  dispatch({
+    type: SET_MESSAGE,
+    payload: { type: "success", message: "Logout sucessfull" },
+  });
+
 };

@@ -21,9 +21,6 @@ import SignInRegisterModal from "./SignInRegisterModal";
 import logo from "assets/img/front/logo.PNG";
 import Search from "./Search";
 
-
-const baseURL = "https://nominet.vensle.com/backend";
-
 const Header = ({
   activePill,
   setActivePill
@@ -37,54 +34,13 @@ const Header = ({
   const storedCountryFlag = localStorage.getItem("countryFlag") || "";
 
   const [loginOpen, setLoginOpen] = useState(false);
-  const [resetToken, setResetToken] = useState("");
-  const [resetLink, setResetLink] = useState("");
 
   const [redirect, setRedirect] = useState("");
   const [driverRegister, setDriverRegister] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [loginError, setLoginError] = useState(false);
-  const [resetPasswordError, setResetPasswordError] = useState("");
-  const [registerError, setRegisterError] = useState("");
-
   const [activeTab, setActiveTab] = useState(1);
   const [showNavbar, setShowNavbar] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
-  const { isLoggedIn } = useSelector((state) => state.auth);
-  const { message } = useSelector((state) => state.message);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [registerFormData, setRegisterFormData] = useState({
-    name: "",
-    business_name: "",
-    email: "",
-    phone_number: "",
-    address: "",
-    password: "",
-    password_confirmation: "",
-  });
-
-  const [resetFormData, setResetFormData] = useState({
-    email: "",
-    new_password: "",
-    new_password_confirmation: "",
-  });
-
-  const [forgotFormData, setForgotFormData] = useState({
-    forgot_email: "",
-  });
-
-  const handleTabClick = (tabNumber) => {
-    setActiveTab(tabNumber);
-    dispatch({
-      type: "CLEAR_MESSAGE",
-    });
-  };
 
   const handleSignInClick = (e) => {
     setLoginOpen(true);
@@ -167,6 +123,8 @@ const Header = ({
         handleTopNavClick={handleTopNavClick}
         storedCountryFlag={storedCountryFlag}
         handleGetUserCountry={handleGetUserCountry}
+        driverRegister={driverRegister}
+        setDriverRegister={setDriverRegister}
       />
 
       <div>
@@ -195,7 +153,7 @@ const Header = ({
           </div>
         </div>
       </div>
-      <div style={headerWrapperStyle} className={`bg-white flex transition-all duration-300 mx-auto fixed z-10 w-full left-0 right-0 max-w-2xl pb-2 pt-2 md:pt-2 md:pb-4 lg:pt-2 lg:pb-2 lg:max-w-7xl lg:px-8 ${showNavbar ? 'top-0' : 'top-[-100%]'
+      <div style={headerWrapperStyle} className={`bg-white flex flex-col md:flex-row transition-all duration-300 mx-auto fixed z-10 w-full left-0 right-0 max-w-2xl pb-2 pt-2 md:pt-2 md:pb-4 lg:pt-2 lg:pb-2 lg:max-w-7xl lg:px-8 ${showNavbar ? 'top-0' : 'top-[-100%]'
         }`}>
         <Search />
         <div className="flex ml-[4%] gap-8">
@@ -220,6 +178,8 @@ const Header = ({
         loginOpen={loginOpen}
         setActiveTab={setActiveTab}
         activeTab={activeTab}
+        driverRegister={driverRegister}
+        setDriverRegister={setDriverRegister}
       />
 
     </div>

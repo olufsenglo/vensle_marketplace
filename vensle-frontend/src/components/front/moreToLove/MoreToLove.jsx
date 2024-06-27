@@ -80,11 +80,11 @@ const MoreToLove = () => {
               <button
                 type="submit"
                 onClick={() => setPerPage(perPage + 5)}
-		disabled={loading}
+                disabled={loading}
 
-              className="bg-transparent hover:border-transparent rounded border border-red-500 py-1 px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white uppercase"
+                className="bg-transparent hover:border-transparent rounded border border-red-500 py-[0.4rem] px-4  text-red-500 hover:bg-red-500 hover:text-white uppercase"
               >
-		{loading ? "Loading..." : "Show More"}
+                {loading ? "Loading..." : "Show More"}
               </button>
             </div>
           </>

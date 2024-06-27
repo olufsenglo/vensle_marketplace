@@ -1,6 +1,5 @@
 import axios from "axios";
 
-//const API_URL = "https://nominet.vensle.com/backend/api/v1/";
 const API_URL = "https://nominet.vensle.com/backend/api/v1/";
 
 const register = (
@@ -23,7 +22,7 @@ const register = (
   });
 };
 
-const login = (email, password) => {
+const login = async (email, password) => {
   return axios
     .post(API_URL + "login", {
       email,

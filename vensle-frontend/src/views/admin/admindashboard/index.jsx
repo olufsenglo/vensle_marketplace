@@ -15,8 +15,6 @@ import {
 } from 'recharts';
 import {
 	MdHome,
-	MdOutlineShoppingCart,
-	MdBarChart,
 	MdFileCopy,
 } from "react-icons/md";
 

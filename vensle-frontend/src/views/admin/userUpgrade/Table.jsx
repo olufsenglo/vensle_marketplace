@@ -26,8 +26,15 @@ const Table = ({ columns, data }) => {
         useRowSelect,
     )
 
+    const handleProductQuickView = (product) => {
+        setSelectedProduct(product)
+        setOpen(true);
+    }
+
     return (
         <div>
+
+            {selectedProduct && <PreviewPopup open={open} setOpen={setOpen} selectedProduct={selectedProduct} />}
 
             <table
                 cellpadding="10"
@@ -66,7 +73,8 @@ const Table = ({ columns, data }) => {
                                 {row.cells.map((cell) => {
                                     return (
                                         <td
-                                            className="py-4 text-[14px]" {...cell.getCellProps()}
+                                            onClick={() => handleProductQuickView(row.original)}
+                                            className="py-4 text-[14px] cursor-pointer" {...cell.getCellProps()}
                                         >
                                             {cell.render('Cell')}
                                         </td>

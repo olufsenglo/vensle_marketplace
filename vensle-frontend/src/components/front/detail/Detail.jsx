@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {  } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
+import axios from "axios";
 import moment from "moment";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -14,9 +16,6 @@ import {
   MapPinIcon,
   ChatBubbleBottomCenterTextIcon,
 } from "@heroicons/react/20/solid";
-import { useDispatch } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-import axios from "axios";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -41,8 +40,9 @@ const baseURL = "https://nominet.vensle.com/backend";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
+  const accessToken = useSelector((state) => state.auth?.user?.token);
+  const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
+  const { pathname } = useLocation();
   const { productId } = useParams();
 
   const [product, setProduct] = useState(null);
@@ -52,6 +52,7 @@ const ProductDetail = () => {
   const [imgIndex, setImgIndex] = useState(0);
   const [previewImage, setPreviewImage] = useState(null);
   const [showContact, setShowContact] = useState(false);
+  const [viewIncrease, setViewIncrease] = useState(false);
   const [breadProd, setBreadProd] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -74,13 +75,13 @@ const ProductDetail = () => {
       <a
         onClick={(e) => handleSetSelectedImagePath(e, thumbnail, index)}
         href="#"
-        className={`dark:border-transparent block overflow-hidden rounded-lg border-2 hover:border-red-300 dark:hover:border-blue-300 ${index == imgIndex ? "border-red-300" : "border-transparent"
+        className={`dark:border-transparent block overflow-hidden rounded-lg border hover:border-primaryColor dark:hover:border-primaryColor ${index == imgIndex ? "border-primaryColor" : "border-transparent"
           }`}
       >
         <img
           src={thumbnail}
           alt={product.name}
-          class="!object-contain lg:!h-20  lg:!w-20"
+          className="!object-contain lg:!h-20 lg:!w-20"
         />
       </a>
     );
@@ -107,6 +108,30 @@ const ProductDetail = () => {
     setOpen(true);
   };
 
+  const handleIncreaseView = async (id) => {
+    try {
+      //TODO: change to post request
+      const response = await axios.get(
+        `${baseURL}/api/v1/products/${id}/increase-views`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+      );
+    } catch (error) {
+      console.error("Error increasing product view", error);
+    }
+  };
+
+
+  const handleShowNumber = (id) => {
+    setShowContact(!showContact);
+    if (!viewIncrease) {
+      handleIncreaseView(id)
+    }
+    setViewIncrease(true)
+  };  
+
   const handleShowMessage = (e) => {
     e.preventDefault();
     setMessageOpen(true);
@@ -117,6 +142,9 @@ const ProductDetail = () => {
   };
   
   //TODO: Scroll to top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);  
   
   useEffect(() => {
     const fetchProduct = async () => {
@@ -138,7 +166,7 @@ const ProductDetail = () => {
             },
             {
               id: 2,
-              name: response.data.product.subcategory.name,
+              name: response.data.product?.subcategory?.name,
               href: "#"
             },
           ],
@@ -150,7 +178,7 @@ const ProductDetail = () => {
       } catch (error) {
         console.error("Error fetching product details:", error);
         //TODO: navigate only if product not
-        navigate("/");
+        //navigate("/");
         setLoading(false);
       }
     };
@@ -390,7 +418,7 @@ const ProductDetail = () => {
                 <button
                   onClick={() => handleAddToCart(product)}
                   style={{ fontSize: "0.8rem" }}
-                  className="bg-transparent hover:border-transparent mt-4 w-full rounded border border-red-500 py-3 px-2 font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+                  className="bg-transparent hover:border-transparent mt-4 w-full rounded border border-primaryColor py-3 px-2 font-semibold text-primaryColor hover:bg-primaryColor hover:text-white"
                 >
                   ADD TO CART
                 </button>
@@ -415,7 +443,7 @@ const ProductDetail = () => {
                         product.user.business_details.business_name
                       }
                     </h3>
-                    <h4 className="text-lg tracking-tight text-gray-400 sm:text-lg">
+                    <h4 className="text-lg underline capitalize tracking-tight text-gray-400 hover:text-gray-700 sm:text-lg">
                       {product.user.name}
                     </h4>
                   </div>
@@ -427,8 +455,8 @@ const ProductDetail = () => {
                 </p>
 
                 <span
-                  onClick={() => setShowContact(true)}
-                  className="mt-8 block w-full cursor-pointer rounded-md bg-red-600 px-3 py-3 text-center text-sm text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                  onClick={() => handleShowNumber(product.id)}
+                  className="mt-8 block w-full cursor-pointer rounded-md bg-primaryColor px-3 py-3 text-center text-sm text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
                 >
                   {showContact ? (
                     product.phone_number
@@ -441,7 +469,7 @@ const ProductDetail = () => {
                 <a
                   href="#"
                   onClick={(e) => handleShowFeedback(e)}
-                  className="mt-6 block w-full rounded-md border border-red-600 bg-white px-3 py-3 text-center text-sm text-red-600 shadow-sm hover:border-red-500 hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="mt-6 block w-full rounded-md border border-primaryColor bg-white px-3 py-3 text-center text-sm text-primaryColor shadow-sm hover:border-red-500 hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   <span className="flex items-center justify-center">
                     <ChatBubbleBottomCenterTextIcon className="mr-4 h-4 w-4" />{" "}
@@ -451,7 +479,7 @@ const ProductDetail = () => {
                 <a
                   href="#"
                   onClick={(e) => handleShowMessage(e)}
-                  className="mt-6 block w-full rounded-md px-3 py-3 text-center text-sm text-red-600 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="mt-6 block w-full rounded-md px-3 py-3 text-center text-sm text-primaryColor shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   SEND A MESSAGE
                 </a>

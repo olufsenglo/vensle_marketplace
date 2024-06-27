@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
 	MapPinIcon,
 	TruckIcon,
@@ -6,12 +8,17 @@ import {
 } from "@heroicons/react/20/solid";
 import {
 	HeartIcon,
+	MagnifyingGlassPlusIcon,
 } from '@heroicons/react/24/outline'
+import { SET_MESSAGE } from "actions/types";
 
 import two from "assets/img/front/temp/2.jpg"
 
 const SingleProduct = ({ numberOfProducts, type, image = two }) => {
+	const dispatch = useDispatch();
+	const [isHovered, setIsHovered] = useState(false);
 
+	//TODO: useEffect
 	let tagTextClassName = "text-sm"
 	let tagHeartClassName = "p-2 h-10 w-10"
 	let tagTypeImgClassName = "h-6 w-6 mr-2"
@@ -38,10 +45,30 @@ const SingleProduct = ({ numberOfProducts, type, image = two }) => {
 		buttonClassName = "md:py-[0.3rem] md:text-xs mt-3"
 	}
 
+	const handleSaveItem = () => {
+		dispatch({
+			type: SET_MESSAGE,
+			payload: { type: "success", message: "Item Saved successfully" },
+		});
+	}
+
+	const handleMouseEnter = () => {
+		setIsHovered(true);
+	};
+
+	const handleMouseLeave = () => {
+		setIsHovered(false);
+	};
+
 	return (
-		<div className="text-left cursor-pointer hover:bg-gray-100/50 rounded-md">
+		<div
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
+			className="text-left cursor-pointer hover:bg-gray-100/50 rounded-md"
+		>
+			{console.log('hey',isHovered)}
 			<div className="relative">
-				<div className="absolute left-0 top-3 left-3 flex items-center bg-white border rounded-md border-primaryColor py-[0.2rem] px-2">
+				<div className="absolute z-[1] left-0 top-3 left-3 flex items-center bg-white border rounded-md border-primaryColor py-[0.2rem] px-2">
 					{type === 'grocery'
 						? <TruckIcon className={`text-primaryColor ${tagTypeImgClassName}`} />
 						: (type == 'request'
@@ -57,14 +84,20 @@ const SingleProduct = ({ numberOfProducts, type, image = two }) => {
 								: 'Pickup')}
 					</p>
 				</div>
-				<div className={`absolute cursor-pointer bg-gray-100 hover:bg-gray-300 right-3 flex justify-center items-center rounded-full ${numberOfProducts === 7 ? "top-3" : "top-2"}`}>
-					<HeartIcon className={tagHeartClassName} />
+				<div className={`absolute z-[1] transition-all duration-300 cursor-pointer bg-gray-100 hover:bg-gray-300 right-3 flex justify-center items-center rounded-full ${numberOfProducts === 7 ? "top-3" : "top-2"}`}>
+					<HeartIcon onClick={handleSaveItem} className={tagHeartClassName} />
 				</div>
-				<img
-					src={image}
-					className={`w-full rounded object-cover ${imageClassName}`}
-					alt="product"
-				/>
+				<div className="relative overflow-hidden h-[170px] md:h-auto">
+					<div className={`absolute transition-all duration-300 cursor-zoom-in bg-gray-100 hover:bg-gray-300 right-3 flex justify-center items-center rounded-full ${
+						!isHovered ? "bottom-[-100%]" : "bottom-4"}`}>
+						<MagnifyingGlassPlusIcon onClick={handleSaveItem} className={tagHeartClassName} />
+					</div>
+					<img
+						src={image}
+						className={`w-full h-full rounded object-cover ${imageClassName}`}
+						alt="product"
+					/>
+				</div>
 			</div>
 			<div className="p-3">
 				<div>

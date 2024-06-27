@@ -48,7 +48,7 @@ const Banner = ({
 
       {/* Name and position */}
       <div className="mt-16 flex flex-col items-center">
-        <label style={{ cursor: "pointer" }} htmlFor="profile_image">
+        <label className="cursor-pointer" htmlFor="profile_image">
           <MdModeEditOutline />
         </label>
         <h4 className="text-xl font-bold text-navy-700 dark:text-white">

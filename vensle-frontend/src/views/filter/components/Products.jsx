@@ -13,7 +13,6 @@ import {
 
 import Product from "components/front/product/Product";
 import Grocery from "components/front/product/Grocery";
-import Pagination from "./Pagination";
 
 const product = {
   breadcrumbs: [
@@ -21,10 +20,6 @@ const product = {
     { id: 2, name: "Search", href: "#" },
   ],
 };
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const baseURL = "https://nominet.vensle.com/backend";
 const Products = () => {
@@ -110,11 +105,13 @@ const Products = () => {
   const handleClearFilters = (e) => {
     e.preventDefault();
 
+    setDistance(20); 
     setMinPrice("");
     setMaxPrice("");
     setType("");
     setSort("");
     setSelectedSizes([]);
+    setCurrentPage(1);
   };
 
   const fetchFilteredProducts = async () => {
@@ -227,7 +224,7 @@ const Products = () => {
           </Dialog>
         </Transition.Root>
 
-        <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+        <main className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:py-4 lg:px-8">
           <nav aria-label="Breadcrumb">
             <ol
               role="list"
@@ -267,7 +264,7 @@ const Products = () => {
             </ol>
           </nav>
 
-          <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-10">
+          <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-4">
             <p className="flex items-center">
               <span className="mr-6 text-gray-500">
                 {filteredProducts?.data?.length} Ad[s]
@@ -383,8 +380,9 @@ const Products = () => {
                   </div>
                 </div>
 
-                <h3 className="mb-2 flow-root text-xl">Size</h3>
 
+                {/* 
+                <h3 className="mb-2 flow-root text-xl">Size</h3>
                 <div className="border-b border-gray-200 pb-6">
                   <ul>
                     <li>
@@ -418,7 +416,7 @@ const Products = () => {
                       <span>Large</span>
                     </li>
                   </ul>
-                </div>
+                </div> */}
                 <br />
 
                 <div className="mt-4 flex items-center justify-between">
@@ -482,11 +480,10 @@ const Products = () => {
                     <h2 className="sr-only">Products</h2>
 
                     <div
-                      className={`grid ${
-                        listView === "grid"
+                      className={`grid ${listView === "grid"
                           ? "grid-cols-3 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4 "
                           : "grid-cols-1 gap-y-8"
-                      }`}
+                        }`}
                     >
                       {filteredProducts.data &&
                         filteredProducts.data.map((product) => (
@@ -507,26 +504,24 @@ const Products = () => {
           {/*<Pagination />*/}
 
           {/*Temp pagination*/}
-          {filteredProducts && filteredProducts.to > 1 && (
+          {filteredProducts && filteredProducts.last_page > 1 && (
             <div className="mt-4 flex justify-center">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`mr-2 rounded px-4 py-2 text-white ${
-                  currentPage === 1 ? "bg-red-300" : "bg-red-500"
-                }`}
+                className={`mr-2 rounded px-4 py-2 border ${currentPage === 1 ? "bg-gray-200 border-red-300" : "border-red-500"
+                  }`}
               >
-                Previous
+                &lt;
               </button>
               {[...Array(lastPage).keys()].map((page) => (
                 <button
                   key={page + 1}
                   onClick={() => handlePageChange(page + 1)}
-                  className={`mr-2 px-4 py-2 ${
-                    currentPage === page + 1
-                      ? "bg-red-500 text-white"
-                      : "bg-red-300"
-                  } rounded`}
+                  className={`mr-2 px-5 py-2 border ${currentPage === page + 1
+                      ? "text white border-red-500 bg-red-400"
+                      : "border-red-500"
+                    } rounded`}
                 >
                   {page + 1}
                 </button>
@@ -534,11 +529,10 @@ const Products = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === lastPage}
-                className={`rounded px-4 py-2 text-white ${
-                  currentPage === lastPage ? "bg-red-300" : "bg-red-500"
-                }`}
+                className={`rounded px-4 py-2 border ${currentPage === lastPage ? "bg-gray-200 border-red-300" : "border-red-500"
+                  }`}
               >
-                Next
+                &gt;
               </button>
             </div>
           )}

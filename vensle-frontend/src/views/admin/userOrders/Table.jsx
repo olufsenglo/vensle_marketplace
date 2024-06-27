@@ -85,7 +85,7 @@ const Table = ({ columns, data }) => {
 										<td
                                             className="py-4 text-[14px]" {...cell.getCellProps()}
 										>
-											<Link to={`/admin/order-items/${cell.row.original.id}`}>
+											<Link className="block" to={`/admin/order-items/${cell.row.original.id}`}>
 												{cell.render('Cell')}
 											</Link>
 										</td>

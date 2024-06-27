@@ -13,7 +13,7 @@ const ProductTypeMenu = ({
     return(
      <div className="flex justify-between items-center">
 	  {position === 'relative' &&
-	      <p>This is the latest deal shop around the world you can find shop with 40% off | {" "}
+	      <p className="hidden lg:block text-[15px]">The best deals you can find shop with 40% off | {" "}
 		  <span className="text-primaryColor hover:text-red-600 underline cursor-pointer">
 		      Apply now
 		  </span>
