@@ -41,7 +41,7 @@ const Header = ({
   const [activeTab, setActiveTab] = useState(1);
   const [showNavbar, setShowNavbar] = useState(false);
 
-
+ //TODO:localstate not props
   const handleSignInClick = (e) => {
     setLoginOpen(true);
     setActiveTab(1);
@@ -167,6 +167,17 @@ const Header = ({
           />
         </div>
       </div>
+
+<div className="bg-white fixed py-2 px-[4%] md:hidden z-10 w-full bottom-0 left-0 right-0">
+
+      <div className="flex justify-between mx-auto max-w-2xl lg:max-w-7xl lg:px-8">
+          <div>home</div>
+          <div>Saved Items</div>
+          <div>Upload product</div>
+          <div>Logout</div>
+          
+        </div>
+</div>
 
       <NavLinks
         storedCountryFlag={storedCountryFlag}

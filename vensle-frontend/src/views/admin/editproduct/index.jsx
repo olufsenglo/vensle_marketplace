@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Card from "components/card";
 import axios from "axios";
@@ -9,6 +9,7 @@ import { SET_MESSAGE } from "actions/types";
 import UploadPreview from "./components/UploadPreview";
 
 import currencySymbolMap from "currency-symbol-map";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 const baseURL = "https://nominet.vensle.com/backend";
 
@@ -452,6 +453,13 @@ const EditProduct = () => {
 
   return (
     <div className="flex w-full flex-col gap-5">
+      <Link
+        to="/admin/user-products"
+        className="mt-4 ml-4 inline-flex items-center cursor-pointer text-sm font-medium transition-all duration-300 ease-in-out hover:text-gray-700"
+      >
+        <ArrowLeftIcon className="h-4 w-4 mr-1" />
+        Back
+      </Link>
       {error && <div className="mt-8 ml-4 text-red-500">{error}</div>}
       {loading ? <p className="mt-8">Loading...</p> :
         <form

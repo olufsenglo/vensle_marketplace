@@ -26,7 +26,8 @@ import 'swiper/css/navigation';
 
 import { SET_MESSAGE } from "actions/types";
 
-import MessageForm from "components/front/message/MessageForm";
+import MessageForm from "components/front/message/MessageForm"; 
+import SignInRegisterModal from "../header/SignInRegisterModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -43,6 +44,9 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
   const [previewImage, setPreviewImage] = useState("");
   const [imgIndex, setImgIndex] = useState(0);
   const [showNumber, setShowNumber] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(1);
+  const [driverRegister, setDriverRegister] = useState(false);
 
   const [isLeftVisible, setLeftVisible] = useState(true);
 
@@ -87,6 +91,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
 
   const handleUnAuthMessage = (e) => {
     e.preventDefault();
+    setLoginOpen(true)
     dispatch({
       type: SET_MESSAGE,
       payload: { type: "success", message: "Please Login to send message" },
@@ -145,235 +150,246 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
   if (!selectedProduct) return <></>;
 
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={setOpen}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 hidden bg-gray-500 bg-opacity-75 transition-opacity md:block" />
-        </Transition.Child>
+    <>
+      <SignInRegisterModal
+        setLoginOpen={setLoginOpen}
+        loginOpen={loginOpen}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        driverRegister={driverRegister}
+        setDriverRegister={setDriverRegister}
+        redirect="/"
+      />    
+      <Transition.Root show={open} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={setOpen}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 hidden bg-gray-500 bg-opacity-75 transition-opacity md:block" />
+          </Transition.Child>
 
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-stretch justify-center text-center md:items-center md:px-2 lg:px-4">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
-              enterTo="opacity-100 translate-y-0 md:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 md:scale-100"
-              leaveTo="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
-            >
-              <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-6xl md:px-4 lg:max-w-7xl">
-                <div className="relative flex w-full items-center overflow-hidden rounded-3xl bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-1 lg:p-2">
-                  <button
-                    type="button"
-                    className="absolute right-4 top-4 z-10 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
-                    onClick={() => setOpen(false)}
-                  >
-                    <span className="sr-only">Close</span>
-                    <XMarkIcon className="h-8 w-8 rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300" aria-hidden="true" />
-                  </button>
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-stretch justify-center text-center md:items-center md:px-2 lg:px-4">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
+                enterTo="opacity-100 translate-y-0 md:scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 translate-y-0 md:scale-100"
+                leaveTo="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
+              >
+                <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-6xl md:px-4 lg:max-w-7xl">
+                  <div className="relative flex w-full items-center overflow-hidden rounded-3xl bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-1 lg:p-2">
+                    <button
+                      type="button"
+                      className="absolute right-4 top-4 z-10 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
+                      onClick={() => setOpen(false)}
+                    >
+                      <span className="sr-only">Close</span>
+                      <XMarkIcon className="h-8 w-8 rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300" aria-hidden="true" />
+                    </button>
 
-                  <div className="w-full bg-white">
-                    <div className="mx-auto max-w-7xl">
-                      <div className="mx-auto rounded-3xl lg:mx-0 lg:flex lg:max-w-none">
-                        <div className="w-full">
-                          <div className="">
-                            <div className="relative mb-4 border rounded-2xl m-2 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
-                              <span
-                                style={{ borderTopLeftRadius: "1rem", borderBottomLeftRadius: "1rem" }}
-                                className="absolute top-0 bottom-0 left-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
-                                onClick={handlePreviousPreviewImage}
-                              >
-                                <ChevronLeftIcon className="h-8 w-8" />
-                              </span>
-                              <img
-                                src={previewImage}
-                                alt=" /"
-                                className="w-full object-contain lg:h-full"
-                              />
-                              <span
-                                style={{ borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem" }}
-                                className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
-                                onClick={handleNextPreviewImage}
-                              >
-                                <ChevronRightIcon className="h-8 w-8" />
-                              </span>
-                            </div>
-
-
-                              <Swiper
-                                slidesPerView={8}
-                                spaceBetween={1}
-                                navigation={true}
-                                modules={[Navigation]}
-                                className="mySwiper mt-6"
-                              >
-                                {selectedProduct.images[0] &&
-                                  selectedProduct.images.map((image, index) => (
-                                    <SwiperSlide>
-                                      <div className="p-2">
-                                        {handleShowSelectedImage(image, index)}
-                                      </div>
-                                    </SwiperSlide>
-                                  ))}
-                              </Swiper>
-                          </div>
-                        </div>
-
-                        <div className="p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
-                          <div className="h-full rounded-2xl bg-gray-50 py-4 ring-1 ring-inset ring-gray-900/5">
-                            <div
-                              id="parent"
-                              className="flex h-full w-full overflow-hidden"
-                            >
-                              <div
-                                id="left"
-                                className={`flex h-full w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
-                                  ? "translate-x-0"
-                                  : "-translate-x-full"
-                                  }`}
-                              >
-                                <h3
-                                  style={{ fontWeight: "500" }}
-                                  className="mb-5 text-2xl line-clamp-2 tracking-tight"
+                    <div className="w-full bg-white">
+                      <div className="mx-auto max-w-7xl">
+                        <div className="mx-auto rounded-3xl lg:mx-0 lg:flex lg:max-w-none">
+                          <div className="w-full">
+                            <div className="">
+                              <div className="relative mb-4 border rounded-2xl m-2 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
+                                <span
+                                  style={{ borderTopLeftRadius: "1rem", borderBottomLeftRadius: "1rem" }}
+                                  className="absolute top-0 bottom-0 left-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
+                                  onClick={handlePreviousPreviewImage}
                                 >
-                                  {selectedProduct.name}
-                                </h3>
-                                <div className="flex items-center">
-                                  {selectedProduct.total_feedback > 0 ? (
-                                    <>
-                                      <div className="flex items-center">
-                                        {[0, 1, 2, 3, 4].map((rating) => (
-                                          <StarIcon
-                                            key={rating}
-                                            className={classNames(
-                                              selectedProduct.ratings > rating ? 'text-orange-900' : 'text-orange-200',
-                                              'mr-1 h-3 w-3 flex-shrink-0'
-                                            )}
-                                            aria-hidden="true"
-                                          />
-                                        ))}
-                                      </div>
-
-                                      <p className="text-sm leading-5">
-                                        <span className="mx-1">
-                                          {selectedProduct.ratings.toFixed(1)}
-                                        </span>{" "}
-                                        (
-                                        {selectedProduct &&
-                                          selectedProduct.total_feedback}{" "}
-                                        Feedback
-                                        {selectedProduct &&
-                                          selectedProduct.total_feedback > 1 &&
-                                          "s"}
-                                        )
-                                      </p>
-                                    </>)
-                                    :
-                                    (<p className="text-sm leading-5">No Feedback</p>)}
-                                </div>
-                                <h4 className="mt-3 mb-5 text-xl text-primaryColor">
-                                  {selectedProduct.currency}{" "}
-                                  {formatPrice(selectedProduct.price)}
-                                </h4>
-                                <h4 className="text-xl">Product Details</h4>
-
-                                <p className="mt-1 line-clamp-7 text-base leading-7">
-                                  {selectedProduct.description}
-                                </p>
-
-                                <p className="mt-5 flex items-center text-sm font-medium">
-                                  <MapPinIcon className="mr-2 h-4 w-4" />
-                                  {selectedProduct.city}
-                                </p>
-                                <p className="mt-3 flex items-center text-sm font-medium">
-                                  <ClockIcon className="mr-2 h-4 w-4" />
-                                  Posted{" "}
-                                  {moment(selectedProduct.created_at).format(
-                                    "Do MMM YYYY"
-                                  )}
-                                </p>
-
-{children}
-                                {from === "front" && <div className="mt-4 relative flex flex-1 items-end">
-                                  <Link
-                                    to={`/product-detail/${selectedProduct.id}`}
-                                    onClick={() => setOpen(false)}
-                                    className="block w-full rounded-md bg-primaryColor px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
-                                  >
-                                    MORE DETAILS
-                                  </Link>
-                                  {showNumber && <div className="absolute left-0 text-right right-0 bottom-[55px]">
-                                    <span className="border border-gray-400 py-1 px-2 rounded-md bg-white">
-                                      {showNumber && selectedProduct.phone_number}
-                                    </span>
-                                  </div>}
-                                  <a
-                                    href="#"
-                                    onClick={(e) => handleShowNumber(e, selectedProduct.id)}
-                                    className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
-                                  >
-                                    <PhoneIcon className="h-5 w-5" />
-                                  </a>
-                                  <a
-                                    href="#"
-                                    onClick={isAuthenticated ? toggleVisibility : handleUnAuthMessage}
-                                    className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
-                                  >
-                                    <ChatBubbleLeftRightIcon className="h-5 w-5" />
-                                  </a>
-                                </div>}
-
-                              </div>
-                              <div
-                                id="right"
-                                className={`flex w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
-                                  ? "translate-x-full"
-                                  : "-translate-x-full"
-                                  }`}
-                              >
-                                <h4 className="mt-3 mb-5 text-xl">
-                                  Send a message
-                                </h4>
-                                <p
-                                  className="flex cursor-pointer items-center"
-                                  onClick={() => setLeftVisible(!isLeftVisible)}
-                                >
-                                  <ArrowLeftIcon className="mr-2 h-4 w-4" />
-                                  Back
-                                </p>
-
-                                <MessageForm
-                                  receiverId={selectedProduct.user_id}
-                                  productId={selectedProduct.id}
-                                  type="sendMessageHomePage"
-                                  setLeftVisible={setLeftVisible}
+                                  <ChevronLeftIcon className="h-8 w-8" />
+                                </span>
+                                <img
+                                  src={previewImage}
+                                  alt=" /"
+                                  className="w-full object-contain lg:h-full"
                                 />
-
+                                <span
+                                  style={{ borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem" }}
+                                  className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
+                                  onClick={handleNextPreviewImage}
+                                >
+                                  <ChevronRightIcon className="h-8 w-8" />
+                                </span>
                               </div>
-                            </div>
 
-                            <div className="flex h-full flex-col pl-6 pr-8"></div>
+
+                                <Swiper
+                                  slidesPerView={8}
+                                  spaceBetween={1}
+                                  navigation={true}
+                                  modules={[Navigation]}
+                                  className="mySwiper mt-6"
+                                >
+                                  {selectedProduct.images[0] &&
+                                    selectedProduct.images.map((image, index) => (
+                                      <SwiperSlide>
+                                        <div className="p-2">
+                                          {handleShowSelectedImage(image, index)}
+                                        </div>
+                                      </SwiperSlide>
+                                    ))}
+                                </Swiper>
+                            </div>
+                          </div>
+
+                          <div className="p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
+                            <div className="h-full rounded-2xl bg-gray-50 py-4 ring-1 ring-inset ring-gray-900/5">
+                              <div
+                                id="parent"
+                                className="flex h-full w-full overflow-hidden"
+                              >
+                                <div
+                                  id="left"
+                                  className={`flex h-full w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
+                                    ? "translate-x-0"
+                                    : "-translate-x-full"
+                                    }`}
+                                >
+                                  <h3
+                                    style={{ fontWeight: "500" }}
+                                    className="mb-5 text-2xl line-clamp-2 tracking-tight"
+                                  >
+                                    {selectedProduct.name}
+                                  </h3>
+                                  <div className="flex items-center">
+                                    {selectedProduct.total_feedback > 0 ? (
+                                      <>
+                                        <div className="flex items-center">
+                                          {[0, 1, 2, 3, 4].map((rating) => (
+                                            <StarIcon
+                                              key={rating}
+                                              className={classNames(
+                                                selectedProduct.ratings > rating ? 'text-orange-900' : 'text-orange-200',
+                                                'mr-1 h-3 w-3 flex-shrink-0'
+                                              )}
+                                              aria-hidden="true"
+                                            />
+                                          ))}
+                                        </div>
+
+                                        <p className="text-sm leading-5">
+                                          <span className="mx-1">
+                                            {selectedProduct.ratings.toFixed(1)}
+                                          </span>{" "}
+                                          (
+                                          {selectedProduct &&
+                                            selectedProduct.total_feedback}{" "}
+                                          Feedback
+                                          {selectedProduct &&
+                                            selectedProduct.total_feedback > 1 &&
+                                            "s"}
+                                          )
+                                        </p>
+                                      </>)
+                                      :
+                                      (<p className="text-sm leading-5">No Feedback</p>)}
+                                  </div>
+                                  <h4 className="mt-3 mb-5 text-xl text-primaryColor">
+                                    {selectedProduct.currency}{" "}
+                                    {formatPrice(selectedProduct.price)}
+                                  </h4>
+                                  <h4 className="text-xl">Product Details</h4>
+
+                                  <p className="mt-1 line-clamp-7 text-base leading-7">
+                                    {selectedProduct.description}
+                                  </p>
+
+                                  <p className="mt-5 flex items-center text-sm font-medium">
+                                    <MapPinIcon className="mr-2 h-4 w-4" />
+                                    {selectedProduct.city}
+                                  </p>
+                                  <p className="mt-3 flex items-center text-sm font-medium">
+                                    <ClockIcon className="mr-2 h-4 w-4" />
+                                    Posted{" "}
+                                    {moment(selectedProduct.created_at).format(
+                                      "Do MMM YYYY"
+                                    )}
+                                  </p>
+
+  {children}
+                                  {from === "front" && <div className="mt-4 relative flex flex-1 items-end">
+                                    <Link
+                                      to={`/product-detail/${selectedProduct.id}`}
+                                      onClick={() => setOpen(false)}
+                                      className="block w-full rounded-md bg-primaryColor px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
+                                    >
+                                      MORE DETAILS
+                                    </Link>
+                                    {showNumber && <div className="absolute left-0 text-right right-0 bottom-[55px]">
+                                      <span className="border border-gray-400 py-1 px-2 rounded-md bg-white">
+                                        {showNumber && selectedProduct.phone_number}
+                                      </span>
+                                    </div>}
+                                    <a
+                                      href="#"
+                                      onClick={(e) => handleShowNumber(e, selectedProduct.id)}
+                                      className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
+                                    >
+                                      <PhoneIcon className="h-5 w-5" />
+                                    </a>
+                                    <a
+                                      href="#"
+                                      onClick={isAuthenticated ? toggleVisibility : handleUnAuthMessage}
+                                      className="ml-3 block rounded-md border border-red-500 px-3 py-3 text-center text-sm font-semibold text-red-500 shadow-sm hover:bg-red-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
+                                    >
+                                      <ChatBubbleLeftRightIcon className="h-5 w-5" />
+                                    </a>
+                                  </div>}
+
+                                </div>
+                                <div
+                                  id="right"
+                                  className={`flex w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
+                                    ? "translate-x-full"
+                                    : "-translate-x-full"
+                                    }`}
+                                >
+                                  <h4 className="mt-3 mb-5 text-xl">
+                                    Send a message
+                                  </h4>
+                                  <p
+                                    className="flex cursor-pointer items-center"
+                                    onClick={() => setLeftVisible(!isLeftVisible)}
+                                  >
+                                    <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                                    Back
+                                  </p>
+
+                                  <MessageForm
+                                    receiverId={selectedProduct.user_id}
+                                    productId={selectedProduct.id}
+                                    type="sendMessageHomePage"
+                                    setLeftVisible={setLeftVisible}
+                                  />
+
+                                </div>
+                              </div>
+
+                              <div className="flex h-full flex-col pl-6 pr-8"></div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
           </div>
-        </div>
-      </Dialog>
-    </Transition.Root>
+        </Dialog>
+      </Transition.Root>
+    </>
   );
 };
 

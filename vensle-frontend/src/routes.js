@@ -12,6 +12,7 @@ import UserProducts from "views/admin/userProducts";
 import Transactions from "views/admin/transactions";
 import Reviews from "views/admin/reviews";
 import UploadProduct from "views/admin/uploadproduct";
+import Analytics from "views/admin/analytics";
 import Products from "views/admin/products";
 
 // Icon Imports
@@ -69,6 +70,13 @@ const routes = [
     path: "messages",
     icon: <ChatBubbleLeftRightIcon className="h-6 w-6" />,
     component: <Chats />,
+  },
+  {
+    name: "Analytics",
+    layout: "/admin",
+    path: "analytics",
+    icon: <MdPerson className="h-6 w-6" />,
+    component: <Analytics />,
   },
   {
     name: "Profile",

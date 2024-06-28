@@ -1,23 +1,28 @@
 import { Fragment, useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import {
-  Dialog,
-  Transition,
+	Dialog,
+	Transition,
 } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
-  ArrowLeftIcon,
+	XMarkIcon,
+	EyeIcon,
+	EyeSlashIcon,
+} from "@heroicons/react/24/outline";
+import {
+	ArrowLeftIcon,
 } from "@heroicons/react/20/solid";
 
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { login, register, logout } from "actions/auth";
 import {
-  fetchCartItems,
+	fetchCartItems,
 } from "actions/actions";
+import { login, register, logout } from "actions/auth";
 
 import { SET_MESSAGE } from "actions/types";
+import ButtonLoading from "components/Loading/ButtonLoading";
 
 
 const baseURL = "https://nominet.vensle.com/backend";
@@ -29,8 +34,13 @@ const SignInRegisterModal = ({
     activeTab,
 	driverRegister,
 	setDriverRegister,
+	redirect="",
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const paramRedirect = queryParams.get("redirect");
 
   const dispatch = useDispatch();
   const storedCountry = localStorage.getItem("userCountry") || "Unknown";
@@ -38,9 +48,10 @@ const SignInRegisterModal = ({
   const [resetToken, setResetToken] = useState("");
   const [resetLink, setResetLink] = useState("");
 
-  const [redirect, setRedirect] = useState("");
-
   const [loading, setLoading] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showRegisterPasswordConfirm, setShowRegisterPasswordConfirm] = useState(false);
   const [facebookLoading, setFacebookLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
@@ -82,22 +93,6 @@ const SignInRegisterModal = ({
     });
   };
 
-  const handleSignInClick = (e) => {
-    setLoginOpen(true);
-    setActiveTab(1);
-  };
-
-  const handleRegisterClick = (e) => {
-    setLoginOpen(true);
-    setActiveTab(2);
-  };
-
-  const handleTopNavClick = (e, name) => {
-    if (name === "Logout") {
-      e.preventDefault();
-      dispatch(logout());
-    }
-  };
 
   const handleGetUserCountry = () => {
     if (storedCountry == "UK") return <>United Kingdom</>;
@@ -137,27 +132,6 @@ const SignInRegisterModal = ({
     });
   };
 
-  const handleUploadClick = (e) => {
-    e.preventDefault();
-    setRedirect("?redirect=modal");
-    setActiveTab(1);
-    setLoginOpen(true);
-
-    dispatch({
-      type: SET_MESSAGE,
-      payload: {
-        type: "success",
-        message: "Please sign in to upload a product",
-      },
-    });
-  };
-
-  const handleRegisterDriverClick = (e) => {
-    e.preventDefault();
-    setDriverRegister(true);
-    setActiveTab(2);
-    setLoginOpen(true);
-  };
 
   const handleShowLoginForm = (e) => {
     e.preventDefault();
@@ -396,15 +370,19 @@ const SignInRegisterModal = ({
     e.preventDefault();
     setLoading(true);
     //if (loginError == '')
+	//TODO: use paramRedirect insead of /admin/upload-product?redirect=modal
     dispatch(login(formData.email, formData.password))
       .then(() => {
-        if (redirect) {
-          navigate("/admin/upload-product?redirect=modal");
-        } else {
+        if(redirect) {
+          navigate(redirect);
+        } else if(paramRedirect) {
+			navigate(paramRedirect);
+		} else {
           navigate("/admin/default");
         }
 
         //window.location.reload();
+		setLoginOpen(false)
       })
       .catch((error) => {
         console.log(error);
@@ -461,7 +439,7 @@ const SignInRegisterModal = ({
 			      onClick={() => setLoginOpen(false)}
 			    >
 			      <span className="sr-only">Close</span>
-			      <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+				  <XMarkIcon className="h-8 w-8 rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300" aria-hidden="true" />
 			    </button>
 
 			    <div className="w-full">
@@ -476,7 +454,7 @@ const SignInRegisterModal = ({
 				    <div className="mt-4">
 				      <h6
 					onClick={handleShowLoginForm}
-					className="mb-4 inline-flex items-center cursor-pointer text-sm font-medium transition-all duration-300 ease-in-out hover:text-gray-600"
+					className="mb-4 inline-flex items-center cursor-pointer text-sm font-medium transition-all duration-300 ease-in-out hover:text-gray-700"
 				      >
 					<ArrowLeftIcon className="h-4 w-4 mr-1" />
 					Back
@@ -497,37 +475,33 @@ const SignInRegisterModal = ({
 					</p>
 				      )}
 
-				      {resetPasswordError && (
-					<p className="mb-4" style={{ color: "red" }}>
-					  {resetPasswordError}
-					</p>
-				      )}
+				      
 
 				      {!resetToken ? (
-					<>
-					  {!successMessage && !resetLink && (
-					    <div>
-					      <label
-						htmlFor="email"
-						className="block text-sm font-medium leading-6 text-gray-900"
-					      >
-						Email address
-					      </label>
-					      <div className="mt-2">
-						<input
-						  id="forgot_email"
-						  name="forgot_email"
-						  type="email"
-						  value={forgotFormData.forgot_email}
-						  onChange={handleForgotInputChange}
-						  className="block px-3 py-1.5 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-						/>
-					      </div>
-					    </div>
-					  )}
-					</>
-				      ) : (
-					<>
+						<>
+						{!successMessage && !resetLink && (
+							<div>
+							<label
+							htmlFor="email"
+							className="block text-sm font-medium leading-6 text-gray-900"
+							>
+							Email address
+							</label>
+							<div className="mt-2">
+							<input
+							id="forgot_email"
+							name="forgot_email"
+							type="email"
+							value={forgotFormData.forgot_email}
+							onChange={handleForgotInputChange}
+							className="mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400"
+							/>
+							</div>
+							</div>
+						)}
+						</>
+						) : (
+						<>
 
 					  <div>
 					    <label
@@ -543,9 +517,16 @@ const SignInRegisterModal = ({
 						type="password"
 						value={resetFormData.new_password}
 						onChange={handleResetInputChange}
-						className="block px-3 py-1.5 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
+							resetPasswordError && "border-red-400"
+						}`}
 					      />
 					    </div>
+						{resetPasswordError && (
+						<p style={{color: "red", fontSize: "13px", }} className="mt-1">
+					  		{resetPasswordError}
+						</p>
+				      )}
 					  </div>
 
 					  <div>
@@ -557,14 +538,14 @@ const SignInRegisterModal = ({
 					    </label>
 					    <div className="mt-2">
 					      <input
-						id="new_password_confirmation"
-						name="new_password_confirmation"
-						type="password"
-						value={
-						  resetFormData.new_password_confirmation
-						}
-						onChange={handleResetInputChange}
-						className="block px-3 py-1.5 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							id="new_password_confirmation"
+							name="new_password_confirmation"
+							type="password"
+							value={
+							resetFormData.new_password_confirmation
+							}
+							onChange={handleResetInputChange}
+							className="mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400"
 					      />
 					    </div>
 					  </div>
@@ -578,14 +559,15 @@ const SignInRegisterModal = ({
 					  <button
 					    type="submit"
 					    disabled={loading ? true : false}
-					    className="mx-2 flex w-full transform items-center justify-center rounded-lg bg-red-500 px-6 py-2 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none"
-					  >
-					    {loading ? (
-					      <span>Loading...</span>
-					    ) : (
-					      <span>Reset Password</span>
-					    )}
-					  </button>
+					  	className={`mx-2 uppercase flex w-full transform items-center justify-center rounded-[4px] bg-primaryColor px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none ${
+						      loading
+							? "cursor-not-allowed bg-red-400"
+							: ""
+						    }`}
+						  >
+							{loading && <ButtonLoading />}
+						    Reset Password
+						  </button>
 					</div>
 				      )}
 				    </div>
@@ -633,9 +615,10 @@ const SignInRegisterModal = ({
 					      >
 						{message?.message?.dispatchError && (
 						  <p
+							className="mb-1 mt-1"
 						    style={{
 						      color: "red",
-						      marginTop: "16px",
+						      fontSize: "13px",
 						    }}
 						  >
 						    {message.message.dispatchError}
@@ -657,11 +640,12 @@ const SignInRegisterModal = ({
 						      autoComplete="email"
 						      value={formData.email}
 						      onChange={handleInputChange}
-						      className={`block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
+
+							  className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
 							message &&
 							message?.message?.email
-							  ? "border border-red-400"
-							  : "border-0"
+							  ? "border-red-400"
+							  : ""
 						      }`}
 						    />
 						  </div>
@@ -669,14 +653,7 @@ const SignInRegisterModal = ({
 						    message?.message?.email &&
 						    message.message.email.map(
 						      (error, index) => (
-							<p
-							  style={{
-							    color: "red",
-							    fontSize: "13px",
-							  }}
-							>
-							  {error}
-							</p>
+								<p style={{color: "red", fontSize: "13px", }}>{error}</p>
 						      )
 						    )}
 						</div>
@@ -693,27 +670,36 @@ const SignInRegisterModal = ({
 						      <a
 							onClick={handleShowResetForm}
 							href="#"
-							className="text-red-500 hover:text-red-600"
+							className="text-primaryColor hover:underline hover:text-red-600"
 						      >
 							Forgot password?
 						      </a>
 						    </div>
 						  </div>
-						  <div className="mt-2">
+						  <div className="mt-2 relative">
 						    <input
 						      id="password"
 						      name="password"
-						      type="password"
+						      type={showLoginPassword ? "text" : "password"}
 						      autoComplete="current-password"
 						      value={formData.password}
 						      onChange={handleInputChange}
-						      className={`block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-							message &&
-							message?.message?.password
-							  ? "border border-red-400"
-							  : "border-0"
-						      }`}
+							  className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
+								message &&
+								message?.message?.password
+								  ? "border-red-400"
+								  : ""
+								  }`}
 						    />
+							{/*TODO: put in component*/}
+							{formData.password && <EyeIcon
+								onClick={()=>setShowLoginPassword(!showLoginPassword)}
+								className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300 absolute top-2 right-2"
+							/>}
+							{formData.password && showLoginPassword && <EyeSlashIcon
+								onClick={()=>setShowLoginPassword(!showLoginPassword)}
+								className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300 absolute top-2 right-2"
+							/>}
 						  </div>
 						  {message &&
 						    message?.message?.password &&
@@ -735,17 +721,14 @@ const SignInRegisterModal = ({
 						  <button
 						    type="submit"
 						    disabled={loading ? true : false}
-						    className={`mx-2 flex w-full transform items-center justify-center rounded-lg bg-red-500 px-6 py-2 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none ${
+						    className={`mx-2 uppercase flex w-full transform items-center justify-center rounded-[4px] bg-primaryColor px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none ${
 						      loading
 							? "cursor-not-allowed bg-red-400"
 							: ""
 						    }`}
 						  >
-						    {loading ? (
-						      <span>Loading...</span>
-						    ) : (
-						      <span>Login</span>
-						    )}
+							{loading && <ButtonLoading />}
+						    SIGN IN
 						  </button>
 						</div>
 
@@ -767,32 +750,35 @@ const SignInRegisterModal = ({
 						    disable={googleLoading}
 						    onClick={handleGoogleLogin}
 						    href="#"
-						    className="mx-2 flex w-full transform items-center justify-center rounded-lg bg-red-500 px-6 py-2 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none"
+							className={`mx-2 uppercase flex w-full transform items-center justify-center rounded-[4px] bg-primaryColor px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none ${
+								loading
+							  ? "cursor-not-allowed bg-red-400"
+							  : ""
+							  }`}
 						  >
-						    {googleLoading
-						      ? "Loading..."
-						      : "Sign in with Google"}
+							  {googleLoading && <ButtonLoading />}
+							  Sign in with Google
 						  </button>
 
 						  <button
 						    onClick={handleFacebookLogin}
 						    disabled={facebookLoading}
 						    type="button"
-						    className="mx-2 transform rounded-lg bg-red-200 p-2 text-sm font-medium text-gray-900 transition-colors duration-300 hover:bg-red-100"
+						    className="mx-2 transform rounded-[4px] px-2 py-3 text-sm font-medium text-gray-900 transition-colors duration-300 hover:bg-red-100"
 						  >
 						    <span>
-						      {facebookLoading ? (
-							"Loading"
-						      ) : (
-							<svg
-							  className="fill-current mx-2 h-5 w-5"
-							  fill="currentColor"
-							  style={{ color: "#1877f2" }}
-							  viewBox="0 0 24 24"
-							>
-							  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-							</svg>
-						      )}
+							  {facebookLoading ? (
+								<ButtonLoading />
+								) : (
+								<svg
+								className="fill-current mx-2 h-5 w-5"
+								fill="currentColor"
+								style={{ color: "#1877f2" }}
+								viewBox="0 0 24 24"
+								>
+								<path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+								</svg>
+								)}
 						    </span>
 						  </button>
 						</div>
@@ -859,14 +845,14 @@ const SignInRegisterModal = ({
 						      autoComplete="name"
 						      value={registerFormData.name}
 						      onChange={
-							handleRegisterInputChange
-						      }
-						      className={`block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-							message &&
-							message?.message?.name
-							  ? "border border-red-400"
-							  : "border-0"
-						      }`}
+								handleRegisterInputChange
+								}
+								className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
+								message &&
+								message?.message?.name
+								? "border-red-400"
+								: ""
+								}`}
 						    />
 						  </div>
 
@@ -905,12 +891,12 @@ const SignInRegisterModal = ({
 						      onChange={
 							handleRegisterInputChange
 						      }
-						      className={`block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-							message &&
-							message?.message?.business_name
-							  ? "border border-red-400"
-							  : "border-0"
-						      }`}
+							  className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
+								message &&
+								message?.message?.business_name
+								? "border-red-400"
+								: ""
+								}`}
 						    />
 						  </div>
 
@@ -947,12 +933,12 @@ const SignInRegisterModal = ({
 						      onChange={
 							handleRegisterInputChange
 						      }
-						      className={`block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-							message &&
-							message?.message?.email
-							  ? "border border-red-400"
-							  : "border-0"
-						      }`}
+							  className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
+								message &&
+								message?.message?.email
+								? "border-red-400"
+								: ""
+								}`}
 						    />
 						  </div>
 
@@ -991,12 +977,12 @@ const SignInRegisterModal = ({
 						      onChange={
 							handleRegisterInputChange
 						      }
-						      className={`block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-							message &&
-							message?.message?.phone_number
-							  ? "border border-red-400"
-							  : "border-0"
-						      }`}
+							  className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
+								message &&
+								message?.message?.phone_number
+								? "border-red-400"
+								: ""
+								}`}
 						    />
 						  </div>
 
@@ -1031,14 +1017,14 @@ const SignInRegisterModal = ({
 						      autoComplete="address"
 						      value={registerFormData.address}
 						      onChange={
-							handleRegisterInputChange
-						      }
-						      className={`block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-							message &&
-							message?.message?.address
-							  ? "border border-red-400"
-							  : "border-0"
-						      }`}
+								handleRegisterInputChange
+								}
+							  className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
+								message &&
+								message?.message?.address
+								? "border-red-400"
+								: ""
+								}`}
 						    />
 						  </div>
 
@@ -1065,23 +1051,32 @@ const SignInRegisterModal = ({
 						  >
 						    Password
 						  </label>
-						  <div className="mt-2">
+						  <div className="mt-2 relative">
 						    <input
 						      id="password"
 						      name="password"
-						      type="password"
+						      type={showRegisterPassword ? "text" : "password"}
 						      autoComplete="password"
 						      value={registerFormData.password}
 						      onChange={
-							handleRegisterInputChange
+								handleRegisterInputChange
 						      }
-						      className={`block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-							message &&
-							message?.message?.password
-							  ? "border border-red-400"
-							  : "border-0"
-						      }`}
+							  className={`mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400 ${
+								message &&
+								message?.message?.password
+								? "border-red-400"
+								: ""
+								}`}
 						    />
+								{/*TODO: put in component*/}
+								{registerFormData.password && <EyeIcon
+								onClick={()=>setShowRegisterPassword(!showRegisterPassword)}
+								className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300 absolute top-2 right-2"
+							/>}
+							{registerFormData.password && showRegisterPassword && <EyeSlashIcon
+								onClick={()=>setShowRegisterPassword(!showRegisterPassword)}
+								className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300 absolute top-2 right-2"
+							/>}
 						  </div>
 
 						  {message &&
@@ -1107,33 +1102,43 @@ const SignInRegisterModal = ({
 						  >
 						    Password Again
 						  </label>
-						  <div className="mt-2">
+						  <div className="mt-2 relative">
 						    <input
 						      id="password_confirmation"
 						      name="password_confirmation"
-						      type="password"
+						      type={showRegisterPasswordConfirm ? "text" : "password"}
 						      value={
-							registerFormData.password_confirmation
-						      }
+								registerFormData.password_confirmation
+								}
 						      onChange={
-							handleRegisterInputChange
-						      }
-						      className="block w-full rounded-md px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+								handleRegisterInputChange
+								}
+							  className="mt-1 block w-full border rounded border-gray-200 py-[12px] px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-1 focus:ring-blue-400"
 						    />
+							{/*TODO: put in component*/}
+							{registerFormData.password_confirmation && <EyeIcon
+								onClick={()=>setShowRegisterPasswordConfirm(!showRegisterPasswordConfirm)}
+								className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300 absolute top-2 right-2"
+							/>}
+							{registerFormData.password_confirmation && showRegisterPasswordConfirm && <EyeSlashIcon
+								onClick={()=>setShowRegisterPasswordConfirm(!showRegisterPasswordConfirm)}
+								className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300 absolute top-2 right-2"
+							/>}
 						  </div>
 						</div>
 
 						<div class="-mx-2 mt-6 flex items-center">
 						  <button
 						    type="submit"
-						    class="mx-2 flex w-full transform items-center justify-center rounded-lg bg-red-500 px-6 py-2 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none"
+						  className={`mx-2 uppercase flex w-full transform items-center justify-center rounded-[4px] bg-primaryColor px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none ${
+						      loading
+							? "cursor-not-allowed bg-red-400"
+							: ""
+						    }`}
 						  >
-						    {loading ? (
-						      <span>Loading...</span>
-						    ) : (
-						      <span>Register</span>
-						    )}
-						  </button>
+							{loading && <ButtonLoading />}
+						    Register
+						  </button>						  
 						</div>
 
 						<div class="mt-4 flex items-center justify-between">
@@ -1147,38 +1152,41 @@ const SignInRegisterModal = ({
 						</div>
 
 						<div class="-mx-2 mt-6 flex items-center">
-						  <button
+						<button
 						    disable={googleLoading}
 						    onClick={handleGoogleLogin}
 						    href="#"
-						    className="mx-2 flex w-full transform items-center justify-center rounded-lg bg-red-500 px-6 py-2 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none"
+							className={`mx-2 uppercase flex w-full transform items-center justify-center rounded-[4px] bg-primaryColor px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-red-400 focus:bg-red-400 focus:outline-none ${
+								loading
+							  ? "cursor-not-allowed bg-red-400"
+							  : ""
+							  }`}
 						  >
-						    {googleLoading
-						      ? "Loading..."
-						      : "Register with Google"}
+							  {googleLoading && <ButtonLoading />}
+							  Sign in with Google
 						  </button>
-
 						  <button
 						    onClick={handleFacebookLogin}
 						    disabled={facebookLoading}
 						    type="button"
-						    className="mx-2 transform rounded-lg bg-red-200 p-2 text-sm font-medium text-gray-900 transition-colors duration-300 hover:bg-red-100"
+						    className="mx-2 transform rounded-[4px] px-2 py-3 text-sm font-medium text-gray-900 transition-colors duration-300 hover:bg-red-100"
 						  >
 						    <span>
-						      {facebookLoading ? (
-							"Loading"
-						      ) : (
-							<svg
-							  className="fill-current mx-2 h-5 w-5"
-							  fill="currentColor"
-							  style={{ color: "#1877f2" }}
-							  viewBox="0 0 24 24"
-							>
-							  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-							</svg>
-						      )}
+							  {facebookLoading ? (
+								<ButtonLoading />
+								) : (
+								<svg
+								className="fill-current mx-2 h-5 w-5"
+								fill="currentColor"
+								style={{ color: "#1877f2" }}
+								viewBox="0 0 24 24"
+								>
+								<path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+								</svg>
+								)}
 						    </span>
 						  </button>
+						  
 						</div>
 					      </form>
 					    </div>

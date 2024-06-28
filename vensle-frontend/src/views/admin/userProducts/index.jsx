@@ -6,8 +6,11 @@ import moment from "moment";
 
 import Table from './Table'
 import PreviewPopup from "components/front/previewPopup/PreviewPopup";
+import { MdModeEditOutline, MdDelete } from "react-icons/md";
+import CardMenu from "components/card/CardMenu";
+import CustomDialog from "./CustomDialog";
 
-const columnsData = [
+const columnsData = (setDeleteOpen, setSelectedProductId) => [
 	{
 		Header: "img",
 		accessor: "order_number",
@@ -45,7 +48,45 @@ const columnsData = [
 			return <StatusRow props={props} />
 		}
 	},
+	{
+		Header: " . ",
+		Cell: (props) => {
+			return <ActionRow props={props} setSelectedProductId={setSelectedProductId} setDeleteOpen={setDeleteOpen} />
+		}
+	},
 ]
+
+const handleActionClick = (event) => {
+	event.stopPropagation();
+	console.log('Child clicked');
+};
+
+const ActionRow = ({ props, setSelectedProductId, setDeleteOpen }) => {
+	const handleDelete = (id) => {
+		setSelectedProductId(id)
+		setDeleteOpen(true)
+	}
+
+	return (
+		<span onClick={handleActionClick} className="capitalize">
+			<CardMenu>
+				<Link to={`/admin/edit-product?id=${props.row.original.id}`} className="block hover:text-black mt-2 flex cursor-Linkointer items-center gap-2 pt-1 text-gray-600 hover:font-medium">
+					<span>
+						<MdModeEditOutline />
+					</span>
+					Edit
+				</Link>
+				<p
+					onClick={() => handleDelete(props.row.original.id)}
+					className="hover:text-black mt-2 flex cursor-pointer items-center gap-2 pt-1 text-gray-600 hover:font-medium"
+				>
+					<MdDelete />
+					Delete
+				</p>
+			</CardMenu>
+		</span>
+	)
+}
 
 const getDisplayImage = (image) => {
 	const name = image ? image.name : "";
@@ -81,11 +122,16 @@ const StatusRow = ({ props }) => {
 	)
 }
 
+
 const baseURL = "https://nominet.vensle.com/backend";
 
 const UserProducts = () => {
+	const [deleteLoading, setDeleteLoading] = useState(false);
+	const [deleteOpen, setDeleteOpen] = useState(false)
+	const [selectedProductId, setSelectedProductId] = useState(null)
+	const [selectedProduct, setSelectedProduct] = useState(null)
 	const navigate = useNavigate();
-	const columns = useMemo(() => columnsData, []);
+	const columns = useMemo(() => columnsData(setDeleteOpen, setSelectedProductId), []);
 	const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
 	const accessToken = useSelector((state) => state?.auth?.user?.token);
 
@@ -94,11 +140,11 @@ const UserProducts = () => {
 	const [products, setProducts] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [open, setOpen] = useState(false)
-	const [selectedProduct, setSelectedProduct] = useState(null)
 
 	const [selectedTypeOption, setSelectedTypeOption] = useState('');
 	const [selectedCategoryOption, setSelectedCategoryOption] = useState('');
 	const [selectedStatusOption, setSelectedStatusOption] = useState('');
+
 
 
 	const handleProductQuickView = (e, product) => {
@@ -138,7 +184,7 @@ const UserProducts = () => {
 		} else {
 			handleFetchProductByCategory(type)
 		}
-	};	
+	};
 
 	const handleStatusChange = (e) => {
 		const status = e.target.value
@@ -206,7 +252,7 @@ const UserProducts = () => {
 			console.error("Error fetching users:", error);
 			setLoading(false)
 		}
-	}	
+	}
 
 	const handleFetchProductByStatus = async (productType) => {
 		try {
@@ -234,7 +280,7 @@ const UserProducts = () => {
 			console.error("Error fetching users:", error);
 			setLoading(false)
 		}
-	}	
+	}
 
 
 	const handleFetchCategory = async (productType) => {
@@ -247,7 +293,7 @@ const UserProducts = () => {
 			console.error("Error fetching users:", error);
 			setLoadingCatogeries(false)
 		}
-	}	
+	}
 
 	const fetchProducts = async () => {
 		setLoading(true)
@@ -275,6 +321,31 @@ const UserProducts = () => {
 		}
 	};
 
+	const handlePopupDelete = (e) => {
+		e.preventDefault()
+		setSelectedProductId(selectedProduct.id)
+		setDeleteOpen(true)
+	}	
+
+	const deleteProduct = async (id) => {
+		console.log('id', id)
+		setDeleteLoading(true)
+		try {
+			const response = await axios.delete(`${baseURL}/api/v1/products/${id}`, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+
+			console.log('starrrrrt', response)
+			setDeleteLoading(false)
+			setDeleteOpen(false)
+		} catch (error) {
+			console.error("Error fetching users:", error);
+			setDeleteLoading(false)
+		}
+	};
+
 	useEffect(() => {
 		fetchProducts();
 		handleFetchCategory();
@@ -283,13 +354,29 @@ const UserProducts = () => {
 	return (
 		<div className="bg-white">
 
+			{deleteOpen && <CustomDialog
+				deleteProduct={deleteProduct}
+				deleteOpen={deleteOpen}
+				setDeleteOpen={setDeleteOpen}
+				deleteLoading={deleteLoading}
+				selectedProductId={selectedProductId}
+			/>}
+
 			{selectedProduct &&
 				<PreviewPopup open={open} setOpen={setOpen} from="userProducts" selectedProduct={selectedProduct}>
-					<div className="mt-4">
+					<div className="mt-4 flex items-end flex-1 gap-4">
+						<button
+							onClick={handlePopupDelete}
+							className="block flex justify-center items-center w-full rounded-md bg-white px-3 py-3 text-center text-sm font-semibold text-primaryColor border border-primaryColor shadow-sm hover:bg-primaryColor hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
+						>
+							<MdDelete className="mr-1 h-4 w-4" />
+							DELETE PRODUCT
+						</button>
 						<Link
 							to={`/admin/edit-product?id=${selectedProduct.id}`}
-							className="block w-full rounded-md bg-primaryColor px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
+							className="block flex justify-center items-center w-full rounded-md bg-primaryColor px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor"
 						>
+							<MdModeEditOutline className="mr-1" />
 							EDIT
 						</Link>
 					</div>
@@ -312,7 +399,7 @@ const UserProducts = () => {
 							</select>
 						</div>
 						<div className="w-full flex items-center">
-							<p className="mr-2 text-nowrap" style={{textWrap: 'nowrap'}}>Sort by:</p>
+							<p className="mr-2 text-nowrap" style={{ textWrap: 'nowrap' }}>Sort by:</p>
 							<select
 								value={selectedCategoryOption}
 								onChange={handleCategoryChange}

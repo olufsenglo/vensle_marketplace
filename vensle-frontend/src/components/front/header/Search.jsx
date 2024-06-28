@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import debounce from 'lodash.debounce';
 import MyComponent from "./MyComponent";
 
 const baseURL = "https://nominet.vensle.com/backend";
@@ -35,6 +37,12 @@ const Search = ({ position = 'sticky' }) => {
   const [categories, setCategories] = useState("");
   const [distance, setDistance] = useState(20);
   const [userCountry, setUserCountry] = useState(storedCountry);
+  const [previousSearchTerm, setPreviousSearchTerm] = useState(storedCountry);
+  const [previousSearchResult, setPreviousSearchResult] = useState(storedCountry);
+
+  const [address, setAddress] = useState('');
+  const [center, setCenter] = useState({ lat: userLocation.lat, lng: userLocation.lng });
+  const [map, setMap] = React.useState(null)
 
   const [zoom, setZoom] = useState(10);
 
@@ -43,7 +51,7 @@ const Search = ({ position = 'sticky' }) => {
     setDistance(newDistance);
 
     let newZoom;
-    if (newDistance *1000 <= 10000) {
+    if (newDistance * 1000 <= 10000) {
       newZoom = 12; // Adjust as needed
     } else if (newDistance <= 20000) {
       newZoom = 10; // Adjust as needed
@@ -63,6 +71,7 @@ const Search = ({ position = 'sticky' }) => {
     const value = e.target.value;
     setSearchTerm(value);
     setLoading(false);
+
     try {
       setLoading(true);
       //TODO: temp distance
@@ -78,7 +87,26 @@ const Search = ({ position = 'sticky' }) => {
       });
 
       const fetchedSuggestions = response.data.data; // Use the 'data' property
-      setSuggestions(fetchedSuggestions);
+
+
+      if (fetchedSuggestions.length > 0) {
+        console.log('use new');
+        console.log('curent sugReslt to be prv', suggestions);
+        console.log('search term', value);
+        console.log('next rslt', fetchedSuggestions);
+        setPreviousSearchResult(fetchedSuggestions)
+        setPreviousSearchTerm(value)
+        setSuggestions(fetchedSuggestions);
+      } else {
+        console.log('use old');
+        console.log('leave as is', previousSearchResult);
+        console.log('no input use old', previousSearchTerm);
+
+        setSuggestions(previousSearchResult)
+      }
+
+
+
       setSelectedSuggestionIndex(-1);
       setLoading(false);
     } catch (error) {
@@ -117,7 +145,7 @@ const Search = ({ position = 'sticky' }) => {
     setSelectedCategory(category);
   };
 
-  
+
   const setLocationRef = useRef(null);
   useEffect(() => {
     // Function to handle clicks outside the div
@@ -202,6 +230,39 @@ const Search = ({ position = 'sticky' }) => {
     };
   }, []);
 
+
+  const fetchGeocode = async (address) => {
+    try {
+      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
+        params: {
+          address,
+          key: 'AIzaSyBYcfW7ae2_1VSTj_F4V3opH_fD8YCADSk'
+        }
+      });
+
+      const results = response.data.results;
+
+      if (results && results.length > 0) {
+        const { lat, lng } = results[0].geometry.location;
+        setCenter({ lat, lng });
+        map.panTo({ lat, lng });
+      } else {
+        console.error('No results found');
+      }
+
+    } catch (error) {
+      console.error('Error fetching geocode:', error);
+    }
+  };
+
+  const debouncedFetchGeocode = useCallback(debounce(fetchGeocode, 300), []);
+
+  const handleAddressChange = (e) => {
+    const newAddress = e.target.value;
+    setAddress(newAddress);
+    debouncedFetchGeocode(newAddress);
+  };
+
   return (
     <form
       style={{ zIndex: "2" }}
@@ -235,36 +296,50 @@ const Search = ({ position = 'sticky' }) => {
         </select>
       }
 
-{/*place in component*/}
-{showDropdown && (
-  <ul ref={setLocationRef} className="w-full z-[11] p-3 top-[2.8rem] suggestions-list absolute right-0 left-0 mt-1 border bg-white">
-    {loading && <li className="absolute inset-0 w-full flex justify-center items-center bg-white/50 text-center">Loading...</li>}
-    <p className="text-gray-400 text-sm">Location</p>
-    <input
-      type="text"
-      placeholder="Search Location"
-      className="py-2 px-3 mt-2 w-full text-[15px] border border-gray-200 rounded-sm"
-    />
-    <select
-      className="w-full border border-gray-200 rounded-sm flex items-center text-[15px] justify-center gap-x-2.5 p-3 mt-2 text-gray-400 hover:bg-gray-100"
-      value={distance}
-      onChange={handleDistanceChange}
-    >
-      <option selected value={20}>Radius</option>
-      <option value={10}>10 km</option>
-      <option value={20}>20 km</option>
-      <option value={30}>30 km</option>
-    </select>
-    <div className="bg-gray-200 mt-4 w-full h-[15rem] flex justify-center items-center">
-      <MyComponent lat={userLocation.lat} lng={userLocation.lng} distance={distance} zoom={zoom} />
-    </div>
-    <div className="flex justify-end">
-      <button onClick={handleChangeDistanceWithMap} className="bg-primaryColor mt-4 py-[0.5rem] px-12 rounded-md text-white uppercase hover:bg-red-500">
-        Apply
-      </button>
-    </div>
-  </ul>
-)}
+      {/*place in component*/}
+      {showDropdown && (
+        <ul ref={setLocationRef} className="w-full z-[11] p-3 top-[2.8rem] suggestions-list absolute right-0 left-0 mt-1 border bg-white">
+          {loading && <li className="absolute inset-0 w-full flex justify-center items-center bg-white/50 text-center">Loading...</li>}
+          <p className="text-gray-400 text-sm">Location</p>
+          <input
+            type="text"
+            value={address}
+            onChange={handleAddressChange}
+            className="py-2 px-3 mt-2 w-full text-[15px] border border-gray-200 rounded-sm"
+            placeholder="Search Location"
+          />
+          <select
+            className="w-full border border-gray-200 rounded-sm flex items-center text-[15px] justify-center gap-x-2.5 p-3 mt-2 text-gray-400 hover:bg-gray-100"
+            value={distance}
+            onChange={handleDistanceChange}
+          >
+            <option selected value={20}>Radius</option>
+            <option value={10}>10 km</option>
+            <option value={20}>20 km</option>
+            <option value={30}>30 km</option>
+          </select>
+          <div>
+
+
+          </div>
+          <div className="bg-gray-200 mt-4 w-full h-[15rem] flex justify-center items-center">
+            <MyComponent
+              lat={userLocation.lat}
+              lng={userLocation.lng}
+              distance={distance}
+              zoom={zoom}
+              center={center}
+              setMap={setMap}
+              map={map}
+            />
+          </div>
+          <div className="flex justify-end">
+            <button onClick={handleChangeDistanceWithMap} className="bg-primaryColor mt-4 py-[0.5rem] px-12 rounded-md text-white uppercase hover:bg-red-500">
+              Apply
+            </button>
+          </div>
+        </ul>
+      )}
       <input
         className={`h-full flex-1 border ${position === 'relative' ? "border-r-0 lg:border-l-0  pl-[20px]" : "pl-4"
           }`}
@@ -272,11 +347,13 @@ const Search = ({ position = 'sticky' }) => {
         value={searchTerm}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
-
         placeholder="Search products, brands and categories"
         ref={inputRef}
       />
-
+      
+      {searchTerm && <span onClick={() => setSearchTerm("")} className="z-[2] absolute right-28">
+        <XMarkIcon className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300" aria-hidden="true" />
+      </span>}
 
       {searchTerm && suggestions.length > 0 && (
         <ul

@@ -21,6 +21,10 @@ const OrderItems = () => {
   const [orderDetails, setOrderDetails] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const getImagePath = (name) => {
+		return `${baseURL}/uploads/${name}`;
+	};
+
   useEffect(() => {
     const fetchOrder = async () => {
       try {
@@ -74,38 +78,32 @@ const OrderItems = () => {
                       Delivered (2)
                     </span>
                     <h5 className="text-xs mt-4 text-gray-700">
-                      October 23rd, 2023 at 02:34pm
+                      {orderDetails.created_at} | October 23rd, 2023 at 02:34pm
                     </h5>
                   </div>
                   <div className="p-4">
-                    <div className="flex gap-4 mb-6">
-                      <div className="px-3 rounded-sm h-[3.5rem] bg-gray-200">Img</div>
-                      <div>
-                        <div className="flex justify-between">
-                          <p>Women New Style Dresses Fashion</p>
-                          <p>$124.00 x 1</p>
-                          <p>$124.00</p>
+                    {orderDetails.items?.length > 0 && orderDetails.items.map((order) =>
+                      <div className="flex gap-4 mb-6">
+                        <div className="rounded-sm h-[3.5rem] w-[3rem] bg-gray-200">
+                          <img
+                            className="w-full h-full object-cover"
+                            src={getImagePath(order.product.displayimage?.name)}
+                            alt="order display"
+                          />
                         </div>
-                        <div className="mt-5">
-                          <p className="text-gray-700 text-sm mb-2">Product Details</p>
-                          <p className="w-[70%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="px-3 rounded-sm h-[3.5rem] bg-gray-200">Img</div>
-                      <div>
-                        <div className="flex justify-between">
-                          <p>Women New Style Dresses Fashion</p>
-                          <p>$124.00 x 1</p>
-                          <p>$124.00</p>
-                        </div>
-                        <div className="mt-5">
-                          <p className="text-gray-700 text-sm mb-2">Product Details</p>
-                          <p className="w-[70%]">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        <div className="flex-1">
+                          <div className="flex justify-between">
+                            <p>{order.name}</p>
+                            <p>$124.00 x 1 | {order.price} x {order.quantity}</p>
+                            <p>$124.00 | {order.price * order.quantity}</p>
+                          </div>
+                          <div className="mt-5">
+                            <p className="text-gray-700 text-sm mb-2">Product Details</p>
+                            <p className="w-[70%]">{order.description}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </Card>
 
@@ -122,38 +120,31 @@ const OrderItems = () => {
                     <div className="flex mb-3 justify-between">
                       <p>Subtotal</p>
                       <p className="text-gray-700">2 items</p>
-                      <p>$0.00</p>
+                      <p>${orderDetails.sub_total} | 0.00</p>
                     </div>
                     <div className="flex mb-3 justify-between">
                       <p>Shipping fee</p>
-                      <p>$23.30</p>
+                      <p>${orderDetails.shipping_fee}</p>
                     </div>
                     <div className="flex mb-3 text-lg font-medium justify-between">
                       <p>Total</p>
-                      <p>$0.00</p>
+                      <p>${orderDetails.total_price}</p>
                     </div>
                   </div>
                 </Card>
                 <Card extra={"w-full p-4 mt-4 h-full"}>
                   <div className="p-4">
-                    <div className="mb-2">
-                      <h5 className="text-xs mt-4 ml-5 mb-3 text-gray-700">
-                        October 23rd, 2023 at 02:34pm
-                      </h5>
-                      <p className="flex items-center">
-                        <span className="block w-2 h-2 bg-black rounded-full mr-3"></span>
-                        Order has been marked as "received" from customer
-                      </p>
-                    </div>
-                    <div className="mb-2">
-                      <h5 className="text-xs mt-4 ml-5 mb-3 text-gray-700">
-                        October 23rd, 2023 at 02:34pm
-                      </h5>
-                      <p className="flex items-center">
-                        <span className="block w-2 h-2 bg-black rounded-full mr-3"></span>
-                        Order has been marked as "received" from customer
-                      </p>
-                    </div>
+                    {orderDetails.ordertrails?.length > 0 && orderDetails.ordertrails.map((trail) =>
+                      <div key={trail.id} className="mb-2">
+                        <h5 className="text-xs mt-4 ml-5 mb-3 text-gray-700">
+                          October 23rd, 2023 at 02:34pm | {trail.created_at}
+                        </h5>
+                        <p className="flex items-center">
+                          <span className="block w-2 h-2 bg-black rounded-full mr-3"></span>
+                          {trail.name}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </Card>
               </div>
@@ -173,14 +164,14 @@ const OrderItems = () => {
                       <h5 className="text-xs text-gray-700">
                         Customer Name
                       </h5>
-                      <p>Matilda Gray</p>
+                      <p>{orderDetails.user?.name}</p>
                     </div>
                     <div className="mt-4">
                       <h5 className="text-xs text-gray-700">
                         Contact Information
                       </h5>
-                      <p> +441 435 670 670</p>
-                      <p>matildagray@gmail.com</p>
+                      <p>{orderDetails.user?.phone_number}</p>
+                      <p>{orderDetails.user?.email}</p>
                     </div>
                     <div className="mt-4">
                       <h5 className="text-xs text-gray-700">

@@ -17,7 +17,7 @@ const Storage = () => {
           Your Reputation
         </h4>
         <p className="px-5 text-center text-base font-normal text-gray-600 md:!px-0 xl:!px-8">
-          Your seem to be a legit seller, keep it up
+          Maintaining a good reputation is key.The more reports you get, the lower your products will rank
         </p>
       </div>
 

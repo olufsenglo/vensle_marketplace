@@ -319,14 +319,14 @@ const Tables = () => {
                 className="absolute z-[2] cursor-pointer bottom-0 left-0 right-0 rounded-lg pt-4 text-sm text-white"
                 onClick={(e) => handleSetMainImageIndex(e, index)}
               >
-                <span className="block p-1 w-full text-center">Set as Display</span>
+                <span className="block p-1 w-full text-center hover:underline">Set as Display</span>
               </h3>
             ) : (
               <h3
                 style={containerStyle}
                 className="absolute bottom-0 left-0 right-0 cursor-pointer rounded-lg pt-4 text-center text-sm text-white"
               >
-                <span className="block p-1 w-full text-center">Display</span>
+                <span className="block p-1 w-full text-center hover:underline">Display</span>
               </h3>
             )}
           </div>

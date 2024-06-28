@@ -13,24 +13,13 @@ import {
   Legend,
 } from 'recharts';
 import {
-  StarIcon,
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/20/solid'
-import {
-  MdHome,
-  MdOutlineShoppingCart,
-  MdBarChart,
-  MdFileCopy,
-} from "react-icons/md";
 
 import Table from './Table'
 import AdminAnalytic from './AdminAnalytic'
 import CustomDialog from './CustomDialog'
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 const productSales = [
   {

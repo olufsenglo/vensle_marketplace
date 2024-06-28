@@ -69,6 +69,9 @@ const UserProfile = () => {
       <Header />
 
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
+        <h2 className="pr-3 mb-6 text-center text-xl md:text-xl font-semibold tracking-tight text-gray-900">
+          Saved Items
+        </h2>
         <div className="grid min-h-[30rem] grid-cols-1">
           <div className="">
             {savedProducts.length ?

@@ -132,9 +132,6 @@ const Dashboard = () => {
 
 	const percentage = 66;
 
-
-
-
 	function formatPrice(price) {
 		return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
 			minimumFractionDigits: 2

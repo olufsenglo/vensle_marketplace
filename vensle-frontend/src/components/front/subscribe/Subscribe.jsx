@@ -25,7 +25,7 @@ const Subscribe = () => {
   };
 
   return (
-    <div style={{ background: "#9e9e9e" }} className="relative">
+    <div className="relative bg-primaryColor">
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         <div className="mx-auto items-center lg:mx-0 lg:flex lg:max-w-none">
           <div className="text-white lg:mt-0 lg:w-full lg:max-w-xs lg:flex-shrink-0 lg:pr-8">
@@ -53,16 +53,11 @@ const Subscribe = () => {
                 />
                 <button
                   style={{
-                    right: "0",
-                    top: "0",
-                    background: "#ff5959",
-                    bottom: "0",
                     margin: "2px",
-                    zIndex: "1",
                     borderTopRightRadius: "0.275rem",
                     borderBottomRightRadius: "0.275rem",
                   }}
-                  className="absolute px-8"
+                  className="absolute text-primaryColor bg-white z-[1] top-0 bottom-0 right-0 px-8"
                   type="submit"
                 >
                   SUBSCRIBE
