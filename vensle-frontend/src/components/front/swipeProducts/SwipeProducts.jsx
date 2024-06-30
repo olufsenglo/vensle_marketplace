@@ -33,12 +33,12 @@ const SwipeProducts = ({ title, type, image }) => {
 				{title && <SectionTitle>{title}</SectionTitle>}
 				<Swiper
 					slidesPerView={2}
-					spaceBetween={15}
+					spaceBetween={8}
 					navigation={true}
 					breakpoints={{
 						640: {
 							slidesPerView: 2,
-							spaceBetween: 15,
+							spaceBetween: 8,
 						},
 						768: {
 							slidesPerView: 4,
@@ -84,12 +84,12 @@ const SwipeProducts = ({ title, type, image }) => {
 			<div className="overflow-hidden">
 				<Swiper
 					slidesPerView={2}
-					spaceBetween={15}
+					spaceBetween={8}
 					navigation={true}
 					breakpoints={{
 						640: {
 							slidesPerView: 2,
-							spaceBetween: 15,
+							spaceBetween: 8,
 						},
 						768: {
 							slidesPerView: 4,
@@ -101,7 +101,7 @@ const SwipeProducts = ({ title, type, image }) => {
 						},
 					}}
 					modules={[Navigation]}
-					className="mySwiper mt-6 !w-[110%]"
+					className="mySwiper mt-2 !w-[110%]"
 				>
 					<SwiperSlide>
 						<SingleProduct type="request" numberOfProducts={7} image={img8} />

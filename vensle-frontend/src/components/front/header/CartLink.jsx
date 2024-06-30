@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import {
+	ShoppingCartIcon,
+} from '@heroicons/react/24/outline'
 
 import CartDrawer from "./CartDrawer";
 import cart from "assets/img/front/cart.PNG";
 
-const CartLink = () => {
+const CartLink = ({ visible }) => {
   const cartItems = useSelector((state) => state.cart.items);
 
   const [open, setOpen] = useState(false);
@@ -33,7 +36,7 @@ const CartLink = () => {
     <>
       <div
         onClick={() => setOpen(true)}
-        className="min-w-auto relative ml-0 flex cursor-pointer items-center justify-end md:ml-1 lg:ml-[20px] lg:min-w-[5.1rem]"
+        className="min-w-auto ml-0 flex relative cursor-pointer items-center justify-end md:ml-1 lg:ml-[20px] lg:min-w-[5.1rem]"
       >
         {totalItems > 0 && (
           <span
@@ -43,7 +46,7 @@ const CartLink = () => {
             {totalItems}
           </span>
         )}
-        <img src={cart} className="mt-0" alt="cart" />
+	<ShoppingCartIcon className="w-[28px] h-[28px]" />
         <div className="justify-space-between mt-0 flex hidden h-full flex-col text-right lg:ml-[1px] lg:block">
           <p style={{ fontSize: "12px", fontWeight: "bold" }}>
             Your cart

@@ -5,6 +5,10 @@ import { useLocation } from "react-router-dom";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import debounce from 'lodash.debounce';
+import {
+  ArrowLeftIcon,
+} from "@heroicons/react/20/solid";
+
 import MyComponent from "./MyComponent";
 
 const baseURL = "https://nominet.vensle.com/backend";
@@ -52,11 +56,11 @@ const Search = ({ position = 'sticky' }) => {
 
     let newZoom;
     if (newDistance * 1000 <= 10000) {
-      newZoom = 12; // Adjust as needed
+      newZoom = 12;
     } else if (newDistance <= 20000) {
-      newZoom = 10; // Adjust as needed
+      newZoom = 10;
     } else {
-      newZoom = 8; // Adjust as needed
+      newZoom = 8;
     }
     setZoom(newZoom);
 
@@ -86,22 +90,14 @@ const Search = ({ position = 'sticky' }) => {
         },
       });
 
-      const fetchedSuggestions = response.data.data; // Use the 'data' property
+      const fetchedSuggestions = response.data.data;
 
 
       if (fetchedSuggestions.length > 0) {
-        console.log('use new');
-        console.log('curent sugReslt to be prv', suggestions);
-        console.log('search term', value);
-        console.log('next rslt', fetchedSuggestions);
         setPreviousSearchResult(fetchedSuggestions)
         setPreviousSearchTerm(value)
         setSuggestions(fetchedSuggestions);
       } else {
-        console.log('use old');
-        console.log('leave as is', previousSearchResult);
-        console.log('no input use old', previousSearchTerm);
-
         setSuggestions(previousSearchResult)
       }
 
@@ -266,7 +262,7 @@ const Search = ({ position = 'sticky' }) => {
   return (
     <form
       style={{ zIndex: "2" }}
-      className={`relative mt-4 mb-0 flex h-10 w-auto items-center md:h-[51px] md:px-0 lg:mt-0 lg:flex-1 ${position === 'relative' && "mx-6 lg:mx-[2%]"
+      className={`relative mb-0 flex h-10 w-auto items-center md:h-[51px] md:px-0 lg:flex-1 ${position === 'relative' ? "mt-4 lg:mt-0 lg:mx-[2%]" : "mt-0"
         }`}
       onSubmit={handleSearchButtonClick}
     >
@@ -298,50 +294,62 @@ const Search = ({ position = 'sticky' }) => {
 
       {/*place in component*/}
       {showDropdown && (
-        <ul ref={setLocationRef} className="w-full z-[11] p-3 top-[2.8rem] suggestions-list absolute right-0 left-0 mt-1 border bg-white">
-          {loading && <li className="absolute inset-0 w-full flex justify-center items-center bg-white/50 text-center">Loading...</li>}
-          <p className="text-gray-400 text-sm">Location</p>
-          <input
-            type="text"
-            value={address}
-            onChange={handleAddressChange}
-            className="py-2 px-3 mt-2 w-full text-[15px] border border-gray-200 rounded-sm"
-            placeholder="Search Location"
-          />
-          <select
-            className="w-full border border-gray-200 rounded-sm flex items-center text-[15px] justify-center gap-x-2.5 p-3 mt-2 text-gray-400 hover:bg-gray-100"
-            value={distance}
-            onChange={handleDistanceChange}
-          >
-            <option selected value={20}>Radius</option>
-            <option value={10}>10 km</option>
-            <option value={20}>20 km</option>
-            <option value={30}>30 km</option>
-          </select>
-          <div>
+        <ul ref={setLocationRef} className={`w-full z-[11] suggestions-list right-0 left-0 mt-1 bg-white ${
+	    position === 'sticky' ? "fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto py-3 px-6" : "absolute p-3 top-[2.8rem] border border-t-0"
+	}`}>
+	      <div>
+		  {loading && <li className="absolute inset-0 w-full flex justify-center items-center bg-white/50 text-center">Loading...</li>}
+
+	      {position === "sticky" && <div
+		className="mb-4 lg:hidden inline-flex items-center cursor-pointer text-sm font-medium transition-all duration-300 ease-in-out hover:text-gray-700"
+	      >
+		<ArrowLeftIcon className="h-4 w-4 mr-1" />
+		Back
+	      </div>}
+
+		  <p className="text-gray-400 text-xs lg:text-sm">Location</p>
+		  <input
+		    type="text"
+		    value={address}
+		    onChange={handleAddressChange}
+		    className="py-2 px-3 mt-1 w-full text-[15px] border border-gray-200 rounded-sm"
+		    placeholder="Search Location"
+		  />
+		  <select
+		    className="w-full border border-gray-200 rounded-sm flex items-center text-[15px] justify-center gap-x-2.5 p-3 mt-2 text-gray-400 hover:bg-gray-100"
+		    value={distance}
+		    onChange={handleDistanceChange}
+		  >
+		    <option selected value={20}>Radius</option>
+		    <option value={10}>10 km</option>
+		    <option value={20}>20 km</option>
+		    <option value={30}>30 km</option>
+		  </select>
+		  <div>
 
 
-          </div>
-          <div className="bg-gray-200 mt-4 w-full h-[15rem] flex justify-center items-center">
-            <MyComponent
-              lat={userLocation.lat}
-              lng={userLocation.lng}
-              distance={distance}
-              zoom={zoom}
-              center={center}
-              setMap={setMap}
-              map={map}
-            />
-          </div>
-          <div className="flex justify-end">
-            <button onClick={handleChangeDistanceWithMap} className="bg-primaryColor mt-4 py-[0.5rem] px-12 rounded-md text-white uppercase hover:bg-red-500">
-              Apply
-            </button>
-          </div>
+		  </div>
+		  <div className="bg-gray-200 mt-4 w-full h-[15rem] flex justify-center items-center">
+		    <MyComponent
+		      lat={userLocation.lat}
+		      lng={userLocation.lng}
+		      distance={distance}
+		      zoom={zoom}
+		      center={center}
+		      setMap={setMap}
+		      map={map}
+		    />
+		  </div>
+		  <div className="flex justify-end">
+		    <button onClick={handleChangeDistanceWithMap} className="bg-primaryColor mt-4 py-[0.5rem] px-12 rounded-md text-white uppercase hover:bg-red-500">
+		      Apply
+		    </button>
+		  </div>
+	      </div>
         </ul>
       )}
       <input
-        className={`h-full flex-1 border ${position === 'relative' ? "border-r-0 lg:border-l-0  pl-[20px]" : "pl-4"
+        className={`h-[32px] md:h-full text-[13px] md:text-base flex-1 border ${position === 'relative' ? "border-r-0 lg:border-l-0  pl-[20px]" : "pl-4"
           }`}
         type="text"
         value={searchTerm}
@@ -351,60 +359,76 @@ const Search = ({ position = 'sticky' }) => {
         ref={inputRef}
       />
       
-      {searchTerm && <span onClick={() => setSearchTerm("")} className="z-[2] absolute right-28">
+      {searchTerm && <span onClick={() => setSearchTerm("")} className={`z-[2] absolute ${
+	position === "sticky" ? "right-[10px]" : "right-[40px] lg:right-28"
+      }`}>
         <XMarkIcon className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300" aria-hidden="true" />
       </span>}
 
       {searchTerm && suggestions.length > 0 && (
         <ul
-          className="w-full top-[2.8rem] suggestions-list absolute right-0 left-0 z-10 mt-1 border bg-white"
+          className={`w-full suggestions-list right-0 left-0 z-10 mt-1 border border-t-0 bg-white ${
+	    position === 'sticky' ? "py-3 fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[2.8rem] border border-t-0"
+	  }`}
         >
-          <div className="text-right mr-6 mt-2" >
-            <span
-              onClick={() => setShowDropdown(true)}
-              className="text-sm underline text-primaryColor cursor-pointer"
-            >
-              Update Location
-            </span>
-          </div>
+
+	      <div>
+		  <div className={`${
+			position === 'sticky' ? "mr-2 flex justify-between lg:block lg:text-right":"mt-2 text-right mr-6"
+		  }`}>
+		      {position === "sticky" && <div
+			className="mb-4 lg:hidden inline-flex items-center cursor-pointer text-sm font-medium transition-all duration-300 ease-in-out hover:text-gray-700"
+		      >
+			<ArrowLeftIcon className="h-4 w-4 mr-1" />
+			Back
+		      </div>}
+		    <span
+		      onClick={() => setShowDropdown(true)}
+		      className="text-sm underline text-primaryColor cursor-pointer"
+		    >
+		      Update Location
+		    </span>
+		  </div>
 
 
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              onClick={() => handleSelectSuggestion(suggestion)}
-              className={`cursor-pointer p-2 md:p-4 ${selectedSuggestionIndex === index ? "bg-gray-200" : ""
-                } hover:bg-gray-200`}
-            >
-              {suggestion.name}
-            </li>
-          ))}
-          <li className="grid grid-cols-2 gap-4 divide-x divide-gray-900/5 bg-gray-50 py-4 px-8 lg:hidden">
-            <select
-              style={{ fontSize: "14px" }}
-              className="flex items-center justify-center gap-x-2.5 p-3 text-gray-900 hover:bg-gray-100"
-              value={distance}
-              onChange={handleDistanceChange}
-            >
-              <option value={10}>10 km</option>
-              <option value={20}>20 km</option>
-              <option value={30}>30 km</option>
-            </select>
+		  {suggestions.length > 0 && suggestions.map((suggestion, index) => (
+		    <li
+		      key={index}
+		      onClick={() => handleSelectSuggestion(suggestion)}
+		      className={`cursor-pointer line-clamp-1 text-sm px-2 mb-1 hover:bg-gray-200 ${
+			      selectedSuggestionIndex === index ? "bg-gray-200 py-1" : "py-2"
+			}`}
+		    >
+		      {suggestion.name}
+		    </li>
+		  ))}
+		  <li className="grid grid-cols-2 gap-4 divide-x divide-gray-900/5 bg-gray-50 py-4 px-2 lg:hidden">
+		    <select
+		      className="flex items-center text-[13px] justify-center rounded-md gap-x-2.5 px-3 py-1 text-gray-900 hover:bg-gray-100"
+		      value={distance}
+		      onChange={handleDistanceChange}
+		    >
+		      <option value={10}>10 km</option>
+		      <option value={20}>20 km</option>
+		      <option value={30}>30 km</option>
+		    </select>
 
-            <select
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-              className="flex items-center justify-center gap-x-2.5 p-3 text-gray-900 hover:bg-gray-100"
-            >
-              <option value="">Everything</option>
-              {categories &&
-                categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-            </select>
-          </li>
+		    <select
+		      value={selectedCategory}
+		      onChange={handleCategoryChange}
+		      className="flex items-center justify-center rounded-md gap-x-2.5 px-3 py-1 text-gray-900 hover:bg-gray-100"
+		    >
+		      <option value="">Everything</option>
+		      {categories &&
+			categories.map((category) => (
+			  <option key={category.id} value={category.id}>
+			    {category.name}
+			  </option>
+			))}
+		    </select>
+		  </li>
+	      </div>
+
         </ul>
       )}
 
@@ -417,7 +441,7 @@ const Search = ({ position = 'sticky' }) => {
             <span className="relative" style={{ zIndex: 2 }}>SEARCH</span>
           </button>
           <button
-            className="block h-full px-3 text-white md:hidden md:px-[22px]"
+            className="block h-[32px] md:h-full px-2 text-white md:hidden md:px-[22px]"
             style={{ background: "#ff5959" }}
             type="submit"
           >

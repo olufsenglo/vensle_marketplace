@@ -77,14 +77,14 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
 
   return (
     <div
-      className=" relative transition ease duration-200 bg-white border-b border-b-gray-200/50"
+      className="relative transition ease duration-200 bg-white border-b border-b-gray-200/50"
     >
 
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <ul
           className="flex items-center justify-between lg:justify-start"
         >
-          <li className="mr-6 mb-3">
+          <li className="lg:mr-6 lg:mb-3">
             <NavCategories />
           </li>
 
@@ -98,8 +98,8 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
             )}
             {handleGetUserCountry()}
           </li>
-          <li className="block pt-2 pb-6 mr-2">
-            <Link className="hidden px-4 hover:underline font-medium px-4 lg:flex border-r cursor-pointer border-r-black border-l border-l-black items-center" to="/saved-items">
+          <li className="hidden lg:block pt-2 pb-6 mr-2">
+            <Link className="px-4 hover:underline font-medium px-4 flex border-r cursor-pointer border-r-black border-l border-l-black items-center" to="/saved-items">
               <HeartIcon className="h-5 w-5 mr-1" />
               <p>Saved</p>
             </Link>
@@ -148,15 +148,23 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
                         )}
                       </ul>
                     </div>
-                    <div className="flex gap-5 w-[40%]">
+                    <div className="flex gap-5 w-[40%] h-[19rem]">
                       {navImage?.nav_menu_image1 && 
                         <div>
-                          <img src={getImagePath(navImage.nav_menu_image1)} alt="submenu" />
+                          <img
+			      className="w-full h-full object-contain"
+			      src={getImagePath(navImage.nav_menu_image1)}
+			      alt="submenu"
+			  />
                         </div>
                       }
                       {navImage?.nav_menu_image2 && 
                         <div>
-                          <img src={getImagePath(navImage.nav_menu_image2)} alt="submenu" />
+                          <img
+      			      className="w-full h-full object-contain"
+			      src={getImagePath(navImage.nav_menu_image2)}
+			      alt="submenu"
+			  />
                         </div>
                       }
                     </div>

@@ -152,8 +152,8 @@ const Analytics = () => {
 				</div>
 				<div className="py-[2.5rem] gap-5 px-[8] grid grid-cols-1 gap-5 md:grid-cols-2">
 					<Card extra={"w-full p-4 h-full"}>
-						<div className="flex justify-between">
-							<p className="text-lg font-medium mb-6">General Analysis</p>
+						<div className="flex justify-between mb-6">
+							<p className="text-lg font-medium">General Analysis</p>
 							<select name="" className="text-sm">
 								<option value="" className="border boder-white">Last 7 Days</option>
 							</select>
@@ -226,8 +226,8 @@ const Analytics = () => {
 						</div>
 					</Card>
 					<Card extra={"w-full p-4 h-full"}>
-						<div className="flex justify-between">
-							<p className="text-lg font-medium mb-6">Conversion Rate</p>
+						<div className="mb-6 flex items-center justify-between">
+							<p className="text-lg font-medium">Conversion Rate</p>
 							<select name="" className="text-sm">
 								<option value="" className="border boder-white">Last 7 Days</option>
 							</select>

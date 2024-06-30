@@ -5,9 +5,11 @@ import axios from "axios";
 import moment from "moment";
 import { PaperClipIcon } from "@heroicons/react/24/outline";
 
+import AttachImage from "components/front/detail/AttachImage"
+import Table from './Table'
+
 import noMsg from "assets/img/front/chat/no_msg.png";
 
-import Table from './Table'
 
 const columnsData = [
 	{
@@ -94,6 +96,77 @@ const Chats = () => {
 	const [userMessages, setUserMessages] = useState([]);
 	const [selectedMsgId, setSelectedMsgId] = useState('');
 	const [msgRecipient, setMsgRecipient] = useState('');
+	const [open, setOpen] = useState(false);
+
+
+
+
+
+
+
+
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState('');
+    const [error, setError] = useState('');
+
+    const validateImage = (file) => {
+        if (!file) {
+            return 'Please select an image.';
+        }
+
+        if (file.size > 1024 * 1024) {
+            return 'Image size should be less than 1MB.';
+        }
+
+        if (!['image/jpeg', 'image/png'].includes(file.type)) {
+            return 'Only JPG or PNG images are allowed.';
+        }
+
+        return '';
+    };
+
+const handleImageChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            const validationResult = validateImage(selectedFile);
+            if (validationResult) {
+                setError(validationResult);
+            } else {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setImagePreview(reader.result);
+                };
+                reader.readAsDataURL(selectedFile);
+                setImage(selectedFile);
+                setError('');
+		setOpen(true);
+            }
+        }
+    };
+
+const handleSubmit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const validationResult = validateImage(image);
+        if (validationResult) {
+            setError(validationResult);
+            setLoading(false);
+        } else {
+            // Validation passed, proceed with your logic (e.g., upload)
+            console.log('Validation passed');
+            // Simulate loading
+            setTimeout(() => {
+                setLoading(false);
+                // Your upload logic here
+            }, 1000);
+        }
+    };	
+
+
+
+
+
+
 	const handleSubmitMessage = async (e) => {
 		e.preventDefault();
 		setLoading(true)
@@ -161,6 +234,21 @@ const Chats = () => {
 
 	return (
 		<div className="grid h-full absolute inset-0 grid-cols-1">
+
+		<AttachImage
+		   open={open}
+		   setOpen={setOpen}
+		   open={open}
+		   handleSubmit={handleSubmit}
+		   setMessage={setMessage}
+		   handleImageChange={handleImageChange}
+		   message={message}
+		   imagePreview={imagePreview}
+		   loading={loading}
+		   error={error}
+		/>
+
+
 			<div className="flex">
 				<div className="w-full pt-[103px] bg-[#fbf8ff] md:w-[40%]">
 					<div className="pt-[9px] border-t border-t-4 border-[#eeeeee]">
@@ -226,23 +314,32 @@ const Chats = () => {
 							)
 						)}
 					</div>
-					<form onSubmit={handleSubmitMessage} className="flex p-3 gap-3 bg-[#dde1ff]">
-						<button onClick={(e) => e.preventDefault()} className="py-3 px-3 bg-white rounded-md">
-							<PaperClipIcon className="h-5 w-5" aria-hidden="true" />
-						</button>
+					<form onSubmit={handleSubmitMessage} className="flex p-2.5 gap-3 bg-[#dde1ff]">
+					        <label htmlFor="file-upload" className="cursor-pointer py-2 px-3 bg-white rounded-md">
+						    <PaperClipIcon className="h-5 w-5" aria-hidden="true" />
+						    <input
+						        id="file-upload"
+						        type="file"
+						        accept="image/jpeg, image/png"
+						        onChange={handleImageChange}
+						        style={{ display: 'none' }}
+					 	    />
+					        </label>
 						<input
-							className="flex-1 rounded-md p-3"
+							className="flex-1 rounded-md px-3 py-2"
 							type="text"
 							placeholder="Type your message here..."
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
 						/>
 						<input
-							className="py-3 px-5 rounded-md bg-[#4e5b92] hover:bg-ADashPrimary text-white cursor-pointer"
+							className="py-2 px-5 rounded-md bg-[#4e5b92] hover:bg-ADashPrimary text-white cursor-pointer"
 							type="submit"
 							value={`${loading ? 'loading...' : 'Send'}`}
 						/>
 					</form>
+
+
 				</div>
 			</div>
 		</div>

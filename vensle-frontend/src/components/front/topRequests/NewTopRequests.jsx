@@ -22,8 +22,22 @@ const NewTopRequests = () => {
 	      <SectionTitle>Top Requests</SectionTitle>
 	      <Swiper
 		  slidesPerView={2}
-		  spaceBetween={80}
+		  spaceBetween={15}
 		  navigation={true}
+		  breakpoints={{
+			640: {
+				slidesPerView: 2,
+				spaceBetween: 15,
+			},
+			768: {
+				slidesPerView: 2,
+				spaceBetween: 25,
+			},
+			1024: {
+				slidesPerView: 2,
+				spaceBetween: 45,
+			},
+		  }}					
 		  modules={[Navigation]}
 		  className="mySwiper mt-6"
 	      >

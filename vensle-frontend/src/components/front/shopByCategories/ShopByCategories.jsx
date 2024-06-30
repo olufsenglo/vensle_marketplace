@@ -27,20 +27,20 @@ export default function ShopByCategories() {
 	    <SectionTitle>Shop by Categories</SectionTitle>
 	    <div className="mt-10 overflow-hidden">
 	      <Swiper
-		  slidesPerView={4}
-		  spaceBetween={10}
+		  slidesPerView={5}
+		  spaceBetween={20}
 		  navigation={true}
 		  modules={[Navigation]}
 		  breakpoints={{
 			640: {
-				slidesPerView: 4,
+				slidesPerView: 5,
 				spaceBetween: 4,
 			},
 			768: {
-				slidesPerView: 5,
+				slidesPerView: 6,
 				spaceBetween: 6,
 			},
-			1024: {
+			1080: {
 				slidesPerView: 8,
 				spaceBetween: 10,
 			},
@@ -49,74 +49,74 @@ export default function ShopByCategories() {
 	      >
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={cat1}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Computing</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Computing</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={ball2}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Computing</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Women's Fashion</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={cat2}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Men's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Men's Fashion</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={ball3}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Computing</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Sporting Goods</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={cat3}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-	   	    	  <p className="p-2 text-[16px] mt-1">Women's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Appliances</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={cat4}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-	   	    	  <p className="p-2 text-[16px] mt-1">Men's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Computing</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
@@ -124,7 +124,7 @@ export default function ShopByCategories() {
 	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={ball}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
@@ -136,7 +136,7 @@ export default function ShopByCategories() {
 	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={cat5}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
@@ -148,7 +148,7 @@ export default function ShopByCategories() {
 	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={cat6}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
@@ -160,7 +160,7 @@ export default function ShopByCategories() {
 	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={cat7}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[5rem] !h-[5rem] lg:!w-[8rem] lg:!h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {  } from "react-router-dom";
 import { Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
@@ -25,9 +24,12 @@ import Feedback from "./Feedback";
 import Message from "./Message";
 
 import { addToCart } from "actions/actions";
+import { SET_MESSAGE } from "actions/types";
 
 import { StarIcon } from "@heroicons/react/20/solid";
 
+import SignInRegisterModal from "components/front/header/SignInRegisterModal";
+import DetailViewImage from "components/front/previewPopup/DetailViewImage"
 import SimilarProduct from "./SimilarProduct";
 
 import seller from "assets/img/front/productDetail/seller.jpg";
@@ -42,6 +44,7 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth?.user?.token);
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
+  const user = useSelector((state) => state.auth.user?.user);
   const { pathname } = useLocation();
   const { productId } = useParams();
 
@@ -55,6 +58,11 @@ const ProductDetail = () => {
   const [viewIncrease, setViewIncrease] = useState(false);
   const [breadProd, setBreadProd] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(1);
+  const [driverRegister, setDriverRegister] = useState(false);
+  const [openDetailViewImages, setOpenDetailViewImages] = useState(false)
 
   const delim = "^%*#$";
 
@@ -123,6 +131,9 @@ const ProductDetail = () => {
     }
   };
 
+  const handleExplanedImages = () => {
+     setOpenDetailViewImages(true)
+  }
 
   const handleShowNumber = (id) => {
     setShowContact(!showContact);
@@ -134,9 +145,22 @@ const ProductDetail = () => {
 
   const handleShowMessage = (e) => {
     e.preventDefault();
-    setMessageOpen(true);
+    if(isAuthenticated) {
+    	setMessageOpen(true);
+    } else {
+	setLoginOpen(true)	    
+
+        dispatch({
+            type: SET_MESSAGE,
+            payload: {
+        	type: "success",
+       		message: "Please sign in to upload a product",
+      	    },
+    	});
+    }
   };
 
+	
   const getImagePath = (name) => {
     return `${baseURL}/uploads/${name}`;
   };
@@ -188,9 +212,32 @@ const ProductDetail = () => {
 
   return (
     <div className="bg-white">
-      <Message open={messageOpen} setOpen={setMessageOpen} product={product} />
+      
+      <Message open={messageOpen} setOpen={setMessageOpen}/>
+	  {/*TODO: lift state up, this component has been repeated alot*/}
+      <SignInRegisterModal
+        setLoginOpen={setLoginOpen}
+        loginOpen={loginOpen}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        driverRegister={driverRegister}
+        setDriverRegister={setDriverRegister}
+      />
+	
+       <DetailViewImage
+	  open={openDetailViewImages}
+	  setOpen={setOpenDetailViewImages}
+	  previewImage={previewImage}
+	  product={product}
+	  getImagePath={getImagePath}
+	  handleSetSelectedImagePath={handleSetSelectedImagePath}
+	  imgIndex={imgIndex}
+          handlePreviousPreviewImag ={handlePreviousPreviewImage}
+          handleNextPreviewImage={handleNextPreviewImage}
+  	/>
+	  
       <div style={{ minHeight: "75vh" }} className="relative pt-6">
-        <nav aria-label="Breadcrumb">
+        <nav className="hidden lg:block" aria-label="Breadcrumb">
           <ol
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
@@ -246,30 +293,31 @@ const ProductDetail = () => {
         )}
 
         {!loading && product && (
-          <div className="mx-auto max-w-2xl px-4 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-16">
+          <div className="mx-auto max-w-2xl px-4 lg:pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-8">
             <Feedback open={open} setOpen={setOpen} product={product} setProduct={setProduct} />
 
             <div className="bg-white lg:col-span-3 lg:pr-8">
-              <h1 className="text-2xl tracking-tight text-gray-900 sm:text-2xl">
+              <h1 className="text-base font-medium lg:font-normal lg:text-2xl tracking-tight text-gray-900">
                 {product && product.name}
               </h1>
 
-              <div className="mt-10 w-full">
+              <div className="mt-4 lg:mt-10 w-full">
                 <div className="overflow-hidden">
-                  <div className="relative mb-6 border rounded-2xl px-10 lg:mb-10 lg:h-[28rem]">
+                  <div className="relative mb-1 lgmb-6 border rounded-2xl px-10 lg:mb-10 lg:h-[28rem]">
                     <span
-                      className="absolute top-0 bottom-0 left-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
+                      className="absolute top-0 bottom-0 left-0 bg-gray-50 hover:bg-gray-100 w-8 lg:w-12 flex justify-center items-center cursor-pointer"
                       onClick={handlePreviousPreviewImage}
                     >
                       <ChevronLeftIcon className="h-8 w-8" />
                     </span>
                     <img
+		      onClick={handleExplanedImages}
                       src={previewImage}
                       alt={product && product.name}
-                      className="w-full object-contain lg:h-full"
+                      className="w-full object-contain cursor-pointer lg:h-full"
                     />
                     <span
-                      className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
+                      className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-8 lg:w-12 flex justify-center items-center cursor-pointer"
                       onClick={handleNextPreviewImage}
                     >
                       <ChevronRightIcon className="h-8 w-8" />
@@ -281,7 +329,7 @@ const ProductDetail = () => {
                     spaceBetween={1}
                     navigation={true}
                     modules={[Navigation]}
-                    className="mySwiper mt-6"
+                    className="mySwiper lg:mt-6"
                   >
                     {product &&
                       product.images.map((productImage, index) => (
@@ -297,7 +345,7 @@ const ProductDetail = () => {
               </div>
 
               <div className="flex items-center">
-                <p className="text-black-200 mr-6 mt-8 flex items-center text-sm font-medium text-gray-700">
+                <p className="text-black-200 mr-6 mt-2 lg:mt-8 flex items-center text-sm font-medium text-gray-700">
                   <svg
                     class="mr-2 h-3 w-3 text-gray-600"
                     fill="none"
@@ -319,7 +367,7 @@ const ProductDetail = () => {
                   </svg>
                   Posted {moment(product.created_at).format("Do MMM YYYY")}
                 </p>
-                <p className="text-black-200 mt-8 flex items-center text-sm font-medium text-gray-700">
+                <p className="text-black-200 mt-2 lg:mt-8 flex items-center text-sm font-medium text-gray-700">
                   <svg
                     class="mr-2 h-3 w-3 text-gray-600"
                     fill="none"
@@ -343,35 +391,35 @@ const ProductDetail = () => {
                 </p>
               </div>
 
-              <div className="py-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pr-8 lg:pt-6">
+              <div className="py-4 lg:py-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pr-8 lg:pt-6">
                 {/* Description and details */}
                 <div>
-                  <h3 className="text-lg font-bold tracking-tight text-gray-900">
+                  <h3 className="text-sm font-semibold lg:text-lg lg:font-bold tracking-tight text-gray-900">
                     Condition
                   </h3>
-                  <div className="mt-2 space-y-6">
+                  <div className="lg:mt-2 space-y-6">
                     <p className="text-base text-gray-900 capitalize">
                       {product && product.condition}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-10">
-                  <h3 className="text-lg font-bold tracking-tight text-gray-900">
+                <div className="mt-3 lg:mt-10">
+                  <h3 className="text-sm lg:text-lg font-semibold lg:font-bold tracking-tight text-gray-900">
                     Product Details
                   </h3>
-                  <div className="mt-2 space-y-6">
+                  <div className="lg:mt-2 space-y-6">
                     <p className="text-base text-gray-900">
                       {product && product.description}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-10">
-                  <h3 className="text-lg font-bold tracking-tight text-gray-900">
+                <div className="mt-3 lg:mt-10">
+                  <h3 className="text-sm font-semibold lg:text-lg lg:font-bold tracking-tight text-gray-900">
                     Key Specifications
                   </h3>
-                  <div className="mt-2">
+                  <div className="">
                     <ul role="list" className="list-disc space-y-2 pl-6">
                       {product &&
                         product.key_specifications &&

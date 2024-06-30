@@ -28,7 +28,7 @@ export default function NavCategories() {
     <Popover className="relative">
       <Popover.Button className="inline-flex items-center gap-x-1 mt-[2px] leading-6">
         <Bars3Icon className="h-5 w-5" aria-hidden="true" />
-        <span className="font-medium">All Categories</span>
+        <span className="text-sm lg:font-medium">All Categories</span>
       </Popover.Button>
 
       <Transition

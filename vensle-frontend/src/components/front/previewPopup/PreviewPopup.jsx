@@ -185,11 +185,11 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                 leaveFrom="opacity-100 translate-y-0 md:scale-100"
                 leaveTo="opacity-0 translate-y-4 md:translate-y-0 md:scale-95"
               >
-                <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-6xl md:px-4 lg:max-w-7xl">
-                  <div className="relative flex w-full items-center overflow-hidden rounded-3xl bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-1 lg:p-2">
+                <Dialog.Panel className="flex w-full p-2 transform text-left text-base transition md:my-8 md:max-w-6xl md:px-4 lg:max-w-7xl">
+                  <div className="relative flex w-full items-center overflow-hidden rounded-3xl bg-white shadow-2xl p-2 pt-8 lg:pt-2">
                     <button
                       type="button"
-                      className="absolute right-4 top-4 z-10 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"
+                      className="absolute right-4 top-1 z-10 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-2 md:right-6 md:top-4 lg:right-[1.4rem] lg:top-[1.4rem]"
                       onClick={() => setOpen(false)}
                     >
                       <span className="sr-only">Close</span>
@@ -201,7 +201,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                         <div className="mx-auto rounded-3xl lg:mx-0 lg:flex lg:max-w-none">
                           <div className="w-full">
                             <div className="">
-                              <div className="relative mb-4 border rounded-2xl m-2 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
+                              <div className="relative mb-2 lg:mb-4 border rounded-2xl m-2 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
                                 <span
                                   style={{ borderTopLeftRadius: "1rem", borderBottomLeftRadius: "1rem" }}
                                   className="absolute top-0 bottom-0 left-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
@@ -212,7 +212,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                 <img
                                   src={previewImage}
                                   alt=" /"
-                                  className="w-full object-contain lg:h-full"
+                                  className="w-full object-contain h-[20rem] lg:h-full"
                                 />
                                 <span
                                   style={{ borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem" }}
@@ -229,7 +229,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                   spaceBetween={1}
                                   navigation={true}
                                   modules={[Navigation]}
-                                  className="mySwiper mt-6"
+                                  className="mySwiper mt-2 lg:mt-6"
                                 >
                                   {selectedProduct.images[0] &&
                                     selectedProduct.images.map((image, index) => (
@@ -257,8 +257,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                     }`}
                                 >
                                   <h3
-                                    style={{ fontWeight: "500" }}
-                                    className="mb-5 text-2xl line-clamp-2 tracking-tight"
+                                    className="mb-1 lg:mb-5 text-base lg:text-2xl font-medium line-clamp-2 tracking-tight"
                                   >
                                     {selectedProduct.name}
                                   </h3>
@@ -295,22 +294,22 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                       :
                                       (<p className="text-sm leading-5">No Feedback</p>)}
                                   </div>
-                                  <h4 className="mt-3 mb-5 text-xl text-primaryColor">
+                                  <h4 className="mt-2 lg:mt-3 mg-3 lg:mb-5 text-xl text-primaryColor">
                                     {selectedProduct.currency}{" "}
                                     {formatPrice(selectedProduct.price)}
                                   </h4>
-                                  <h4 className="text-xl">Product Details</h4>
+                                  <h4 className="text-xl hidden lg:block">Product Details</h4>
 
-                                  <p className="mt-1 line-clamp-7 text-base leading-7">
+                                  <p className="!hidden lg:block mt-1 line-clamp-7 text-base leading-7">
                                     {selectedProduct.description}
                                   </p>
 
-                                  <p className="mt-5 flex items-center text-sm font-medium">
-                                    <MapPinIcon className="mr-2 h-4 w-4" />
+                                  <p className="mt-3 lg:mt-5 flex items-center text-sm font-medium">
+                                    <MapPinIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
                                     {selectedProduct.city}
                                   </p>
-                                  <p className="mt-3 flex items-center text-sm font-medium">
-                                    <ClockIcon className="mr-2 h-4 w-4" />
+                                  <p className="mt-1 lg:mt-3 flex items-center text-sm font-medium">
+                                    <ClockIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
                                     Posted{" "}
                                     {moment(selectedProduct.created_at).format(
                                       "Do MMM YYYY"
@@ -355,17 +354,18 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                     : "-translate-x-full"
                                     }`}
                                 >
-                                  <h4 className="mt-3 mb-5 text-xl">
+	  			<div className="flex justify-end flex-row-reverse lg:block">
+                                  <h4 className="lg:mt-3 lg:mb-5 text-base lg:text-xl">
                                     Send a message
                                   </h4>
                                   <p
-                                    className="flex cursor-pointer items-center"
+                                    className="flex mr-6 lg:mr-0 text-sm lg:text-base cursor-pointer items-center"
                                     onClick={() => setLeftVisible(!isLeftVisible)}
                                   >
-                                    <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                                    <ArrowLeftIcon className="mr-1 lg:mr-2 h-4 w-4" />
                                     Back
                                   </p>
-
+				</div>
                                   <MessageForm
                                     receiverId={selectedProduct.user_id}
                                     productId={selectedProduct.id}

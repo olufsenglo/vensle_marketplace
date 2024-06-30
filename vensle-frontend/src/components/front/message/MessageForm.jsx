@@ -91,21 +91,23 @@ const MessageForm = ({
 			<form onSubmit={handleSubmit} className="flex flex-1 flex-col">
 				<div className="mt-2.5 flex-1 flex flex-col">
 					<div class="flex flex-wrap gap-2 text-xs mb-3">
-						<span onClick={() => handleFillMessage("How is it")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1
+						<span onClick={() => handleFillMessage("How is it")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-[0.1rem] lg:py-1
 					">How is it
 						</span>
-						<span onClick={() => handleFillMessage("I like this")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">
+						<span onClick={() => handleFillMessage("I like this")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-[0.1rem] lg:py-1">
 							I like this
 						</span>
-						<span onClick={() => handleFillMessage("How are you doing")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">How are you doing
+						<span onClick={() => handleFillMessage("How are you doing")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-[0.1rem] lg:py-1">How are you doing
 						</span>
-						<span onClick={() => handleFillMessage("Do you still have this product")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-1">Do you still have this product
+						<span onClick={() => handleFillMessage("Do you still have this product")} class="border border-gray-400 rounded-full hover:bg-gray-300 cursor-pointer transition duration-300 px-3 py-[0.1rem] lg:py-1">Do you still have this product
 						</span>
 					</div>
 					<textarea
 						id="content"
 						value={content}
-						onChange={(e) => setContent(e.target.value)} className="block h-full min-h-[10rem] w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+						onChange={(e) => setContent(e.target.value)}
+						className="block h-full lg:min-h-[10rem] w-full rounded-md border-0 px-3.5 py-1.5 lg:py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+					</textarea>
 
 					<p className="text-red-500 text-sm">{contentError}</p>
 

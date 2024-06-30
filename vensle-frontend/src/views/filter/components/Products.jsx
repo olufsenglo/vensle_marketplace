@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -212,12 +212,102 @@ const Products = () => {
                   </div>
 
                   {/* Filters */}
-                  <form className="mt-4 border-t border-gray-200">
-                    <div className="px-2 py-3">
-                      <h3 className="flow-root text-xl">Price</h3>
-                      <div className="block px-2 py-3">input</div>
-                    </div>
-                  </form>
+
+              <form className="py-4 block lg:hidden px-4 border-r border-r-200">
+	  	<div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
+		    <h3 className="flow-root text-base font-semibold">Categories</h3>
+	  	    <ul className="text-[14px]">
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
+	  		     Gadgets
+	  		</li>
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
+	  		     Computing
+	  		</li>
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
+	  		     Appliances
+	  		</li>
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
+	  		     Cosmetics
+	  		</li>
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50">
+	  		     Fashion
+	  		</li>
+	  	    </ul>
+	  	</div>
+<div className="pr-4 border-b border-gray-200">
+		<h3 className="flow-root text-base font-semibold">Distace</h3>
+                <label className="mb-3 block pb-6">
+                  <select
+                    className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                    value={distance}
+                    onChange={handleDistanceChange}
+                  >
+                    <option value={20}>20 km</option>
+                    <option value={30}>30 km</option>
+                    <option value={500}>500 km</option>
+                  </select>
+                </label>
+</div>
+<div className="pr-4 border-b border-gray-200 pr-4">
+		<h3 className="flow-root text-base font-semibold">Price</h3>
+                <div className="mb-3 flex items-center justify-between pb-6">
+                  <div className="flex items-center">
+                    <span className="mr-2">$</span>
+                    <label>
+                      <input
+                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        type="text"
+                        name="minPrice"
+                        value={minPrice}
+                        onChange={handleInputChange}
+                      />
+                    </label>
+                  </div>
+                  <div className="mx-3">-</div>
+                  <div>
+                    <label>
+                      <input
+                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        type="text"
+                        name="maxPrice"
+                        value={maxPrice}
+                        onChange={handleInputChange}
+                      />
+                    </label>
+                  </div>
+                </div>
+</div>
+
+
+
+                <div className="mt-8 mr-4 flex items-center justify-between">
+                  <button
+                    onClick={handleClearFilters}
+                    className="text-gray-900 py-1 px-5 transition duration-300 rounded-md hover:bg-primaryColor hover:text-white border border-white hover:border-primaryColor"
+                  >
+                    CLEAR ALL
+                  </button>
+
+                  <button
+                    type="button"
+                    className="bg-transparent hover:border-transparent rounded border border-red-500 py-1 px-5 text-red-500 hover:bg-red-500 hover:text-white transition duration-300"
+                    onClick={handleApplyFilter}
+                  >
+                    APPLY
+                  </button>
+                </div>
+              </form>
+
+
+
+
+
+
+
+
+
+
+
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -225,7 +315,7 @@ const Products = () => {
         </Transition.Root>
 
         <main className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:py-4 lg:px-8">
-          <nav aria-label="Breadcrumb">
+          <nav className="hidden lg:block" aria-label="Breadcrumb">
             <ol
               role="list"
               className="mx-auto flex max-w-2xl items-center space-x-2 lg:max-w-7xl"
@@ -264,8 +354,8 @@ const Products = () => {
             </ol>
           </nav>
 
-          <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-4">
-            <p className="flex items-center">
+          <div className="mx-auto max-w-2xl lg:max-w-7xl pt-2 md:pb-4 lg:pb-2 lg:max-w-8xl flex items-baseline justify-between border-b border-gray-200 pb-2">
+            <p className="flex text-sm lg:text-md items-center">
               <span className="mr-6 text-gray-500">
                 {filteredProducts?.data?.length} Ad[s]
               </span>
@@ -274,7 +364,7 @@ const Products = () => {
                 {storedCity}
               </span>
             </p>
-            <h1 className="font-semi-bold flex items-center justify-between tracking-tight text-gray-900">
+            <h1 className="text-[15px] lg:text-base md:font-semi-bold flex items-center justify-between tracking-tight text-gray-900">
               <select
                 name="type"
                 value={type}
@@ -287,12 +377,12 @@ const Products = () => {
               </select>
             </h1>
 
-            <div className="flex items-center">
+            <div className="fixed py-1 px-2 lg:py-0 lg:px-0 bottom-[53px] lg:bottom-0 left-[33%] lg:left-0 z-10 bg-white lg:relative flex items-center gap-3 lg:gap-0 rounded-full lg:rounded-0">
               <select
                 name="sort"
                 value={sort}
                 onChange={handleInputChange}
-                className="h-full rounded-md border p-2 text-gray-700"
+                className="h-full rounded-full lg:rounded-md bg-white mr-2 lg:mr-0 lg:bg-white lg:border text-[13px] lg:text-base p-1 lg:p-2 text-gray-700"
               >
                 <option value="">Sort</option>
                 <option value="views">Most Popular</option>
@@ -301,48 +391,68 @@ const Products = () => {
                 <option value="price_lowest">Price: Low to High</option>
                 <option value="price_highest">Price: High to Low</option>
               </select>
-
               {listView === "grid" ? (
                 <button
                   onClick={() => setListView("list")}
                   type="button"
-                  className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+                  className="-m-2 border-l lg:border-0 border-l-gray-300 lg:ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
                 >
                   <span className="sr-only">View list</span>
-                  <ListBulletIcon className="h-5 w-5" aria-hidden="true" />
+                  <ListBulletIcon className="h-4 lg:h-5 w-4 lg:w-5" aria-hidden="true" />
                 </button>
               ) : (
                 <button
                   onClick={() => setListView("grid")}
                   type="button"
-                  className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+                  className="-m-2 border-l lg:border-0 border-l-gray-300 lg:ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
                 >
                   <span className="sr-only">View grid</span>
-                  <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
+                  <Squares2X2Icon className="h-4 lg:h-5 w-4 lg:w-5" aria-hidden="true" />
                 </button>
               )}
               <button
                 type="button"
-                className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+                className="-m-2 lg:ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
                 onClick={() => setMobileFiltersOpen(true)}
               >
                 <span className="sr-only">Filters</span>
-                <FunnelIcon className="h-5 w-5" aria-hidden="true" />
+                <FunnelIcon className="h-4 lg:h-5 w-4 lg:w-5" aria-hidden="true" />
               </button>
             </div>
           </div>
 
           <section
             aria-labelledby="products-heading"
-            className="min-h-[100vh] pb-24 pt-6"
+            className="min-h-[100vh] pb-24"
           >
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
               {/* Filters */}
-              <form className="hidden lg:block">
-                <h3 className="mb-2 flow-root text-xl">Distance</h3>
-                <label className="mb-3 block border-b border-gray-200 pb-6">
+              <form className="py-4 hidden lg:block border-r border-r-200">
+	  	<div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
+		    <h3 className="flow-root text-base font-semibold">Categories</h3>
+	  	    <ul className="text-[14px]">
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
+	  		     Gadgets
+	  		</li>
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
+	  		     Computing
+	  		</li>
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
+	  		     Appliances
+	  		</li>
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
+	  		     Cosmetics
+	  		</li>
+	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50">
+	  		     Fashion
+	  		</li>
+	  	    </ul>
+	  	</div>
+<div className="pr-4 border-b border-gray-200">
+		<h3 className="flow-root text-base font-semibold">Distace</h3>
+                <label className="mb-3 block pb-6">
                   <select
-                    className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                    className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                     value={distance}
                     onChange={handleDistanceChange}
                   >
@@ -351,14 +461,15 @@ const Products = () => {
                     <option value={500}>500 km</option>
                   </select>
                 </label>
-
-                <h3 className="mb-2 flow-root text-xl">Price</h3>
-                <div className="mb-3 flex items-center justify-between border-b border-gray-200 pb-6">
+</div>
+<div className="pr-4 border-b border-gray-200 pr-4">
+		<h3 className="flow-root text-base font-semibold">Price</h3>
+                <div className="mb-3 flex items-center justify-between pb-6">
                   <div className="flex items-center">
                     <span className="mr-2">$</span>
                     <label>
                       <input
-                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                         type="text"
                         name="minPrice"
                         value={minPrice}
@@ -370,7 +481,7 @@ const Products = () => {
                   <div>
                     <label>
                       <input
-                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                         type="text"
                         name="maxPrice"
                         value={maxPrice}
@@ -379,6 +490,7 @@ const Products = () => {
                     </label>
                   </div>
                 </div>
+</div>
 
 
                 {/* 
@@ -417,19 +529,18 @@ const Products = () => {
                     </li>
                   </ul>
                 </div> */}
-                <br />
 
-                <div className="mt-4 flex items-center justify-between">
+                <div className="mt-8 mr-4 flex items-center justify-between">
                   <button
                     onClick={handleClearFilters}
-                    className="text-gray-900"
+                    className="text-gray-900 py-1 px-5 transition duration-300 rounded-md hover:bg-primaryColor hover:text-white border border-white hover:border-primaryColor"
                   >
                     CLEAR ALL
                   </button>
 
                   <button
                     type="button"
-                    className="bg-transparent hover:border-transparent rounded border border-red-500 py-1 px-5 text-red-500 hover:bg-red-500 hover:text-white"
+                    className="bg-transparent hover:border-transparent rounded border border-red-500 py-1 px-5 text-red-500 hover:bg-red-500 hover:text-white transition duration-300"
                     onClick={handleApplyFilter}
                   >
                     APPLY
@@ -438,7 +549,7 @@ const Products = () => {
               </form>
 
               {/* Product grid */}
-              <div className="relative lg:col-span-3">
+              <div className="relative lg:col-span-3 pt-4">
                 {loading && (
                   <div
                     style={{
@@ -481,7 +592,7 @@ const Products = () => {
 
                     <div
                       className={`grid ${listView === "grid"
-                          ? "grid-cols-3 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4 "
+                          ? "grid-cols-2 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4 "
                           : "grid-cols-1 gap-y-8"
                         }`}
                     >

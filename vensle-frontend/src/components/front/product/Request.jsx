@@ -7,13 +7,13 @@ import {
 
 const NewTopRequests = ({ image="assets/img/front/temp/2.jpg" }) => {
 	return (
-		<div className="relative hover:bg-gray-200/70 text-left cursor-pointer">
-			<div className="absolute left-0 top-3 left-3 flex bg-white border rounded-md border-primaryColor py-[0.2rem] px-2">
-				<TruckIcon className="h-5 w-5 text-primaryColor mr-2" />
-				<p className="text-primaryColor text-sm">Request</p>
+		<div className="relative bg-gray-100/50 rounded-md border border-gray-200 lg:border-0 lg:bg-white lg:hover:bg-gray-200/70 text-left cursor-pointer">
+			<div className="absolute left-0 top-3 left-3 flex bg-white lg:border rounded-md border-primaryColor py-[0.2rem] px-2">
+				<TruckIcon className="h-[0.9rem] w-[0.9rem] lg:h-5 lg:w-5 text-primaryColor mr-2" />
+				<p className="text-primaryColor text-[10px] lg:text-sm">Request</p>
 			</div>
-			<div className="absolute cursor-pointer bg-gray-100 hover:bg-gray-300 top-2 right-3 flex justify-center items-center h-9 w-9 rounded-full">
-				<HeartIcon className="h-6 w-6" />
+			<div className="absolute cursor-pointer bg-gray-100 hover:bg-gray-300 top-2 right-3 flex justify-center items-center h-6 w-6 rounded-full">
+				<HeartIcon className="h-4 w-4" />
 			</div>
 			<img
 				src={image}
@@ -21,28 +21,27 @@ const NewTopRequests = ({ image="assets/img/front/temp/2.jpg" }) => {
 				className="h-full w-full !h-[10rem] lg:!h-[18rem] rounded-md object-cover object-center group-hover:opacity-75"
 			/>
 
-			<div className="py-4 px-7">
+			<div className="p-2 lg:py-4 lg:px-7">
 				<h1
-					style={{ fontSize: "1.4rem" }}
-					className="font-medium line-clamp-1 mt-2 text-xl tracking-tight"
+					className="font-medium text-sm lg:text-[1.4rem] line-clamp-1 mt-2 text-xl tracking-tight"
 				>
 					Need a wall art for my living room
 				</h1>
-				<div className="mt-4">
-					<ul className="list-disc ml-6">
-						<li>I'm a white make who lives in a pretty huge apartment</li>
-						<li>I'd love to have a painting like this in my living room to give it some life</li>
+				<div className="mt-2 lg:mt-4">
+					<ul className="text-sm lg:text-base list-disc ml-6">
+						<li className="">I'm a white make who lives in a pretty huge apartment</li>
+						<li className="">I'd love to have a painting like this in my living room to give it some life</li>
 					</ul>
 				</div>
 
-				<div className="mt-4 flex justify-between flex-col lg:flex-row">
+				<div className="mt-1 lg:mt-4 flex justify-between flex-col lg:flex-row">
 					<div className="flex items-center pt-2 text-gray-600">
 						<ClockIcon className="h-3 w-3 mr-1" />
 						<p className="text-xs md:text-sm">Requested 11 hours ago</p>
 					</div>
-					<div className="flex items-center pt-2 text-gray-600">
+					<div className="flex items-center mt-1 lg:mt-2 text-gray-600">
 						<MapPinIcon className="h-3 w-3 mr-1" />
-						<p className="text-xs md:text-sm">London</p>
+						<p className="text-xs md:text-sm">The underground, London</p>
 					</div>
 				</div>
 			</div>

@@ -171,11 +171,13 @@ const Cart = () => {
       setCurrentTab("checkout");
       setValidatedTab("cart")
       setCheckoutBtnVal("Proceed to Payment");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentTab == "checkout") {
       if (validateForm()) {
         setCurrentTab("payment");
         setValidatedTab("checkout")
         setCheckoutBtnVal("Make Payment");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         console.log("Form has errors", errors);
       }
