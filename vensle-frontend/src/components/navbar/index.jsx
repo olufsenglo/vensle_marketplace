@@ -163,9 +163,10 @@ const Navbar = (props) => {
             Upload
           </p>
           {/* start Notification */}
+          {/* Use endpoint to mark only view notification as read not all */}
           <Dropdown
             button={
-              <p className="relative cursor-pointer">
+              <p onClick={markAsRead} className="relative cursor-pointer">
                 <IoMdNotificationsOutline className="h-4 w-4 text-gray-600 dark:text-white" />
                 {unreadCount > 0 && (
                   <span
@@ -186,7 +187,7 @@ const Navbar = (props) => {
             }
             animation="origin-[65%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
             children={
-              <div className="flex w-[360px] flex-col gap-3 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none sm:w-[460px]">
+              <div className="flex h-[85vh] overflow-y-auto w-[360px] flex-col gap-3 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none sm:w-[460px]">
                 <div className="flex items-center justify-between">
                   <p className="text-base font-bold text-navy-700 dark:text-white">
                     Notification

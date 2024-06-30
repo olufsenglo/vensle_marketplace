@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
-import { StarIcon } from '@heroicons/react/20/solid'
 import axios from "axios";
 import moment from "moment";
 import { PaperClipIcon } from "@heroicons/react/24/outline";
+import { StarIcon } from '@heroicons/react/20/solid'
+import { MdDoneAll } from "react-icons/md";
 
 import AttachImage from "components/front/detail/AttachImage"
 import Table from './Table'
@@ -297,16 +298,20 @@ const handleSubmit = (e) => {
 								userMessages.map((message) => (
 									<span
 										className={`flex ${message.sender_id == user.id && 'justify-end'}`}
-										key={message.id}>
+										key={message.id}
+									>
 										<img
 											src={getImagePath(message?.receiver?.profile_picture)}
 											alt="profile"
 											className="w-5 h-5 mr-2 rounded-full object-cover"
 										/>
-										<span className="py-2 px-3 mb-3 bg-gray-200 rounded-xl rounded-tl-none">
-											<p>{message.content}</p>
-											<p className="text-gray-500 text-xs">
-												{message.created_at}
+										<span className="py-1 text-[15px] max-w-[50%] px-3 mb-3 bg-gray-200 rounded-xl rounded-tl-none">
+											<p className="leading-5">{message.content}</p>
+											<p className="flex justify-end items-center text-gray-500 text-xs">
+				{moment(message.created_at).fromNow()}
+				{message.sender_id == user.id && <MdDoneAll className={`ml-2 w-4 h-4 bottom-1 right-2 ${
+				  message.is_read === "1" ? "text-blue-400" : "text-gray-600"
+				}`} />}
 											</p>
 										</span>
 									</span>
