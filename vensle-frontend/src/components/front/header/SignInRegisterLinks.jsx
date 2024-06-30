@@ -17,7 +17,7 @@ const SignInRegisterLink = ({
     visible="always"
 }) => {
     return(
-      <div className={`absolute right-0 top-[10px] lg:top-0 left-0 mr-auto ml-auto max-w-2xl text-[0.9rem] items-center justify-end px-6 md:px-0 lg:relative lg:max-w-none lg:justify-start ${
+      <div className={`absolute right-0 top-[10px] lg:top-0 mr-auto ml-auto max-w-2xl text-[0.9rem] items-center justify-end px-6 md:px-0 lg:relative lg:max-w-none lg:justify-start ${
 	visible === "onScroll" ? "hidden lg:flex" : "inline-flex lg:flex"
       }`}>
 	  <div className="flex items-center">	    

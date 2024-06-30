@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useSelector } from "react-redux";
 import { StarIcon } from '@heroicons/react/20/solid'
 import axios from "axios";
@@ -9,7 +9,7 @@ import AttachImage from "components/front/detail/AttachImage"
 import Table from './Table'
 
 import noMsg from "assets/img/front/chat/no_msg.png";
-
+import ButtonLoading from "components/Loading/ButtonLoading";
 
 const columnsData = [
 	{
@@ -82,6 +82,8 @@ const getImagePath = (name) => {
 const baseURL = "https://nominet.vensle.com/backend";
 
 const Chats = () => {
+	const chatContainerRef = useRef(null);
+	const fileInputRef = useRef(null);
 	const columns = useMemo(() => columnsData, []);
 	const isAuthenticated = useSelector((state) => state?.auth?.isLoggedIn);
 	const accessToken = useSelector((state) => state?.auth?.user?.token);
@@ -97,12 +99,6 @@ const Chats = () => {
 	const [selectedMsgId, setSelectedMsgId] = useState('');
 	const [msgRecipient, setMsgRecipient] = useState('');
 	const [open, setOpen] = useState(false);
-
-
-
-
-
-
 
 
     const [image, setImage] = useState(null);
@@ -132,6 +128,7 @@ const handleImageChange = (e) => {
             if (validationResult) {
                 setError(validationResult);
             } else {
+		setOpen(true);
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     setImagePreview(reader.result);
@@ -139,7 +136,7 @@ const handleImageChange = (e) => {
                 reader.readAsDataURL(selectedFile);
                 setImage(selectedFile);
                 setError('');
-		setOpen(true);
+		e.target.value = null;
             }
         }
     };
@@ -152,18 +149,9 @@ const handleSubmit = (e) => {
             setError(validationResult);
             setLoading(false);
         } else {
-            // Validation passed, proceed with your logic (e.g., upload)
-            console.log('Validation passed');
-            // Simulate loading
-            setTimeout(() => {
-                setLoading(false);
-                // Your upload logic here
-            }, 1000);
+	    handleSubmitMessage(e);
         }
     };	
-
-
-
 
 
 
@@ -188,6 +176,11 @@ const handleSubmit = (e) => {
 
 			setUserMessages([...userMessages, response.data]);
 			setMessage('')
+			setImage(null)
+			setOpen(false)
+	        	if (chatContainerRef.current) {
+			    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+	      		}
 		} catch (error) {
 			console.error("Error fetching message:", error);
 		} finally {
@@ -232,13 +225,21 @@ const handleSubmit = (e) => {
 		fetchUsers();
 	}, [userMessages]);
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [message]);	
+
+  useEffect(() => {
+	  setMessage("")
+  }, [open]);	
 	return (
 		<div className="grid h-full absolute inset-0 grid-cols-1">
 
-		<AttachImage
+		{open && <AttachImage
 		   open={open}
 		   setOpen={setOpen}
-		   open={open}
 		   handleSubmit={handleSubmit}
 		   setMessage={setMessage}
 		   handleImageChange={handleImageChange}
@@ -246,7 +247,8 @@ const handleSubmit = (e) => {
 		   imagePreview={imagePreview}
 		   loading={loading}
 		   error={error}
-		/>
+		   fileInputRef={fileInputRef}
+		/>}
 
 
 			<div className="flex">
@@ -264,7 +266,7 @@ const handleSubmit = (e) => {
 				</div>
 				<div className="absolute pt-[103px] md:relative md:w-[60%] flex flex-col w-full h-[100vh] bg-white top-0 h-full">
 					{userMessages.length > 0 && (
-						<div style={{ borderBottom: "1px solid #eee" }} className="flex p-2 h-[3.7rem] items-center border-b">
+						<div className="flex p-2 h-[3.7rem] items-center border-t border-t-4 border-[#eee] border-b border-[#eee]">
 							{loadingUserMessages ? <p>Loading...</p> : <>
 								<div>
 									<img
@@ -283,7 +285,10 @@ const handleSubmit = (e) => {
 								</div>
 							</>}
 						</div>)}
-					<div className={`p-3 flex-1 border-t border-t-4 border-[#eeeeee] overflow-auto ${!loadingUserMessages && userMessages.length === 0 && "flex justify-center items-center"
+					<div ref={chatContainerRef} className={`p-3 flex-1 overflow-auto ${
+						!loadingUserMessages && userMessages.length === 0 && "flex justify-center items-center"
+						} ${
+						    userMessages.length === 0 && "border-t border-t-4 border-[#eeeeee]"
 						}`}>
 						{loadingUserMessages ? (
 							<p>Loading</p>
@@ -326,17 +331,21 @@ const handleSubmit = (e) => {
 					 	    />
 					        </label>
 						<input
-							className="flex-1 rounded-md px-3 py-2"
+							className={`flex-1 rounded-md px-3 py-2 ${
+							     open && "text-white"
+							}`}
 							type="text"
 							placeholder="Type your message here..."
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
 						/>
-						<input
+						<button
 							className="py-2 px-5 rounded-md bg-[#4e5b92] hover:bg-ADashPrimary text-white cursor-pointer"
 							type="submit"
-							value={`${loading ? 'loading...' : 'Send'}`}
-						/>
+							disabled={loading || message === ""}
+						>
+							{loading ? <ButtonLoading /> : "Send"}
+						</button>
 					</form>
 
 

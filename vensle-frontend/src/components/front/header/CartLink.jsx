@@ -12,7 +12,7 @@ const CartLink = ({ visible }) => {
 
   const [open, setOpen] = useState(false);
 
-	const validCartItems = cartItems.filter(item => item && item && item.price);
+  const validCartItems = cartItems.filter(item => item && item && item.price);
 
   const totalItems = validCartItems.reduce(
     (total, item) => total + (item.quantity ? item.quantity : 0),

@@ -32,9 +32,9 @@ const SignInRegisterModal = ({
     loginOpen,
     setActiveTab,
     activeTab,
-	driverRegister,
-	setDriverRegister,
-	redirect="",
+    driverRegister,
+    setDriverRegister,
+    redirect="",
 }) => {
   const navigate = useNavigate();
   const location = useLocation();

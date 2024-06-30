@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -32,10 +32,17 @@ const Header = ({
   setActivePill
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  const pageName = pathname.split('/').filter(Boolean).pop();
+	
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isLoggedIn);
   const user = useSelector((state) => state.auth.user?.user);
+  const cartItems = useSelector((state) => state.cart.items);
+
   const storedCountry = localStorage.getItem("userCountry") || "Unknown";
   const storedCountryFlag = localStorage.getItem("countryFlag") || "";
 
@@ -46,6 +53,13 @@ const Header = ({
 
   const [activeTab, setActiveTab] = useState(1);
   const [showNavbar, setShowNavbar] = useState(false);
+
+  const validCartItems = cartItems.filter(item => item && item && item.price);
+
+  const totalItems = validCartItems.reduce(
+    (total, item) => total + (item.quantity ? item.quantity : 0),
+    0
+  );
 
  //TODO:localstate not props
   const handleSignInClick = (e) => {
@@ -85,6 +99,20 @@ const Header = ({
       },
     });
   };
+
+const bottomStickyGoToPage = (redirectPage) => {
+	if(!isAuthenticated) {
+	    setRedirect(redirectPage)
+    	    setLoginOpen(true);
+	    dispatch({
+	      type: SET_MESSAGE,
+	      payload: {
+		type: "success",
+		message: "Please sign in",
+	      },
+	    });
+	}
+}
 
   const handleRegisterDriverClick = (e) => {
     e.preventDefault();
@@ -144,7 +172,7 @@ const Header = ({
           <div
             className="flex flex-col gap-[1%] justify-between lg:items-center lg:flex-row"
           >
-            <Link className="relative z-10" to="/">
+            <Link className="relative" to="/">
               <img className="w-[120px] md:w-40 lg:w-auto" src={logo} alt="vensle" />
             </Link>
             <Search position={'relative'} />
@@ -177,28 +205,70 @@ const Header = ({
 	</div>
       </div>
 <div className="bg-white fixed py-2 px-4 lg:hidden z-[6] w-full bottom-0 left-0 right-0">
-
+      {/*TODO: put in component, same for each link, this is tooo repeative, i cant even handle it*/}
       <div className="flex justify-between mx-auto max-w-2xl lg:max-w-7xl lg:px-8">
-          <div className="flex flex-col items-center">
+	  <Link to="/" className={`flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pathname === "/" ? "bg-gray-200" : (pageName === "" && "bg-gray-200")}`}>
 	      <HomeIcon className="w-5 h-5" />
 	      <p className="text-[10px]">Home</p>
-	  </div>
-          <div className="flex flex-col items-center">
-	      <HeartIcon className="w-5 h-5" />
-	      <p className="text-[10px]">Saved</p>
-	  </div>
-          <div className="flex flex-col items-center">
-	      <PlusIcon className="w-5 h-5" />
-	      <p className="text-[10px]">Upload</p>
-	  </div>
-          <div className="flex flex-col items-center">
+	  </Link>
+	  {isAuthenticated ?
+		<Link to="/saved-items" className={`flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "saved-items" && "bg-gray-200"}`}>
+	      	    <HeartIcon className="w-5 h-5" />
+              	   <p className="text-[10px]">Saved</p>
+               </Link>
+	       :
+          	<div onClick={() => bottomStickyGoToPage('/saved-items')} className="flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
+	      	    <HeartIcon className="w-5 h-5" />
+	      	    <p className="text-[10px]">Saved</p>
+	  	</div>
+	  }
+	  {isAuthenticated ?
+		<Link to="/admin/upload-product" className={`flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "upload-product" && "bg-gray-200"}`}>
+	          <PlusIcon className="w-5 h-5" />
+	          <p className="text-[10px]">Upload</p>
+               </Link>
+	       :
+          	<div onClick={() => bottomStickyGoToPage('/admin/upload-product')} className="flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
+	           <PlusIcon className="w-5 h-5" />
+	     	    <p className="text-[10px]">Upload</p>
+	  	</div>
+	  }
+	  {isAuthenticated ?
+		<Link to="/admin" className={`flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "admin" && "bg-gray-200"}`}>
 	      <UserIcon className="w-5 h-5" />
-	      <p className="text-[10px]">Dashboard</p>
-	  </div>
-          <div className="flex flex-col items-center">
-	      <ShoppingCartIcon className="w-5 h-5" />
-	      <p className="text-[10px]">Cart</p>
-	  </div>
+	          <p className="text-[10px]">Dashboard</p>
+                  </Link>
+	       :
+          	<div onClick={() => bottomStickyGoToPage('/admin')} className="flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
+	           <UserIcon className="w-5 h-5" />
+	      	   <p className="text-[10px]">Dashboard</p>
+	  	</div>
+	  }
+	  {isAuthenticated ?
+		<Link to="/cart" className={`flex relative flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "cart" && "bg-gray-200"}`}>
+		{totalItems > 0 && (
+		  <span
+		    className="absolute top-[-4px] right-[11px] text-[0.7rem] w-[15px] h-[15px] flex items-center justify-center rounded-full bg-red-500 text-white"
+		  >
+		    {totalItems}
+		  </span>
+		)}
+	              <ShoppingCartIcon className="w-5 h-5" />
+	              <p className="text-[10px]">Cart</p>
+                  </Link>
+	       :
+          	<div onClick={() => bottomStickyGoToPage('/cart')} className="flex relative flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
+		{totalItems > 0 && (
+		  <span
+		    className="absolute top-[-4px] right-[11px] text-[0.7rem] w-[15px] h-[15px] flex items-center justify-center rounded-full bg-red-500 text-white"
+		  >
+		    {totalItems}
+		  </span>
+		)}
+	          <ShoppingCartIcon className="w-5 h-5" />
+	          <p className="text-[10px]">Cart</p>
+	  	</div>
+	  }
           
         </div>
 </div>
@@ -215,6 +285,7 @@ const Header = ({
         activeTab={activeTab}
         driverRegister={driverRegister}
         setDriverRegister={setDriverRegister}
+	redirect={redirect}
       />
 
     </div>
