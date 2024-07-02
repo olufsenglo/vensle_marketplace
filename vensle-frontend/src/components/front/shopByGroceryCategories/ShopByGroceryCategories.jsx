@@ -9,17 +9,17 @@ import { Navigation } from 'swiper/modules';
 
 import SectionTitle from "components/front/sectionTitle/SectionTitle"
 
-import image1 from "assets/img/front/all/grocery/Image_032.jpg";
-import image2 from "assets/img/front/all/grocery/Image_025.jpg";
-import image3 from "assets/img/front/all/grocery/Image_024.jpg";
-import image4 from "assets/img/front/all/grocery/Image_023.jpg";
-import image5 from "assets/img/front/all/grocery/Image_027.jpg";
-import image6 from "assets/img/front/all/grocery/Image_034.jpg";
-import image7 from "assets/img/front/all/grocery/Image_030.jpg";
-import image8 from "assets/img/front/all/grocery/Image_054.jpg";
-import image9 from "assets/img/front/all/grocery/Image_068.jpg";
-import image10 from "assets/img/front/all/grocery/Image_061.jpg";
-import image11 from "assets/img/front/all/grocery/Image_071.jpg";
+import image1 from "assets/img/front/all/grocery/Image_032.png";
+import image2 from "assets/img/front/all/grocery/Image_025.png";
+import image3 from "assets/img/front/all/grocery/Image_024.png";
+import image4 from "assets/img/front/all/grocery/Image_023.png";
+import image5 from "assets/img/front/all/grocery/Image_027.png";
+import image6 from "assets/img/front/all/grocery/Image_034.png";
+import image7 from "assets/img/front/all/grocery/Image_030.png";
+import image8 from "assets/img/front/all/grocery/Image_054.png";
+import image9 from "assets/img/front/all/grocery/Image_068.png";
+import image10 from "assets/img/front/all/grocery/Image_061.png";
+import image11 from "assets/img/front/all/grocery/Image_071.png";
 
 
 export default function ShopByGroceryCategories() {
@@ -39,12 +39,12 @@ export default function ShopByGroceryCategories() {
 	            <div className="flex flex-col items-center cursor-pointer">
 	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
-				     src={image9}
+				     src={image10}
 				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Computing</p>
+			  <p className="p-2 text-[16px] mt-1">Bananas</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
@@ -56,7 +56,7 @@ export default function ShopByGroceryCategories() {
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Computing</p>
+			  <p className="p-2 text-[16px] mt-1">Grapes</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
@@ -123,7 +123,7 @@ export default function ShopByGroceryCategories() {
 	            <div className="flex flex-col items-center cursor-pointer">
 	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
-				     src={image7}
+				     src={image11}
 				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
 				     alt="suggested categories"
 				/>

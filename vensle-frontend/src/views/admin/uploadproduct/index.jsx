@@ -77,7 +77,19 @@ const Tables = () => {
     city: storedCity,
     country: storedCountry,
     key_specifications: "",
-    //specifications_ids: [4,5],
+    ramSize: "",
+    storageCapacity: "",
+    size: "",
+    color: "",
+    skinType: "",
+    fuelType: "",
+    transmission: "",
+    processorType: "",
+    material: "",
+    material2: "",
+    fit: "",
+    racketType: "",
+    swimsuitType: "",	  
   });
 
   const handleSetCategory = (category) => {
@@ -98,6 +110,31 @@ const Tables = () => {
 	setActiveCategory('')
   }
 
+  const handleSetSubcategory = (subcategory) => {
+        setFormData({
+           ...formData,
+           subcategory_id: subcategory.id,
+        });
+	setActiveSubcategoryName(subcategory.name)
+	setIsOpen(false)
+	//Make api call to get filters by subcategory id
+	getFiltersForSubcategory(subcategory.id)
+	//validateField(name, value);
+  }
+
+    const getFiltersForSubcategory = async (id) => {
+        setSubcategoryFiltersLoading(true)
+	try {
+		const response = await axios.get(
+			`${baseURL}/api/v1/subcategory/${id}/product-filters`
+		);
+        	setSubcategoryFilters(response.data);
+        	setSubcategoryFiltersLoading(false)
+	} catch (error) {
+        	console.error("Error fetching categories filter", error);
+        	setSubcategoryFiltersLoading(false)
+	}
+    };
 
   const handleUseAddress = () => {
     setFormData({
@@ -128,7 +165,6 @@ const Tables = () => {
 
     switch (fieldName) {
       case "name":
-      case "price":
       case "location":
       case "phone_number":
       case "address":
@@ -137,6 +173,16 @@ const Tables = () => {
           errorMessage = `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace('_', ' ')} is required`;
         }
         break;
+     case "price":
+        if (!value.trim()) {
+	   errorMessage = "Price is required";
+        } else {
+	   const priceValue = parseFloat(value);
+	   if (isNaN(priceValue) || priceValue < 0 || priceValue > 999999.99) {
+	      errorMessage = "Price must be a valid number between 0 and 999,999.99";
+	   }
+        }
+    break;		    
       case "images":
         // Validate if images are required and check if there are any uploaded
         if (value.length === 0) {
@@ -220,7 +266,12 @@ const Tables = () => {
     });
   };
 
-
+const handleFilterChange = (filterName, selectedValue) => {
+    setFormData({
+        ...formData,
+        [filterName]: selectedValue,
+    });
+};
   
   const handleFileChange = (e) => {
     const { name, files } = e.target;
@@ -648,31 +699,6 @@ const Tables = () => {
   };
 
 
-  const handleSetSubcategory = (subcategory) => {
-        setFormData({
-           ...formData,
-           subcategory_id: subcategory.id,
-        });
-	setActiveSubcategoryName(subcategory.name)
-	setIsOpen(false)
-	//Make api call to get filters by subcategory id
-	getFiltersForSubcategory(subcategory.id)
-	//validateField(name, value);
-  }
-
-    const getFiltersForSubcategory = async (id) => {
-        setSubcategoryFiltersLoading(true)
-	try {
-		const response = await axios.get(
-			`${baseURL}/api/v1/subcategory/${id}/product-filters`
-		);
-        	setSubcategoryFilters(response.data);
-        	setSubcategoryFiltersLoading(false)
-	} catch (error) {
-        	console.error("Error fetching categories filter", error);
-        	setSubcategoryFiltersLoading(false)
-	}
-    };
 
 
   return (
@@ -821,50 +847,35 @@ const Tables = () => {
     <div className="flex flex-col items-center justify-center">
       <div className="relative w-full" ref={dropdownRef}>
         <div
-          className={`flex justify-between items-center w-full mt-1 block rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm text-gray-500 placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 bg-gray-50 cursor-pointer ${
+          className={`flex justify-between items-center w-full mt-1 block rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 bg-gray-50 cursor-pointer ${
 		isOpen && "ring-2 ring-teal-500"
-	  }`}
+	  } ${!activeSubcategoryName && "text-gray-500"}`}
           onClick={toggleDropdown}
         >
           {activeSubcategoryName || 'Select Category'} <ChevronDownIcon className="w-4 h-4" />
         </div>
         {isOpen && (
-          <div className="absolute z-10 mt-2 w-full rounded-lg border-gray-300 bg-gray-50 py-1 px-4 shadow-lg">
-            {options.map((option, index) => (
-              <div
-                key={index}
-                className="cursor-pointer py-2 hover:bg-gray-100"
-                onClick={() => handleSelectOption(option)}
-              >
-                {option} 
-              </div>
-            ))}
+          <div className="absolute z-10 mt-1 w-full border border-blue-300 border-t-0 bg-gray-50 py-1 shadow-lg">
 
 
-
-
-
-
-
-
-		    <h3 className="flex items-center text-base">
+		    <h3 className="flex items-center text-base font-semibold text-sm px-2">
 	  		{activeSubcategories.length > 0 && <ArrowLeftIcon
 	  			onClick={handleBackToCategories}
 	  			className="mr-2 p-[2px] h-5 w-5 rounded-full hover:bg-gray-200 cursor-pointer transition duration-300"
 	  		    />}
-	  		{activeCategory ? activeCategory.name : "Select Categories"}
+	  		{activeCategory ? activeCategory.name : "Categories"}
 	  	    </h3>
 	  	    <div className="flex h-full w-full overflow-hidden">
 			    <ul className={`text-[14px] flex h-full w-full shrink-0 transform flex-col transition-transform duration-300 translate-x-0  ${isLeftVisible
                                     ? "translate-x-0"
                                     : "-translate-x-full"
                                     }`}>
-				{categoriesLoading && <li>Loading...</li>}
+				{categoriesLoading && <li className="px-4">Loading...</li>}
 				{categories.length > 0 && categories.map((category) => 
 				    <li
 					onClick={()=>handleSetCategory(category)}
 					key={category.id}
-					className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200"
+					className="py-1 px-4 cursor-pointer hover:text-white hover:bg-[#1967d2]"
 				    >
 					{category.name}
 				    </li>
@@ -878,7 +889,9 @@ const Tables = () => {
 				    <li
 					onClick={()=>handleSetSubcategory(subcategory)}
 					key={subcategory.id}
-					className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200"
+					className={`py-1 px-4 cursor-pointer hover:text-white hover:bg-[#1967d2] ${
+						subcategory.id === formData.subcategory_id && "text-white bg-[#1967d2]"
+					}`}
 				    >
 					{subcategory.name}
 				    </li>
@@ -906,26 +919,29 @@ const Tables = () => {
 		    Features
 		</label>
 	  
-		{subcategoryFilters.map((subFilter)=> {
-			const valuesArray = subFilter.value.split(',');
-			return(
-			    <div className="mb-4">
+		{subcategoryFilters.map((subFilter)=> (
+			    <div key={subFilter.id} className="mb-4">
 				<label
-				    htmlFor="category_id"
+			  	    htmlFor="category_id"
 				    className="text-xs text-gray-500 italic"
 				>
 				    {subFilter.name}
 				</label>
 			    	<select
+			            value={formData[subFilter.name.toLowerCase()]}
+				    onChange={(e) => {
+					const selectedValue = e.target.value;
+					handleFilterChange(subFilter.name, selectedValue);
+				    }}
                         	    className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm text-gray-500 placeholder-gray-300 shadow-sm outline-none transition bg-gray-50 focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.category_id"
 				>
-				    {valuesArray.map((value, index) => (
-				    	<option key={index} value={value}>{value}</option>
+				    <option value="">Select {subFilter.name}</option>
+				    {subFilter.value.split(',').map((value, index) => (
+					<option key={index} value={value.trim()}>{value.trim()}</option>
 				    ))}
 	  		    	</select>
 			    </div>
-			)
-		})}
+		))}
 </div>}
 
 

@@ -50,6 +50,29 @@ const Search = ({ position = 'sticky' }) => {
 
   const [zoom, setZoom] = useState(10);
 
+  const [recentSearches, setRecentSearches] = useState([]);
+
+  useEffect(() => {
+    // Load recent searches from localStorage on component mount
+    const savedRecentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    setRecentSearches(savedRecentSearches);
+  }, []);
+
+  const filterRecent = () => {
+    // Filter recentSearches based on searchTerm
+    return recentSearches.filter(search =>
+      search.toLowerCase().includes(searchTerm.toLowerCase())
+    ).slice(0, 3); // Return top 3 matches
+  };	
+
+  const handleRemoveSearch = (e, searchToRemove) => {
+    e.stopPropagation();
+    // Remove search term from recentSearches in localStorage
+    const updatedRecentSearches = recentSearches.filter(search => search !== searchToRemove);
+    localStorage.setItem('recentSearches', JSON.stringify(updatedRecentSearches));
+    setRecentSearches(updatedRecentSearches);
+  };	
+
   const handleDistanceChange = (event) => {
     const newDistance = parseInt(event.target.value, 10);
     setDistance(newDistance);
@@ -188,6 +211,17 @@ const Search = ({ position = 'sticky' }) => {
     }
   };
 
+  const handleNewSearchButtonClick = (event) => {
+    event.preventDefault();
+    if (searchTerm.trim() === '') return;
+
+    // Add current searchTerm to recentSearches in localStorage
+    const updatedRecentSearches = [...recentSearches];
+    updatedRecentSearches.unshift(searchTerm); // Add at the beginning
+    localStorage.setItem('recentSearches', JSON.stringify(updatedRecentSearches));
+    setRecentSearches(updatedRecentSearches);
+  };
+
   const handleSearchButtonClick = (e) => {
     e.preventDefault();
 
@@ -195,9 +229,23 @@ const Search = ({ position = 'sticky' }) => {
 
     //TODO:  &distance=20
     if (encodedSearchTerm.trim() !== '') {
+
+	    
+    // Check if searchTerm already exists in recentSearches
+    if (!recentSearches.includes(searchTerm)) {
+      // Add current searchTerm to recentSearches in localStorage
+      const updatedRecentSearches = [searchTerm, ...recentSearches.slice(0, 9)]; // Limit to 10 recent searches
+      localStorage.setItem('recentSearches', JSON.stringify(updatedRecentSearches));
+      setRecentSearches(updatedRecentSearches);
+    }
+
+
       navigate(
         `/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}&distance=${distance}`
       );
+
+      setSearchTerm('');
+
       //TODO: Temp solution
       if (window.location.pathname === '/') {
         window.location.reload();
@@ -236,7 +284,7 @@ const Search = ({ position = 'sticky' }) => {
     };
   }, []);
 
-
+//TODO:Store in .env
   const fetchGeocode = async (address) => {
     try {
       const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
@@ -276,6 +324,7 @@ const Search = ({ position = 'sticky' }) => {
         }`}
       onSubmit={handleSearchButtonClick}
     >
+
       {/*<select
         style={{ fontSize: "14px" }}
         className="hidden h-full border pl-1 lg:block"
@@ -400,12 +449,28 @@ const Search = ({ position = 'sticky' }) => {
 		  </div>
 
 
+      {searchTerm && filterRecent().map((search, index) => (
+	    <li
+	      key={index}
+	      onClick={() => handleSelectSuggestion({name: search})}
+	      className="flex justify-between cursor-pointer text-sm px-2 mb-1 py-2 hover:bg-gray-200"
+	    >
+		 <p className="line-clamp-1">
+                    {search}
+	         </p>
+        	 <XMarkIcon
+	      	     onClick={(e) => handleRemoveSearch(e, search)}
+		     className="h-5 w-5 cursor-pointer rounded-full p-1 hover:bg-gray-300 transition-all ease-in-out duration-300" aria-hidden="true"
+	      	 />
+	    </li>
+        ))}
+
 		  {suggestions && Array.isArray(suggestions) && suggestions.length > 0 && suggestions.map((suggestion, index) => (
 		    <li
 		      key={index}
 		      onClick={() => handleSelectSuggestion(suggestion)}
-		      className={`cursor-pointer line-clamp-1 text-sm px-2 mb-1 hover:bg-gray-200 ${
-			      selectedSuggestionIndex === index ? "bg-gray-200 py-1" : "py-2"
+		      className={`cursor-pointer line-clamp-1 text-sm py-2 px-2 mb-1 hover:bg-gray-200 ${
+			      selectedSuggestionIndex === index ? "bg-gray-200" : ""
 			}`}
 		    >
 		      {suggestion.name}

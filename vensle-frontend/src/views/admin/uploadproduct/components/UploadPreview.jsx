@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 
-import { ArrowLeftIcon, StarIcon } from "@heroicons/react/20/solid";
+import {
+  StarIcon,
+  ArrowLeftIcon,
+  ChevronLeftIcon,
+  PhoneIcon,
+  MapPinIcon,
+  ClockIcon,
+  ChevronRightIcon,
+  ChatBubbleLeftRightIcon,
+} from "@heroicons/react/20/solid";
 
 const baseURL = "https://nominet.vensle.com/backend";
 
@@ -86,7 +95,9 @@ const UploadPreview = ({
             <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-xs lg:flex-shrink-0">
               <div className="lg:pt:6 rounded-2xl bg-gray-50 py-5 ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:pb-8">
                 <div className="px-8">
-                  <h3 className="mb-5 text-2xl font-bold tracking-tight text-gray-900">
+		  <h3
+		    className="mb-1 lg:mb-5 text-base lg:text-2xl font-medium line-clamp-2 tracking-tight"
+		  >
                     {formData.name}
                   </h3>
                   <div className="flex items-center">
@@ -94,59 +105,23 @@ const UploadPreview = ({
                       No Feedback
                     </p>
                   </div>
-                  <h4 className="mt-3 mb-5 text-xl text-gray-600">
+		  <h4 className="mt-2 lg:mt-3 mg-3 lg:mb-5 text-xl text-primaryColor">
                     $ {formData.price}
                   </h4>
-                  <h4 className="text-xl font-semibold text-gray-600">
+		   <h4 className="text-xl hidden lg:block">
                     Product Details
                   </h4>
 
-                  <p className="mt-3 text-base leading-7 text-gray-600">
+                  <p className="lg:block mt-1 line-clamp-7 text-base leading-7">
                     {formData.description}
                   </p>
 
-                  <p className="text-black-200 mt-3 flex items-center text-sm font-medium text-gray-700">
-                    <svg
-                      className="mr-2 h-3 w-3 text-gray-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
+                  <p className="mt-3 lg:mt-5 flex items-center text-sm font-medium">
+                    <MapPinIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
                     London
                   </p>
-                  <p className="text-black-200 mt-3 flex items-center text-sm font-medium text-gray-700">
-                    <svg
-                      className="mr-2 h-3 w-3 text-gray-600"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
+                  <p className="mt-1 lg:mt-3 flex items-center text-sm font-medium">
+                                    <ClockIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
                     Now
                   </p>
 

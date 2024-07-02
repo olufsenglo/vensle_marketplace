@@ -27,7 +27,7 @@ const ProductTypeMenu = ({
      }`}>
 	  {position === 'relative' &&
 	      <p className="hidden lg:block text-[15px]">The best deals you can find shop with 40% off | {" "}
-		  <Link to="/filter?searchTerm=" className="text-primaryColor hover:text-red-600 underline cursor-pointer">
+		  <Link to="/filter?searchTerm=&discount=bestDeal&code=3&coupon=40SHOPWIDE" className="text-primaryColor hover:text-red-600 underline cursor-pointer">
 		      Apply now
 		  </Link>
 	      </p>

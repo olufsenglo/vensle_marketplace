@@ -334,7 +334,7 @@ const Navbar = (props) => {
                       onClick={() => setOpen(false)}
                     >
                       <span className="sr-only">Close</span>
-                      <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                      <XMarkIcon className="h-6 w-6 rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300" aria-hidden="true" />
                     </button>
 
                     <section class="bg-white">
@@ -343,7 +343,7 @@ const Navbar = (props) => {
                           What would you like to upload?
                         </h3>
                         <div class="grid grid-cols-1 gap-12 text-center sm:grid-cols-2 md:grid-cols-3 lg:gap-y-16">
-                          <div className="cursor-pointer" onClick={() => handleUploadRedirect("/admin/upload-product")}>
+                          <div className="cursor-pointer hover:bg-gray-100/50 p-4 rounded-lg transition" onClick={() => handleUploadRedirect("/admin/upload-product")}>
                             <div class="relative mx-auto flex items-center justify-center">
                               <svg
                                 class="text-purple-100"
@@ -379,7 +379,7 @@ const Navbar = (props) => {
                             </p>
                           </div>
 
-                          <div className="cursor-pointer" onClick={() => handleUploadRedirect("/admin/upload-product?type=request")}>
+                          <div className="cursor-pointer hover:bg-gray-100/50 p-4 rounded-lg transition" onClick={() => handleUploadRedirect("/admin/upload-product?type=request")}>
                             <div class="relative mx-auto flex items-center justify-center">
                               <svg
                                 class="text-orange-100"
@@ -415,7 +415,7 @@ const Navbar = (props) => {
                             </p>
                           </div>
 
-                          <div className="cursor-pointer" onClick={() => handleUploadRedirect("/admin/upload-product?type=grocery")}>
+                          <div className="cursor-pointer hover:bg-gray-100/50 p-4 rounded-lg transition" onClick={() => handleUploadRedirect("/admin/upload-product?type=grocery")}>
                             <div class="relative mx-auto flex items-center justify-center">
                               <svg
                                 class="text-green-100"

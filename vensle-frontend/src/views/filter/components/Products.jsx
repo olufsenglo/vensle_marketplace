@@ -14,6 +14,7 @@ import {
 
 import Product from "components/front/product/Product";
 import Grocery from "components/front/product/Grocery";
+import dealAdImage from "assets/img/front/product-filter-deals/1.jpg"
 
 const product = {
   breadcrumbs: [
@@ -28,6 +29,7 @@ const Products = () => {
   const queryParams = new URLSearchParams(location.search);
 
   const searchTerm = queryParams.get("searchTerm") || "";
+  const discount = queryParams.get("discount") || "";
 
   const initialDistance = queryParams.get("distance") || "";
 
@@ -253,6 +255,19 @@ const Products = () => {
     setSort("");
     setSelectedSizes([]);
     setCurrentPage(1);
+
+	resetCategoryState()
+
+	setCategory_id('')
+	setActiveCategory('')
+	setActiveSubcategories('')
+	setLeftVisible(true)
+	getFiltersForCategory('');
+	setViewingSubcategories(true)
+	setSubcategoryFilters([])
+	setCategoryFilters([])
+	setSubcategory_id('')	  
+
   };
 
   const fetchFilteredProducts = async () => {
@@ -377,24 +392,113 @@ const Products = () => {
                   {/* Filters */}
 
               <form className="py-4 block lg:hidden px-4 border-r border-r-200">
-	  	<div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
-		    <h3 className="flow-root text-base font-semibold">Categories</h3>
-	  	    <ul className="text-[14px]">
-	  		{categoriesLoading && <li>Loading...</li>}
-	  		{categories.length > 0 && categories.map((category) => 
-	  	    	    <li
-				onClick={()=>setCategory_id(category.id)}
-				key={category.key}
-				className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200"
-			    >
-				{category.name}
-	  		    </li>
-			)}
-	  	    </ul>
+	  
+	  	<div className="mb-3 pr-4 border-b border-b-gray-200">
+		    <h3 className="flex items-center text-base font-semibold">
+	  		{viewingSubcategories && <ArrowLeftIcon
+	  			onClick={handleBackToCategories}
+	  			className="mr-2 p-[2px] h-5 w-5 rounded-full hover:bg-gray-200 cursor-pointer transition duration-300"
+	  		    />}
+	  		{activeCategory ? activeCategory.name : "Categories"}
+	  	    </h3>
+	  	    <div className="flex h-full w-full h-[11rem] overflow-x-hidden overflow-y-auto">
+			    <ul className={`text-[14px] flex h-full w-full shrink-0 transform flex-col transition-transform duration-300 translate-x-0  ${isLeftVisible
+                                    ? "translate-x-0"
+                                    : "-translate-x-full"
+                                    }`}>
+				{categoriesLoading && <li>Loading...</li>}
+				{categories.length > 0 && categories.map((category) => 
+				    <li
+					onClick={()=>handleSetCategory(category)}
+					key={category.id}
+					className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200 last:border-b-0"
+				    >
+					{category.name}
+				    </li>
+				)}
+			    </ul>
+	  		    <ul className={`text-[14px] flex w-full shrink-0 transform flex-col transition-transform duration-300 ${isLeftVisible
+                                    ? "translate-x-full"
+                                    : "-translate-x-full"
+                                    }`}>
+				{activeSubcategories.length > 0 && activeSubcategories.map((subcategory) => 
+				    <li
+					onClick={()=>handleSetSubcategory(subcategory)}
+					key={subcategory.id}
+					className={`py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200 last:border-b-0 ${subcategory.id ===subcategory_id && "bg-gray-100"}`}
+				    >
+					{subcategory.name}
+				    </li>
+				)}
+	  		    </ul>
+	  	    </div>
 	  	</div>
-<div className="pr-4 border-b border-gray-200">
+
+
+{subcategoryFilters.length > 0 ? (<div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
+	  <div className="relative">
+		{subcategoryFilters.map((subcategoryFilter)=> {
+			const valuesArray = subcategoryFilter.value.split(',');
+			return(
+			    <div className="pb-2 mb-2 border-b border-b-gray-200 last:border-b-0">
+				    <h3 className="flow-root mb-1 text-base font-semibold">
+				          {subcategoryFilter.name}
+				    </h3>
+				    <div className="h-20 overflow-y-auto">
+				       {valuesArray.map((value, index) => (
+					  <label className="flex mb-[2px] text-[14px] items-center" key={index}>
+						<input
+						    type='checkbox'
+						    value={value}
+					            name={subcategoryFilter.name}
+                    				    onChange={handleNewInputChange}
+						    className="mr-2 focus-ring border border-gray-300 focus:ring-ADashPrimary h-4 w-4"
+						/>
+						{value}
+					  </label>
+				       ))}
+			    	    </div>
+			    </div>
+			)
+		})}
+	</div>
+
+	
+</div>) : (categoryFilters.length > 0 && <div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
+
+          <div className="relative">
+                {categoryFilters.map((categoryFilter)=> {
+                        const valuesArray = categoryFilter.value.split(',');
+                        return(
+                            <div className="pb-2 mb-2 border-b border-b-gray-200 last:border-b-0">
+                                    <h3 className="flow-root mb-1 text-base font-semibold">
+                                          {camelToTitleCase(categoryFilter.name)}
+                                    </h3>
+                                    <div className="max-h-20 overflow-y-auto">
+                                       {valuesArray.map((value, index) => (
+                                          <label className="flex mb-[2px] text-[14px] items-center" key={index}>
+                                                <input
+                                                    type='checkbox'
+                                                    value={value}
+					            name={categoryFilter.name}
+                    				    onChange={handleNewInputChange}
+                                                    className="mr-2 focus-ring border border-gray-300 focus:ring-ADashPrimary h-4 w-4"
+                                                />
+                                                {value}
+                                          </label>
+                                       ))}
+                                    </div>
+                            </div>
+                        )
+                })}
+        </div>
+</div>)}
+	  
+
+
+<div className="pr-4 border-b border-gray-200 mb-3">
 		<h3 className="flow-root text-base font-semibold">Distace</h3>
-                <label className="mb-3 block pb-6">
+                <label className="block pb-4">
                   <select
                     className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                     value={distance}
@@ -408,14 +512,15 @@ const Products = () => {
 </div>
 <div className="pr-4 border-b border-gray-200 pr-4">
 		<h3 className="flow-root text-base font-semibold">Price</h3>
-                <div className="mb-3 flex items-center justify-between pb-6">
+                <div className="flex items-center justify-between pb-4">
                   <div className="flex items-center">
                     <span className="mr-2">$</span>
                     <label>
                       <input
-                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 placeholder-gray-700"
                         type="text"
                         name="minPrice"
+			placeholder="Min"
                         value={minPrice}
                         onChange={handleInputChange}
                       />
@@ -425,10 +530,11 @@ const Products = () => {
                   <div>
                     <label>
                       <input
-                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 placeholder-gray-700"
                         type="text"
                         name="maxPrice"
                         value={maxPrice}
+			placeholder="Max"
                         onChange={handleInputChange}
                       />
                     </label>
@@ -454,14 +560,8 @@ const Products = () => {
                     APPLY
                   </button>
                 </div>
+
               </form>
-
-
-
-
-
-
-
 
 
 
@@ -511,8 +611,10 @@ const Products = () => {
               </li>
             </ol>
           </nav>
-
-	  <div className="flex mt-2">
+{discount && <div className="mt-4 mb-6">
+	  <img src={dealAdImage} alt="deal ad" className="w-full" />
+</div>}
+	  <div className="flex mt-2 mx-auto max-w-2xl lg:max-w-7xl lg:max-w-8xl">
 		  {category_id && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			  Category: {category_id}
 			  <XMarkIcon onClick={removeCategoryFilter} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
@@ -565,7 +667,7 @@ const Products = () => {
               </select>
             </h1>
 
-            <div className="fixed py-1 px-2 lg:py-0 lg:px-0 bottom-[53px] lg:bottom-0 left-[33%] lg:left-0 z-10 bg-white lg:relative flex items-center gap-3 lg:gap-0 rounded-full lg:rounded-0">
+            <div className="fixed left-1/2 transform -translate-x-1/2 md:static md:transform-none py-1 px-2 lg:py-0 lg:px-0 bottom-[53px] lg:bottom-0 lg:left-0 z-10 bg-white lg:relative flex items-center gap-3 lg:gap-0 rounded-full lg:rounded-0">
               <select
                 name="sort"
                 value={sort}
@@ -768,42 +870,6 @@ const Products = () => {
 </div>
 
 
-                {/* 
-                <h3 className="mb-2 flow-root text-xl">Size</h3>
-                <div className="border-b border-gray-200 pb-6">
-                  <ul>
-                    <li>
-                      <input
-                        className="mr-3"
-                        type="checkbox"
-                        name="small"
-                        value="small"
-                        onChange={handleInputChange}
-                      />
-                      <span>Small</span>
-                    </li>
-                    <li>
-                      <input
-                        className="mr-3"
-                        type="checkbox"
-                        name="small"
-                        value="small"
-                        onChange={handleInputChange}
-                      />
-                      <span>Medium</span>
-                    </li>
-                    <li>
-                      <input
-                        className="mr-3"
-                        type="checkbox"
-                        name="medium"
-                        value="medium"
-                        onChange={handleInputChange}
-                      />
-                      <span>Large</span>
-                    </li>
-                  </ul>
-                </div> */}
 
                 <div className="mt-8 mr-4 flex items-center justify-between">
                   <button
@@ -826,32 +892,16 @@ const Products = () => {
               {/* Product grid */}
               <div className="relative lg:col-span-3 pt-4">
                 {loading && (
-                  <div
-                    style={{
-                      zIndex: "5",
-                      left: "0",
-                      right: "0",
-                      top: "0",
-                      bottom: "0",
-                    }}
-                    className="absolute flex items-center justify-center"
-                  >
-                    <p>Loading...</p>
+                  <div className="absolute inset-0 z-10 flex items-center justify-center">
+                    <p className="mt-[20vh] lg:mt-0">
+                    	Loading...
+		    </p>
                   </div>
                 )}
 
                 {!loading && filteredProducts?.data?.length === 0 && (
-                  <div
-                    style={{
-                      zIndex: "5",
-                      left: "0",
-                      right: "0",
-                      top: "0",
-                      bottom: "0",
-                    }}
-                    className="absolute flex items-center justify-center"
-                  >
-                    <p>
+                  <div className="absolute inset-0 z-10 flex items-center justify-center">
+                    <p className="mt-[20vh] lg:mt-0">
                       Your filter returned no products, you can try to widen
                       your search reach
                     </p>

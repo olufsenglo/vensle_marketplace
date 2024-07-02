@@ -170,13 +170,14 @@ const bottomStickyGoToPage = (redirectPage) => {
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 lg:px-8 pt-4 pb-2 md:pt-2 md:pb-4 lg:pt-6 lg:pb-4 lg:max-w-7xl lg:px-8">
           <div
-            className="flex flex-col gap-[1%] justify-between lg:items-center lg:flex-row"
+            className="flex md:relative flex-col gap-[1%] justify-between lg:items-center lg:flex-row"
           >
             <Link className="relative" to="/">
               <img className="w-[120px] md:w-40 lg:w-auto" src={logo} alt="vensle" />
             </Link>
             <Search position={'relative'} />
 
+	   {/*TODO: make props local state*/}
             <SignInRegisterLinks
               user={user}
               handleTopNavClick={handleTopNavClick}
@@ -193,6 +194,7 @@ const bottomStickyGoToPage = (redirectPage) => {
 		<Search position="sticky" />
 		<div className="flex mt-1 md:mt-2 lg:mt-0 items-center lg:ml-[4%] gap-8">
 		  <ProductTypeMenu activePill={activePill} setActivePill={setActivePill} />
+	   	  {/*TODO: make props local state*/}
 		  <SignInRegisterLinks
 		    user={user}
 		    handleTopNavClick={handleTopNavClick}
