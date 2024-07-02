@@ -189,3 +189,10 @@ input:checked.defaultCheckbox::before {
 		height: 37.5rem!important
 	}
 }
+
+.mySwiper .swiper-button-prev:after, .swiper-button-next:after,
+.mySwiper .swiper-button-next:after, .swiper-rtl .swiper-button-prev:after {
+   font-size: 1.7rem;
+   font-weight: bold;
+   color: black;
+}

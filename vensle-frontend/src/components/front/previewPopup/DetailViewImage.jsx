@@ -6,6 +6,16 @@ import {
 	ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+
+// import required modules
+import { Pagination } from 'swiper/modules';
+
 const PreviewPopup = ({
 	open,
 	setOpen,
@@ -30,8 +40,9 @@ const PreviewPopup = ({
           onClick={(e) => handleSetSelectedImagePath(e, thumbnail, index)}
           src={thumbnail}
           alt={product.name}
-          className="object-contain w-full h-full"
-        />
+	  className={`object-contain w-full h-full cursor-pointer hover:border hover:border-1 hover:border-[#191919] border-[#191919] rounded-2xl bg-[#f2f2f2] ${
+		  index === imgIndex ? "border-2":"border-transparent"
+	  }`} />
     );
   };
 
@@ -80,33 +91,45 @@ const PreviewPopup = ({
 			</p>}
                     	<div className="flex gap-4 flex-1 max-h-[88vh]">
                     	    <div className="relative flex-1 bg-[#f2f2f2] rounded-2xl">
-	  <div
-	    style={buttonControlStyle}
-	     onClick={handlePreviousPreviewImage}
-	     className="absolute m-auto top-0 bottom-0 flex justify-center items-center bg-white hover:bg-[#ededed] transition duration-300 h-[48px] w-[48px] cursor-pointer rounded-full"
-	  >
-	 	<ChevronLeftIcon className="w-6 h-6" />
-	  </div>
-	  <div
-	    style={buttonControlStyle}
-	     onClick={handleNextPreviewImage}
-	     className="absolute m-auto top-0 bottom-0 right-0 flex justify-center items-center bg-white hover:bg-[#ededed] transition duration-300 h-[48px] w-[48px] cursor-pointer rounded-full"
-	  >
-	 	<ChevronRightIcon className="w-6 h-6" />
-	  </div>
+				  <div
+				    style={buttonControlStyle}
+				     onClick={handlePreviousPreviewImage}
+				     className="absolute m-auto top-0 bottom-0 flex justify-center items-center bg-white hover:bg-[#ededed] transition duration-300 h-[48px] w-[48px] cursor-pointer rounded-full"
+				  >
+					<ChevronLeftIcon className="w-6 h-6" />
+				  </div>
+				  <div
+				    style={buttonControlStyle}
+				     onClick={handleNextPreviewImage}
+				     className="absolute m-auto top-0 bottom-0 right-0 flex justify-center items-center bg-white hover:bg-[#ededed] transition duration-300 h-[48px] w-[48px] cursor-pointer rounded-full"
+				  >
+					<ChevronRightIcon className="w-6 h-6" />
+				  </div>
 	  			<img src={previewImage} className="w-full h-full object-contain" alt="Preview" />
                     	    </div>
 
-                    	    <div className="w-[213px] gap-4 flex flex-col">
+                    	    <div className="hidden md:w-[150px] lg:w-[213px] gap-4 md:flex flex-col">
 
+			      <Swiper
+				direction="vertical"
+				slidesPerView={3}
+				spaceBetween={10}
+				modules={[Pagination]}
+				pagination={{
+				  clickable: true,
+				}}
+				className="mySwiper"
+			      >
 				    {product &&
 				      product.images.map((productImage, index) => (
-					  <div key={productImage.id} className={`h-[11rem] cursor-pointer hover:border hover:border-1 hover:border-[#191919] border-[#191919] rounded-2xl bg-[#f2f2f2] ${
-						  index === imgIndex ? "border-2":"border-transparent"
-					    }`}>
+        				  <SwiperSlide key={productImage.id}>
+					  <div className="h-[11rem] cursor-pointer">
 					    {handleShowSelectedImage(productImage, index)}
 					  </div>
+					  </SwiperSlide>
 				      ))}
+			      </Swiper>
+
 
                     	    </div>
                     	</div>

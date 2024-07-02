@@ -124,11 +124,13 @@ const Dashboard = () => {
 	const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
 	const accessToken = useSelector((state) => state?.auth?.user?.token);
 
-	const [loading, setLoading] = useState([]);
-	const [userStatsLoading, setUserStatsLoading] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const [verifyProgloading, setVerifyProgLoading] = useState(false);
+	const [userStatsLoading, setUserStatsLoading] = useState(false);
 	const [userStats, setUserStats] = useState([]);
 	const [data, setData] = useState([]);
 	const [latestMessages, setLatestMessages] = useState([]);
+	const [verifyProgress, setVerifyProgress] = useState('');
 
 	const percentage = 66;
 
@@ -164,6 +166,28 @@ const Dashboard = () => {
 		};
 
 		fetchData();
+	}, []);
+
+	useEffect(() => {
+		const fetchVerifyProgress = async () => {
+			setVerifyProgLoading(true)
+			try {
+				const response = await axios.get(
+					`${baseURL}/api/v1/business-details/profile-completion`, {
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				}
+				);
+				setVerifyProgress(response.data);
+				setVerifyProgLoading(false)
+			} catch (error) {
+				console.error("Error business details verification progress:", error);
+				setVerifyProgLoading(false)
+			}
+		};
+
+		fetchVerifyProgress();
 	}, []);
 
 	useEffect(() => {
@@ -266,12 +290,13 @@ const Dashboard = () => {
 						<h3 className="text-xl font-medium">Updgrade to<br /><span className="text-primaryColor">Grocery</span> Vendor</h3>
 						<p className="text-gray-700 mt-2 mr-2">Upload Business Details</p>
 					</div>
-					<div className="cursor-pointer w-[6rem] h-[6rem] rounded-full">
+					<div className="flex flex-col items-center justify-center cursor-pointer w-[6rem] h-[6rem] rounded-full">
+						{verifyProgloading && 'Loading...'}
 						<Link to="/admin/profile?tab=business" className="block w-full h-full rounded-full">
-							<CircularProgressbarWithChildren
+							{verifyProgress && <CircularProgressbarWithChildren
 								counterClockwise={true}
-								value={percentage}
-								text={`${percentage}%`}
+								value={verifyProgress.percentage}
+								text={`${verifyProgress.percentage}%`}
 								styles={buildStyles({
 									strokeLinecap: "butt",
 									pathColor: "#ff5959",
@@ -279,9 +304,9 @@ const Dashboard = () => {
 								})}
 							>
 								<div className="flex justify-center font-semibold items-center h-14 w-14 bg-white rounded-full">
-									{`${percentage}%`}
+									{`${verifyProgress.percentage}%`}
 								</div>
-							</CircularProgressbarWithChildren>
+							</CircularProgressbarWithChildren>}
 						</Link>
 					</div>
 				</div>

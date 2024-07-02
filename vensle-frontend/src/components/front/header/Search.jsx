@@ -71,44 +71,54 @@ const Search = ({ position = 'sticky' }) => {
     setShowDropdown(false);
   }
 
+  let timer = null;
+	
   const handleInputChange = async (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    setLoading(false);
+    setLoading(true);
 
-    try {
-      setLoading(true);
-      //TODO: temp distance
-      const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
-        params: {
-          searchTerm: value,
-          category_id: selectedCategory,
-          distance,
-          country: userCountry,
-          lat: userLocation.lat,
-          lng: userLocation.lng,
-        },
-      });
+    if (timer) {
+        clearTimeout(timer);
+    }	  
 
-      const fetchedSuggestions = response.data.data;
+    // Set a new timer to make the request after 500ms of user inactivity
+    timer = setTimeout(async () => {	  
+	    try {
+	      setLoading(true);
+	      //TODO: temp distance
+	      const response = await axios.get(`${baseURL}/api/v1/products/filter`, {
+		params: {
+		  searchTerm: value,
+		  category_id: selectedCategory,
+		  distance,
+		  country: userCountry,
+		  lat: userLocation.lat,
+		  lng: userLocation.lng,
+		},
+	      });
 
-
-      if (fetchedSuggestions.length > 0) {
-        setPreviousSearchResult(fetchedSuggestions)
-        setPreviousSearchTerm(value)
-        setSuggestions(fetchedSuggestions);
-      } else {
-        setSuggestions(previousSearchResult)
-      }
+	      const fetchedSuggestions = response.data.data;
 
 
+	      if (fetchedSuggestions.length > 0) {
+		setPreviousSearchResult(fetchedSuggestions)
+		setPreviousSearchTerm(value)
+		setSuggestions(fetchedSuggestions);
+	      } else {
+		setSuggestions(previousSearchResult)
+	      }
 
-      setSelectedSuggestionIndex(-1);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-      setLoading(false);
-    }
+
+
+	      setSelectedSuggestionIndex(-1);
+	      } catch (error) {
+		    console.error('Error fetching suggestions:', error);
+	      } finally {
+		    setLoading(false); // Stop loading after request completes
+	      }
+     }, 500);
+
   };
 
   const handleSelectSuggestion = (selectedSuggestion) => {
@@ -358,7 +368,6 @@ const Search = ({ position = 'sticky' }) => {
         placeholder="Search products, brands and categories"
         ref={inputRef}
       />
-      
       {searchTerm && <span onClick={() => setSearchTerm("")} className={`z-[2] absolute ${
 	position === "sticky" ? "right-[10px]" : "right-[40px] lg:right-28"
       }`}>
@@ -368,7 +377,7 @@ const Search = ({ position = 'sticky' }) => {
       {searchTerm && suggestions.length > 0 && (
         <ul
           className={`w-full suggestions-list right-0 left-0 z-10 mt-1 border border-t-0 bg-white ${
-	    position === 'sticky' ? "py-3 fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[2.8rem] border border-t-0"
+	    position === 'sticky' ? "py-3 px-6 lg:px-0 fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[2.8rem] border border-t-0"
 	  }`}
         >
 
@@ -391,7 +400,7 @@ const Search = ({ position = 'sticky' }) => {
 		  </div>
 
 
-		  {suggestions.length > 0 && suggestions.map((suggestion, index) => (
+		  {suggestions && Array.isArray(suggestions) && suggestions.length > 0 && suggestions.map((suggestion, index) => (
 		    <li
 		      key={index}
 		      onClick={() => handleSelectSuggestion(suggestion)}

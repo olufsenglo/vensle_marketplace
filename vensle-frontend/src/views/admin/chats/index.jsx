@@ -97,6 +97,7 @@ const Chats = () => {
 	const [loadingUserMessages, setLoadingUserMessages] = useState(false);
 	const [message, setMessage] = useState('');
 	const [userMessages, setUserMessages] = useState([]);
+	const [isUserMessagesRequest, setIsUserMessagesRequest] = useState(false);
 	const [selectedMsgId, setSelectedMsgId] = useState('');
 	const [msgRecipient, setMsgRecipient] = useState('');
 	const [open, setOpen] = useState(false);
@@ -161,7 +162,8 @@ const handleSubmit = (e) => {
 		setLoading(true)
 		const postData = {
 			receiver_id: 1,
-			content: message
+			content: message,
+			image 
 		}
 		try {
 			const response = await axios.post(
@@ -199,8 +201,11 @@ const handleSubmit = (e) => {
 			});
 			setUserMessages(response.data.chats);
 			setMsgRecipient(recipient);
+			setIsUserMessagesRequest(true)
+
 		} catch (error) {
 			console.error("Error fetching user messages:", error);
+			setIsUserMessagesRequest(false)
 		} finally {
 			setLoadingUserMessages(false);
 		}
@@ -230,7 +235,7 @@ const handleSubmit = (e) => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [message]);	
+  }, [message, userMessages]);	
 
   useEffect(() => {
 	  setMessage("")
@@ -306,6 +311,7 @@ const handleSubmit = (e) => {
 											className="w-5 h-5 mr-2 rounded-full object-cover"
 										/>
 										<span className="py-1 text-[15px] max-w-[50%] px-3 mb-3 bg-gray-200 rounded-xl rounded-tl-none">
+				{message.image_path && <img className="mb-1" src={`${baseURL}/${message.image_path}`} alt="attachment" />}
 											<p className="leading-5">{message.content}</p>
 											<p className="flex justify-end items-center text-gray-500 text-xs">
 				{moment(message.created_at).fromNow()}
@@ -324,7 +330,7 @@ const handleSubmit = (e) => {
 							)
 						)}
 					</div>
-					<form onSubmit={handleSubmitMessage} className="flex p-2.5 gap-3 bg-[#dde1ff]">
+		{userMessages.length > 0 && setIsUserMessagesRequest && <form onSubmit={handleSubmitMessage} className="flex p-2.5 gap-3 bg-[#dde1ff]">
 					        <label htmlFor="file-upload" className="cursor-pointer py-2 px-3 bg-white rounded-md">
 						    <PaperClipIcon className="h-5 w-5" aria-hidden="true" />
 						    <input
@@ -351,8 +357,7 @@ const handleSubmit = (e) => {
 						>
 							{loading ? <ButtonLoading /> : "Send"}
 						</button>
-					</form>
-
+					</form>}
 
 				</div>
 			</div>

@@ -199,7 +199,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                     <div className="w-full bg-white">
                       <div className="mx-auto max-w-7xl">
                         <div className="mx-auto rounded-3xl lg:mx-0 lg:flex lg:max-w-none">
-                          <div className="w-full">
+                          <div className="lg:w-[55%] lg:flex-1">
                             <div className="">
                               <div className="relative mb-2 lg:mb-4 border rounded-2xl m-2 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
                                 <span

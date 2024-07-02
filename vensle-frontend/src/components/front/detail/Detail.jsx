@@ -154,7 +154,7 @@ const ProductDetail = () => {
             type: SET_MESSAGE,
             payload: {
         	type: "success",
-       		message: "Please sign in to upload a product",
+       		message: "Please sign in to send message"
       	    },
     	});
     }
@@ -185,13 +185,18 @@ const ProductDetail = () => {
           breadcrumbs: [
             {
               id: 1,
-              name: response.data.product.category.name,
+              name: 'Pickup and Requests',
               href: "#"
             },
             {
               id: 2,
+              name: response.data.product.category.name,
+              href: `/filter?searchTerm=&category_id=${response.data.product.category_id}`
+            },
+            {
+              id: 3,
               name: response.data.product?.subcategory?.name,
-              href: "#"
+              href: `/filter?searchTerm=&category_id=${response.data.product.category_id}&subcategory_id=${response.data.product.subcategory_id}`
             },
           ],
         });
@@ -236,7 +241,7 @@ const ProductDetail = () => {
           handleNextPreviewImage={handleNextPreviewImage}
   	/>
 	  
-      <div style={{ minHeight: "75vh" }} className="relative pt-6">
+      <div className="min-h-[75vh] relative pt-4">
         <nav className="hidden lg:block" aria-label="Breadcrumb">
           <ol
             role="list"
@@ -293,7 +298,7 @@ const ProductDetail = () => {
         )}
 
         {!loading && product && (
-          <div className="mx-auto max-w-2xl px-4 lg:pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-8">
+          <div className="mx-auto max-w-2xl px-4 lg:pt-6 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-4 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8">
             <Feedback open={open} setOpen={setOpen} product={product} setProduct={setProduct} />
 
             <div className="bg-white lg:col-span-3 lg:pr-8">
@@ -301,7 +306,7 @@ const ProductDetail = () => {
                 {product && product.name}
               </h1>
 
-              <div className="mt-4 lg:mt-10 w-full">
+              <div className="mt-4 lg:mt-4 w-full">
                 <div className="overflow-hidden">
                   <div className="relative mb-1 lgmb-6 border rounded-2xl px-10 lg:mb-10 lg:h-[28rem]">
                     <span
@@ -482,7 +487,7 @@ const ProductDetail = () => {
                       getImagePath(product.user.business_details.profile_picture) :
                       seller
                     }
-                    className="w-[80px] h-[80px] object-cover rounded-full border-2 border-gray-200"
+                    className="w-[80px] h-[80px] object-contain rounded-full border-2 border-gray-200"
                     alt="seller"
                   />
                   <div className="ml-4">

@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Card from "components/card";
 import axios from "axios";
 
-import { XMarkIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import {
+   XMarkIcon,
+   ArrowUpTrayIcon,
+   ArrowLeftIcon,
+   ChevronDownIcon,
+} from "@heroicons/react/24/outline";
 import currencySymbolMap from "currency-symbol-map";
 
 import uploadImage from "assets/img/dashboards/upload.png";
 import UploadPreview from "./components/UploadPreview";
 
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 
 const Tables = () => {
   const navigate = useNavigate();
@@ -39,9 +44,19 @@ const Tables = () => {
   const [urlProductType, setUrlProductType] = useState(false);
   const [dragging, setDragging] = useState(false);
 
+  const [activeSubcategoryName, setActiveSubcategoryName] = useState('');
+  const [activeCategory, setActiveCategory] = useState('');
+  const [activeSubcategories, setActiveSubcategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState([]);
+  const [isLeftVisible, setLeftVisible] = useState(true);
+
+  const [subcategoryFiltersLoading, setSubcategoryFiltersLoading] = useState(false);
+  const [subcategoryFilters, setSubcategoryFilters] = useState([]);
+
   const [formData, setFormData] = useState({
     name: "",
     category_id: "",
+    subcategory_id: "",
     condition: "",
     price: "",
     max_price: "",
@@ -64,6 +79,25 @@ const Tables = () => {
     key_specifications: "",
     //specifications_ids: [4,5],
   });
+
+  const handleSetCategory = (category) => {
+	setActiveCategory(category)
+	setActiveSubcategories(category.subcategories)
+	setLeftVisible(!isLeftVisible)
+
+        setFormData({
+           ...formData,
+           category_id: category.id,
+        });
+	//validateField(name, value);
+  }
+
+  const handleBackToCategories = () => {
+        setLeftVisible(!isLeftVisible)
+	setActiveSubcategories('')
+	setActiveCategory('')
+  }
+
 
   const handleUseAddress = () => {
     setFormData({
@@ -134,6 +168,7 @@ const Tables = () => {
           }
         }
       case "category_id":
+      case "subcategory_id":
         if (!value) {
           errorMessage = "Category is required";
         }
@@ -304,7 +339,6 @@ const Tables = () => {
   const renderImagePreviews = () => {
     return imagePreviews.map((preview, index) => (
       <>
-        {console.log('errr us', jsValidateErrors)}
         <div className="group relative">
           <div className="relative aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7 w-full overflow-hidden rounded-lg bg-gray-200">
             <img
@@ -521,11 +555,14 @@ const Tables = () => {
 
     const fetchCategories = async () => {
       try {
+	setCategoriesLoading(true)
         const response = await fetch(`${baseURL}/api/v1/categories`);
         const data = await response.json();
         setCategories(data.categories);
+	setCategoriesLoading(false)
       } catch (error) {
         console.error("Error fetching categories:", error);
+	setCategoriesLoading(false)
       }
     };
 
@@ -578,6 +615,66 @@ const Tables = () => {
       "linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0))",
   };
 
+
+
+
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const options = ['Select Category'];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+	setLeftVisible(true)
+	setActiveCategory('')
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleSelectOption = (option) => {
+    setSelectedCategory(option);
+  };
+
+
+  const handleSetSubcategory = (subcategory) => {
+        setFormData({
+           ...formData,
+           subcategory_id: subcategory.id,
+        });
+	setActiveSubcategoryName(subcategory.name)
+	setIsOpen(false)
+	//Make api call to get filters by subcategory id
+	getFiltersForSubcategory(subcategory.id)
+	//validateField(name, value);
+  }
+
+    const getFiltersForSubcategory = async (id) => {
+        setSubcategoryFiltersLoading(true)
+	try {
+		const response = await axios.get(
+			`${baseURL}/api/v1/subcategory/${id}/product-filters`
+		);
+        	setSubcategoryFilters(response.data);
+        	setSubcategoryFiltersLoading(false)
+	} catch (error) {
+        	console.error("Error fetching categories filter", error);
+        	setSubcategoryFiltersLoading(false)
+	}
+    };
+
+
   return (
     <div className="flex w-full flex-col gap-5">
       {error && <div className="mt-8 ml-4 text-red-500">{error}</div>}
@@ -596,7 +693,7 @@ const Tables = () => {
             setUploadPreview={setUploadPreview}
           />
         )}
-
+{console.log('dateeher',formData)}
         <div className="w-ful mt-3 flex h-fit flex-col gap-5 lg:grid lg:grid-cols-12">
           <div className="col-span-12 lg:!mb-0">
             <Card extra={"w-full p-4 h-full"}>
@@ -714,6 +811,127 @@ const Tables = () => {
                     >
                       Product Category*
                     </label>
+
+
+
+
+
+
+
+    <div className="flex flex-col items-center justify-center">
+      <div className="relative w-full" ref={dropdownRef}>
+        <div
+          className={`flex justify-between items-center w-full mt-1 block rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm text-gray-500 placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 bg-gray-50 cursor-pointer ${
+		isOpen && "ring-2 ring-teal-500"
+	  }`}
+          onClick={toggleDropdown}
+        >
+          {activeSubcategoryName || 'Select Category'} <ChevronDownIcon className="w-4 h-4" />
+        </div>
+        {isOpen && (
+          <div className="absolute z-10 mt-2 w-full rounded-lg border-gray-300 bg-gray-50 py-1 px-4 shadow-lg">
+            {options.map((option, index) => (
+              <div
+                key={index}
+                className="cursor-pointer py-2 hover:bg-gray-100"
+                onClick={() => handleSelectOption(option)}
+              >
+                {option} 
+              </div>
+            ))}
+
+
+
+
+
+
+
+
+		    <h3 className="flex items-center text-base">
+	  		{activeSubcategories.length > 0 && <ArrowLeftIcon
+	  			onClick={handleBackToCategories}
+	  			className="mr-2 p-[2px] h-5 w-5 rounded-full hover:bg-gray-200 cursor-pointer transition duration-300"
+	  		    />}
+	  		{activeCategory ? activeCategory.name : "Select Categories"}
+	  	    </h3>
+	  	    <div className="flex h-full w-full overflow-hidden">
+			    <ul className={`text-[14px] flex h-full w-full shrink-0 transform flex-col transition-transform duration-300 translate-x-0  ${isLeftVisible
+                                    ? "translate-x-0"
+                                    : "-translate-x-full"
+                                    }`}>
+				{categoriesLoading && <li>Loading...</li>}
+				{categories.length > 0 && categories.map((category) => 
+				    <li
+					onClick={()=>handleSetCategory(category)}
+					key={category.id}
+					className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200"
+				    >
+					{category.name}
+				    </li>
+				)}
+			    </ul>
+	  		    <ul className={`text-[14px] flex w-full shrink-0 transform flex-col transition-transform duration-300 ${isLeftVisible
+                                    ? "translate-x-full"
+                                    : "-translate-x-full"
+                                    }`}>
+				{activeSubcategories.length > 0 && activeSubcategories.map((subcategory) => 
+				    <li
+					onClick={()=>handleSetSubcategory(subcategory)}
+					key={subcategory.id}
+					className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200"
+				    >
+					{subcategory.name}
+				    </li>
+				)}
+	  		    </ul>
+		  </div>
+
+
+          </div>
+        )}
+      </div>
+      {/* Additional content for the upload product form */}
+      <form className="mt-4">
+        {/* Your upload product form elements go here */}
+      </form>
+    </div>	  
+
+
+
+	  {subcategoryFilters.length > 0 && <div className="relative border border-gray-200 rounded-lg pt-3 pb-2 px-3">
+		<label
+		    htmlFor="category_id"
+		    className="absolute bg-white px-2 py-1 text-xs top-[-13px] font-semibold text-gray-500"
+		>
+		    Features
+		</label>
+	  
+		{subcategoryFilters.map((subFilter)=> {
+			const valuesArray = subFilter.value.split(',');
+			return(
+			    <div className="mb-4">
+				<label
+				    htmlFor="category_id"
+				    className="text-xs text-gray-500 italic"
+				>
+				    {subFilter.name}
+				</label>
+			    	<select
+                        	    className="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm text-gray-500 placeholder-gray-300 shadow-sm outline-none transition bg-gray-50 focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.category_id"
+				>
+				    {valuesArray.map((value, index) => (
+				    	<option key={index} value={value}>{value}</option>
+				    ))}
+	  		    	</select>
+			    </div>
+			)
+		})}
+</div>}
+
+
+
+
+
                     <div className="mt-2">
                       <select
                         id="category_id"
@@ -734,12 +952,12 @@ const Tables = () => {
                             </option>
                           ))}
                       </select>
-                      {jsValidateErrors.category_id &&
+                      {(jsValidateErrors.category_id || jsValidateErrors.subcategory_id) &&
                         <p
                           style={{ color: "red", fontSize: "13px" }}
                           className="mt-1"
                         >
-                          {jsValidateErrors.category_id}
+                          {jsValidateErrors.category_id || jsValidateErrors.subcategory_id}
                         </p>
                       }
                     </div>

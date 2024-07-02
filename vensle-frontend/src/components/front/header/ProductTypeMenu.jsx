@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import {
   HomeIcon,
   TruckIcon,
@@ -26,9 +27,9 @@ const ProductTypeMenu = ({
      }`}>
 	  {position === 'relative' &&
 	      <p className="hidden lg:block text-[15px]">The best deals you can find shop with 40% off | {" "}
-		  <span className="text-primaryColor hover:text-red-600 underline cursor-pointer">
+		  <Link to="/filter?searchTerm=" className="text-primaryColor hover:text-red-600 underline cursor-pointer">
 		      Apply now
-		  </span>
+		  </Link>
 	      </p>
 	  }
 	  <ul className={`flex ${

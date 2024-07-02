@@ -6,6 +6,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   FunnelIcon,
+  ArrowLeftIcon,
   MapPinIcon,
   Squares2X2Icon,
   ListBulletIcon,
@@ -21,13 +22,12 @@ const product = {
   ],
 };
 
-const baseURL = "https://nominet.vensle.com/backend";
+const baseURL = "http://localhost:8000";
 const Products = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
   const searchTerm = queryParams.get("searchTerm") || "";
-  const category_id = queryParams.get("category_id") || "";
 
   const initialDistance = queryParams.get("distance") || "";
 
@@ -43,11 +43,24 @@ const Products = () => {
   // State for filter form inputs
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [category_id, setCategory_id] = useState(queryParams.get("category_id") || "");
+  const [subcategory_id, setSubcategory_id] = useState(queryParams.get("subcategory_id") || "");
   const [type, setType] = useState("");
   const [sort, setSort] = useState("");
   const [listView, setListView] = useState("grid");
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [loading, setLoading] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('');
+  const [activeSubcategories, setActiveSubcategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState([]);
+  const [isLeftVisible, setLeftVisible] = useState(true);
+  const [categoryFiltersLoading, setCategoryFiltersLoading] = useState(false);
+  const [categoryFilters, setCategoryFilters] = useState([]);
+  const [subcategoryFiltersLoading, setSubcategoryFiltersLoading] = useState(false);
+  const [subcategoryFilters, setSubcategoryFilters] = useState([]);
+  const [viewingSubcategories, setViewingSubcategories] = useState(false);
+
 
   const [distance, setDistance] = useState(initialDistance);
   const [userLocation, setUserLocation] = useState({
@@ -64,6 +77,134 @@ const Products = () => {
     //fetchProducts(userLocation, newDistance, userCountry);
   };
 
+  const [filters, setFilters] = useState({
+    ramSize: [],
+    storageCapacity: [],
+    size: [],
+    color: [],
+    skinType: [],
+    fuelType: [],
+    transmission: [],
+    processorType: [],
+    material: [],
+    material2: [],
+    fit: [],
+    racketType: [],
+    swimsuitType: [],
+  });
+
+
+  const resetCategoryState = () => {
+	  setFilters({
+	    ramSize: [],
+	    storageCapacity: [],
+	    size: [],
+	    color: [],
+	    skinType: [],
+	    fuelType: [],
+	    transmission: [],
+	    processorType: [],
+	    material: [],
+	    material2: [],
+	    fit: [],
+	    racketType: [],
+	    swimsuitType: [],
+	  })
+  }
+
+  const handleNewInputChange = (e) => {
+    const { name, value, checked } = e.target;
+
+    setFilters((prevFilters) => {
+      // Clone previous state to avoid mutation
+      const updatedFilters = { ...prevFilters };
+
+      // Update selected items based on checkbox checked status
+      if (checked) {
+        updatedFilters[name] = [...updatedFilters[name], value];
+      } else {
+        updatedFilters[name] = updatedFilters[name].filter((item) => item !== value);
+      }
+
+      console.log('Updated Filters:', updatedFilters); // Debugging console.log
+
+      return updatedFilters;
+    });
+  };
+
+  const camelToTitleCase = (camelCaseStr) => {
+    return camelCaseStr
+      .replace(/([A-Z])/g, ' $1')  // Add space before capital letters
+      .replace(/^./, (str) => str.toUpperCase());  // Capitalize the first letter
+  };
+
+
+  const handleSetCategory = (category) => {
+	resetCategoryState()
+
+	setCategory_id(category.id)
+	setActiveCategory(category)
+	setActiveSubcategories(category.subcategories)
+	setLeftVisible(!isLeftVisible)
+	getFiltersForCategory(category.id);
+	setViewingSubcategories(true)
+	setSubcategoryFilters([])
+  }
+
+  const handleSetSubcategory = (subcategory) => {
+	setCategoryFilters([])
+	setSubcategory_id(subcategory.id)	  
+	getFiltersForSubcategory(subcategory.id);
+  }
+
+  const handleBackToCategories = () => {
+        setLeftVisible(!isLeftVisible)
+	setActiveSubcategories('')
+	setActiveCategory('')
+	setViewingSubcategories(false)
+  }
+
+ const removeCategoryFilter = () => {
+	 setCategory_id("")
+	 setCategoryFilters([])
+	 setLeftVisible(true)
+ }
+
+ const removeSubcategoryFilter = () => {
+	 setSubcategory_id("")
+	 setSubcategoryFilters([])
+	 setLeftVisible(true)
+ }
+
+
+    const getFiltersForCategory= async (id) => {
+        setCategoryFiltersLoading(true)
+        try {
+                const response = await axios.get(
+                        `${baseURL}/api/v1/category/${id}/product-filters`
+                );
+         	setCategoryFilters(response.data);
+        	setCategoryFiltersLoading(false)
+        } catch (error) {
+                console.error("Error fetching categories filter", error);
+        	setCategoryFiltersLoading(false)
+        }
+    };
+
+    const getFiltersForSubcategory = async (id) => {
+        setSubcategoryFiltersLoading(true)
+        try {
+                const response = await axios.get(
+                        `${baseURL}/api/v1/subcategory/${id}/product-filters`
+                );
+                setSubcategoryFilters(response.data);
+                setSubcategoryFiltersLoading(false)
+        } catch (error) {
+                console.error("Error fetching categories filter", error);
+                setSubcategoryFiltersLoading(false)
+        }
+    };
+	
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -122,6 +263,7 @@ const Products = () => {
           page: currentPage,
           searchTerm,
           category_id,
+          subcategory_id,
           minPrice,
           maxPrice,
           distance,
@@ -131,6 +273,7 @@ const Products = () => {
           type,
           sort,
           sizes: selectedSizes.join(","), // Convert array to comma-separated string
+	  ...filters,
         },
       });
 
@@ -154,6 +297,7 @@ const Products = () => {
     initialDistance,
     currentPage,
     category_id,
+    subcategory_id,
     minPrice,
     maxPrice,
     distance,
@@ -162,7 +306,26 @@ const Products = () => {
     type,
     sort,
     selectedSizes,
+    filters,
   ]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+	setCategoriesLoading(true)
+        const response = await fetch(`${baseURL}/api/v1/categories`);
+        const data = await response.json();
+        setCategories(data.categories);
+	setCategoriesLoading(false)
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+	setCategoriesLoading(false)
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
 
   return (
     <div className="bg-white">
@@ -217,21 +380,16 @@ const Products = () => {
 	  	<div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
 		    <h3 className="flow-root text-base font-semibold">Categories</h3>
 	  	    <ul className="text-[14px]">
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
-	  		     Gadgets
-	  		</li>
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
-	  		     Computing
-	  		</li>
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
-	  		     Appliances
-	  		</li>
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
-	  		     Cosmetics
-	  		</li>
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50">
-	  		     Fashion
-	  		</li>
+	  		{categoriesLoading && <li>Loading...</li>}
+	  		{categories.length > 0 && categories.map((category) => 
+	  	    	    <li
+				onClick={()=>setCategory_id(category.id)}
+				key={category.key}
+				className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200"
+			    >
+				{category.name}
+	  		    </li>
+			)}
 	  	    </ul>
 	  	</div>
 <div className="pr-4 border-b border-gray-200">
@@ -314,7 +472,7 @@ const Products = () => {
           </Dialog>
         </Transition.Root>
 
-        <main className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:py-4 lg:px-8">
+        <main className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:py-4 lg:pt-3 lg:px-8">
           <nav className="hidden lg:block" aria-label="Breadcrumb">
             <ol
               role="list"
@@ -354,7 +512,37 @@ const Products = () => {
             </ol>
           </nav>
 
-          <div className="mx-auto max-w-2xl lg:max-w-7xl pt-2 md:pb-4 lg:pb-2 lg:max-w-8xl flex items-baseline justify-between border-b border-gray-200 pb-2">
+	  <div className="flex mt-2">
+		  {category_id && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+			  Category: {category_id}
+			  <XMarkIcon onClick={removeCategoryFilter} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
+		  </p>}	  
+		  {subcategory_id && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+			    Subcategory: {subcategory_id}
+			  <XMarkIcon onClick={removeSubcategoryFilter} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
+		  </p>}	  
+		  {distance != 20 && distance !== '' && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+			  {distance}
+			  <XMarkIcon onClick={()=>setDistance(20)} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
+		  </p>}	  
+		  {type && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+			  {type}
+			  <XMarkIcon onClick={()=>setType("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
+		  </p>}	  
+		  {sort && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+			  {sort}
+			  <XMarkIcon onClick={()=>setSort("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
+		  </p>}	  
+		  {minPrice && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+			  {minPrice}
+			  <XMarkIcon onClick={()=>setMinPrice("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
+		  </p>}	  
+		  {maxPrice && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+			  {maxPrice}
+			  <XMarkIcon onClick={()=>setMaxPrice("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
+		  </p>}
+	  </div>
+          <div className="mx-auto max-w-2xl lg:max-w-7xl md:pb-4 lg:pb-2 lg:max-w-8xl flex items-baseline justify-between border-b border-gray-200 pb-2">
             <p className="flex text-sm lg:text-md items-center">
               <span className="mr-6 text-gray-500">
                 {filteredProducts?.data?.length} Ad[s]
@@ -428,29 +616,114 @@ const Products = () => {
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
               {/* Filters */}
               <form className="py-4 hidden lg:block border-r border-r-200">
-	  	<div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
-		    <h3 className="flow-root text-base font-semibold">Categories</h3>
-	  	    <ul className="text-[14px]">
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
-	  		     Gadgets
-	  		</li>
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
-	  		     Computing
-	  		</li>
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
-	  		     Appliances
-	  		</li>
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200">
-	  		     Cosmetics
-	  		</li>
-	  	    	<li className="py-1 cursor-pointer hover:bg-gray-100/50">
-	  		     Fashion
-	  		</li>
-	  	    </ul>
+
+
+	  	<div className="mb-3 pr-4 border-b border-b-gray-200">
+		    <h3 className="flex items-center text-base font-semibold">
+	  		{viewingSubcategories && <ArrowLeftIcon
+	  			onClick={handleBackToCategories}
+	  			className="mr-2 p-[2px] h-5 w-5 rounded-full hover:bg-gray-200 cursor-pointer transition duration-300"
+	  		    />}
+	  		{activeCategory ? activeCategory.name : "Categories"}
+	  	    </h3>
+	  	    <div className="flex h-full w-full h-[11rem] overflow-x-hidden overflow-y-auto">
+			    <ul className={`text-[14px] flex h-full w-full shrink-0 transform flex-col transition-transform duration-300 translate-x-0  ${isLeftVisible
+                                    ? "translate-x-0"
+                                    : "-translate-x-full"
+                                    }`}>
+				{categoriesLoading && <li>Loading...</li>}
+				{categories.length > 0 && categories.map((category) => 
+				    <li
+					onClick={()=>handleSetCategory(category)}
+					key={category.id}
+					className="py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200 last:border-b-0"
+				    >
+					{category.name}
+				    </li>
+				)}
+			    </ul>
+	  		    <ul className={`text-[14px] flex w-full shrink-0 transform flex-col transition-transform duration-300 ${isLeftVisible
+                                    ? "translate-x-full"
+                                    : "-translate-x-full"
+                                    }`}>
+				{activeSubcategories.length > 0 && activeSubcategories.map((subcategory) => 
+				    <li
+					onClick={()=>handleSetSubcategory(subcategory)}
+					key={subcategory.id}
+					className={`py-1 cursor-pointer hover:bg-gray-100/50 border-b border-b-gray-200 last:border-b-0 ${subcategory.id ===subcategory_id && "bg-gray-100"}`}
+				    >
+					{subcategory.name}
+				    </li>
+				)}
+	  		    </ul>
+	  	    </div>
 	  	</div>
-<div className="pr-4 border-b border-gray-200">
+
+
+{subcategoryFilters.length > 0 ? (<div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
+	  <div className="relative">
+		{subcategoryFilters.map((subcategoryFilter)=> {
+			const valuesArray = subcategoryFilter.value.split(',');
+			return(
+			    <div className="pb-2 mb-2 border-b border-b-gray-200 last:border-b-0">
+				    <h3 className="flow-root mb-1 text-base font-semibold">
+				          {subcategoryFilter.name}
+				    </h3>
+				    <div className="h-20 overflow-y-auto">
+				       {valuesArray.map((value, index) => (
+					  <label className="flex mb-[2px] text-[14px] items-center" key={index}>
+						<input
+						    type='checkbox'
+						    value={value}
+					            name={subcategoryFilter.name}
+                    				    onChange={handleNewInputChange}
+						    className="mr-2 focus-ring border border-gray-300 focus:ring-ADashPrimary h-4 w-4"
+						/>
+						{value}
+					  </label>
+				       ))}
+			    	    </div>
+			    </div>
+			)
+		})}
+	</div>
+
+	
+</div>) : (categoryFilters.length > 0 && <div className="mb-3 pb-2 pr-4 border-b border-b-gray-200">
+
+          <div className="relative">
+                {categoryFilters.map((categoryFilter)=> {
+                        const valuesArray = categoryFilter.value.split(',');
+                        return(
+                            <div className="pb-2 mb-2 border-b border-b-gray-200 last:border-b-0">
+                                    <h3 className="flow-root mb-1 text-base font-semibold">
+                                          {camelToTitleCase(categoryFilter.name)}
+                                    </h3>
+                                    <div className="max-h-20 overflow-y-auto">
+                                       {valuesArray.map((value, index) => (
+                                          <label className="flex mb-[2px] text-[14px] items-center" key={index}>
+                                                <input
+                                                    type='checkbox'
+                                                    value={value}
+					            name={categoryFilter.name}
+                    				    onChange={handleNewInputChange}
+                                                    className="mr-2 focus-ring border border-gray-300 focus:ring-ADashPrimary h-4 w-4"
+                                                />
+                                                {value}
+                                          </label>
+                                       ))}
+                                    </div>
+                            </div>
+                        )
+                })}
+        </div>
+</div>)}
+	  
+
+
+<div className="pr-4 border-b border-gray-200 mb-3">
 		<h3 className="flow-root text-base font-semibold">Distace</h3>
-                <label className="mb-3 block pb-6">
+                <label className="block pb-4">
                   <select
                     className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
                     value={distance}
@@ -464,14 +737,15 @@ const Products = () => {
 </div>
 <div className="pr-4 border-b border-gray-200 pr-4">
 		<h3 className="flow-root text-base font-semibold">Price</h3>
-                <div className="mb-3 flex items-center justify-between pb-6">
+                <div className="flex items-center justify-between pb-4">
                   <div className="flex items-center">
                     <span className="mr-2">$</span>
                     <label>
                       <input
-                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 placeholder-gray-700"
                         type="text"
                         name="minPrice"
+			placeholder="Min"
                         value={minPrice}
                         onChange={handleInputChange}
                       />
@@ -481,10 +755,11 @@ const Products = () => {
                   <div>
                     <label>
                       <input
-                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500"
+                        className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-50 py-2 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 placeholder-gray-700"
                         type="text"
                         name="maxPrice"
                         value={maxPrice}
+			placeholder="Max"
                         onChange={handleInputChange}
                       />
                     </label>

@@ -111,7 +111,7 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
                 key={category.id}
                 onMouseEnter={() => handleMouseEnter(category)}
                 onMouseLeave={handleMouseLeave}
-                className={`hidden font-medium hover:underline rounded-sm lg:block ${categoryId == category.id && "bg-gray-400/50"
+                className={`hidden font-medium hover:underline rounded-sm lg:block ${categoryId == category.id && "underline"
                   }`}
               >
                 {/*use localstorage for distance*/}
@@ -141,7 +141,7 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
                           <li
                             className="mb-2"
                           >
-                            <Link className="hover:underline" to="/">
+                            <Link className="hover:underline" to={`/filter?searchTerm=&category_id=${activeCategory.id}&subcategory_id=${subCategory.id}`}>
                               {subCategory.name}
                             </Link>
                           </li>
