@@ -105,7 +105,7 @@ const SingleProduct = ({ numberOfProducts, type, image = two }) => {
 					{type !== 'grocery' &&
 						<div className="flex items-center mt-3 mb-2 text-gray-400">
 							<MapPinIcon className="h-3 w-3 mr-1" />
-							<p className={`text-[13px] ${locationClassName}`}>Eastern Gate, London</p>
+							<p className={`text-[13px] line-clamp-1 ${locationClassName}`}>Eastern Gate, London</p>
 						</div>
 					}
 					<h2 className={`text-primaryColor text-sm font-bold ${priceClassName}`}>$124.50</h2>

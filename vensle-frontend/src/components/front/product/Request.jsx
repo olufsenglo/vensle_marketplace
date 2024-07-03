@@ -27,21 +27,27 @@ const NewTopRequests = ({ image="assets/img/front/temp/2.jpg" }) => {
 				>
 					Need a wall art for my living room
 				</h1>
-				<div className="mt-2 lg:mt-4">
-					<ul className="text-sm lg:text-base list-disc ml-6">
-						<li className="">I'm a white make who lives in a pretty huge apartment</li>
-						<li className="">I'd love to have a painting like this in my living room to give it some life</li>
+				<div className="mt-[1px] lg:mt-2 lg:mt-4">
+					<ul className="text-sm lg:text-base list-disc">
+						<li className="pl-4 lg:pl-6 line-clamp-1 text-[12px] lg:text-[13px] relative">
+						    <span className="absolute top-[8px] left-[5px] lg:left-[5px] block w-1 h-1 bg-black rounded"></span>
+		I'm a white make who lives in a pretty huge apartment
+						</li>
+						<li className="pl-4 lg:pl-6 line-clamp-1 text-[12px] lg:text-[13px] relative">
+						    <span className="absolute top-[8px] left-[5px] lg:left-[5px] block w-1 h-1 bg-black rounded"></span>
+			I'd love to have a painting like this in my living room to give it some life
+						</li>
 					</ul>
 				</div>
 
 				<div className="mt-1 lg:mt-4 flex justify-between flex-col lg:flex-row">
-					<div className="flex items-center pt-2 text-gray-600">
-						<ClockIcon className="h-3 w-3 mr-1" />
+					<div className="flex items-center pt-2 text-gray-400">
+						<ClockIcon className="h-[0.6rem] lg:h-3 w-[0.6rem] lg:h-3 mr-1" />
 						<p className="text-xs md:text-sm">Requested 11 hours ago</p>
 					</div>
 					<div className="flex items-center mt-1 lg:mt-2 text-gray-600">
-						<MapPinIcon className="h-3 w-3 mr-1" />
-						<p className="text-xs md:text-sm">The underground, London</p>
+						<MapPinIcon className="h-3 lg:h-[0.6rem] w-[0.6rem] lg:w-3 mr-1" />
+						<p className="text-xs md:text-sm">South gate, London</p>
 					</div>
 				</div>
 			</div>

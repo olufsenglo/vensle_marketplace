@@ -27,7 +27,7 @@ const SignInRegisterLink = ({
 	      {!isAuthenticated && (
 		  <UserIcon
 		      onClick={handleSignInClick}
-		      className="w-[28px] h-[28px] mr-[1px] block cursor-pointer lg:hidden"
+		      className="mr-4 w-[1.7rem] h-[1.7rem] block cursor-pointer lg:hidden"
 		  />
 	      )}
 		  <UserIcon className="mr-[1px] hidden lg:block w-[28px] h-[28px]" />

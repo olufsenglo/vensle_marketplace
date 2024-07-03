@@ -353,18 +353,17 @@ const Search = ({ position = 'sticky' }) => {
 
       {/*place in component*/}
       {showDropdown && (
-        <ul ref={setLocationRef} className={`w-full z-[11] suggestions-list right-0 left-0 mt-1 bg-white ${
-	    position === 'sticky' ? "fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto py-3 px-6" : "absolute p-3 top-[2.8rem] border border-t-0"
+        <ul ref={setLocationRef} className={`w-full z-[11] suggestions-list right-0 left-0 mt-1 lg:mt-0 bg-white ${
+	    position === 'sticky' ? "fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto py-3 px-6" : "absolute p-3 top-[2rem] lg:top-[3.2rem] border border-t-0"
 	}`}>
 	      <div>
 		  {loading && <li className="absolute inset-0 w-full flex justify-center items-center bg-white/50 text-center">Loading...</li>}
 
-	      {position === "sticky" && <div
-		className="mb-4 lg:hidden inline-flex items-center cursor-pointer text-sm font-medium transition-all duration-300 ease-in-out hover:text-gray-700"
+	      <div
+		className="mb-4 lg:mb-1 inline-flex items-center cursor-pointer text-sm font-medium transition-all duration-300 ease-in-out hover:text-gray-700"
 	      >
-		<ArrowLeftIcon className="h-4 w-4 mr-1" />
-		Back
-	      </div>}
+		<ArrowLeftIcon onClick={() =>setShowDropdown(false)} className="h-4 w-4 mr-1" />
+	      </div>
 
 		  <p className="text-gray-400 text-xs lg:text-sm">Location</p>
 		  <input
@@ -408,7 +407,7 @@ const Search = ({ position = 'sticky' }) => {
         </ul>
       )}
       <input
-        className={`h-[32px] md:h-full text-[13px] md:text-base flex-1 border ${position === 'relative' ? "border-r-0 lg:border-l-0  pl-[20px]" : "pl-4"
+        className={`h-[34px] rounded-md lg:rounded-none md:h-full text-[13px] md:text-base flex-1 border ${position === 'relative' ? "border-r-0 lg:border-l-0 pl-[20px]" : "pl-4"
           }`}
         type="text"
         value={searchTerm}
@@ -426,7 +425,7 @@ const Search = ({ position = 'sticky' }) => {
       {searchTerm && suggestions.length > 0 && (
         <ul
           className={`w-full suggestions-list right-0 left-0 z-10 mt-1 border border-t-0 bg-white ${
-	    position === 'sticky' ? "py-3 px-6 lg:px-0 fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[2.8rem] border border-t-0"
+	    position === 'sticky' ? "py-3 px-6 lg:px-0 fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[2rem] lg:top-[3.2rem] border border-t-0"
 	  }`}
         >
 
@@ -435,6 +434,7 @@ const Search = ({ position = 'sticky' }) => {
 			position === 'sticky' ? "mr-2 flex justify-between lg:block lg:text-right":"mt-2 text-right mr-6"
 		  }`}>
 		      {position === "sticky" && <div
+			onClick={() => setSearchTerm("")}
 			className="mb-4 lg:hidden inline-flex items-center cursor-pointer text-sm font-medium transition-all duration-300 ease-in-out hover:text-gray-700"
 		      >
 			<ArrowLeftIcon className="h-4 w-4 mr-1" />
@@ -453,7 +453,7 @@ const Search = ({ position = 'sticky' }) => {
 	    <li
 	      key={index}
 	      onClick={() => handleSelectSuggestion({name: search})}
-	      className="flex justify-between cursor-pointer text-sm px-2 mb-1 py-2 hover:bg-gray-200"
+	      className="flex justify-between cursor-pointer text-sm px-2 mb-1 py-1 hover:bg-gray-200"
 	    >
 		 <p className="line-clamp-1">
                     {search}
@@ -469,7 +469,7 @@ const Search = ({ position = 'sticky' }) => {
 		    <li
 		      key={index}
 		      onClick={() => handleSelectSuggestion(suggestion)}
-		      className={`cursor-pointer line-clamp-1 text-sm py-2 px-2 mb-1 hover:bg-gray-200 ${
+		      className={`cursor-pointer line-clamp-1 text-sm py-1 px-2 mb-1 hover:bg-gray-200 ${
 			      selectedSuggestionIndex === index ? "bg-gray-200" : ""
 			}`}
 		    >

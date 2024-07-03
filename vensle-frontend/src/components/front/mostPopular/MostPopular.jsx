@@ -28,12 +28,12 @@ const MostPopular = () => {
 					<SectionTitle>Most Popular Groceries</SectionTitle>
 					<Swiper
 						slidesPerView={2}
-						spaceBetween={15}
+						spaceBetween={8}
 						navigation={true}
 						breakpoints={{
 							640: {
 								slidesPerView: 2,
-								spaceBetween: 15,
+								spaceBetween: 8,
 							},
 							768: {
 								slidesPerView: 4,
@@ -45,7 +45,7 @@ const MostPopular = () => {
 							},
 						}}
 						modules={[Navigation]}
-						className="mySwiper mt-6 !w-[110%]"
+						className="mySwiper mt-2 lg:mt-6 !w-[110%]"
 					>
 						<SwiperSlide>
 							<SingleProduct type="grocery"  image={img5} numberOfProducts={6} />

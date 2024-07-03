@@ -37,39 +37,39 @@ const ProductTypeMenu = ({
 	  }`}>
 		<li
 		    onClick={() => handleSetActivePill(ALL)}
-		    className={`flex py-1 md:py-2 px-6 mr-2 items-center cursor-pointer transition duration-300 rounded-md ${
+		    className={`flex py-1 md:py-2 px-4 lg:px-6 md:mr-2 items-center cursor-pointer transition duration-300 rounded-md ${
 		    activePill === 1 ? "bg-black text-white" : "bg-white text-black hover:bg-gray-200/50"
 		    }`}
 		>
-		    <HomeIcon className="h-3 w-3 md:h-5 md:w-5 mr-1 md:mr-3" />
-		    <p className="text-[13px] md:text-base">All</p>
+		    <HomeIcon className="h-[0.6rem] w-[0.6rem] md:h-5 md:w-5 mr-1 md:mr-3" />
+		    <p className="text-[11px] md:text-base">All</p>
 		</li>
 		<li
 		    onClick={() => handleSetActivePill(PICKUP)}
-		    className={`flex py-1 md:py-2 mr-2 items-center cursor-pointer transition duration-300 py-2 px-6 rounded-md ${
+		    className={`flex py-1 md:py-2 md:mr-2 items-center cursor-pointer transition duration-300 py-2 px-3 lg:px-6 rounded-md ${
 		    activePill === 2 ? "bg-black text-white" : "bg-white text-black hover:bg-gray-200/50"
 		    }`}
 		>
-		    <TruckIcon className="h-3 w-3 md:h-5 md:w-5 mr-1 md:mr-3" />
-		    <p className="text-[13px] md:text-base">Pickup</p>
+		    <TruckIcon className="h-[0.6rem] w-[0.6rem] md:h-5 md:w-5 mr-1 md:mr-3" />
+		    <p className="text-[11px] md:text-base">Pickup</p>
 		</li>
 		<li
 		    onClick={() => handleSetActivePill(REQUESTS)}
-		    className={`flex py-1 md:py-2 mr-2 items-center cursor-pointer transition duration-300 px-6 rounded-md ${
+		    className={`flex py-1 md:py-2 md:mr-2 items-center cursor-pointer transition duration-300 py-2 px-2 lg:px-6 rounded-md ${
 		    activePill === 3 ? "bg-black text-white" : "bg-white text-black hover:bg-gray-200/50"
 		    }`}
 		>
-		    <BarsArrowUpIcon className="h-3 w-3 md:h-5 md:w-5 mr-1 md:mr-3" />
-		    <p className="text-[13px] md:text-base">Requests</p>
+		    <BarsArrowUpIcon className="h-[0.6rem] w-[0.6rem] md:h-5 md:w-5 mr-1 md:mr-3" />
+		    <p className="text-[11px] md:text-base">Requests</p>
 		</li>
 		<li
 		    onClick={() => handleSetActivePill(GROCERIES)}
-		    className={`flex py-1 md:py-2 items-center cursor-pointer transition duration-300 px-6 rounded-md ${
+		    className={`flex py-1 md:py-2 lg:mr-2 items-center cursor-pointer transition duration-300 py-2 px-2 lg:px-6 rounded-md ${
 		    activePill === 4 ? "bg-black text-white" : "bg-white text-black hover:bg-gray-200/50"
 		    }`}
 		>
-		    <ArrowUpOnSquareStackIcon className="h-3 w-3 md:h-5 md:w-5 mr-1 md:mr-3" />
-		    <p className="text-[13px] md:text-base">Groceries</p>
+		    <ArrowUpOnSquareStackIcon className="h-[0.6rem] w-[0.6rem] md:h-5 md:w-5 mr-1 md:mr-3" />
+		    <p className="text-[11px] md:text-base">Groceries</p>
 		</li>
 	  </ul>
       </div>

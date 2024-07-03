@@ -50,7 +50,7 @@ const SwipeProducts = ({ title, type, image }) => {
 						},
 					}}
 					modules={[Navigation]}
-					className="mySwiper mt-6 !w-[110%]"
+					className="mySwiper mt-2 lg:mt-6 !w-[110%]"
 				>
 					<SwiperSlide>
 						<SingleProduct type="pickUp" image={img1} numberOfProducts={7} />

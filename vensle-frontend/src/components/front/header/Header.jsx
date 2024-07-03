@@ -206,48 +206,48 @@ const bottomStickyGoToPage = (redirectPage) => {
 		</div>
 	</div>
       </div>
-<div className="bg-white fixed py-2 px-4 lg:hidden z-[6] w-full bottom-0 left-0 right-0">
+<div className="bg-white fixed px-4 lg:hidden z-[6] w-full bottom-0 left-0 right-0" style={headerWrapperStyle}>
       {/*TODO: put in component, same for each link, this is tooo repeative, i cant even handle it*/}
       <div className="flex justify-between mx-auto max-w-2xl lg:max-w-7xl lg:px-8">
-	  <Link to="/" className={`flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pathname === "/" ? "bg-gray-200" : (pageName === "" && "bg-gray-200")}`}>
+	  <Link to="/" className={`flex flex-col items-center px-4 py-3 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pathname === "/" ? "font-bold" : (pageName === "" && "font-bold")}`}>
 	      <HomeIcon className="w-5 h-5" />
 	      <p className="text-[10px]">Home</p>
 	  </Link>
 	  {isAuthenticated ?
-		<Link to="/saved-items" className={`flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "saved-items" && "bg-gray-200"}`}>
+		<Link to="/saved-items" className={`flex flex-col items-center py-3 px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "saved-items" && "font-bold"}`}>
 	      	    <HeartIcon className="w-5 h-5" />
               	   <p className="text-[10px]">Saved</p>
                </Link>
 	       :
-          	<div onClick={() => bottomStickyGoToPage('/saved-items')} className="flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
+          	<div onClick={() => bottomStickyGoToPage('/saved-items')} className="flex flex-col items-center py-3 px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
 	      	    <HeartIcon className="w-5 h-5" />
 	      	    <p className="text-[10px]">Saved</p>
 	  	</div>
 	  }
 	  {isAuthenticated ?
-		<Link to="/admin/upload-product" className={`flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "upload-product" && "bg-gray-200"}`}>
+		<Link to="/admin/upload-product" className={`flex flex-col items-center py-3 px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "upload-product" && "font-bold"}`}>
 	          <PlusIcon className="w-5 h-5" />
 	          <p className="text-[10px]">Upload</p>
                </Link>
 	       :
-          	<div onClick={() => bottomStickyGoToPage('/admin/upload-product')} className="flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
+          	<div onClick={() => bottomStickyGoToPage('/admin/upload-product')} className="flex flex-col items-center py-3 px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
 	           <PlusIcon className="w-5 h-5" />
 	     	    <p className="text-[10px]">Upload</p>
 	  	</div>
 	  }
 	  {isAuthenticated ?
-		<Link to="/admin" className={`flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "admin" && "bg-gray-200"}`}>
+		<Link to="/admin" className={`flex flex-col items-center py-3 px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "admin" && "font-bold"}`}>
 	      <UserIcon className="w-5 h-5" />
 	          <p className="text-[10px]">Dashboard</p>
                   </Link>
 	       :
-          	<div onClick={() => bottomStickyGoToPage('/admin')} className="flex flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
+          	<div onClick={() => bottomStickyGoToPage('/admin')} className="flex flex-col items-center py-3 px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
 	           <UserIcon className="w-5 h-5" />
 	      	   <p className="text-[10px]">Dashboard</p>
 	  	</div>
 	  }
 	  {isAuthenticated ?
-		<Link to="/cart" className={`flex relative flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "cart" && "bg-gray-200"}`}>
+		<Link to="/cart" className={`flex relative flex-col items-center py-3 px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300 ${pageName === "cart" && "font-bold"}`}>
 		{totalItems > 0 && (
 		  <span
 		    className="absolute top-[-4px] right-[11px] text-[0.7rem] w-[15px] h-[15px] flex items-center justify-center rounded-full bg-red-500 text-white"
@@ -259,7 +259,7 @@ const bottomStickyGoToPage = (redirectPage) => {
 	              <p className="text-[10px]">Cart</p>
                   </Link>
 	       :
-          	<div onClick={() => bottomStickyGoToPage('/cart')} className="flex relative flex-col items-center px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
+          	<div onClick={() => bottomStickyGoToPage('/cart')} className="flex relative flex-col items-center py-3 px-4 rounded-sm cursor-pointer hover:bg-gray-200 transition duration-300">
 		{totalItems > 0 && (
 		  <span
 		    className="absolute top-[-4px] right-[11px] text-[0.7rem] w-[15px] h-[15px] flex items-center justify-center rounded-full bg-red-500 text-white"

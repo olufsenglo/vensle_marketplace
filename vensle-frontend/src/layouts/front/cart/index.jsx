@@ -91,6 +91,10 @@ const Cart = () => {
     fetchCartSuggestItemsData();
   }, [isAuthenticated, accessToken, user]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []); 	
+
   // useEffect(() => {
   // }, [user]);
 

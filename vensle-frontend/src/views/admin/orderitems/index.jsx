@@ -9,6 +9,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { MdModeEditOutline } from "react-icons/md";
 
+import pendingDriverImage from "assets/img/front/payment/pending.png"
+
 const baseURL = "https://nominet.vensle.com/backend";
 
 //TODO: protect route
@@ -204,18 +206,20 @@ const OrderItems = () => {
                       </div>
                     </div>
                   </div>
-                  <form className="mt-4">
+	          {orderDetails.driver ? 
+		  <>
+	  	  <form className="mt-4">
                     <div>
                       <h5 className="text-xs text-gray-700">
                         Driver Name
                       </h5>
-                      <p>Matilda Gray</p>
+                      <p>{orderDetails.driver.Name}</p>
                     </div>
                     <div className="mt-4">
                       <h5 className="text-xs text-gray-700">
                         Contact Information
                       </h5>
-                      <p> +441 435 670 670</p>
+                      <p>{orderDetails.driver["phone number"]}</p>
                       <p>matildagray@gmail.com</p>
                     </div>
                     <div className="mt-4">
@@ -231,6 +235,14 @@ const OrderItems = () => {
                   <button className="mt-6 w-full py-2 rounded-md border border-[#ff5959] bg-white hover:bg-[#ff5959] hover:text-white text-[#ff5959]">
                     VIEW FEEDBACKS (24)
                   </button>
+	          </> : <div className="text-center">
+	      	      <img
+	      		className="w-full"
+	      		src={pendingDriverImage}
+	      		alt="Pending driver selection"
+	      	      />
+	      	      <p>We are matching you with the closest driver</p>
+	         </div>}
                 </div>
               </Card>
 

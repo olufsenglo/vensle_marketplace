@@ -18,20 +18,20 @@ import img3 from "assets/img/front/all/front_069.png"
 const NewTopRequests = () => {
     return (
       <div className="relative bg-white">
-         <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8">
+         <div className="mx-auto max-w-2xl px-4 sm:px-6 pt-4 lg:pt-6 pb-6 lg:max-w-7xl lg:px-8">
 	      <SectionTitle>Top Requests</SectionTitle>
 	      <Swiper
 		  slidesPerView={2}
-		  spaceBetween={15}
+		  spaceBetween={7}
 		  navigation={true}
 		  breakpoints={{
 			640: {
 				slidesPerView: 2,
-				spaceBetween: 15,
+				spaceBetween: 7,
 			},
 			768: {
 				slidesPerView: 2,
-				spaceBetween: 25,
+				spaceBetween: 15,
 			},
 			1024: {
 				slidesPerView: 2,
@@ -39,7 +39,7 @@ const NewTopRequests = () => {
 			},
 		  }}					
 		  modules={[Navigation]}
-		  className="mySwiper mt-6"
+		  className="mySwiper mt-2 lg:mt-6"
 	      >
 		<SwiperSlide>
 	  	    <Request image={img3}  />

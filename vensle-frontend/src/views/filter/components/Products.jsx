@@ -23,7 +23,7 @@ const product = {
   ],
 };
 
-const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 const Products = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -267,7 +267,7 @@ const Products = () => {
 	setSubcategoryFilters([])
 	setCategoryFilters([])
 	setSubcategory_id('')	  
-
+	setMobileFiltersOpen(false)
   };
 
   const fetchFilteredProducts = async () => {
@@ -324,6 +324,10 @@ const Products = () => {
     filters,
   ]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [searchTerm, filteredProducts]);  
+  	
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -667,7 +671,7 @@ const Products = () => {
               </select>
             </h1>
 
-            <div className="fixed left-1/2 transform -translate-x-1/2 md:static md:transform-none py-1 px-2 lg:py-0 lg:px-0 bottom-[53px] lg:bottom-0 lg:left-0 z-10 bg-white lg:relative flex items-center gap-3 lg:gap-0 rounded-full lg:rounded-0">
+            <div className="fixed left-1/2 transform -translate-x-1/2 md:static md:transform-none py-1 px-2 lg:py-0 lg:px-0 bottom-[65px] lg:bottom-0 lg:left-0 z-[2] bg-white lg:relative flex items-center gap-3 lg:gap-0 rounded-full lg:rounded-0 shadow-md lg:shadow-none">
               <select
                 name="sort"
                 value={sort}
@@ -706,7 +710,7 @@ const Products = () => {
                 onClick={() => setMobileFiltersOpen(true)}
               >
                 <span className="sr-only">Filters</span>
-                <FunnelIcon className="h-4 lg:h-5 w-4 lg:w-5" aria-hidden="true" />
+                <FunnelIcon className="h-4 lg:h-5 w-4 lg:w-5 mr-2" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -900,7 +904,7 @@ const Products = () => {
                 )}
 
                 {!loading && filteredProducts?.data?.length === 0 && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center">
+                  <div className="absolute inset-0 z-[1] flex items-center justify-center">
                     <p className="mt-[20vh] lg:mt-0">
                       Your filter returned no products, you can try to widen
                       your search reach

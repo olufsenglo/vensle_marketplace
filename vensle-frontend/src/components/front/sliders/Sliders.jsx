@@ -18,7 +18,7 @@ const Sliders = ({
 }) => {
   return (
     <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8">
+      <div className="mx-auto max-w-2xl px-4 pt-6 pb-4 lg-pb-6 sm:px-6 lg:max-w-7xl lg:px-8">
         {activePill === 1 && <PickupSlider />}
         {activePill === 2 && <PickupSlider />}
         {activePill === 3 && <RequestSlider />}

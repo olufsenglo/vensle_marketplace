@@ -279,7 +279,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
 
                                         <p className="text-sm leading-5">
                                           <span className="mx-1">
-                                            {selectedProduct.ratings.toFixed(1)}
+					    {typeof selectedProduct?.ratings === 'number' ? selectedProduct.ratings.toFixed(1) : '0.0'}
                                           </span>{" "}
                                           (
                                           {selectedProduct &&

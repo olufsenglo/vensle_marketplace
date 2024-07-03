@@ -165,7 +165,6 @@ const ProductDetail = () => {
     return `${baseURL}/uploads/${name}`;
   };
   
-  //TODO: Scroll to top
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);  

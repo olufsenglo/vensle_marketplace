@@ -64,10 +64,20 @@ const UserProfile = () => {
 
 
 
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);  
+
+
+
   return (
-    <div className="bg-white">
+    <div className="">
       <Header />
 
+
+
+<div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-8 lg:max-w-7xl lg:px-8">
         <h2 className="pr-3 mb-6 text-center text-xl md:text-xl font-semibold tracking-tight text-gray-900">
           Saved Items
@@ -103,6 +113,7 @@ const UserProfile = () => {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       <Footer />

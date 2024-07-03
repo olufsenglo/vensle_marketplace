@@ -40,7 +40,7 @@ export default function NavCategories() {
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 translate-y-1"
       >
-        <Popover.Panel className="absolute z-10 mt-5 flex w-screen max-w-max px-4">
+        <Popover.Panel className="absolute z-10 left-[-10px] mt-5 flex w-screen max-w-max px-4">
           <div className="w-[86vw] max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
             <div className="p-4">
               {solutions.map((item) => (

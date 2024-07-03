@@ -16,7 +16,7 @@ import uploadImage from "assets/img/dashboards/upload.png";
 import UploadPreview from "./components/UploadPreview";
 
 
-const baseURL = "http://localhost:8000";
+const baseURL = "https://nominet.vensle.com/backend";
 
 const Tables = () => {
   const navigate = useNavigate();
