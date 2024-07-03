@@ -35,6 +35,7 @@ function classNames(...classes) {
 
 const baseURL = "https://nominet.vensle.com/backend";
 const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }) => {
+	console.log('sell me', selectedProduct)
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth?.user?.token);
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
@@ -126,10 +127,10 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
 
   const handleShowSelectedImage = (image, index) => {
     return (
-      <a
+      <Link
         onClick={(e) => handleSetPreviewImage(e, image.name, index)}
-        href="#"
-        className={`dark:border-transparent block overflow-hidden rounded-md border hover:border-primaryColor dark:hover:border-primaryColor ${index == imgIndex ? "border-primaryColor" : "border-transparent"
+        to="#"
+        className={`dark:border-transparent block w-full h-full overflow-hidden rounded-md border hover:border-primaryColor dark:hover:border-primaryColor ${index == imgIndex ? "border-primaryColor" : "border-transparent"
           }`}
       >
         <img
@@ -137,7 +138,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
           alt="Preview"
           className="!object-contain lg:!h-16 lg:!w-20"
         />
-      </a>
+      </Link>
     );
   };
 
@@ -204,7 +205,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                               <div className="relative mb-2 lg:mb-4 border rounded-2xl m-2 lg:h-[28rem] lg:pl-[6%] lg:pr-[6%]">
                                 <span
                                   style={{ borderTopLeftRadius: "1rem", borderBottomLeftRadius: "1rem" }}
-                                  className="absolute top-0 bottom-0 left-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
+                                  className="absolute top-0 bottom-0 left-0 bg-gray-50 bg-opacity-50 hover:bg-gray-100 w-[2rem] lg:w-[3rem] flex justify-center items-center cursor-pointer"
                                   onClick={handlePreviousPreviewImage}
                                 >
                                   <ChevronLeftIcon className="h-8 w-8" />
@@ -212,19 +213,19 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                 <img
                                   src={previewImage}
                                   alt=" /"
-                                  className="w-full object-contain h-[20rem] lg:h-full"
+                                  className="w-full object-contain rounded-2xl h-[19rem] lg:h-full"
                                 />
                                 <span
                                   style={{ borderTopRightRadius: "1rem", borderBottomRightRadius: "1rem" }}
-                                  className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-[3rem] flex justify-center items-center cursor-pointer"
+                                  className="absolute top-0 bottom-0 right-0 bg-gray-50 bg-opacity-50 hover:bg-gray-100 w-[2rem] lg:w-[3rem] flex justify-center items-center cursor-pointer"
                                   onClick={handleNextPreviewImage}
                                 >
                                   <ChevronRightIcon className="h-8 w-8" />
                                 </span>
                               </div>
+<div className="pl-2 lg:pl-0 absolute top-0 lg:relative w-[80vw] lg:w-full">
 
-
-                                <Swiper
+	  			{selectedProduct.images?.length > 0 && <Swiper
                                   slidesPerView={8}
                                   spaceBetween={1}
                                   navigation={true}
@@ -234,30 +235,31 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                   {selectedProduct.images[0] &&
                                     selectedProduct.images.map((image, index) => (
                                       <SwiperSlide>
-                                        <div className="p-2">
+                                        <div className="lg:p-2 h-[25px] lg:h-[5rem] w-[25px] lg:w-[5rem]">
                                           {handleShowSelectedImage(image, index)}
                                         </div>
                                       </SwiperSlide>
                                     ))}
-                                </Swiper>
+                                </Swiper>}
+</div>	  
                             </div>
                           </div>
 
                           <div className="p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
-                            <div className="h-full rounded-2xl bg-gray-50 py-4 ring-1 ring-inset ring-gray-900/5">
+                            <div className="h-full ring-0 lg:rounded-2xl lg:bg-gray-50 lg:py-4 lg:ring-1 ring-inset ring-gray-900/5">
                               <div
                                 id="parent"
                                 className="flex h-full w-full overflow-hidden"
                               >
                                 <div
                                   id="left"
-                                  className={`flex h-full w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
+                                  className={`flex h-full w-full shrink-0 transform flex-col p-0 lg:pl-6 lg:pr-8 transition-transform duration-300 ${isLeftVisible
                                     ? "translate-x-0"
                                     : "-translate-x-full"
                                     }`}
                                 >
                                   <h3
-                                    className="mb-1 lg:mb-5 text-base lg:text-2xl font-medium line-clamp-2 tracking-tight"
+                                    className="mb-1 lg:mb-5 text-base lg:text-2xl md:font-medium line-clamp-2 tracking-tight"
                                   >
                                     {selectedProduct.name}
                                   </h3>
@@ -277,7 +279,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                           ))}
                                         </div>
 
-                                        <p className="text-sm leading-5">
+                                        <p className="text-[13px] lg:text-sm leading-5">
                                           <span className="mx-1">
 					    {typeof selectedProduct?.ratings === 'number' ? selectedProduct.ratings.toFixed(1) : '0.0'}
                                           </span>{" "}
@@ -292,7 +294,7 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                         </p>
                                       </>)
                                       :
-                                      (<p className="text-sm leading-5">No Feedback</p>)}
+                                      (<p className="text-[13px] lg:text-sm leading-5">No Feedback</p>)}
                                   </div>
                                   <h4 className="mt-2 lg:mt-3 mg-3 lg:mb-5 text-xl text-primaryColor">
                                     {selectedProduct.currency}{" "}
@@ -304,11 +306,11 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                     {selectedProduct.description}
                                   </p>
 
-                                  <p className="mt-3 lg:mt-5 flex items-center text-sm font-medium">
+                                  <p className="text-gray-400 lg:text-black mt-3 lg:mt-5 flex items-center text-xs lg:text-sm lg:font-medium">
                                     <MapPinIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
                                     {selectedProduct.city}
                                   </p>
-                                  <p className="mt-1 lg:mt-3 flex items-center text-sm font-medium">
+                                  <p className="text-gray-400 lg:text-black mt-1 lg:mt-3 flex items-center text-xs lg:text-sm lg:font-medium">
                                     <ClockIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
                                     Posted{" "}
                                     {moment(selectedProduct.created_at).format(
@@ -349,21 +351,20 @@ const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }
                                 </div>
                                 <div
                                   id="right"
-                                  className={`flex w-full shrink-0 transform flex-col pl-6 pr-8 transition-transform duration-300 ${isLeftVisible
+                                  className={`flex w-full shrink-0 transform flex-col lg:pl-6 lg:pr-8 transition-transform duration-300 ${isLeftVisible
                                     ? "translate-x-full"
                                     : "-translate-x-full"
                                     }`}
                                 >
 	  			<div className="flex justify-end flex-row-reverse lg:block">
-                                  <h4 className="lg:mt-3 lg:mb-5 text-base lg:text-xl">
+                                  <h4 className="lg:mt-3 lg:mb-5 text-[15px] lg:text-xl">
                                     Send a message
                                   </h4>
                                   <p
-                                    className="flex mr-6 lg:mr-0 text-sm lg:text-base cursor-pointer items-center"
+                                    className="flex mr-1 lg:mr-0 text-sm lg:text-base cursor-pointer items-center"
                                     onClick={() => setLeftVisible(!isLeftVisible)}
                                   >
                                     <ArrowLeftIcon className="mr-1 lg:mr-2 h-4 w-4" />
-                                    Back
                                   </p>
 				</div>
                                   <MessageForm

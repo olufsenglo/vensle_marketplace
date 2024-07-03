@@ -243,6 +243,7 @@ const Products = () => {
   const handleApplyFilter = () => {
     // Make API call with filter parameters
     fetchFilteredProducts();
+    setMobileFiltersOpen(false)
   };
 
   const handleClearFilters = (e) => {
@@ -618,32 +619,33 @@ const Products = () => {
 {discount && <div className="mt-4 mb-6">
 	  <img src={dealAdImage} alt="deal ad" className="w-full" />
 </div>}
-	  <div className="flex mt-2 mx-auto max-w-2xl lg:max-w-7xl lg:max-w-8xl">
-		  {category_id && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+	  <div className="flex mb-1 gap-2 lg:gap-4 flex-wrap mt-2 mx-auto max-w-2xl lg:max-w-7xl lg:max-w-8xl">
+		  {/*TODO: put in component*/}
+		  {category_id && <p className="flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			  Category: {category_id}
 			  <XMarkIcon onClick={removeCategoryFilter} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
 		  </p>}	  
-		  {subcategory_id && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+		  {subcategory_id && <p className="flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			    Subcategory: {subcategory_id}
 			  <XMarkIcon onClick={removeSubcategoryFilter} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
 		  </p>}	  
-		  {distance != 20 && distance !== '' && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+		  {distance != 20 && distance !== '' && <p className="flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			  {distance}
 			  <XMarkIcon onClick={()=>setDistance(20)} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
 		  </p>}	  
-		  {type && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+		  {type && <p className="flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			  {type}
 			  <XMarkIcon onClick={()=>setType("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
 		  </p>}	  
-		  {sort && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+		  {sort && <p className="flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			  {sort}
 			  <XMarkIcon onClick={()=>setSort("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
 		  </p>}	  
-		  {minPrice && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+		  {minPrice && <p className="flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			  {minPrice}
 			  <XMarkIcon onClick={()=>setMinPrice("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
 		  </p>}	  
-		  {maxPrice && <p className="mr-4 flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
+		  {maxPrice && <p className="flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			  {maxPrice}
 			  <XMarkIcon onClick={()=>setMaxPrice("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
 		  </p>}

@@ -29,130 +29,144 @@ export default function ShopByGroceryCategories() {
 	    <SectionTitle>Shop by Categories</SectionTitle>
 	    <div className="mt-10 overflow-hidden">
 	      <Swiper
-		  slidesPerView={8}
-		  spaceBetween={10}
+		  slidesPerView={4}
+		  spaceBetween={20}
 		  navigation={true}
 		  modules={[Navigation]}
+		  breakpoints={{
+			640: {
+				slidesPerView: 4,
+				spaceBetween: 4,
+			},
+			768: {
+				slidesPerView: 6,
+				spaceBetween: 6,
+			},
+			1080: {
+				slidesPerView: 8,
+				spaceBetween: 10,
+			},
+		}}
 		  className="mySwiper !w-[106%]"
 	      >
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image10}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Bananas</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Bananas</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image1}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Grapes</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Grapes</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image2}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Men's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Custard</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image3}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-[16px] mt-1">Computing</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Steak</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image4}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-	   	    	  <p className="p-2 text-[16px] mt-1">Women's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Deli</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image5}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-	   	    	  <p className="p-2 text-[16px] mt-1">Men's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Grapes</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image6}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-	   	    	  <p className="p-2 text-[16px] mt-1">Men's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Apples</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image11}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-	   	    	  <p className="p-2 text-[16px] mt-1">Men's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Grapes</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image8}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-	   	    	  <p className="p-2 text-[16px] mt-1">Women's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Banana Bread</p>
            	    </div>
 		</SwiperSlide>
 		<SwiperSlide>
 	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="rounded-full p-[0.2rem] p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
+	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={image1}
-				     className="!w-[8rem] !h-[8rem] p-4 !object-contain"
+				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-	   	    	  <p className="p-2 text-[16px] mt-1">Women's Fashion</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">Organic Grapes</p>
            	    </div>
 		</SwiperSlide>
 	      </Swiper>

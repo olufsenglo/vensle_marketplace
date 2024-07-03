@@ -502,7 +502,7 @@ const Cart = () => {
               {currentTab === 'cart' &&
                 <div className="flow-root">
                   <div className="absolute top-[-28px] left-0 right-0 flex justify-between">
-                    <h3>My Cart({cartItems.length} item{cartItems.length > 1 && 's'})</h3>
+                    <h3>My Cart ({cartItems.length} item{cartItems.length > 1 && 's'})</h3>
                     {cartItems.length > 0 &&
                       <p
                         onClick={handleClearCart}
@@ -535,7 +535,7 @@ const Cart = () => {
                             <div className="relative flex flex-1 flex-col justify-between">
                               <div className="sm:col-gap-5 sm:grid sm:grid-cols-2">
                                 <div onClick={(e) => handleProductQuickView(e, item)} className="pr-8 sm:pr-5 cursor-pointer">
-                                  <p className="text-base font-semibold text-gray-900">
+                                  <p className="text-base font-medium md:font-semibold text-gray-900">
                                     {item.name}
                                   </p>
                                   <p className="mx-0 mt-1 mb-0 text-sm text-gray-400">

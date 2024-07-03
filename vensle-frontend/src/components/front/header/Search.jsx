@@ -244,12 +244,13 @@ const Search = ({ position = 'sticky' }) => {
         `/filter?searchTerm=${encodedSearchTerm}&category_id=${selectedCategory}&distance=${distance}`
       );
 
-      setSearchTerm('');
+      //setSearchTerm('');
 
       //TODO: Temp solution
-      if (window.location.pathname === '/') {
-        window.location.reload();
-      }
+      //if (window.location.pathname === '/') {
+        //window.location.reload();
+      //}
+      setSuggestions([])
     } else {
       console.error('Search term is empty.');
     }
@@ -354,7 +355,7 @@ const Search = ({ position = 'sticky' }) => {
       {/*place in component*/}
       {showDropdown && (
         <ul ref={setLocationRef} className={`w-full z-[11] suggestions-list right-0 left-0 mt-1 lg:mt-0 bg-white ${
-	    position === 'sticky' ? "fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto py-3 px-6" : "absolute p-3 top-[2rem] lg:top-[3.2rem] border border-t-0"
+	    position === 'sticky' ? "fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto py-3 px-6" : "absolute p-3 top-[33px] lg:top-[3.2rem] border border-t-0"
 	}`}>
 	      <div>
 		  {loading && <li className="absolute inset-0 w-full flex justify-center items-center bg-white/50 text-center">Loading...</li>}
@@ -407,7 +408,7 @@ const Search = ({ position = 'sticky' }) => {
         </ul>
       )}
       <input
-        className={`h-[34px] rounded-md lg:rounded-none md:h-full text-[13px] md:text-base flex-1 border ${position === 'relative' ? "border-r-0 lg:border-l-0 pl-[20px]" : "pl-4"
+        className={`h-[34px] lg:rounded-none md:h-full text-[13px] md:text-base flex-1 border ${position === 'relative' ? "border-r-0 lg:border-l-0 pl-[20px]" : "pl-4 rounded-md"
           }`}
         type="text"
         value={searchTerm}
@@ -425,7 +426,7 @@ const Search = ({ position = 'sticky' }) => {
       {searchTerm && suggestions.length > 0 && (
         <ul
           className={`w-full suggestions-list right-0 left-0 z-10 mt-1 border border-t-0 bg-white ${
-	    position === 'sticky' ? "py-3 px-6 lg:px-0 fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[2rem] lg:top-[3.2rem] border border-t-0"
+	    position === 'sticky' ? "py-3 px-6 lg:px-0 fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[33px] lg:top-[3.2rem] border border-t-0"
 	  }`}
         >
 
@@ -515,7 +516,7 @@ const Search = ({ position = 'sticky' }) => {
             <span className="relative" style={{ zIndex: 2 }}>SEARCH</span>
           </button>
           <button
-            className="block h-[32px] md:h-full px-2 text-white md:hidden md:px-[22px]"
+            className="block h-[34px] md:h-full px-2 text-white md:hidden md:px-[22px]"
             style={{ background: "#ff5959" }}
             type="submit"
           >

@@ -26,6 +26,7 @@
     "framer-motion": "^7.10.2",
     "google-map-react": "^2.2.1",
     "moment": "^2.30.1",
+    "pusher-js": "^8.4.0-rc2",
     "react": "^18.2.0",
     "react-apexcharts": "1.4.0",
     "react-calendar": "^3.9.0",

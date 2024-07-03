@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import { SET_MESSAGE } from "actions/types";
 
+import ButtonLoading from "components/Loading/ButtonLoading";
+
 const BASE_URL = "https://nominet.vensle.com/backend"
 const MessageForm = ({
 	type,
@@ -106,10 +108,10 @@ const MessageForm = ({
 						id="content"
 						value={content}
 						onChange={(e) => setContent(e.target.value)}
-						className="block h-full lg:min-h-[10rem] w-full rounded-md border-0 px-3.5 py-1.5 lg:py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+						className="block h-full lg:min-h-[10rem] w-full rounded-md border-0 px-3.5 py-1.5 lg:py-2 text-sm lg:text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
 					</textarea>
 
-					<p className="text-red-500 text-sm">{contentError}</p>
+					<p className="text-red-500 text-[13px]">{contentError}</p>
 
 				</div>
 
@@ -117,10 +119,11 @@ const MessageForm = ({
 					<button
 						type="submit"
 						disabled={loading}
-						className={`block w-full rounded-md px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor ${loading ? "bg-red-400" : "bg-primaryColor"
+						className={`block w-full rounded-md px-3 py-3 text-center text-sm uppercase text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor ${loading ? "bg-red-400" : "bg-primaryColor"
 							}`}
 					>
-						{loading ? 'Loading' : (messageId ? 'Send Reply' : 'Send Message')}
+						{loading && <ButtonLoading />}
+						{messageId ? 'Send Reply' : 'Send Message'}
 					</button>
 				</div>
 			</form>

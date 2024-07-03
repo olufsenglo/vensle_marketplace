@@ -11,8 +11,8 @@ export default function SimilarProducts({ products }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   return (
     <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-16 lg:max-w-7xl lg:px-8">
-        <h2 className="text-lg font-medium lg:text-2xl lg:font-normal tracking-tight text-gray-900">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6 pt-16 lg:pt-0 pb-8 lg:max-w-7xl lg:px-8">
+        <h2 className="text-xl font-medium lg:text-2xl lg:font-normal tracking-tight text-gray-900">
           More like this
         </h2>
 

@@ -301,7 +301,7 @@ const ProductDetail = () => {
             <Feedback open={open} setOpen={setOpen} product={product} setProduct={setProduct} />
 
             <div className="bg-white lg:col-span-3 lg:pr-8">
-              <h1 className="text-base font-medium lg:font-normal lg:text-2xl tracking-tight text-gray-900">
+              <h1 className="text-lg font-medium lg:font-normal lg:text-2xl tracking-tight text-gray-900">
                 {product && product.name}
               </h1>
 
@@ -349,7 +349,7 @@ const ProductDetail = () => {
               </div>
 
               <div className="flex items-center">
-                <p className="text-black-200 mr-6 mt-2 lg:mt-8 flex items-center text-sm font-medium text-gray-700">
+                <p className="text-black-200 mr-6 mt-2 lg:mt-8 flex items-center text-[14px] lg:text-sm lg:font-medium text-gray-700">
                   <svg
                     class="mr-2 h-3 w-3 text-gray-600"
                     fill="none"
@@ -371,7 +371,7 @@ const ProductDetail = () => {
                   </svg>
                   Posted {moment(product.created_at).format("Do MMM YYYY")}
                 </p>
-                <p className="text-black-200 mt-2 lg:mt-8 flex items-center text-sm font-medium text-gray-700">
+                <p className="text-black-200 mt-2 lg:mt-8 flex items-center text-[14px] lg:text-sm lg:font-medium text-gray-700">
                   <svg
                     class="mr-2 h-3 w-3 text-gray-600"
                     fill="none"
@@ -395,52 +395,7 @@ const ProductDetail = () => {
                 </p>
               </div>
 
-              <div className="py-4 lg:py-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pr-8 lg:pt-6">
-                {/* Description and details */}
-                <div>
-                  <h3 className="text-sm font-semibold lg:text-lg lg:font-bold tracking-tight text-gray-900">
-                    Condition
-                  </h3>
-                  <div className="lg:mt-2 space-y-6">
-                    <p className="text-base text-gray-900 capitalize">
-                      {product && product.condition}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-3 lg:mt-10">
-                  <h3 className="text-sm lg:text-lg font-semibold lg:font-bold tracking-tight text-gray-900">
-                    Product Details
-                  </h3>
-                  <div className="lg:mt-2 space-y-6">
-                    <p className="text-base text-gray-900">
-                      {product && product.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-3 lg:mt-10">
-                  <h3 className="text-sm font-semibold lg:text-lg lg:font-bold tracking-tight text-gray-900">
-                    Key Specifications
-                  </h3>
-                  <div className="">
-                    <ul role="list" className="list-disc space-y-2 pl-6">
-                      {product &&
-                        product.key_specifications &&
-                        product.key_specifications
-                          .split(delim)
-                          .map((specification, index) => (
-                            <li key={index} className="text-gray-900">
-                              <span className="">{specification.trim()}</span>
-                            </li>
-                          ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white lg:row-span-3 lg:mt-0">
+<div className="mt-4 lg:hidden">
               <div className="flex items-center">
                 <div className="flex items-center">
                   {[0, 1, 2, 3, 4].map((rating) => (
@@ -463,14 +418,98 @@ const ProductDetail = () => {
                   {product.total_feedback > 1 && "s"})
                 </p>
               </div>
-              <p className="mt-3 text-2xl font-bold tracking-tight text-gray-900">
+              <p className="mt-3 text-2xl font-bold tracking-tight text-primaryColor">
+                {`${product.currency} ${product.price}`}
+              </p>
+
+              {product && product.type == "grocery" && (
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  style={{ fontSize: "0.8rem" }}
+                  className="bg-transparent hover:border-transparent mt-4 w-full rounded border border-primaryColor py-3 px-2 font-semibold text-primaryColor hover:bg-primaryColor hover:text-white"
+                >
+                  ADD TO CART
+                </button>
+              )}
+
+</div>
+
+              <div className="py-4 lg:py-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pr-8 lg:pt-6">
+                {/* Description and details */}
+                <div>
+                  <h3 className="text-[1rem] font-semibold text-lg lg:font-bold tracking-tight text-gray-900">
+                    Condition
+                  </h3>
+                  <div className="lg:mt-2 space-y-6">
+                    <p className="text-base text-gray-900 capitalize">
+                      {product && product.condition}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 lg:mt-5">
+                  <h3 className="text-[1rem] lg:text-lg font-semibold lg:font-bold tracking-tight text-gray-900">
+                    Product Details
+                  </h3>
+                  <div className="lg:mt-2 space-y-6">
+                    <p className="text-base text-gray-900">
+                      {product && product.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 lg:mt-5">
+                  <h3 className="text-[1rem] font-semibold lg:text-lg lg:font-bold tracking-tight text-gray-900">
+                    Key Specifications
+                  </h3>
+                  <div className="bg-[#f8f8f8] px-1 py-3 rounded-lg">
+                    <ul role="list" className="list-disc pl-6">
+                      {product &&
+                        product.key_specifications &&
+                        product.key_specifications
+                          .split(delim)
+                          .map((specification, index) => (
+                            <li key={index} className="text-gray-700">
+                              <span className="">{specification.trim()}</span>
+                            </li>
+                          ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white lg:row-span-3 lg:mt-0">
+              <div className="flex items-center hidden lg:block">
+                <div className="flex items-center">
+                  {[0, 1, 2, 3, 4].map((rating) => (
+                    <StarIcon
+                      key={rating}
+                      className={classNames(
+                        product && product.ratings > rating
+                          ? "text-orange-900"
+                          : "text-orange-200",
+                        "h-3 w-3 flex-shrink-0"
+                      )}
+                      aria-hidden="true"
+                    />
+                  ))}
+                </div>
+
+                <p className="text-sm leading-5">
+                  <span className="px-1">{product.ratings}</span> (
+                  {product.total_feedback} Feedback
+                  {product.total_feedback > 1 && "s"})
+                </p>
+              </div>
+              <p className="hidden lg:block mt-3 text-2xl font-bold tracking-tight text-primaryColor">
                 {`${product.currency} ${product.price}`}
               </p>
               {product && product.type == "grocery" && (
                 <button
                   onClick={() => handleAddToCart(product)}
                   style={{ fontSize: "0.8rem" }}
-                  className="bg-transparent hover:border-transparent mt-4 w-full rounded border border-primaryColor py-3 px-2 font-semibold text-primaryColor hover:bg-primaryColor hover:text-white"
+                  className="hidden lg:block bg-transparent hover:border-transparent mt-4 w-full rounded border border-primaryColor py-3 px-2 font-semibold text-primaryColor hover:bg-primaryColor hover:text-white"
                 >
                   ADD TO CART
                 </button>
