@@ -119,7 +119,7 @@ const MessageForm = ({
 					<button
 						type="submit"
 						disabled={loading}
-						className={`block w-full rounded-md px-3 py-3 text-center text-sm uppercase text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor ${loading ? "bg-red-400" : "bg-primaryColor"
+						className={`flex justify-center items-center w-full rounded-md px-3 py-3 text-center text-sm uppercase text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primaryColor ${loading ? "bg-red-400" : "bg-primaryColor"
 							}`}
 					>
 						{loading && <ButtonLoading />}

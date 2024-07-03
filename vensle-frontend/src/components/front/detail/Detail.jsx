@@ -256,7 +256,7 @@ const ProductDetail = () => {
                     <div className="flex items-center">
                       <Link
                         to={breadcrumb.href}
-                        className="mr-2 text-sm font-medium text-gray-900"
+                        className="mr-2 text-sm font-medium"
                       >
                         {breadcrumb.name}
                       </Link>
@@ -301,7 +301,7 @@ const ProductDetail = () => {
             <Feedback open={open} setOpen={setOpen} product={product} setProduct={setProduct} />
 
             <div className="bg-white lg:col-span-3 lg:pr-8">
-              <h1 className="text-lg font-medium lg:font-normal lg:text-2xl tracking-tight text-gray-900">
+              <h1 className="text-lg font-medium lg:font-normal lg:text-2xl tracking-tight">
                 {product && product.name}
               </h1>
 
@@ -437,32 +437,32 @@ const ProductDetail = () => {
               <div className="py-4 lg:py-10 lg:col-span-2 lg:col-start-1 lg:pb-16 lg:pr-8 lg:pt-6">
                 {/* Description and details */}
                 <div>
-                  <h3 className="text-[1rem] font-semibold text-lg lg:font-bold tracking-tight text-gray-900">
+                  <h3 className="text-[1rem] font-semibold text-lg lg:font-bold tracking-tight">
                     Condition
                   </h3>
                   <div className="lg:mt-2 space-y-6">
-                    <p className="text-base text-gray-900 capitalize">
+                    <p className="text-base capitalize">
                       {product && product.condition}
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-3 lg:mt-5">
-                  <h3 className="text-[1rem] lg:text-lg font-semibold lg:font-bold tracking-tight text-gray-900">
+                  <h3 className="text-[1rem] lg:text-lg font-semibold lg:font-bold tracking-tight">
                     Product Details
                   </h3>
                   <div className="lg:mt-2 space-y-6">
-                    <p className="text-base text-gray-900">
+                    <p className="text-base">
                       {product && product.description}
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-3 lg:mt-5">
-                  <h3 className="text-[1rem] font-semibold lg:text-lg lg:font-bold tracking-tight text-gray-900">
+                  <h3 className="text-[1rem] mb-1 font-semibold lg:text-lg lg:font-bold tracking-tight">
                     Key Specifications
                   </h3>
-                  <div className="bg-[#f8f8f8] px-1 py-3 rounded-lg">
+                  <div className="bg-[#f8f8f8] px-1 lg:px-3 py-3 rounded-lg">
                     <ul role="list" className="list-disc pl-6">
                       {product &&
                         product.key_specifications &&
@@ -529,7 +529,7 @@ const ProductDetail = () => {
                     alt="seller"
                   />
                   <div className="ml-4">
-                    <h3 className="text-lg tracking-tight text-gray-900 sm:text-lg">
+                    <h3 className="text-lg tracking-tight sm:text-lg">
                       {product.user?.business_details?.business_name &&
                         product.user.business_details.business_name
                       }
