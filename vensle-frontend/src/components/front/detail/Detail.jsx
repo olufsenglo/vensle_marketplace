@@ -395,7 +395,7 @@ const ProductDetail = () => {
                 </p>
               </div>
 
-<div className="mt-4 lg:hidden">
+<div className="mt-3 border-b border-gray-200 pb-6 lg:hidden">
               <div className="flex items-center">
                 <div className="flex items-center">
                   {[0, 1, 2, 3, 4].map((rating) => (
@@ -413,12 +413,16 @@ const ProductDetail = () => {
                 </div>
 
                 <p className="text-sm leading-5">
-                  <span className="px-1">{product.ratings}</span> (
-                  {product.total_feedback} Feedback
-                  {product.total_feedback > 1 && "s"})
+                  <span className="px-1">{product.ratings}</span>{" "}
+		  <span onClick={(e) => handleShowFeedback(e)} className="underline cursor-pointer">
+			  (
+			     {product.total_feedback} Feedback
+			     {product.total_feedback > 1 && "s"}
+			  )
+		  </span>
                 </p>
               </div>
-              <p className="mt-3 text-2xl font-bold tracking-tight text-primaryColor">
+              <p className="mt-2 text-2xl font-bold tracking-tight text-primaryColor">
                 {`${product.currency} ${product.price}`}
               </p>
 
@@ -496,10 +500,14 @@ const ProductDetail = () => {
                   ))}
                 </div>
 
-                <p className="text-sm leading-5">
-                  <span className="px-1">{product.ratings}</span> (
-                  {product.total_feedback} Feedback
-                  {product.total_feedback > 1 && "s"})
+                <p className="text-sm pt-2 leading-5">
+                  <span className="px-1">{product.ratings}</span>{" "}
+		  <span onClick={(e) => handleShowFeedback(e)} className="underline cursor-pointer">
+			  (
+			     {product.total_feedback} Feedback
+			     {product.total_feedback > 1 && "s"}
+			  )
+		  </span>
                 </p>
               </div>
               <p className="hidden lg:block mt-3 text-2xl font-bold tracking-tight text-primaryColor">

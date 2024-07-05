@@ -140,7 +140,7 @@ const CartDrawer = ({ open, setOpen }) => {
 																					red
 																				</p>
 																			</div>
-																			<div className="flex flex-1 items-end justify-between text-sm">
+																			<div className="flex flex-col lg:flex-row flex-1 items-start lg:items-end justify-between text-sm">
 																				<p className="text-gray-500">
 																					Qty {item.quantity}
 																				</p>

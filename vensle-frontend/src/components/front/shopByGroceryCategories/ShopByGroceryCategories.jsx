@@ -25,9 +25,9 @@ import image11 from "assets/img/front/all/grocery/Image_071.png";
 export default function ShopByGroceryCategories() {
   return (
       <div className="relative bg-white">
-         <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-7xl lg:px-8">
+         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:pt-6 lg:pb-6 lg:max-w-7xl lg:px-8">
 	    <SectionTitle>Shop by Categories</SectionTitle>
-	    <div className="mt-10 overflow-hidden">
+	    <div className="mt-3 lg:mt-10 overflow-hidden">
 	      <Swiper
 		  slidesPerView={4}
 		  spaceBetween={20}

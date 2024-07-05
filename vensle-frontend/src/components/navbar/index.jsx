@@ -415,7 +415,11 @@ const Navbar = (props) => {
                             </p>
                           </div>
 
-                          <div className="cursor-pointer hover:bg-gray-100/50 p-4 rounded-lg transition" onClick={() => handleUploadRedirect("/admin/upload-product?type=grocery")}>
+                          <div className="cursor-pointer relative rounded-xl overflow-hidden hover:bg-gray-100/50 p-4 rounded-lg transition">
+	   <div className="absolute px-[5%] py-[20%] z-[1] flex flex-col justify-around items-center inset-0 bg-black text-white bg-opacity-70">
+	  	<p>Complete Grocery vendor Registration</p>
+	  	<Link to="/admin/profile?tab=business" className="rounded-md bg-primaryColor py-2 px-4 hover:bg-red-400 transition">Click here</Link>
+	   </div>
                             <div class="relative mx-auto flex items-center justify-center">
                               <svg
                                 class="text-green-100"
@@ -442,7 +446,7 @@ const Navbar = (props) => {
                                 />
                               </svg>
                             </div>
-                            <h3 class="text-black mt-8 text-lg font-semibold">
+                            <h3 class=" mt-8 text-lg font-semibold">
                               Groceries
                             </h3>
                             <p class="mt-4 text-base text-gray-600">
@@ -450,6 +454,8 @@ const Navbar = (props) => {
                               aliqua dolor do amet sint.
                             </p>
                           </div>
+
+
                         </div>
                       </div>
                     </section>

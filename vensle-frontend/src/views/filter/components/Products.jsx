@@ -28,6 +28,7 @@ const Products = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
+  {/*TODO: put in useEffect*/}
   const searchTerm = queryParams.get("searchTerm") || "";
   const discount = queryParams.get("discount") || "";
 
@@ -45,8 +46,18 @@ const Products = () => {
   // State for filter form inputs
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [category_id, setCategory_id] = useState(queryParams.get("category_id") || "");
-  const [subcategory_id, setSubcategory_id] = useState(queryParams.get("subcategory_id") || "");
+  const [category_id, setCategory_id] = useState("");
+  const [subcategory_id, setSubcategory_id] = useState("");
+
+  //TODO: move downwards
+  useEffect(() => {
+    const queryParameters = new URLSearchParams(location.search);
+    const cat_id = queryParams.get("category_id") || "";
+    const subcat_id  = queryParams.get("subcategory_id") || "";
+    setCategory_id(cat_id);
+    setSubcategory_id(subcat_id);
+  }, [location]);	
+
   const [type, setType] = useState("");
   const [sort, setSort] = useState("");
   const [listView, setListView] = useState("grid");
@@ -327,7 +338,7 @@ const Products = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [searchTerm, filteredProducts]);  
+  }, [searchTerm]);  
   	
   useEffect(() => {
     const fetchCategories = async () => {
@@ -351,6 +362,7 @@ const Products = () => {
     <div className="bg-white">
       <div>
         {/* Mobile filter dialog */}
+	  {console.log('meee', searchTerm)}
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -547,6 +559,29 @@ const Products = () => {
                 </div>
 </div>
 
+<div className="pr-4 border-b border-gray-200 pr-4">
+		<h3 className="flow-root text-base font-semibold">Condition</h3>
+                <div className="flex items-center justify-between pb-4">
+                  <div className="flex items-center">
+                    <label>
+                      <input
+                        type="radio"
+			name="condition"
+                      />
+		      New
+                    </label>
+                  </div>
+                  <div>
+                    <label>
+                      <input
+                        type="radio"
+			name="condition"
+                      />
+		      Used
+                    </label>
+                  </div>
+                </div>
+</div>
 
 
                 <div className="mt-8 mr-4 flex items-center justify-between">
@@ -843,7 +878,7 @@ const Products = () => {
                   </select>
                 </label>
 </div>
-<div className="pr-4 border-b border-gray-200 pr-4">
+<div className="pr-4 border-b border-gray-200 mb-3">
 		<h3 className="flow-root text-base font-semibold">Price</h3>
                 <div className="flex items-center justify-between pb-4">
                   <div className="flex items-center">
@@ -875,6 +910,31 @@ const Products = () => {
                 </div>
 </div>
 
+<div className="pr-4 border-b border-gray-200">
+		<h3 className="flow-root text-base mb-1 font-semibold">Condition</h3>
+                <div className="flex items-center pb-4">
+                  <div className="flex items-center">
+                    <label className="mr-3">
+                      <input
+                        type="radio"
+			name="condition"
+			className="mr-1"
+                      />
+		      New
+                    </label>
+                  </div>
+                  <div>
+                    <label>
+                      <input
+                        type="radio"
+			name="condition"
+			className="mr-1"
+                      />
+		      Used
+                    </label>
+                  </div>
+                </div>
+</div>
 
 
                 <div className="mt-8 mr-4 flex items-center justify-between">
@@ -898,7 +958,7 @@ const Products = () => {
               {/* Product grid */}
               <div className="relative lg:col-span-3 pt-4">
                 {loading && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center">
+                  <div className="absolute bg-white bg-opacity-70 inset-0 z-[3] flex items-center justify-center">
                     <p className="mt-[20vh] lg:mt-0">
                     	Loading...
 		    </p>

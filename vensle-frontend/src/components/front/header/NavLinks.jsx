@@ -37,6 +37,10 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
     return () => clearTimeout(timer); // Cleanup on component unmount
   }, [isHovered]);
 
+  useEffect(() => {
+      setShowText(false);
+  }, [location])	
+
   const handleMouseEnter = (category) => {
     setActiveCategory(category)
     setActiveCategoryName(category.name)
@@ -135,8 +139,11 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
                 >
                   <div className="flex gap-12 justify-between mx-auto max-w-2xl px-4 py-4 sm:px-6 lg:max-w-7xl lg:px-8">
                     <div className="flex-1">
-                      <ul>
-                        <li className="mb-1 text-[14px] uppercase font-semibold">{activeCategoryName}</li>
+                        <div className="mb-2 text-[14px] uppercase font-semibold">{activeCategoryName}</div>
+	              <ul
+			className={`${subCategories.length > 8 && 'grid grid-flow-row auto-rows-max grid-cols-2'}`}
+			style={{ gridTemplateRows: 'repeat(7, minmax(0, 1fr))' }}
+		      >
                         {subCategories && subCategories.map((subCategory) => 
                           <li
                             className="mb-2"

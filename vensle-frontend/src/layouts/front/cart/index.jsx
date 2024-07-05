@@ -727,7 +727,7 @@ const Cart = () => {
               {currentTab === 'payment' &&
                 <form className="mt-5 grid gap-6">
                   {paymentModeError &&
-                    <p className="text-red-500">{paymentModeError}</p>}
+                    <p className="text-red-500 text-sm">{paymentModeError}</p>}
                   <div className="relative">
                     <input
                       className="peer hidden"

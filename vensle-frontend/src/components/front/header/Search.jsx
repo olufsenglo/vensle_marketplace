@@ -7,6 +7,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import debounce from 'lodash.debounce';
 import {
   ArrowLeftIcon,
+  ArrowUpLeftIcon,
 } from "@heroicons/react/20/solid";
 
 import MyComponent from "./MyComponent";
@@ -71,6 +72,11 @@ const Search = ({ position = 'sticky' }) => {
     const updatedRecentSearches = recentSearches.filter(search => search !== searchToRemove);
     localStorage.setItem('recentSearches', JSON.stringify(updatedRecentSearches));
     setRecentSearches(updatedRecentSearches);
+  };	
+
+  const searchBoxInsertSuggestion = (e, word) => {
+    e.stopPropagation();
+    setSearchTerm(word);
   };	
 
   const handleDistanceChange = (event) => {
@@ -454,15 +460,21 @@ const Search = ({ position = 'sticky' }) => {
 	    <li
 	      key={index}
 	      onClick={() => handleSelectSuggestion({name: search})}
-	      className="flex justify-between cursor-pointer text-sm px-2 mb-1 py-1 hover:bg-gray-200"
+	      className="flex relative justify-between cursor-pointer text-sm px-2 mb-1 py-1 hover:bg-gray-200"
 	    >
 		 <p className="line-clamp-1">
                     {search}
 	         </p>
         	 <XMarkIcon
 	      	     onClick={(e) => handleRemoveSearch(e, search)}
-		     className="h-5 w-5 cursor-pointer rounded-full p-1 hover:bg-gray-300 transition-all ease-in-out duration-300" aria-hidden="true"
+		     className="h-5 w-5 mr-6 cursor-pointer rounded-full p-1 hover:bg-gray-300 transition-all ease-in-out duration-300"
+	      	     aria-hidden="true"
 	      	 />
+  		      <ArrowUpLeftIcon
+			  onClick={(e) => searchBoxInsertSuggestion(e, search)}
+			  style={{right: "9px", top: "4px"}}
+			  className="absolute z-[1] w-5 h-5 rounded-full p-1 hover:bg-gray-300 transition-all ease-in-out duration-300"
+		      />
 	    </li>
         ))}
 
@@ -470,11 +482,16 @@ const Search = ({ position = 'sticky' }) => {
 		    <li
 		      key={index}
 		      onClick={() => handleSelectSuggestion(suggestion)}
-		      className={`cursor-pointer line-clamp-1 text-sm py-1 px-2 mb-1 hover:bg-gray-200 ${
+		      className={`cursor-pointer relative line-clamp-1 text-sm py-1 px-2 mb-1 hover:bg-gray-200 ${
 			      selectedSuggestionIndex === index ? "bg-gray-200" : ""
 			}`}
 		    >
 		      {suggestion.name}
+  		      <ArrowUpLeftIcon
+			  onClick={(e) => searchBoxInsertSuggestion(e, suggestion.name)}
+			  style={{right: "9px", top: "4px"}}
+			  className="absolute z-[1] w-5 h-5 rounded-full p-1 hover:bg-gray-300 transition-all ease-in-out duration-300"
+		      />
 		    </li>
 		  ))}
 		  <li className="grid grid-cols-2 gap-4 divide-x divide-gray-900/5 bg-gray-50 py-4 px-2 lg:hidden">
