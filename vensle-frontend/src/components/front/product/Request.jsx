@@ -7,7 +7,7 @@ import {
 
 const NewTopRequests = ({ image="assets/img/front/temp/2.jpg" }) => {
 	return (
-		<div className="relative bg-gray-100/50 rounded-md border border-gray-200 lg:border-0 lg:bg-white lg:hover:bg-gray-200/70 text-left cursor-pointer">
+		<div className="relative w-full bg-gray-100/50 rounded-md border border-gray-200 lg:border-0 lg:bg-white lg:hover:bg-gray-200/70 text-left cursor-pointer">
 			<div className="absolute left-0 top-3 left-3 flex bg-white lg:border rounded-md border-primaryColor py-[0.2rem] px-2">
 				<TruckIcon className="h-[0.9rem] w-[0.9rem] lg:h-5 lg:w-5 text-primaryColor mr-2" />
 				<p className="text-primaryColor text-[10px] lg:text-sm">Request</p>

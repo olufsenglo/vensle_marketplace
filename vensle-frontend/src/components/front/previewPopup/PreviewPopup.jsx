@@ -35,7 +35,6 @@ function classNames(...classes) {
 
 const baseURL = "https://nominet.vensle.com/backend";
 const PreviewPopup = ({ selectedProduct, open, setOpen, from="front", children }) => {
-	console.log('sell me', selectedProduct)
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth?.user?.token);
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);

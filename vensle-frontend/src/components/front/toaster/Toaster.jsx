@@ -17,12 +17,12 @@ const Toaster = () => {
   useEffect(() => {
     let timer;
 
-    if (message && message?.message?.type === "success") {
+    if (message && (message?.message?.type === "success" || message?.message?.type === "error")) {
       timer = setTimeout(() => {
         dispatch({
           type: CLEAR_MESSAGE,
         });
-      }, 15000);
+      }, 13000);
     }
 
     return () => {
@@ -32,19 +32,19 @@ const Toaster = () => {
 
   return (
     <>
-      {message && message?.message?.type == "success" && (
+	  {console.log(message?.message?.type)}
+      {message && (message?.message?.type === "success" || message?.message?.type === "error") && (
         <div
           onClick={() => handleClearMessageClick()}
           style={{ top: "5rem", zIndex: "99999", left: "0", right: "0" }}
           className="fixed cursor-pointer text-center"
         >
           <span
-            style={{
-              border: "1px solid green",
-              padding: "5px 18px",
-              borderRadius: "5px",
-            }}
-            className="bg-white text-green-500"
+            className={`bg-white py-2 px-8 rounded-lg border ${
+		message?.message?.type == "success" ? 
+			    "border-green-600 text-green-500" : 
+			    "border-red-600 text-red-500"
+	    }`}
           >
             {message.message.message}
           </span>

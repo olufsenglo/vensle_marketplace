@@ -7,14 +7,20 @@ import moment from "moment";
 import { Swiper, SwiperSlide } from 'swiper/react';
 // import required modules
 import { Navigation } from 'swiper/modules';
-
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+	TruckIcon,
+	QuestionMarkCircleIcon,
+	CameraIcon,
   PhoneIcon,
   MapPinIcon,
   ChatBubbleBottomCenterTextIcon,
 } from "@heroicons/react/20/solid";
+import {
+	HeartIcon,
+	MagnifyingGlassPlusIcon,
+} from '@heroicons/react/24/outline'
 
 // Import Swiper styles
 import 'swiper/css';
@@ -116,6 +122,13 @@ const ProductDetail = () => {
     setOpen(true);
   };
 
+	const handleSaveItem = () => {
+		dispatch({
+			type: SET_MESSAGE,
+			payload: { type: "success", message: "Item Saved successfully" },
+		});
+	}
+
   const handleIncreaseView = async (id) => {
     try {
       //TODO: change to post request
@@ -160,6 +173,12 @@ const ProductDetail = () => {
     }
   };
 
+//Put in helper file	
+const formatPrice = (price) => {
+	return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+		minimumFractionDigits: 2
+	});
+}
 	
   const getImagePath = (name) => {
     return `${baseURL}/uploads/${name}`;
@@ -314,11 +333,38 @@ const ProductDetail = () => {
                     >
                       <ChevronLeftIcon className="h-8 w-8" />
                     </span>
+
+
+		  		<div className="absolute z-[1] left-0 top-3 left-3 flex items-center bg-white border rounded-md border-0 lg:border-primaryColor py-[0.2rem] px-2">
+					{product.type === 'grocery'
+						? <TruckIcon className="text-primaryColor h-[0.9rem] w-[0.9rem] lg:h-6 lg:w-6 mr-2" />
+						: (product.type == 'request'
+							? <QuestionMarkCircleIcon className="text-primaryColor h-[0.9rem] w-[0.9rem] lg:h-6 lg:w-6 mr-2" />
+							: <CameraIcon className="text-primaryColor h-[0.9rem] w-[0.9rem] lg:h-6 lg:w-6 mr-2" />
+						)
+					}
+					<p className="text-[10px] text-primaryColor text-xm lg:text-sm">
+						{product.type === 'grocery'
+							? 'Delivery'
+							: (product.type == 'request'
+								? 'Request'
+								: 'Pickup')}
+					</p>
+				</div>
+
+
+
+		    <div className="absolute z-[1] transition-all duration-300 cursor-pointer bg-gray-100 hover:bg-gray-300 right-3 flex justify-center items-center rounded-full top-2">
+                               <HeartIcon onClick={handleSaveItem} className={`p-1 h-6 w-6 tagHeartClassName`} />
+                    </div>
+
+
+
                     <img
 		      onClick={handleExplanedImages}
                       src={previewImage}
                       alt={product && product.name}
-                      className="w-full object-contain cursor-pointer lg:h-full"
+                      className="w-full object-contain cursor-zoom-in lg:h-full"
                     />
                     <span
                       className="absolute top-0 bottom-0 right-0 bg-gray-50 hover:bg-gray-100 w-8 lg:w-12 flex justify-center items-center cursor-pointer"
@@ -423,7 +469,7 @@ const ProductDetail = () => {
                 </p>
               </div>
               <p className="mt-2 text-2xl font-bold tracking-tight text-primaryColor">
-                {`${product.currency} ${product.price}`}
+                {`${product.currency} ${formatPrice(product.price)}`}
               </p>
 
               {product && product.type == "grocery" && (
@@ -511,7 +557,7 @@ const ProductDetail = () => {
                 </p>
               </div>
               <p className="hidden lg:block mt-3 text-2xl font-bold tracking-tight text-primaryColor">
-                {`${product.currency} ${product.price}`}
+                {`${product.currency} ${formatPrice(product.price)}`}
               </p>
               {product && product.type == "grocery" && (
                 <button

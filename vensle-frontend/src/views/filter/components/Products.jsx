@@ -22,12 +22,6 @@ import categoryImage from "assets/img/front/filter-header/category_garden.png"
 import subcategoryImage from "assets/img/front/filter-header/subcategory_garden.png"
 
 
-const product = {
-  breadcrumbs: [
-    { id: 1, name: "Home", href: "/" },
-    { id: 2, name: "Search", href: "#" },
-  ],
-};
 
 const baseURL = "https://nominet.vensle.com/backend";
 const Products = () => {
@@ -41,7 +35,6 @@ const Products = () => {
   const initialDistance = queryParams.get("distance") || "";
 
   const userLocation = useSelector((state) => state.location);	
-  const storedCity = localStorage.getItem("userCity");
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -53,6 +46,13 @@ const Products = () => {
   const [displayName, setDisplayName] = useState('');	
 
 
+const product = {
+  breadcrumbs: [
+    { id: 1, name: "Home", href: "/" },
+    { id: 2, name: "Search", href: "#" },
+    { id: 2, name: searchTerm, href: "#" },
+  ],
+};
   //TODO: move downwards
 /* useEffect(() => {
     const queryParameters = new URLSearchParams(location.search);
@@ -444,7 +444,7 @@ const resetFilters = () => {
     const navType = queryParams.get('nav_type') || "";
     setCategory_id(cat_id);
     setSubcategory_id(subcat_id);
-
+console.log('my type', navType)
 
     if (navType === 'category' && !subcat_id && cat_id) {
       const categoryId = Number(cat_id);
@@ -467,7 +467,9 @@ const resetFilters = () => {
           setNavTypeViewing('subcategory')
         }
       }
-    }	  
+    }else {
+	  setNavTypeViewing("")
+    }
 
 	setCategoriesLoading(false)
       } catch (error) {
@@ -701,6 +703,15 @@ const resetFilters = () => {
 		      Used
                     </label>
                   </div>
+                  <div>
+                    <label>
+                      <input
+                        type="radio"
+			name="condition"
+                      />
+		      Not available
+                    </label>
+                  </div>
                 </div>
 </div>
 
@@ -740,6 +751,7 @@ const resetFilters = () => {
               className="mx-auto flex max-w-2xl items-center space-x-2 lg:max-w-7xl"
             >
               {product.breadcrumbs.map((breadcrumb) => (
+	      breadcrumb.name && (
                 <li key={breadcrumb.id}>
                   <div className="flex items-center">
                     <a
@@ -760,6 +772,7 @@ const resetFilters = () => {
                     </svg>
                   </div>
                 </li>
+	      )
               ))}
               <li className="text-sm">
                 <a
@@ -778,7 +791,7 @@ const resetFilters = () => {
 
 
 	  <div className="mb-1 mt-2 mx-auto max-w-2xl lg:max-w-7xl lg:max-w-8xl">
-
+	{console.log('nviw',navTypeViewing)}
 {displayName && (navTypeViewing === 'category' || navTypeViewing === 'subcategory') && <div className="">
     <h3 className="text-2xl font-semibold">{displayName}</h3>
     {navTypeViewing === 'category' && <img
@@ -827,7 +840,7 @@ const resetFilters = () => {
               </span>
               <span className="flex items-center">
                 <MapPinIcon className="mr-1 h-4 w-4" aria-hidden="true" />
-                {storedCity}
+                {userLocation.city}
               </span>
             </p>
             <h1 className="text-[15px] lg:text-base md:font-semi-bold flex items-center justify-between tracking-tight text-gray-900">
@@ -1062,7 +1075,7 @@ const resetFilters = () => {
                     </label>
                   </div>
                   <div>
-                    <label>
+                    <label className="mr-3">
                       <input
                         type="radio"
 			name="condition"
@@ -1072,6 +1085,19 @@ const resetFilters = () => {
                         onChange={handleInputChange}
                       />
 		      Used
+                    </label>
+                  </div>
+                  <div>
+                    <label>
+                      <input
+                        type="radio"
+			name="condition"
+			className="mr-1"
+                        value="na"
+			checked={condition === 'used'}
+                        onChange={handleInputChange}
+                      />
+		      Not Available
                     </label>
                   </div>
                 </div>

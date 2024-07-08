@@ -11,6 +11,8 @@ import {
    ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 
+import { SET_MESSAGE } from "actions/types";
+
 import Card from "components/card";
 import uploadImage from "assets/img/dashboards/upload.png";
 import UploadPreview from "./components/UploadPreview";
@@ -22,10 +24,11 @@ const Tables = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const storedLocation = JSON.parse(localStorage.getItem("userLocation")) || {
+  const userLocation = JSON.parse(localStorage.getItem("location")) || {
     lat: 0,
     lng: 0,
   };
+	console.log(userLocation.lat)
   const storedCountry = localStorage.getItem("userCountry") || "Unknown";
   const ipInfoCountryCode = localStorage.getItem("countryCode") || "£";
 
@@ -33,7 +36,7 @@ const Tables = () => {
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
   const accessToken = useSelector((state) => state.auth?.user?.token);
   const user = useSelector((state) => state.auth?.user?.user);
-  const userLocation = useSelector((state) => state.location);	
+  //const userLocation= useSelector((state) => state.location);	
 	
   const [categories, setCategories] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -206,8 +209,8 @@ const removeCommas = (formattedNumber) => {
 	   errorMessage = "Price is required";
         } else {
 	   const priceValue = parseFloat(value);
-	   if (isNaN(priceValue) || priceValue < 0 || priceValue > 999999.99) {
-	      errorMessage = "Price must be a valid number between 0 and 999,999.99";
+	   if (isNaN(priceValue) || priceValue < 1 || priceValue > 999999.99) {
+	      errorMessage = "Price must be a valid number between 1 and 999,999.99";
 	   }
         }
     break;		    
@@ -503,6 +506,8 @@ const handleFilterChange = (filterName, selectedValue) => {
     } else {
       console.log("Form has validation errors. Please fix them.");
     }
+
+    window.scrollTo(0, 0);
   };
 
   const handleSubmit = async (e) => {
@@ -521,6 +526,16 @@ const handleFilterChange = (filterName, selectedValue) => {
       data.append("images[]", formData.images[i]);
     }
 
+    //Check if location exists
+    //TODO: if country, city but no lat or lng set default
+    if (!formData.longitude && !formData.latitude) {
+      setError("Error acessing your location please try again")
+      console.error("Error creating product:", error);
+      setLoading(false);
+      return
+    }
+
+    //TODO: check no errors before submitting
     try {
       const response = await axios.post(`${baseURL}/api/v1/products`, data, {
         headers: {
@@ -530,7 +545,12 @@ const handleFilterChange = (filterName, selectedValue) => {
       });
 
       setLoading(false);
-      navigate("/admin/products");
+      dispatch({
+            type: SET_MESSAGE,
+            payload: { type: "success", message: "Product uploaded successfully"},
+      });
+	    
+      navigate("/admin/user-products");
     } catch (error) {
       if (error.response) {
         if (error.response.data.error) {
@@ -954,35 +974,6 @@ const handleFilterChange = (filterName, selectedValue) => {
 
 
 
-                    <div className="mt-2">
-                      <select
-                        id="category_id"
-                        name="category_id"
-                        autoComplete="category"
-                        value={formData.category_id}
-                        onChange={handleInputChange}
-                        className={`mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm text-gray-500 placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.category_id
-                          ? "bg-red-50"
-                          : "bg-gray-50"
-                          }`}
-                      >
-                        <option value="">Select Category</option>
-                        {categories &&
-                          categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                              {category.name}
-                            </option>
-                          ))}
-                      </select>
-                      {(jsValidateErrors.category_id || jsValidateErrors.subcategory_id) &&
-                        <p
-                          style={{ color: "red", fontSize: "13px" }}
-                          className="mt-1"
-                        >
-                          {jsValidateErrors.category_id || jsValidateErrors.subcategory_id}
-                        </p>
-                      }
-                    </div>
                   </div>
 
                   <fieldset className="mt-2">

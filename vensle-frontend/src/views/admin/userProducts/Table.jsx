@@ -35,10 +35,10 @@ const Table = ({ columns, data, loading, handleProductQuickView }) => {
 	const { globalFilter, pageIndex } = state;
 
 	return (
-		<div>
+		<div className="">
 			<input
 				type="text"
-				className="px-3 w-[30%] bg-[#ebebfb] absolute top-[25px] border border-gray-600 right-0 rounded-md py-2 pl-6 pr-2 mb-6"
+				className="px-3 w-full lg:w-[30%] bg-[#ebebfb] lg:absolute top-[25px] border border-gray-600 right-0 rounded-md py-2 pl-6 pr-2 mb-6"
 				value={globalFilter}
 				onChange={(e) => setGlobalFilter(e.target.value)}
 				placeholder="Search"

@@ -185,7 +185,7 @@ const NavLinks = ({ storedCountryFlag, storedCountry }) => {
                           <li
                             className="mb-2"
                           >
-                            <Link className="hover:underline" to={`/filter?searchTerm=&category_id=${activeCategory.id}&subcategory_id=${subCategory.id}&distance=20`}>
+                            <Link className="hover:underline" to={`/filter?searchTerm=&category_id=${activeCategory.id}&subcategory_id=${subCategory.id}&distance=20&nav_type=subcategory`}>
                               {subCategory.name}
                             </Link>
                           </li>

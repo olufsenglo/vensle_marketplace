@@ -246,8 +246,8 @@ const Dashboard = () => {
 
 	return (
 		<div className="mt-3">
-			<div className="grid grid-cols-1 gap-5 md:grid-cols-12 lg:grid-cols-13 2xl:grid-cols-13 3xl:grid-cols-13">
-				<div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 col-span-8 pl-4">
+			<div className="grid grid-cols-1 gap-5 lg:grid-cols-13 2xl:grid-cols-13 3xl:grid-cols-13">
+				<div className="col-span-1 lg:col-span-8 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 pl-4">
 					<div className="flex justify-between items-end">
 						<div>
 							<p className="text-gray-700">For Sale Uploads</p>
@@ -285,7 +285,7 @@ const Dashboard = () => {
 						</div>
 					</div>
 				</div>
-				<div className="col-span-5 py-6 px-5 bg-uDashSecondary flex justify-between items-center">
+				<div className="col-span-1 lg:col-span-5 py-6 px-5 bg-uDashSecondary flex justify-between items-center">
 					<div className="">
 						<h3 className="text-xl font-medium">Updgrade to<br /><span className="text-primaryColor">Grocery</span> Vendor</h3>
 						<p className="text-gray-700 mt-2 mr-2">Upload Business Details</p>
@@ -311,10 +311,10 @@ const Dashboard = () => {
 					</div>
 				</div>
 			</div>
-			<div className="mt-7 grid grid-cols-1 gap-5 md:grid-cols-12 lg:grid-cols-13 2xl:grid-cols-13 3xl:grid-cols-13">
-				<div className="col-span-8 md:grid-cols-1 gap-3 pl-4">
+			<div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-13 2xl:grid-cols-13 3xl:grid-cols-13">
+				<div className="col-span-1 lg:col-span-8 gap-3 pl-4">
 					<h3 className="text-xl font-medium mb-6">Overview</h3>
-					<div className="h-[20rem] p-4">
+					<div className="h-[20rem] lg:p-4">
 
 					<ResponsiveContainer width="100%" height="100%">
 						<BarChart
@@ -337,7 +337,7 @@ const Dashboard = () => {
 
 					</div>
 				</div>
-				<div className="col-span-5">
+				<div className="col-span-1 lg:col-span-5">
 					<h3 className="text-xl font-medium mb-6">Recent Messages</h3>
 					<div className="px-6 flex flex-col gap-5 bg-white pt-4 pb-4 min-h-[320px]">
 						{loading && "Loading..."}
@@ -371,7 +371,7 @@ const Dashboard = () => {
 			</div>
 			<div className="mt-7 grid grid-cols-1 pl-4">
 				<h3 className="text-xl font-medium mb-6">Recent Uploads</h3>
-				<div className="bg-white">
+				<div className="bg-white overflow-x-auto">
 					<Table columns={columns} data={data} />
 				</div>
 			</div>

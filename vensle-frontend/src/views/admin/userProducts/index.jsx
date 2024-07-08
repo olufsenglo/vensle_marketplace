@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
+
+import { SET_MESSAGE } from "actions/types";
 
 import Table from './Table'
 import PreviewPopup from "components/front/previewPopup/PreviewPopup";
@@ -35,7 +37,10 @@ const columnsData = (setDeleteOpen, setSelectedProductId) => [
 	},
 	{
 		Header: "Price",
-		accessor: "price"
+		accessor: "price",
+		Cell: (props) => {
+			return <PriceRow props={props} />
+		}
 	},
 	{
 		Header: "Upload Date",
@@ -56,10 +61,22 @@ const columnsData = (setDeleteOpen, setSelectedProductId) => [
 	},
 ]
 
+const formatPrice = (price) => {
+	return Number(parseFloat(price).toFixed(2)).toLocaleString('en', {
+		minimumFractionDigits: 2
+	});
+}
+
 const handleActionClick = (event) => {
 	event.stopPropagation();
 	console.log('Child clicked');
 };
+
+const PriceRow = ({ props }) => {
+	return (
+		<span>{formatPrice(props.row.original.price)}</span>
+	)
+}
 
 const ActionRow = ({ props, setSelectedProductId, setDeleteOpen }) => {
 	const handleDelete = (id) => {
@@ -126,6 +143,8 @@ const StatusRow = ({ props }) => {
 const baseURL = "https://nominet.vensle.com/backend";
 
 const UserProducts = () => {
+	const dispatch = useDispatch();
+
 	const [deleteLoading, setDeleteLoading] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false)
 	const [selectedProductId, setSelectedProductId] = useState(null)
@@ -140,12 +159,11 @@ const UserProducts = () => {
 	const [products, setProducts] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const [open, setOpen] = useState(false)
+	const [deleteError, setDeleteError] = useState('')
 
 	const [selectedTypeOption, setSelectedTypeOption] = useState('');
 	const [selectedCategoryOption, setSelectedCategoryOption] = useState('');
 	const [selectedStatusOption, setSelectedStatusOption] = useState('');
-
-
 
 	const handleProductQuickView = (e, product) => {
 		e.preventDefault();
@@ -328,8 +346,8 @@ const UserProducts = () => {
 	}	
 
 	const deleteProduct = async (id) => {
-		console.log('id', id)
 		setDeleteLoading(true)
+		setDeleteError('')
 		try {
 			const response = await axios.delete(`${baseURL}/api/v1/products/${id}`, {
 				headers: {
@@ -337,12 +355,24 @@ const UserProducts = () => {
 				},
 			});
 
-			console.log('starrrrrt', response)
 			setDeleteLoading(false)
+			dispatch({
+                            type: SET_MESSAGE,
+                            payload: { type: "success", message: "Product deleted successfully"},
+                        });
+			/*TODO: filter from product list before api call for instant feedback*/
+			fetchProducts();
 			setDeleteOpen(false)
 		} catch (error) {
-			console.error("Error fetching users:", error);
+			console.error("Error deleting product:", error);
+			const errMsg = error.response?.data?.error || "Error deleting product";
+			setDeleteError(errMsg)
 			setDeleteLoading(false)
+
+			dispatch({
+			    type: SET_MESSAGE,
+			    payload: { type: "error", message: errMsg},
+			});
 		}
 	};
 
@@ -384,8 +414,8 @@ const UserProducts = () => {
 			}
 
 			<div className="relative h-full min-h-[25rem]">
-				<div className="w-full pb-3 pt-1 mb-8 border-b border-gray-200 dark:border-gray-700">
-					<div className="flex items-center gap-5 pt-6 w-[65%]">
+				<div className="w-full pb-3 pt-1 mb-8 px-4 border-b border-gray-200 dark:border-gray-700">
+					<div className="flex flex-col lg:flex-row items-center gap-5 pt-6 w-full lg:w-[65%]">
 						<div className="w-full">
 							<select
 								value={selectedTypeOption}
@@ -403,10 +433,9 @@ const UserProducts = () => {
 							<select
 								value={selectedCategoryOption}
 								onChange={handleCategoryChange}
-								className="border border-gray-400 rounded-md py-2 px-4"
+								className="flex-1 border border-gray-400 rounded-md py-2 px-4"
 							>
 								<option value="all_products">Category</option>
-								{console.log('cattt', categories)}
 								{categories.length > 0 ? categories.map((category) =>
 									<option key={category.id} value={category.id}>{category.name}</option>
 								) : <p>Loading...</p>}
@@ -428,7 +457,9 @@ const UserProducts = () => {
 						</div>
 					</div>
 				</div>
-				<Table handleProductQuickView={handleProductQuickView} columns={columns} data={products} loading={loading} />
+				<div className="overflow-y-auto">
+					<Table handleProductQuickView={handleProductQuickView} columns={columns} data={products} loading={loading} />
+			       </div>
 			</div>
 		</div>
 	);

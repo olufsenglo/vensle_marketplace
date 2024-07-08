@@ -416,8 +416,8 @@ const Navbar = (props) => {
                           </div>
 
                           <div className="cursor-pointer relative rounded-xl overflow-hidden hover:bg-gray-100/50 p-4 rounded-lg transition">
-	   <div className="absolute px-[5%] py-[20%] z-[1] flex flex-col justify-around items-center inset-0 bg-black text-white bg-opacity-70">
-	  	<p>Complete Grocery vendor Registration</p>
+	   <div className="absolute px-[5%] py-[20%] z-[1] flex flex-col justify-between items-center inset-0 bg-black text-white bg-opacity-70">
+	  	<p className="text-sm  mt-4">Complete Grocery vendor Registration</p>
 	  	<Link to="/admin/profile?tab=business" className="rounded-md bg-primaryColor py-2 px-4 hover:bg-red-400 transition">Click here</Link>
 	   </div>
                             <div class="relative mx-auto flex items-center justify-center">

@@ -19,6 +19,8 @@ import {
 import 'swiper/css';
 import 'swiper/css/navigation';
 
+import ButtonLoading from "components/Loading/ButtonLoading";
+
 const baseURL = "https://nominet.vensle.com/backend";
 
 const UploadPreview = ({
@@ -29,6 +31,7 @@ const UploadPreview = ({
   setUploadPreview,
 }) => {
   const [mainPreviewImage, setMainPreviewImage] = useState(null);
+  const [imgIndex, setImgIndex] = useState(0);
 
   const getDisplayImage = (product) => {
     const displayImage = product.images.find(
@@ -41,17 +44,19 @@ const UploadPreview = ({
     return `${baseURL}/uploads/${name}`;
   };
 
-  const handleSetMainPreviewImage = (e, preview) => {
+  const handleSetMainPreviewImage = (e, preview, index) => {
     e.preventDefault();
     setMainPreviewImage(preview);
+    setImgIndex(index);
   };
 
-  const handleShowSelectedImage = (preview) => {
+  const handleShowSelectedImage = (preview, index) => {
     return (
       <a
-        onClick={(e) => handleSetMainPreviewImage(e, preview)}
+        onClick={(e) => handleSetMainPreviewImage(e, preview, index)}
         href="#"
-        className="dark:border-transparent block border border-red-300 hover:border-red-300 dark:hover:border-red-300 rounded-md overflow-hidden"
+        className={`dark:border-transparent block border hover:border-primaryColor dark:hover:border-red-300 rounded-md overflow-hidden ${index == imgIndex ? "border-primaryColor" : "border-transparent"
+          }`}
       >
         <img src={preview} alt="Preview" className="w-full object-cover lg:h-20" />
       </a>
@@ -89,14 +94,25 @@ const UploadPreview = ({
                     className="w-full rounded-3xl object-contain lg:h-full "
                   />
                 </div>
-                <div className="hidden flex-wrap md:flex ">
-                  {imagePreviews &&
-                    imagePreviews.map((preview) => (
-                      <div className="w-1/2 p-2 sm:w-1/4">
-                        {handleShowSelectedImage(preview)}
-                      </div>
-                    ))}
-                </div>
+
+                                {imagePreviews?.length > 0 && <Swiper
+                                  slidesPerView={8}
+                                  spaceBetween={1}
+                                  navigation={true}
+                                  modules={[Navigation]}
+                                  className="mySwiper mt-2 lg:mt-6"
+                                >
+				   {imagePreviews.map((preview, index) => (
+                                      <SwiperSlide>
+                                        <div className="lg:p-2 h-[25px] lg:h-[5rem] w-[25px] lg:w-[5rem]">
+					    {handleShowSelectedImage(preview, index)}
+                                        </div>
+                                      </SwiperSlide>
+                                    ))}
+                                </Swiper>}
+
+
+
               </div>
             </div>
 
@@ -126,10 +142,10 @@ const UploadPreview = ({
 
                   <p className="mt-3 lg:mt-5 flex items-center text-sm font-medium">
                     <MapPinIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
-                    London
+	  	    {formData.address}
                   </p>
                   <p className="mt-1 lg:mt-3 flex items-center text-sm font-medium">
-                                    <ClockIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
+                     <ClockIcon className="mr-1 lg:mr-2 h-3 lg:h-4 w-3 lg:w-4" />
                     Now
                   </p>
 
@@ -137,9 +153,10 @@ const UploadPreview = ({
                     <button
                       type="submit"
                       disabled={loading}
-                      className="linear mt-8 w-full rounded-xl bg-red-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-red-600 active:bg-red-700 dark:bg-red-400 dark:text-white dark:hover:bg-red-300 dark:active:bg-red-200"
+                      className="flex justify-center items-center linear mt-8 w-full rounded-[5px] bg-primaryColor py-[12px] text-base font-medium text-white transition duration-200 hover:bg-red-400 active:bg-red-500 dark:bg-red-400 dark:text-white dark:hover:bg-red-300 dark:active:bg-red-200"
                     >
-                      {loading ? "Loading ..." : "SUBMIT"}
+                      {loading && <ButtonLoading />}
+		       SUBMIT
                     </button>
                   </div>
                 </div>
