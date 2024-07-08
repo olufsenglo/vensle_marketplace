@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 
 import SectionTitle from "components/front/sectionTitle/SectionTitle"
+import SkeletonLoader from 'components/front/skeletonLoader/shopCategoryLoader'; 
 
 import cat1 from "assets/img/front/shop-by-category/cat1.png";
 import cat2 from "assets/img/front/shop-by-category/cat2.png";
@@ -20,13 +21,49 @@ import ball from "assets/img/front/shop-by-category/ball-1.png";
 import ball2 from "assets/img/front/shop-by-category/ball-2.png";
 import ball3 from "assets/img/front/shop-by-category/ball-3.webp";
 
+const baseURL = "https://nominet.vensle.com/backend";
 export default function ShopByCategories() {
+  const [categories, setCategories] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+	setLoading(true);
+        const response = await fetch(`${baseURL}/api/v1/categories`);
+        const data = await response.json();
+        setCategories(data.categories);
+	setLoading(false);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+	setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+	
+  const getImagePath = (name) => {
+    return `${baseURL}/uploads/categories/${name}`;
+  };
+
   return (
       <div className="relative bg-white">
          <div className="mx-auto max-w-2xl px-4 pb-3 lg:pt-6 lg:pb-6 sm:px-6 lg:max-w-7xl lg:px-8">
 	    <SectionTitle>Shop by Categories</SectionTitle>
 	    <div className="mt-3 lg:mt-10 overflow-hidden">
-	      <Swiper
+	      {loading && (
+		// Show Skeleton loading while data is being fetched
+				<div className="w-full">
+				      <div className="lg:hidden">
+				         <SkeletonLoader itemNumber="5" />
+				      </div>
+				      <div className="hidden lg:block">
+				         <SkeletonLoader itemNumber="7" />
+				      </div>
+				</div>
+	      )}
+	      {categories.length > 0 && !loading && <Swiper
 		  slidesPerView={4}
 		  spaceBetween={20}
 		  navigation={true}
@@ -47,127 +84,26 @@ export default function ShopByCategories() {
 		}}
 		  className="mySwiper !w-[106%]"
 	      >
+	       {categories.map((category) =>
 		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
+	            <div className="flex flex-col items-center text-center cursor-pointer">
 	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
-				     src={cat1}
+				     src={getImagePath(category.image)}
 				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
 				     alt="suggested categories"
 				/>
            	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Computing</p>
+			  <p className="p-2 text-xs lg:text-[16px] mt-1">{category.name}</p>
            	    </div>
-		</SwiperSlide>
+		</SwiperSlide>)}
 		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={ball2}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
+	            <div className="invisible">
+	                  <div className="w-[2px]">
            	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Women's Fashion</p>
            	    </div>
 		</SwiperSlide>
-		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={cat2}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
-           	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Men's Fashion</p>
-           	    </div>
-		</SwiperSlide>
-		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={ball3}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
-           	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Sporting Goods</p>
-           	    </div>
-		</SwiperSlide>
-		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={cat3}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
-           	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Appliances</p>
-           	    </div>
-		</SwiperSlide>
-		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={cat4}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
-           	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Computing</p>
-           	    </div>
-		</SwiperSlide>
-		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={ball}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
-           	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Men's Fashion</p>
-           	    </div>
-		</SwiperSlide>
-		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={cat5}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
-           	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Men's Fashion</p>
-           	    </div>
-		</SwiperSlide>
-		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={cat6}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
-           	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Men's Fashion</p>
-           	    </div>
-		</SwiperSlide>
-		<SwiperSlide>
-	            <div className="flex flex-col items-center cursor-pointer">
-	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
-				<img
-				     src={cat7}
-				     className="!w-[4rem] p-[5px] lg:p-4 !h-[4rem] lg:!w-[8rem] lg:!h-[8rem] !object-contain"
-				     alt="suggested categories"
-				/>
-           	          </div>
-			  <p className="p-2 text-xs lg:text-[16px] mt-1">Men's Fashion</p>
-           	    </div>
-		</SwiperSlide>
-	      </Swiper>
+	      </Swiper>}
 	    </div>
 	 </div>
       </div>

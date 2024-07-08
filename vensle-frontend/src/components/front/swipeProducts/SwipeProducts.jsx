@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -11,6 +11,8 @@ import { Navigation } from 'swiper/modules';
 
 import SingleProduct from "components/front/singleProduct/SingleProduct"
 import SectionTitle from "components/front/sectionTitle/SectionTitle"
+import SkeletonLoader from 'components/front/skeletonLoader/SkeletonLoader'; 
+
 import img1 from "assets/img/front/all/front_077.png"
 import img2 from "assets/img/front/all/front_078.png"
 import img3 from "assets/img/front/all/front_068.png"
@@ -27,10 +29,33 @@ import img13 from "assets/img/front/all/imgfront_015.jpg"
 import img14 from "assets/img/front/all/imgfront_008.jpg"
 
 const SwipeProducts = ({ title, type, image }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate fetching products data (replace with actual fetch logic)
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Simulate loading delay
+  }, []);
+
 	return (
 		<>
 			<div className="overflow-hidden">
 				{title && <SectionTitle>{title}</SectionTitle>}
+			      {loading ? (
+				// Show Skeleton loading while data is being fetched
+				<div className="mt-2 w-full lg:mt-6">
+				      <div className="md:hidden lg:hidden">
+				         <SkeletonLoader itemNumber="2" />
+				      </div>
+				      <div className="hidden md:block lg:hidden">
+				         <SkeletonLoader itemNumber="3" />
+				      </div>
+				      <div className="hidden lg:block">
+				         <SkeletonLoader itemNumber="6" />
+				      </div>
+				</div>
+			      ) : (
 				<Swiper
 					slidesPerView={2}
 					spaceBetween={8}
@@ -80,8 +105,23 @@ const SwipeProducts = ({ title, type, image }) => {
 						<SingleProduct type={type} numberOfProducts={7} />
 					</SwiperSlide>
 				</Swiper>
+      			    )}
 			</div>
 			<div className="overflow-hidden">
+			      {loading ? (
+				// Show Skeleton loading while data is being fetched
+				<div className="mt-2 w-full lg:mt-6">
+				      <div className="md:hidden lg:hidden">
+				         <SkeletonLoader itemNumber="2" />
+				      </div>
+				      <div className="hidden md:block lg:hidden">
+				         <SkeletonLoader itemNumber="3" />
+				      </div>
+				      <div className="hidden lg:block">
+				         <SkeletonLoader itemNumber="6" />
+				      </div>
+				</div>
+			      ) : (
 				<Swiper
 					slidesPerView={2}
 					spaceBetween={8}
@@ -131,6 +171,7 @@ const SwipeProducts = ({ title, type, image }) => {
 						<SingleProduct numberOfProducts={7} />
 					</SwiperSlide>
 				</Swiper>
+      			    )}
 			</div>
 		</>
 	)

@@ -43,7 +43,8 @@ const Header = ({
   const user = useSelector((state) => state.auth.user?.user);
   const cartItems = useSelector((state) => state.cart.items);
 
-  const storedCountry = localStorage.getItem("userCountry") || "Unknown";
+  const storedLocation = JSON.parse(localStorage.getItem("location"));
+  const storedCountry = storedLocation?.country || "Unknown";
   const storedCountryFlag = localStorage.getItem("countryFlag") || "";
 
   const [loginOpen, setLoginOpen] = useState(false);
@@ -77,12 +78,6 @@ const Header = ({
       e.preventDefault();
       dispatch(logout());
     }
-  };
-
-  const handleGetUserCountry = () => {
-    if (storedCountry == "UK") return <>United Kingdom</>;
-    else if (storedCountry == "US") return <>United States</>;
-    else if (storedCountry == "NG") return <>Nigeria</>;
   };
 
   const handleUploadClick = (e) => {
@@ -156,7 +151,7 @@ const bottomStickyGoToPage = (redirectPage) => {
         handleRegisterDriverClick={handleRegisterDriverClick}
         handleTopNavClick={handleTopNavClick}
         storedCountryFlag={storedCountryFlag}
-        handleGetUserCountry={handleGetUserCountry}
+	storedCountry = {storedCountry}
         driverRegister={driverRegister}
         setDriverRegister={setDriverRegister}
       />
@@ -277,7 +272,7 @@ const bottomStickyGoToPage = (redirectPage) => {
 
       <NavLinks
         storedCountryFlag={storedCountryFlag}
-        handleGetUserCountry={handleGetUserCountry}
+        storedCountry={storedCountry}
       />
 
       <SignInRegisterModal

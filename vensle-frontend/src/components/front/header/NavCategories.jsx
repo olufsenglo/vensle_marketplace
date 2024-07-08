@@ -1,8 +1,9 @@
-import { Fragment } from 'react'
+import { useState, useEffect, useRef, Fragment } from 'react'
 import { Link } from "react-router-dom";
 import { Popover, Transition } from '@headlessui/react'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import {
+  XMarkIcon,
   ArrowPathIcon,
   ChartPieIcon,
   CursorArrowRaysIcon,
@@ -23,14 +24,33 @@ const callsToAction = [
   { name: 'Upload a product', href: '#', icon: PhoneIcon },
 ]
 
-export default function NavCategories() {
+export default function NavCategories({ categories }) {
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
+  const categoryPopupRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setShowCategoryMenu(!!categoryPopupRef.current); // Toggle showTryMe based on presence of categoryPopupRef
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <Popover className="relative">
-      <Popover.Button className="inline-flex items-center gap-x-1 mt-[2px] leading-6">
+    <Popover className="flex">
+      <Popover.Button onClick={() => setShowCategoryMenu(true)} className="inline-flex items-center gap-x-1 mt-[2px] lg:mt-0 lg:mb-3 leading-6">
         <Bars3Icon className="h-5 w-5" aria-hidden="true" />
-        <span className="text-sm lg:font-medium">All Categories</span>
+        <span className="text-sm lg:font-medium" style={{textWrap: "nowrap"}}>All Categories</span>
       </Popover.Button>
 
+	{showCategoryMenu && <XMarkIcon
+	  onClick={() => setShowCategoryMenu(false)}
+	  className="lg:hidden fixed w-8 h-8 top-[1rem] right-[1rem] z-[20] cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300"
+	/>}
       <Transition
         as={Fragment}
         enter="transition ease-out duration-200"
@@ -40,23 +60,26 @@ export default function NavCategories() {
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 translate-y-1"
       >
-        <Popover.Panel className="absolute z-10 left-[-10px] mt-5 flex w-screen max-w-max px-4">
-          <div className="w-[86vw] max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
-            <div className="p-4">
-              {solutions.map((item) => (
-                <div key={item.name} className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
-                  <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                    <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
-                  </div>
+        <Popover.Panel ref={categoryPopupRef} className="fixed lg:absolute z-10 left-0 lg:left-[-10px] right-0 lg:right-auto bottom-0 lg:bottom-auto right-0 lg:right-auto top-0 lg:top-[2.5rem] lg:mt-5 flex lg:w-screen lg:max-w-max lg:px-4">
+          <div className="w-full h-full lg:w-[86vw] lg:max-w-md flex-auto overflow-hidden lg:rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+            <div className="pt-8 lg:pt-2 pb-4">
+	      <h2 className="lg:hidden text-xl ml-8 font-semibold mb-2">Categories</h2>
+              {categories.length > 0 ? categories.map((category) => (
+                <div key={category.id} className="group px-8 py-2 border-b border-b-gray-200 relative flex rounded-lg hover:bg-gray-50">
                   <div>
-                    <Link to={item.href} className="font-semibold text-gray-900">
-                      {item.name}
+                    <Link to={`/filter?searchTerm=&category_id=1`} className="font-semibold text-gray-900">
+                      {category.name}
                       <span className="absolute inset-0" />
                     </Link>
-                    <p className="mt-1 text-gray-600">{item.description}</p>
+                    <p className="mt-[-6px] lg:mr-[60%] text-[12px] line-clamp-1 text-gray-600">
+			{category.subcategories?.map((subcategory) => 
+				<span>{subcategory.name},{" "}</span>
+			)}
+		      ...
+		    </p>
                   </div>
                 </div>
-              ))}
+              )) : <div className="py-2 px-8">Loading...</div>}
             </div>
             <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
               {callsToAction.map((item) => (

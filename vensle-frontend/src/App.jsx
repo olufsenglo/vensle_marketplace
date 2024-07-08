@@ -28,10 +28,11 @@ const App = () => {
   useEffect(() => {
     const fetchCountryInfo = async () => {
       try {
-        //const ipinfoResponse = await axios.get('https://ipinfo.io/json?token=09389931bcf565');
-        //const storedCountryCode = ipinfoResponse.data.country;
+	{/*put token in env*/}
+        const ipinfoResponse = await axios.get('https://ipinfo.io/json?token=09389931bcf565');
+        const storedCountryCode = ipinfoResponse.data.country || "NG";
 
-        const storedCountryCode = "NG";
+        //const storedCountryCode = "NG";
 
         setCountryCode(storedCountryCode);
 
@@ -52,47 +53,10 @@ const App = () => {
     fetchCountryInfo();
   }, []);
 
-  useEffect(() => {
-    const storedLocation = JSON.parse(localStorage.getItem("userLocation"));
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const newLocation = { lat: latitude, lng: longitude };
-
-          if (
-            !storedLocation ||
-            storedLocation.lat !== newLocation.lat ||
-            storedLocation.lng !== newLocation.lng
-          ) {
-            localStorage.setItem("userLocation", JSON.stringify(newLocation));
-          }
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-
-          if (error.code === 1) {
-            alert(
-              "Geolocation permission denied. Please enable location services."
-            );
-          }
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-
-    const storedCountry = localStorage.getItem("userCountry");
-    const storedCity = localStorage.getItem("userCity");
-    if (!storedCountry) localStorage.setItem("userCountry", "UK");
-    if (!storedCity) localStorage.setItem("userCity", "London");
-  }, []);
 
   return (
     <>
       <Toaster />
-
       <Routes>
         <Route path="auth/*" element={<AuthLayout />} />
         <Route path="social/facebook/callback/*" element={<Facebook />} />

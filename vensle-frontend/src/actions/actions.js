@@ -69,14 +69,28 @@ export const removeFromCart = (itemId) => (dispatch, getState) => {
 };
 
 export const decreaseQuantity = (itemId) => (dispatch, getState) => {
+	console.log(itemId)
   dispatch({ type: DECREASE_QUANTITY, payload: itemId });
 
-  const token = localStorage.getItem("token");
-  if (token) {
-    axios.put(`/api/cart/decrease/${itemId}`);
+  //Decrease item quantity from database if user is loggedIn
+  const authInfo = getState().auth.isLoggedIn
+  if (authInfo) {
+    const token = getState().auth.user.token;
+    axios.post(
+      `${API_URL}/cart/decrease`,
+      { productId: itemId },
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   }
 
   localStorage.setItem("cart", JSON.stringify(getState().cart.items));
+
+
 };
 
 export const increaseQuantity = (itemId) => (dispatch, getState) => {

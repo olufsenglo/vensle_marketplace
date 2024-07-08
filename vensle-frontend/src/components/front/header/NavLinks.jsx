@@ -5,10 +5,17 @@ import {
   HeartIcon,
 } from '@heroicons/react/24/outline'
 
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+// import required modules
+import { Navigation } from 'swiper/modules';
 import NavCategories from "./NavCategories";
 
 const baseURL = "https://nominet.vensle.com/backend";
-const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
+const NavLinks = ({ storedCountryFlag, storedCountry }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const categoryId = queryParams.get("category_id") || "";
@@ -86,10 +93,10 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
 
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <ul
-          className="flex items-center justify-between lg:justify-start"
+          className="flex items-center justify-between lg:justify-start lg:h-[auto]"
         >
-          <li className="lg:mr-6 lg:mb-3">
-            <NavCategories />
+          <li className="lg:mr-6">
+            <NavCategories categories={categories} />
           </li>
 
           <li className="flex items-center text-xs lg:hidden">
@@ -100,34 +107,64 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
                 alt="country flg"
               />
             )}
-            {handleGetUserCountry()}
+            {storedCountry}
           </li>
-          <li className="hidden lg:block pt-2 pb-6 mr-2">
-            <Link className="px-4 hover:underline font-medium px-4 flex border-r cursor-pointer border-r-black border-l border-l-black items-center" to="/saved-items">
+          <li className="hidden lg:block mr-2">
+            <Link className="px-4 mb-3 hover:underline font-medium flex border-r cursor-pointer border-r-black border-l border-l-black items-center" to="/saved-items">
               <HeartIcon className="h-5 w-5 mr-1" />
               <p>Saved</p>
             </Link>
           </li>
 
-          {categories ? (
-            categories.map((category) => (
-              <li
-                key={category.id}
-                onMouseEnter={() => handleMouseEnter(category)}
-                onMouseLeave={handleMouseLeave}
-                className={`hidden font-medium hover:underline rounded-sm lg:block ${categoryId == category.id && "underline"
-                  }`}
-              >
-                {/*use localstorage for distance*/}
-                <Link className="px-2 block pt-2 pb-6" to={`/filter?searchTerm=&category_id=${category.id}&distance=20`}>
-                  {category.name}
-                </Link>
+  {categories ? (
+<div className="hidden lg:block grow overflow-hidden">
+      <Swiper
+        slidesPerView={4}
+        spaceBetween={0}
+        pagination={{
+          clickable: true,
+        }}
+	breakpoints={{
+		1024: {
+			slidesPerView: 3,
+			spaceBetween: 0,
+		},
+		1100: {
+			slidesPerView: 4,
+			spaceBetween: 0,
+		},
+		1300: {
+			slidesPerView: 5,
+			spaceBetween: 0,
+		},
+	}}
+        modules={[Navigation]}
+        className="navSwiper !w-[100%]"
+      >        
+	   {categories.map((category) => (
+              <SwiperSlide>
+		      <li
+			key={category.id}
+			onMouseEnter={() => handleMouseEnter(category)}
+			onMouseLeave={handleMouseLeave}
+			className={`font-medium hover:underline rounded-sm ${categoryId == category.id && "underline"
+			  }`}
+		      >
+			{/*use localstorage for distance*/}
+			<Link className="block pt-[12px] pl-1 pb-6 pr-4" to={`/filter?searchTerm=&category_id=${category.id}&distance=20&nav_type=category`}>
+			  {category.name}
+			</Link>
 
-              </li>
-            ))
-          ) : (
-            <li className="hidden lg:block mb-4">Loading . . .</li>
-          )}
+		      </li>
+	      </SwiperSlide>
+            ))}
+        </Swiper>
+</div>
+     ) : (
+            <li className="hidden lg:block pt-[12px] pl-1 pb-6">Loading . . .</li>
+     )}
+
+
         </ul>
 
                 <div
@@ -148,7 +185,7 @@ const NavLinks = ({ storedCountryFlag, handleGetUserCountry }) => {
                           <li
                             className="mb-2"
                           >
-                            <Link className="hover:underline" to={`/filter?searchTerm=&category_id=${activeCategory.id}&subcategory_id=${subCategory.id}`}>
+                            <Link className="hover:underline" to={`/filter?searchTerm=&category_id=${activeCategory.id}&subcategory_id=${subCategory.id}&distance=20`}>
                               {subCategory.name}
                             </Link>
                           </li>

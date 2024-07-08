@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import required modules
+import { Navigation } from 'swiper/modules';
 
 import {
   StarIcon,
@@ -10,6 +14,10 @@ import {
   ChevronRightIcon,
   ChatBubbleLeftRightIcon,
 } from "@heroicons/react/20/solid";
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 const baseURL = "https://nominet.vensle.com/backend";
 
@@ -72,13 +80,13 @@ const UploadPreview = ({
       <div className="bg-white">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
-            <div className="w-full">
-              <div className="sticky top-0 z-50 overflow-hidden ">
-                <div className="relative p-2 mb-2 lg:mb-8 lg:h-[28rem]">
+            <div className="flex-1">
+              <div className="p-3 overflow-hidden">
+                <div className="relative flex justify-center items-center p-2 mb-2 lg:mb-8 lg:h-[28rem] border border-gray-200 rounded-3xl">
                   <img
                     src={mainPreviewImage}
-                    alt="x"
-                    className="w-[200rem] rounded-2xl object-cover lg:h-full "
+                    alt="Image preview before upload"
+                    className="w-full rounded-3xl object-contain lg:h-full "
                   />
                 </div>
                 <div className="hidden flex-wrap md:flex ">
@@ -92,7 +100,7 @@ const UploadPreview = ({
               </div>
             </div>
 
-            <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-xs lg:flex-shrink-0">
+            <div className="w-[37%] pl-0 py-3 pr-3">
               <div className="lg:pt:6 rounded-2xl bg-gray-50 py-5 ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:pb-8">
                 <div className="px-8">
 		  <h3

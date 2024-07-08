@@ -4,6 +4,7 @@ import message from "./message";
 import checkoutReducer from './checkoutReducer'; 
 import groceryReducer from './groceryReducer';
 import savedProductReducer from './savedProductReducer';
+import locationReducer from './locationReducer';
 
 export default combineReducers({
   auth,
@@ -11,4 +12,5 @@ export default combineReducers({
   cart: groceryReducer,
   savedProduct: savedProductReducer,
   checkout: checkoutReducer,
+  location: locationReducer
 });

@@ -165,13 +165,14 @@ input:checked.defaultCheckbox::before {
 
 .swiper-slide {
   text-align: center;
-  font-size: 18px;
-  background: #fff;
-
   /* Center slide text vertically */
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.navSwiper .swiper-slide {
+  width: auto!important;
 }
 
 .swiper-slide img {

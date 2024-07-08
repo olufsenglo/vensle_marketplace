@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Card from "components/card";
 import axios from "axios";
-
+import getSymbolFromCurrency from 'currency-symbol-map';
+import countryToCurrency, { Currencies, Countries } from "country-to-currency";
 import {
    XMarkIcon,
    ArrowUpTrayIcon,
    ArrowLeftIcon,
    ChevronDownIcon,
 } from "@heroicons/react/24/outline";
-import currencySymbolMap from "currency-symbol-map";
 
+import Card from "components/card";
 import uploadImage from "assets/img/dashboards/upload.png";
 import UploadPreview from "./components/UploadPreview";
 
@@ -27,12 +27,14 @@ const Tables = () => {
     lng: 0,
   };
   const storedCountry = localStorage.getItem("userCountry") || "Unknown";
-  const storedCity = localStorage.getItem("userCity") || "Unknown";
+  const ipInfoCountryCode = localStorage.getItem("countryCode") || "£";
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth?.isLoggedIn);
   const accessToken = useSelector((state) => state.auth?.user?.token);
   const user = useSelector((state) => state.auth?.user?.user);
+  const userLocation = useSelector((state) => state.location);	
+	
   const [categories, setCategories] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [error, setError] = useState(null);
@@ -66,16 +68,16 @@ const Tables = () => {
     type: "product",
     ratings: 0,
     product_quantity: 1,
-    sold: 1,
-    views: 1,
+    sold: 0,
+    views: 0,
     status: "Active",
     images: [],
     single_specifications: "",
-    latitude: storedLocation.lat,
-    longitude: storedLocation.lng,
+    latitude: userLocation.lat,
+    longitude: userLocation.lng,
     currency: "",
-    city: storedCity,
-    country: storedCountry,
+    city: userLocation.city,
+    country: userLocation.country,
     key_specifications: "",
     ramSize: "",
     storageCapacity: "",
@@ -150,12 +152,38 @@ const Tables = () => {
     });
   };
 
+// Helper function to format number with commas
+const formatNumberWithCommas = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+// Helper function to remove commas from formatted number
+const removeCommas = (formattedNumber) => {
+  return formattedNumber.replace(/,/g, '');
+};
+
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+
+    if (name === 'price') {
+      // Remove commas from the value
+      const cleanValue = removeCommas(value);
+
+      // Ensure the value is a number before updating the state
+      if (!isNaN(cleanValue)) {
+        setFormData({
+          ...formData,
+          [name]: cleanValue,
+        });
+      }
+    } else {	  
+	  setFormData({
+	      ...formData,
+	      [name]: value,
+	  });
+    }
 
     validateField(name, value);
   };
@@ -391,7 +419,7 @@ const handleFilterChange = (filterName, selectedValue) => {
     return imagePreviews.map((preview, index) => (
       <>
         <div className="group relative">
-          <div className="relative aspect-h-1 aspect-w-1 xl:aspect-h-8 xl:aspect-w-7 w-full overflow-hidden rounded-lg bg-gray-200">
+          <div className="relative h-[11rem] w-full overflow-hidden rounded-lg bg-gray-200">
             <img
               src={preview}
               alt={`Preview ${index}`}
@@ -584,9 +612,9 @@ const handleFilterChange = (filterName, selectedValue) => {
     const queryParams = new URLSearchParams(location.search);
     const paramProductType = queryParams.get("type");
     setUrlProductType(paramProductType)
-    if (paramProductType) {
-      console.log("Product type:", paramProductType);
-    }
+
+    //TODO: Authorize route
+    //if (user.role.name !== "seller") and status not complete
     if (paramProductType === "grocery") {
       setFormData({
         ...formData,
@@ -620,46 +648,12 @@ const handleFilterChange = (filterName, selectedValue) => {
     fetchCategories();
   }, [location.search]);
 
-  useEffect(() => {
-    const getUserCountry = () => {
-      if (storedCountry == "NG") {
-        setFormData({
-          ...formData,
-          currency: "₦",
-        });
-      } else if (storedCountry == "UK") {
-        setFormData({
-          ...formData,
-          currency: "£",
-        });
-      } else if (storedCountry == "US") {
-        setFormData({
-          ...formData,
-          currency: "$",
-        });
-      } else {
-        setFormData({
-          ...formData,
-          currency: "£",
-        });
-      }
-      // setCurrencySymbol(getCurrencySymbolForCountry(country));
-    };
-
-    getUserCountry();
-  }, []);
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
-
-  const getCurrencySymbolForCountry = (country) => {
-    const currencySymbol = currencySymbolMap[country] || "$"; // Default to '$' if not found
-
-    return currencySymbol;
-  };
 
   const containerStyle = {
     background:
@@ -699,13 +693,25 @@ const handleFilterChange = (filterName, selectedValue) => {
   };
 
 
+  const getCurrency = () => {
+    const currencyCode = countryToCurrency[ipInfoCountryCode];
+    const currency = getSymbolFromCurrency((currencyCode)) || '£';
 
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      currency: currency,
+    }));	  
+  }
+
+  useEffect(() => {
+    getCurrency();
+  }, [ipInfoCountryCode]);
 
   return (
     <div className="flex w-full flex-col gap-5">
       {error && <div className="mt-8 ml-4 text-red-500">{error}</div>}
       <form
-        className={"relative h-full w-full p-4"}
+        className={"relative h-full w-full"}
         onSubmit={handleSubmit}
         encType="multipart/form-data"
         id="imageForm"
@@ -725,7 +731,7 @@ const handleFilterChange = (filterName, selectedValue) => {
             <Card extra={"w-full p-4 h-full"}>
               <div className="grid grid-cols-1 space-y-2">
                 <div
-                  className={`flex w-full relative items-center justify-center border-2 border-dashed  rounded-lg p-4 ${dragging ? 'bg-gray-200' : ''}  ${jsValidateErrors.images
+                  className={`flex w-full relative items-center justify-center border-2 border-dashed  rounded-lg p-2 ${dragging ? 'bg-gray-200' : ''}  ${jsValidateErrors.images
                     ? "border-red-200"
                     : "border-gray-400"
                     }`}
@@ -738,10 +744,10 @@ const handleFilterChange = (filterName, selectedValue) => {
                     <p className="bg-white flex justify-center items-center m-6 absolute top-0 bottom-0 left-0 right-0">Loading...</p>
                   }
                   {imagePreviews?.length > 0 && (
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-center sm:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5 xl:gap-x-2">
+                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-center sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-x-2">
                       {renderImagePreviews()}
                       <label
-                        className="flex flex-col items-center justify-center min-h-[5rem] cursor-pointer items-center justify-center rounded-lg border border-gray-100"
+                        className="flex block flex-col items-center justify-center h-[11rem] cursor-pointer items-center justify-center rounded-lg border border-gray-100"
                         htmlFor="images"
                       >
                         <ArrowUpTrayIcon className="w-6 h-6 mb-2" />
@@ -793,7 +799,7 @@ const handleFilterChange = (filterName, selectedValue) => {
           </div>
 
           <div className="col-span-6 lg:!mb-0">
-            <Card extra={"w-full p-4 h-full"}>
+            <Card extra={"w-full py-4 px-1 lg:px-4 h-full"}>
               <div className="mb-6 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center lg:justify-start">
                 <div className="w-full max-w-full flex-col items-center md:pl-4 lg:pl-0">
                   <div></div>
@@ -855,18 +861,18 @@ const handleFilterChange = (filterName, selectedValue) => {
           {activeSubcategoryName || 'Select Category'} <ChevronDownIcon className="w-4 h-4" />
         </div>
         {isOpen && (
-          <div className="absolute z-10 mt-1 w-full border border-blue-300 border-t-0 bg-gray-50 py-1 shadow-lg">
+          <div className="fixed bg-gray-800/90 lg:bg-white text-white lg:text-black rounded-2xl lg:rounded-none top-[2rem] lg:top-auto left-[2rem] lg:left-[0] right-[2rem] lg:right-[0] lg:absolute z-10 mt-1 lg:w-full border border-blue-300 border-t-0 bg-gray-50 py-1 shadow-lg">
 
 
-		    <h3 className="flex items-center text-base font-semibold text-sm px-2">
+		    <h3 className="flex items-center text-base font-semibold text-sm px-4 pt-3 lg:pt-0 lg:px-2">
 	  		{activeSubcategories.length > 0 && <ArrowLeftIcon
 	  			onClick={handleBackToCategories}
-	  			className="mr-2 p-[2px] h-5 w-5 rounded-full hover:bg-gray-200 cursor-pointer transition duration-300"
+	  			className="mr-2 p-[2px] h-5 w-5 rounded-full hover:bg-gray-700 lg:hover:bg-gray-200 cursor-pointer transition duration-300"
 	  		    />}
 	  		{activeCategory ? activeCategory.name : "Categories"}
 	  	    </h3>
 	  	    <div className="flex h-full w-full overflow-hidden">
-			    <ul className={`text-[14px] flex h-full w-full shrink-0 transform flex-col transition-transform duration-300 translate-x-0  ${isLeftVisible
+			    <ul className={`text-lg overflow-y-auto lg:text-[14px] flex h-full w-full shrink-0 transform flex-col transition-transform duration-300 translate-x-0  ${isLeftVisible
                                     ? "translate-x-0"
                                     : "-translate-x-full"
                                     }`}>
@@ -875,13 +881,13 @@ const handleFilterChange = (filterName, selectedValue) => {
 				    <li
 					onClick={()=>handleSetCategory(category)}
 					key={category.id}
-					className="py-1 px-4 cursor-pointer hover:text-white hover:bg-[#1967d2]"
+					className="border-b border-gray-500/50 lg:border-0 py-4 lg:py-1 px-4 cursor-pointer hover:text-white hover:bg-[#1967d2]"
 				    >
 					{category.name}
 				    </li>
 				)}
 			    </ul>
-	  		    <ul className={`text-[14px] flex w-full shrink-0 transform flex-col transition-transform duration-300 ${isLeftVisible
+	  		    <ul className={`text-lg lg:text-[14px] flex w-full shrink-0 transform flex-col transition-transform duration-300 ${isLeftVisible
                                     ? "translate-x-full"
                                     : "-translate-x-full"
                                     }`}>
@@ -889,7 +895,7 @@ const handleFilterChange = (filterName, selectedValue) => {
 				    <li
 					onClick={()=>handleSetSubcategory(subcategory)}
 					key={subcategory.id}
-					className={`py-1 px-4 cursor-pointer hover:text-white hover:bg-[#1967d2] ${
+					className={`border-b border-gray-500/50 lg:border-0 py-4 lg:py-1 px-4 cursor-pointer hover:text-white hover:bg-[#1967d2] ${
 						subcategory.id === formData.subcategory_id && "text-white bg-[#1967d2]"
 					}`}
 				    >
@@ -904,7 +910,7 @@ const handleFilterChange = (filterName, selectedValue) => {
         )}
       </div>
       {/* Additional content for the upload product form */}
-      <form className="mt-4">
+      <form className="lg:mt-4">
         {/* Your upload product form elements go here */}
       </form>
     </div>	  
@@ -1062,7 +1068,7 @@ const handleFilterChange = (filterName, selectedValue) => {
                             : "Add Price"
                         }
                         autoComplete="price"
-                        value={formData.price}
+                        value={formatNumberWithCommas(formData.price)}
                         onChange={handleInputChange}
                         className={`mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 px-4 text-sm placeholder-gray-300 shadow-sm outline-none transition focus:ring-2 focus:ring-teal-500 ${jsValidateErrors.price
                           ? "bg-red-50"

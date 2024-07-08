@@ -64,9 +64,8 @@ const SingleProduct = ({ numberOfProducts, type, image = two }) => {
 		<div
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
-			className="border lg:border-none border-gray-200 bg-gray-100/50 lg:bg-white text-left cursor-pointer hover:bg-gray-100/50 rounded-md"
+			className="w-full h-full border lg:border-none border-gray-200 bg-gray-100/50 lg:bg-white text-left cursor-pointer hover:bg-gray-100/50 rounded-md"
 		>
-			{console.log('hey',isHovered)}
 			<div className="relative">
 				<div className="absolute z-[1] left-0 top-3 left-3 flex items-center bg-white border rounded-md border-0 lg:border-primaryColor py-[0.2rem] px-2">
 					{type === 'grocery'

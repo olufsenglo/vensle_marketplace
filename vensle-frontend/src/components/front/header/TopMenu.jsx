@@ -1,5 +1,6 @@
 import { Fragment, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import { Transition, Menu } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useDispatch } from "react-redux";
@@ -21,11 +22,11 @@ const TopMenu = ({
   handleUploadClick,
   handleRegisterDriverClick,
   handleTopNavClick,
+  storedCountry,
   storedCountryFlag,
-  handleGetUserCountry,
 }) => {
-
   const dispatch = useDispatch();
+  const location = useSelector((state) => state.location);	
 
   useEffect(() => {
     dispatch(fetchCartItems());
@@ -133,7 +134,7 @@ const TopMenu = ({
                   alt="country flg"
                 />
               )}
-              {handleGetUserCountry()}
+              {location.country}
             </li>
           </ul>
         </div>

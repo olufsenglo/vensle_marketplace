@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import debounce from 'lodash.debounce';
@@ -16,11 +16,8 @@ const baseURL = "https://nominet.vensle.com/backend";
 const Search = ({ position = 'sticky' }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const storedLocation = JSON.parse(localStorage.getItem("userLocation")) || {
-    lat: 0,
-    lng: 0,
-  };
-  const storedCountry = localStorage.getItem("userCountry") || "Unknown";
+
+  const userLocation = useSelector((state) => state.location);	
   const storedCity = localStorage.getItem("userCity");
 
   const queryParams = new URLSearchParams(location.search);
@@ -35,15 +32,11 @@ const Search = ({ position = 'sticky' }) => {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [userLocation, setUserLocation] = useState({
-    lat: storedLocation.lat,
-    lng: storedLocation.lng,
-  });
   const [categories, setCategories] = useState("");
   const [distance, setDistance] = useState(20);
-  const [userCountry, setUserCountry] = useState(storedCountry);
-  const [previousSearchTerm, setPreviousSearchTerm] = useState(storedCountry);
-  const [previousSearchResult, setPreviousSearchResult] = useState(storedCountry);
+  const [userCountry, setUserCountry] = useState(userLocation.country);
+  const [previousSearchTerm, setPreviousSearchTerm] = useState(userLocation.country);
+  const [previousSearchResult, setPreviousSearchResult] = useState(userLocation.country);
 
   const [address, setAddress] = useState('');
   const [center, setCenter] = useState({ lat: userLocation.lat, lng: userLocation.lng });
@@ -121,7 +114,7 @@ const Search = ({ position = 'sticky' }) => {
 		  searchTerm: value,
 		  category_id: selectedCategory,
 		  distance,
-		  country: userCountry,
+		  country: userLocation.country,
 		  lat: userLocation.lat,
 		  lng: userLocation.lng,
 		},
@@ -361,7 +354,7 @@ const Search = ({ position = 'sticky' }) => {
       {/*place in component*/}
       {showDropdown && (
         <ul ref={setLocationRef} className={`w-full z-[11] suggestions-list right-0 left-0 mt-1 lg:mt-0 bg-white ${
-	    position === 'sticky' ? "fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto py-3 px-6" : "absolute p-3 top-[33px] lg:top-[3.2rem] border border-t-0"
+	    position === 'sticky' ? "fixed lg:absolute top-[38px] md:top-[55px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto py-3 px-6" : "absolute p-3 top-[33px] md:top-[47px] lg:top-[3.2rem] border border-t-0"
 	}`}>
 	      <div>
 		  {loading && <li className="absolute inset-0 w-full flex justify-center items-center bg-white/50 text-center">Loading...</li>}
@@ -424,7 +417,7 @@ const Search = ({ position = 'sticky' }) => {
         ref={inputRef}
       />
       {searchTerm && <span onClick={() => setSearchTerm("")} className={`z-[2] absolute ${
-	position === "sticky" ? "right-[10px]" : "right-[40px] lg:right-28"
+	position === "sticky" ? "right-[10px]" : "right-[40px] md:right-28"
       }`}>
         <XMarkIcon className="h-7 w-7 cursor-pointer rounded-full p-1 hover:bg-gray-200 transition-all ease-in-out duration-300" aria-hidden="true" />
       </span>}
@@ -432,7 +425,7 @@ const Search = ({ position = 'sticky' }) => {
       {searchTerm && suggestions.length > 0 && (
         <ul
           className={`w-full suggestions-list right-0 left-0 z-10 mt-1 border border-t-0 bg-white ${
-	    position === 'sticky' ? "py-3 px-6 lg:px-0 fixed lg:absolute top-[38px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[33px] lg:top-[3.2rem] border border-t-0"
+	    position === 'sticky' ? "py-3 px-6 lg:px-0 fixed lg:absolute top-[38px] md:top-[55px] lg:top-[47px] lg:border lg:border-t-0 bottom-0 lg:bottom-auto" : "absolute top-[33px] md:top-[47px] lg:top-[3.2rem] border border-t-0"
 	  }`}
         >
 
@@ -508,7 +501,7 @@ const Search = ({ position = 'sticky' }) => {
 		    <select
 		      value={selectedCategory}
 		      onChange={handleCategoryChange}
-		      className="flex items-center justify-center rounded-md gap-x-2.5 px-3 py-1 text-gray-900 hover:bg-gray-100"
+		      className="flex items-center text-[13px] justify-center rounded-md gap-x-2.5 px-3 py-1 text-gray-900 hover:bg-gray-100"
 		    >
 		      <option value="">Everything</option>
 		      {categories &&

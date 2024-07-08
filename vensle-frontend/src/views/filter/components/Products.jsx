@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector } from 'react-redux';
 
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -14,7 +15,12 @@ import {
 
 import Product from "components/front/product/Product";
 import Grocery from "components/front/product/Grocery";
+import Subcategories from "./Subcategories"
+
 import dealAdImage from "assets/img/front/product-filter-deals/1.jpg"
+import categoryImage from "assets/img/front/filter-header/category_garden.png"
+import subcategoryImage from "assets/img/front/filter-header/subcategory_garden.png"
+
 
 const product = {
   breadcrumbs: [
@@ -34,11 +40,7 @@ const Products = () => {
 
   const initialDistance = queryParams.get("distance") || "";
 
-  const storedLocation = JSON.parse(localStorage.getItem("userLocation")) || {
-    lat: 0,
-    lng: 0,
-  };
-  const storedCountry = localStorage.getItem("userCountry") || "Unknown";
+  const userLocation = useSelector((state) => state.location);	
   const storedCity = localStorage.getItem("userCity");
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -48,22 +50,73 @@ const Products = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [category_id, setCategory_id] = useState("");
   const [subcategory_id, setSubcategory_id] = useState("");
+  const [displayName, setDisplayName] = useState('');	
+
 
   //TODO: move downwards
-  useEffect(() => {
+/* useEffect(() => {
     const queryParameters = new URLSearchParams(location.search);
     const cat_id = queryParams.get("category_id") || "";
     const subcat_id  = queryParams.get("subcategory_id") || "";
+    const navType = queryParams.get('nav_type') || "";
     setCategory_id(cat_id);
     setSubcategory_id(subcat_id);
-  }, [location]);	
+
+// Sample categories data
+const mockCategories = [
+  {
+    id: 1,
+    name: "Electronics",
+    subcategories: [
+      { id: 1, name: "Civilian" },
+      { id: 2, name: "womens fashion" },
+      // ... other subcategories
+    ],
+  },
+  {
+    id: 3,
+    name: "Computing",
+    subcategories: [
+      { id: 34, name: "Desktops & All-In-One Computers" },
+      { id: 59, name: "Laptops & Netbooks" },
+      // ... other subcategories
+    ],
+  },
+  // ... other categories
+];
+	  
+
+    if (navType === 'category' && cat_id) {
+      const categoryId = Number(cat_id);
+
+      const category = mockCategories.find(cat => cat.id === categoryId);
+      if (category) {
+        setDisplayName(category.name);
+      }
+    } else if (navType === 'subcategory' && cat_id && subcat_id) {
+      const categoryId = Number(cat_id);
+      const subcategoryId = Number(subcat_id);
+
+      const category = mockCategories.find(cat => cat.id === categoryId);
+      if (category) {
+        const subcategory = category.subcategories.find(subcat => subcat.id === subcategoryId);
+        if (subcategory) {
+          setDisplayName(subcategory.name);
+        }
+      }
+    }	  
+
+
+  }, [location]);	*/
 
   const [type, setType] = useState("");
   const [sort, setSort] = useState("");
+  const [condition, setCondition] = useState("");
   const [listView, setListView] = useState("grid");
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [loading, setLoading] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
   const [activeSubcategories, setActiveSubcategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState([]);
@@ -73,14 +126,11 @@ const Products = () => {
   const [subcategoryFiltersLoading, setSubcategoryFiltersLoading] = useState(false);
   const [subcategoryFilters, setSubcategoryFilters] = useState([]);
   const [viewingSubcategories, setViewingSubcategories] = useState(false);
+  const [navTypeViewing, setNavTypeViewing] = useState('');
 
 
   const [distance, setDistance] = useState(initialDistance);
-  const [userLocation, setUserLocation] = useState({
-    lat: storedLocation.lat,
-    lng: storedLocation.lng,
-  });
-  const [userCountry, setUserCountry] = useState(storedCountry);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
 
@@ -104,6 +154,18 @@ const Products = () => {
     fit: [],
     racketType: [],
     swimsuitType: [],
+    HealthBeautyFormulationAndType: [],
+    HealthBeautyType: [],
+    HoldStrengthHealthBeauty: [],
+    VolumeHealthBeauty: [],
+    BodyPartHealthBeauty: [],
+    VisionFrameMaterial: [],
+    color_2: [],
+    desktopType: [],
+    storageType: [],
+    screenSize: [],
+    paperSize: [],
+    electronicsBrand: [],	  
   });
 
 
@@ -122,6 +184,18 @@ const Products = () => {
 	    fit: [],
 	    racketType: [],
 	    swimsuitType: [],
+	    HealthBeautyFormulationAndType: [],
+	    HealthBeautyType: [],
+	    HoldStrengthHealthBeauty: [],
+	    VolumeHealthBeauty: [],
+	    BodyPartHealthBeauty: [],
+	    VisionFrameMaterial: [],
+	    color_2: [],
+	    desktopType: [],
+	    storageType: [],
+	    screenSize: [],
+	    paperSize: [],
+	    electronicsBrand: [],		  
 	  })
   }
 
@@ -138,8 +212,6 @@ const Products = () => {
       } else {
         updatedFilters[name] = updatedFilters[name].filter((item) => item !== value);
       }
-
-      console.log('Updated Filters:', updatedFilters); // Debugging console.log
 
       return updatedFilters;
     });
@@ -162,25 +234,32 @@ const Products = () => {
 	getFiltersForCategory(category.id);
 	setViewingSubcategories(true)
 	setSubcategoryFilters([])
+	setNavTypeViewing('')
   }
 
   const handleSetSubcategory = (subcategory) => {
 	setCategoryFilters([])
 	setSubcategory_id(subcategory.id)	  
 	getFiltersForSubcategory(subcategory.id);
+	setNavTypeViewing('')
   }
 
   const handleBackToCategories = () => {
-        setLeftVisible(!isLeftVisible)
+        setLeftVisible(true)
 	setActiveSubcategories('')
 	setActiveCategory('')
 	setViewingSubcategories(false)
+	setSubcategory_id("")
   }
 
  const removeCategoryFilter = () => {
 	 setCategory_id("")
 	 setCategoryFilters([])
 	 setLeftVisible(true)
+
+	setActiveCategory('')
+	setViewingSubcategories(false)
+	setActiveSubcategories('')
  }
 
  const removeSubcategoryFilter = () => {
@@ -244,6 +323,8 @@ const Products = () => {
           break;
         case "sort":
           setSort(value);
+        case "condition":
+          setCondition(value);
           break;
         default:
           break;
@@ -257,30 +338,36 @@ const Products = () => {
     setMobileFiltersOpen(false)
   };
 
-  const handleClearFilters = (e) => {
-    e.preventDefault();
-
+const resetFilters = () => {
     setDistance(20); 
     setMinPrice("");
     setMaxPrice("");
     setType("");
     setSort("");
+    setCondition("");
     setSelectedSizes([]);
     setCurrentPage(1);
-
 	resetCategoryState()
-
 	setCategory_id('')
 	setActiveCategory('')
 	setActiveSubcategories('')
 	setLeftVisible(true)
-	getFiltersForCategory('');
-	setViewingSubcategories(true)
+	//getFiltersForCategory('');
+	setViewingSubcategories(false)
 	setSubcategoryFilters([])
 	setCategoryFilters([])
 	setSubcategory_id('')	  
 	setMobileFiltersOpen(false)
+}
+
+  const handleClearFilters = (e) => {
+    e.preventDefault();
+    resetFilters();
   };
+
+ useEffect(() => {
+    resetFilters();
+ }, [location])
 
   const fetchFilteredProducts = async () => {
     try {
@@ -296,9 +383,10 @@ const Products = () => {
           distance,
           lat: userLocation.lat,
           lng: userLocation.lng,
-          country: userCountry,
+          country: userLocation.country,
           type,
           sort,
+	  condition,
           sizes: selectedSizes.join(","), // Convert array to comma-separated string
 	  ...filters,
         },
@@ -329,9 +417,9 @@ const Products = () => {
     maxPrice,
     distance,
     userLocation,
-    userCountry,
     type,
     sort,
+    condition,
     selectedSizes,
     filters,
   ]);
@@ -346,7 +434,41 @@ const Products = () => {
 	setCategoriesLoading(true)
         const response = await fetch(`${baseURL}/api/v1/categories`);
         const data = await response.json();
-        setCategories(data.categories);
+        const categories = data.categories
+        setCategories(categories);
+
+
+    const queryParameters = new URLSearchParams(location.search);
+    const cat_id = queryParams.get("category_id") || "";
+    const subcat_id  = queryParams.get("subcategory_id") || "";
+    const navType = queryParams.get('nav_type') || "";
+    setCategory_id(cat_id);
+    setSubcategory_id(subcat_id);
+
+
+    if (navType === 'category' && !subcat_id && cat_id) {
+      const categoryId = Number(cat_id);
+
+      const category = categories.find(cat => cat.id === categoryId);
+      setSubcategories(category.subcategories)
+      if (category) {
+        setDisplayName(category.name);
+	setNavTypeViewing('category')
+      }
+    } else if (navType === 'subcategory' && cat_id && subcat_id) {
+      const categoryId = Number(cat_id);
+      const subcategoryId = Number(subcat_id);
+
+      const category = categories.find(cat => cat.id === categoryId);
+      if (category) {
+        const subcategory = category.subcategories.find(subcat => subcat.id === subcategoryId);
+        if (subcategory) {
+          setDisplayName(subcategory.name);
+          setNavTypeViewing('subcategory')
+        }
+      }
+    }	  
+
 	setCategoriesLoading(false)
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -355,14 +477,13 @@ const Products = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [location]);
 
 
   return (
     <div className="bg-white">
       <div>
         {/* Mobile filter dialog */}
-	  {console.log('meee', searchTerm)}
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -561,7 +682,7 @@ const Products = () => {
 
 <div className="pr-4 border-b border-gray-200 pr-4">
 		<h3 className="flow-root text-base font-semibold">Condition</h3>
-                <div className="flex items-center justify-between pb-4">
+                <div className="flex items-center justify-between pb-3">
                   <div className="flex items-center">
                     <label>
                       <input
@@ -654,7 +775,19 @@ const Products = () => {
 {discount && <div className="mt-4 mb-6">
 	  <img src={dealAdImage} alt="deal ad" className="w-full" />
 </div>}
-	  <div className="flex mb-1 gap-2 lg:gap-4 flex-wrap mt-2 mx-auto max-w-2xl lg:max-w-7xl lg:max-w-8xl">
+
+
+	  <div className="mb-1 mt-2 mx-auto max-w-2xl lg:max-w-7xl lg:max-w-8xl">
+
+{displayName && (navTypeViewing === 'category' || navTypeViewing === 'subcategory') && <div className="">
+    <h3 className="text-2xl font-semibold">{displayName}</h3>
+    {navTypeViewing === 'category' && <img
+	className="mt-1 mb-2"
+	src={categoryImage}
+	alt="category banner"
+    />}
+</div>}
+	      {navTypeViewing !== "category" && navTypeViewing !== "subcategory" && <div className="flex gap-2 lg:gap-4 flex-wrap">
 		  {/*TODO: put in component*/}
 		  {category_id && <p className="flex items-center text-sm pl-3 pr-2 py-[0.1rem] border border-gray-300 rounded-full">
 			  Category: {category_id}
@@ -684,6 +817,8 @@ const Products = () => {
 			  {maxPrice}
 			  <XMarkIcon onClick={()=>setMaxPrice("")} className="w-4 h-4 ml-2 p-[1px] cursor-pointer rounded-full transition duration-300 hover:bg-black hover:text-white" />
 		  </p>}
+	      </div>}
+
 	  </div>
           <div className="mx-auto max-w-2xl lg:max-w-7xl md:pb-4 lg:pb-2 lg:max-w-8xl flex items-baseline justify-between border-b border-gray-200 pb-2">
             <p className="flex text-sm lg:text-md items-center">
@@ -708,7 +843,7 @@ const Products = () => {
               </select>
             </h1>
 
-            <div className="fixed left-1/2 transform -translate-x-1/2 md:static md:transform-none py-1 px-2 lg:py-0 lg:px-0 bottom-[65px] lg:bottom-0 lg:left-0 z-[2] bg-white lg:relative flex items-center gap-3 lg:gap-0 rounded-full lg:rounded-0 shadow-md lg:shadow-none">
+            <div className="fixed left-1/2 transform -translate-x-1/2 md:static md:transform-none py-1 px-2 lg:py-0 lg:px-0 bottom-[65px] lg:bottom-0 lg:left-0 z-[2] bg-white lg:relative flex items-center gap-3 lg:gap-0 rounded-full md:rounded-md lg:rounded-0 border-0 md:border border-gray-200 lg:border-0 shadow-md md:shadow-none">
               <select
                 name="sort"
                 value={sort}
@@ -726,7 +861,7 @@ const Products = () => {
                 <button
                   onClick={() => setListView("list")}
                   type="button"
-                  className="-m-2 border-l lg:border-0 border-l-gray-300 lg:ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+                  className="-m-2 md:ml-0 border-l lg:border-0 border-l-gray-300 lg:ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
                 >
                   <span className="sr-only">View list</span>
                   <ListBulletIcon className="h-4 lg:h-5 w-4 lg:w-5" aria-hidden="true" />
@@ -918,6 +1053,9 @@ const Products = () => {
                       <input
                         type="radio"
 			name="condition"
+                        value="new"
+			checked={condition === 'new'}
+                        onChange={handleInputChange}
 			className="mr-1"
                       />
 		      New
@@ -929,6 +1067,9 @@ const Products = () => {
                         type="radio"
 			name="condition"
 			className="mr-1"
+                        value="used"
+			checked={condition === 'used'}
+                        onChange={handleInputChange}
                       />
 		      Used
                     </label>
@@ -967,10 +1108,14 @@ const Products = () => {
 
                 {!loading && filteredProducts?.data?.length === 0 && (
                   <div className="absolute inset-0 z-[1] flex items-center justify-center">
+		    {navTypeViewing === "category" || navTypeViewing === "subcategory" ? <p className="mt-[20vh] lg:mt-[10rem]">
+                      There are no products in this category
+                    </p>
+		    :
                     <p className="mt-[20vh] lg:mt-0">
                       Your filter returned no products, you can try to widen
                       your search reach
-                    </p>
+                    </p>}
                   </div>
                 )}
 
@@ -981,6 +1126,13 @@ const Products = () => {
                   <div className="mx-auto max-w-2xl lg:max-w-7xl">
                     <h2 className="sr-only">Products</h2>
 
+	{subcategories && navTypeViewing === 'category' && <Subcategories loading={categoriesLoading} subcategories={subcategories} />}
+
+    {navTypeViewing === 'subcategory' && <img
+	className="mt-1 mb-6"
+	src={subcategoryImage}
+	alt="subcategory banner"
+    />}
                     <div
                       className={`grid ${listView === "grid"
                           ? "grid-cols-2 gap-x-3 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-4 "
