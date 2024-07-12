@@ -28,18 +28,10 @@ import img12 from "assets/img/front/all/front_043.png"
 import img13 from "assets/img/front/all/imgfront_015.jpg"
 import img14 from "assets/img/front/all/imgfront_008.jpg"
 
-const SwipeProducts = ({ title, type, image }) => {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate fetching products data (replace with actual fetch logic)
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000); // Simulate loading delay
-  }, []);
-
+const SwipeProducts = ({
+	title, type, image, loading=false, products, handleProductQuickView
+}) => {
 	return (
-		<>
 			<div className="overflow-hidden">
 				{title && <SectionTitle>{title}</SectionTitle>}
 			      {loading ? (
@@ -77,103 +69,20 @@ const SwipeProducts = ({ title, type, image }) => {
 					modules={[Navigation]}
 					className="mySwiper mt-2 lg:mt-6 !w-[110%]"
 				>
+				      {products && products.map((product) => 
+				            <SwiperSlide>
+						<SingleProduct product={product} type={product.type} image={img2} numberOfProducts={7} handleProductQuickView={handleProductQuickView} />
+					    </SwiperSlide>
+				      )}
 					<SwiperSlide>
 						<SingleProduct type="pickUp" image={img1} numberOfProducts={7} />
 					</SwiperSlide>
 					<SwiperSlide>
-						<SingleProduct type="grocery" image={img2} numberOfProducts={7} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="pickUp" image={img3} numberOfProducts={7} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="request" image={img4} numberOfProducts={7} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="grocery" image={img5} numberOfProducts={7} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="pickUp" image={img6} numberOfProducts={7} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="grocery" image={img7} numberOfProducts={7} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type={type} numberOfProducts={7} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type={type} numberOfProducts={7} />
+						<SingleProduct type="pickUp" image={img1} numberOfProducts={7} />
 					</SwiperSlide>
 				</Swiper>
       			    )}
 			</div>
-			<div className="overflow-hidden">
-			      {loading ? (
-				// Show Skeleton loading while data is being fetched
-				<div className="mt-2 w-full lg:mt-6">
-				      <div className="md:hidden lg:hidden">
-				         <SkeletonLoader itemNumber="2" />
-				      </div>
-				      <div className="hidden md:block lg:hidden">
-				         <SkeletonLoader itemNumber="3" />
-				      </div>
-				      <div className="hidden lg:block">
-				         <SkeletonLoader itemNumber="6" />
-				      </div>
-				</div>
-			      ) : (
-				<Swiper
-					slidesPerView={2}
-					spaceBetween={8}
-					navigation={true}
-					breakpoints={{
-						640: {
-							slidesPerView: 2,
-							spaceBetween: 8,
-						},
-						768: {
-							slidesPerView: 4,
-							spaceBetween: 15,
-						},
-						1024: {
-							slidesPerView: 7,
-							spaceBetween: 15,
-						},
-					}}
-					modules={[Navigation]}
-					className="mySwiper mt-2 !w-[110%]"
-				>
-					<SwiperSlide>
-						<SingleProduct type="request" numberOfProducts={7} image={img8} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="pickUp" numberOfProducts={7} image={img9} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="grocery" numberOfProducts={7} image={img10} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="request" numberOfProducts={7} image={img11} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="pickUp" numberOfProducts={7} image={img12} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="grocery" numberOfProducts={7} image={img13} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct type="grocery" numberOfProducts={7} image={img14} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct numberOfProducts={7} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<SingleProduct numberOfProducts={7} />
-					</SwiperSlide>
-				</Swiper>
-      			    )}
-			</div>
-		</>
 	)
 }
 

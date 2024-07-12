@@ -23,6 +23,18 @@ const register = (
 };
 
 const login = async (email, password) => {
+  try {
+    const response = await axios.post(API_URL + "login", { email, password });
+    if (response.data.token) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/*const login = async (email, password) => {
   return axios
     .post(API_URL + "login", {
       email,
@@ -35,7 +47,7 @@ const login = async (email, password) => {
 
       return response.data;
     });
-};
+};*/
 
 const logout = () => {
   localStorage.removeItem("user");

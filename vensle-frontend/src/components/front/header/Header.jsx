@@ -62,7 +62,17 @@ const Header = ({
     0
   );
 
- //TODO:localstate not props
+  const handleLogoClick = (e) => {
+    e.preventDefault()
+    // Check if on homepage
+if (window.location.pathname === "/") {
+      setActivePill(1);
+    } else {
+      navigate("/");
+    }
+  };	
+
+ //TODO:use localstate not props
   const handleSignInClick = (e) => {
     setLoginOpen(true);
     setActiveTab(1);
@@ -167,7 +177,7 @@ const bottomStickyGoToPage = (redirectPage) => {
           <div
             className="flex md:relative flex-col gap-[1%] justify-between lg:items-center lg:flex-row"
           >
-            <Link className="relative" to="/">
+            <Link onClick={handleLogoClick} className="relative" to="/">
               <img className="w-[120px] md:w-40 lg:w-auto" src={logo} alt="vensle" />
             </Link>
             <Search position={'relative'} />

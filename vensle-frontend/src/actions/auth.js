@@ -100,7 +100,6 @@ export const login = (email, password) => (dispatch) => {
           },
         })
         .then((cartResponse) => {
-          console.log("cartrr", cartResponse.data.cart)
           if (cartResponse) {
             const userCartItems = cartResponse.data.cart;
             dispatch({ type: "REPLACE_CART", payload: userCartItems });
@@ -119,9 +118,14 @@ export const login = (email, password) => (dispatch) => {
       return Promise.resolve();
     },
     (error) => {
-      const message = error.response?.data?.errors
+	    console.log('eerrr',error)
+      /*const message = error.response?.data?.errors
         ? error.response?.data?.errors
-        : { dispatchError: error.response?.data?.message };
+        : { dispatchError: error.response?.data?.message };*/
+      const message =
+        error.response?.data?.errors ||
+        error.response?.data?.message ||
+        "An error occurred during login.";
 
       dispatch({
         type: LOGIN_FAIL,

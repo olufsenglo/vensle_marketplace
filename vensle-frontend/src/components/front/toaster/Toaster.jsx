@@ -16,7 +16,6 @@ const Toaster = () => {
 
   useEffect(() => {
     let timer;
-
     if (message && (message?.message?.type === "success" || message?.message?.type === "error")) {
       timer = setTimeout(() => {
         dispatch({
@@ -30,10 +29,14 @@ const Toaster = () => {
     };
   }, [message, dispatch]);
 
+  if (!message || typeof message?.message?.message !== 'string') {
+    return null;
+  }	
+
+
   return (
     <>
-	  {console.log(message?.message?.type)}
-      {message && (message?.message?.type === "success" || message?.message?.type === "error") && (
+	  {console.log('mmeetypeiiiiooooo', typeof message?.message?.message)}
         <div
           onClick={() => handleClearMessageClick()}
           style={{ top: "5rem", zIndex: "99999", left: "0", right: "0" }}
@@ -46,10 +49,10 @@ const Toaster = () => {
 			    "border-red-600 text-red-500"
 	    }`}
           >
-            {message.message.message}
+
+	      {message.message.message}
           </span>
         </div>
-      )}
     </>
   );
 };

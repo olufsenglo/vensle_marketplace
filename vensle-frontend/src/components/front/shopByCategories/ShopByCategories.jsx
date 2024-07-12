@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { Link } from "react-router-dom"
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
@@ -86,7 +87,7 @@ export default function ShopByCategories() {
 	      >
 	       {categories.map((category) =>
 		<SwiperSlide>
-	            <div className="flex flex-col items-center text-center cursor-pointer">
+	            <Link to={`/filter?searchTerm=&category_id=${category.id}&distance=20&nav_type=category`} className="flex flex-col items-center text-center cursor-pointer">
 	                  <div className="flex justify-center items-center min-h-[5rem] min-w-[5rem] rounded-full p-0 lg:p-[0.2rem] bg-gray-100/50 transition duration-300 hover:bg-gray-200">
 				<img
 				     src={getImagePath(category.image)}
@@ -95,7 +96,7 @@ export default function ShopByCategories() {
 				/>
            	          </div>
 			  <p className="p-2 text-xs lg:text-[16px] mt-1">{category.name}</p>
-           	    </div>
+           	    </Link>
 		</SwiperSlide>)}
 		<SwiperSlide>
 	            <div className="invisible">

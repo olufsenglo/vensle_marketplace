@@ -5,7 +5,12 @@ import {
 	TruckIcon,
 } from "@heroicons/react/20/solid";
 
-const NewTopRequests = ({ image="assets/img/front/temp/2.jpg" }) => {
+const imageBaseURL = process.env.REACT_APP_IMAGE_BASE_URL;
+
+const NewTopRequests = ({ product }) => {
+	const getImagePath = () => {
+		return `${imageBaseURL}/${product?.display_image?.name}`;
+	};
 	return (
 		<div className="relative w-full bg-gray-100/50 rounded-md border border-gray-200 lg:border-0 lg:bg-white lg:hover:bg-gray-200/70 text-left cursor-pointer">
 			<div className="absolute left-0 top-3 left-3 flex bg-white lg:border rounded-md border-primaryColor py-[0.2rem] px-2">
@@ -16,7 +21,7 @@ const NewTopRequests = ({ image="assets/img/front/temp/2.jpg" }) => {
 				<HeartIcon className="h-4 w-4" />
 			</div>
 			<img
-				src={image}
+				src={getImagePath()}
 				alt="Request"
 				className="h-full w-full !h-[10rem] lg:!h-[18rem] rounded-md object-cover object-center group-hover:opacity-75"
 			/>

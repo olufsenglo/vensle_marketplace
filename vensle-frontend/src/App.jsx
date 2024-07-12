@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
 import axios from "axios";
+
+import { setLocation } from 'actions/locationActions';
 
 import RtlLayout from "layouts/rtl";
 import AdminLayout from "layouts/admin";
@@ -19,19 +22,22 @@ import OrderSummary from "layouts/front/orderSummary";
 import Checkout from "layouts/front/checkout";
 import UserProfile from "layouts/front/userProfile";
 import NotFound from "layouts/front/notFound";
-
 import Toaster from "components/front/toaster/Toaster";
 
 const App = () => {
+  const dispatch = useDispatch();
+
   const [countryCode, setCountryCode] = useState(null);
   const [countryFlagUrl, setCountryFlagUrl] = useState(null);
+
+  /*TODO: put in LocationInitializer component*/
   useEffect(() => {
     const fetchCountryInfo = async () => {
       try {
-	{/*put token in env*/}
+	{/*TODO: put token in env*/}
         const ipinfoResponse = await axios.get('https://ipinfo.io/json?token=09389931bcf565');
-        const storedCountryCode = ipinfoResponse.data.country || "NG";
-
+        const storedCountryCode = ipinfoResponse.data.country;
+	      console.log('flllaaage', storedCountryCode)
         //const storedCountryCode = "NG";
 
         setCountryCode(storedCountryCode);
@@ -52,7 +58,6 @@ const App = () => {
 
     fetchCountryInfo();
   }, []);
-
 
   return (
     <>

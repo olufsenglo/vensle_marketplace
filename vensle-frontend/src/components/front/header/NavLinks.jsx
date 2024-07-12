@@ -91,7 +91,7 @@ const NavLinks = ({ storedCountryFlag, storedCountry }) => {
       className="relative transition ease duration-200 bg-white border-b border-b-gray-200/50"
     >
 
-      <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+      <div className="mx-auto mb-1.5 lg:mb-0 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <ul
           className="flex items-center justify-between lg:justify-start lg:h-[auto]"
         >

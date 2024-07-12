@@ -84,7 +84,7 @@ const UploadPreview = ({
 
       <div className="bg-white">
         <div className="mx-auto max-w-7xl">
-          <div className="mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:flex lg:max-w-none">
+          <div className="flex flex-col lg:flex-row mx-auto rounded-3xl ring-1 ring-gray-200 lg:mx-0 lg:max-w-none">
             <div className="flex-1">
               <div className="p-3 overflow-hidden">
                 <div className="relative flex justify-center items-center p-2 mb-2 lg:mb-8 lg:h-[28rem] border border-gray-200 rounded-3xl">

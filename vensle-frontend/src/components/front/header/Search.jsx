@@ -17,8 +17,14 @@ const Search = ({ position = 'sticky' }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userLocation = useSelector((state) => state.location);	
-  const storedCity = localStorage.getItem("userCity");
+//  const userLocation = useSelector((state) => state.location);	
+  const userLocation = JSON.parse(localStorage.getItem("location")) || {
+              city: "",
+              country: "",
+              countryCode: "",
+              lat: "",
+              lng: "",
+  }
 
   const queryParams = new URLSearchParams(location.search);
   const [searchTerm, setSearchTerm] = useState(

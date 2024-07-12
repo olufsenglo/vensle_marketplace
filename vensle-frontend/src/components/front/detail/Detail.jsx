@@ -183,7 +183,11 @@ const formatPrice = (price) => {
   const getImagePath = (name) => {
     return `${baseURL}/uploads/${name}`;
   };
-  
+
+  const buttonControlStyle = {
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);  
@@ -203,16 +207,21 @@ const formatPrice = (price) => {
           breadcrumbs: [
             {
               id: 1,
-              name: 'Pickup and Requests',
+              name: 'Home',
               href: "#"
             },
             {
               id: 2,
+              name: 'Pickup and Requests',
+              href: "#"
+            },
+            {
+              id: 3,
               name: response.data.product.category.name,
               href: `/filter?searchTerm=&category_id=${response.data.product.category_id}`
             },
             {
-              id: 3,
+              id: 4,
               name: response.data.product?.subcategory?.name,
               href: `/filter?searchTerm=&category_id=${response.data.product.category_id}&subcategory_id=${response.data.product.subcategory_id}`
             },
@@ -335,7 +344,7 @@ const formatPrice = (price) => {
                     </span>
 
 
-		  		<div className="absolute z-[1] left-0 top-3 left-3 flex items-center bg-white border rounded-md border-0 lg:border-primaryColor py-[0.2rem] px-2">
+		  		<div className="absolute z-[1] left-[4rem] top-[1.6rem] left-[4rem] flex items-center bg-white border rounded-md border-0 lg:border lg:border-primaryColor py-[0.2rem] px-2">
 					{product.type === 'grocery'
 						? <TruckIcon className="text-primaryColor h-[0.9rem] w-[0.9rem] lg:h-6 lg:w-6 mr-2" />
 						: (product.type == 'request'
@@ -354,8 +363,8 @@ const formatPrice = (price) => {
 
 
 
-		    <div className="absolute z-[1] transition-all duration-300 cursor-pointer bg-gray-100 hover:bg-gray-300 right-3 flex justify-center items-center rounded-full top-2">
-                               <HeartIcon onClick={handleSaveItem} className={`p-1 h-6 w-6 tagHeartClassName`} />
+		    <div style={buttonControlStyle} className="absolute z-[1] transition-all duration-300 cursor-pointer top-[1rem] right-[4rem] flex justify-center items-center rounded-full rounded-full top-2 bg-white hover:bg-[#ededed] h-8 w-8 lg:h-[48px] lg:w-[48px]">
+                               <HeartIcon onClick={handleSaveItem} className={`p-1 h-7 w-7 md:h-8 md:w-8 tagHeartClassName`} />
                     </div>
 
 

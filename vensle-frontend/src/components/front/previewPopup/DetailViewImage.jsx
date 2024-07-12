@@ -29,8 +29,8 @@ const PreviewPopup = ({
 }) => {
 
   const buttonControlStyle = {
-  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
-}
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
+  }
 
   const handleShowSelectedImage = (productImage, index) => {
     const thumbnail = getImagePath(productImage.name);

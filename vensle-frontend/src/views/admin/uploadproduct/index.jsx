@@ -28,7 +28,7 @@ const Tables = () => {
     lat: 0,
     lng: 0,
   };
-	console.log(userLocation.lat)
+
   const storedCountry = localStorage.getItem("userCountry") || "Unknown";
   const ipInfoCountryCode = localStorage.getItem("countryCode") || "£";
 
